@@ -41,6 +41,9 @@ RESOURCES = qwit.qrc
 # Windows icons
 RC_FILE = qwit-win.rc
 
+#Mac OS X icon
+ICON = images/qwit.icns
+
 target.path = /usr/bin
 INSTALLS = target
 CONFIG += debug
