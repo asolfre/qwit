@@ -48,13 +48,14 @@
 
 #include "ui_MainWindow.h"
 
-const int TWITTER_TABS = 6;
+const int TWITTER_TABS = 7;
 const int HOME_TWITTER_TAB = 0;
 const int PUBLIC_TWITTER_TAB = 1;
 const int REPLIES_TWITTER_TAB = 2;
 const int CUSTOM_TWITTER_TAB = 3;
 const int INBOX_TWITTER_TAB = 4;
 const int OUTBOX_TWITTER_TAB = 5;
+const int SEARCH_TWITTER_TAB = 6;
 
 const int DEFAULT_WINDOW_WIDTH = 200;
 const int DEFAULT_WINDOW_HEIGHT = 600;
@@ -108,6 +109,8 @@ public:
 	int proxyPort;
 	int messagesPerPage;
 	int messagesPerTray;
+    QString retweetTag;
+    bool retweetTagPlace; //false is front, true is end
 	UserpicsDownloader userpicsDownloader;
 	StatusTextEdit *statusTextEdit;
 	OptionsDialog *optionsDialog;
@@ -124,7 +127,10 @@ public:
 	void setupTrayIcon();
 	void loadState();
 	QDateTime dateFromString(const QString &date);
+	QDateTime dateFromStringAtom(const QString &date);
 	static MainWindow* getInstance();
+	signals:
+	    void sendRetweetTag(const QString &, const bool &);
 
 public slots:
 
@@ -142,8 +148,11 @@ public slots:
 	void tabChanged(int index);
 	void updateItems();
 	void customUsernameChanged();
+	void searchChanged();
         void setReplyID(const QString &replyID);
         void setDirectMessagesID(const QString &directMessagesID);
+        void clearTags(QString &text);
+        void setRetweetTag();
 
 protected:
 
