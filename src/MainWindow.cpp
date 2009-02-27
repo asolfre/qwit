@@ -143,6 +143,19 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 
 	twitterTabs[OUTBOX_TWITTER_TAB] = TwitterTab(scrollArea, twitterWidget, 0);
 
+	twitterWidget = new TwitterWidget();
+	twitterWidget->setObjectName(QString::fromUtf8("searchTwitterWidget"));
+	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+
+	scrollArea = new QScrollArea(searchTab);
+	scrollArea->setBackgroundRole(QPalette::Light);
+	scrollArea->setWidget(twitterWidget);
+	scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+	vboxLayout2->addWidget(scrollArea);
+
+	twitterTabs[SEARCH_TWITTER_TAB] = TwitterTab(scrollArea, twitterWidget, 0);
+
 	statusTextEdit = new StatusTextEdit(this);
 	statusTextEdit->setObjectName(QString::fromUtf8("statusTextEdit"));
 	QFont font = statusTextEdit->document()->defaultFont();
@@ -163,6 +176,7 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 
 	connect(statusTextEdit, SIGNAL(returnPressed()), this, SLOT(sendStatus()));
 	connect(customUsernameLineEdit, SIGNAL(returnPressed()), this, SLOT(customUsernameChanged()));
+	connect(searchLineEdit, SIGNAL(returnPressed()), this, SLOT(searchChanged()));
 
 	connect(refreshPushButton, SIGNAL(pressed()), this, SLOT(updateTimeline()));
 	connect(optionsPushButton, SIGNAL(pressed()), optionsDialog, SLOT(showNormal()));
@@ -175,8 +189,11 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 
 	for (int i = 0; i < TWITTER_TABS; ++i) {
-		connect(twitterTabs[i].twitterWidget, SIGNAL(reply(const QString &)), statusTextEdit, SLOT(reply(const QString &)));
+                connect(twitterTabs[i].twitterWidget, SIGNAL(reply(const QString &)), statusTextEdit, SLOT(reply(const QString &)));
+                connect(twitterTabs[i].twitterWidget, SIGNAL(retweet(const QString &, const QString &)), statusTextEdit, SLOT(retweet(const QString &,const QString &)));
                 connect(twitterTabs[i].twitterWidget, SIGNAL(replyID(const QString &)), this, SLOT(setReplyID(const QString &)));
+                connect(statusTextEdit, SIGNAL(getRetweetTag()), this, SLOT(setRetweetTag()));
+                connect(this, SIGNAL(sendRetweetTag(const QString &, const bool &)), statusTextEdit, SLOT(setRetweetTag(const QString &, const bool &)));
 //-----
         connect(twitterTabs[i].twitterWidget, SIGNAL(directMessages(const QString &)), statusTextEdit, SLOT(directMessages(const QString &)));
 //   		connect(twitterTabs[i].twitterWidget, SIGNAL(reply(const QString &)), statusTextEdit, SLOT(reply(const QString &)));
@@ -233,6 +250,8 @@ void MainWindow::loadState() {
 	twitter.setServiceAPIURL(settings.value("serviceAPIURL", "http://twitter.com").toString());
 	twitter.setServiceBaseURL(settings.value("serviceBaseURL", "http://twitter.com").toString());
 	greetingMessageLabel->setText(settings.value("greetingMessage", "What are you doing?").toString());
+    retweetTag = settings.value("retweetTag", "RT @:").toString();
+    retweetTagPlace = settings.value("retweetTagPlace", false).toBool();
 	settings.endGroup();
 	settings.beginGroup("Proxy");
 	useProxy = settings.value("useProxy", "").toBool();
@@ -244,19 +263,23 @@ void MainWindow::loadState() {
 	settings.endGroup();
 	settings.beginGroup("Other");
 	customUsernameLineEdit->setText(settings.value("customUsername").toString());
+	searchLineEdit->setText(settings.value("searchString").toString());
 	settings.endGroup();
 
 	twitter.setUrl(CUSTOM_TWITTER_TAB, QString(CUSTOM_XML_URL) + customUsernameLineEdit->text() + ".xml");
+	twitter.setUrl(SEARCH_TWITTER_TAB, QString(SEARCH_ATOM_URL) +"?q=" + QUrl::toPercentEncoding(searchLineEdit->text()));
 
 	optionsDialog->messagesPerPageLineEdit->setText(QString::number(messagesPerPage));
 	optionsDialog->messagesPerTrayLineEdit->setText(QString::number(messagesPerTray));
-	optionsDialog->updatesNotificationCheckBox->setCheckState(updatesNotification ? Qt::Checked : Qt::Unchecked);
+        optionsDialog->updatesNotificationCheckBox->setCheckState(updatesNotification ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->usernameUnderAvatarCheckBox->setCheckState(usernameUnderAvatar ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->serviceBaseURLLineEdit->setText(twitter.getServiceBaseURL());
 	optionsDialog->serviceAPIURLLineEdit->setText(twitter.getServiceAPIURL());
 	optionsDialog->usernameLineEdit->setText(username);
 	optionsDialog->passwordLineEdit->setText(password);
-	optionsDialog->savePasswordCheckBox->setCheckState(savePassword ? Qt::Checked : Qt::Unchecked);
+        optionsDialog->savePasswordCheckBox->setCheckState(savePassword ? Qt::Checked : Qt::Unchecked);
+        optionsDialog->retweetTagEdit->setText(retweetTag);
+        optionsDialog->retweetAtEnd->setCheckState(retweetTagPlace ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->intervalLineEdit->setText(QString::number(interval));
 	optionsDialog->greetingMessageLineEdit->setText(greetingMessageLabel->text());
 	optionsDialog->useProxyCheckBox->setCheckState(useProxy ? Qt::Checked : Qt::Unchecked);
@@ -316,6 +339,10 @@ void MainWindow::setDirectMessagesID(const QString &replyID) {
         isReply = true;
 }
 
+void MainWindow::setRetweetTag() {
+    emit sendRetweetTag(retweetTag,retweetTagPlace);
+}
+
 void MainWindow::sendStatus() {
 	QString status = statusTextEdit->toPlainText().simplified();
 	if (status == "") {
@@ -363,6 +390,8 @@ void MainWindow::saveState() {
 	proxyPassword = optionsDialog->proxyPasswordLineEdit->text();
 	messagesPerPage = optionsDialog->messagesPerPageLineEdit->text().toInt();
 	messagesPerTray = optionsDialog->messagesPerTrayLineEdit->text().toInt();
+   retweetTag = optionsDialog->retweetTagEdit->text();
+   retweetTagPlace = optionsDialog->retweetAtEnd->checkState() == Qt::Checked;
 	bool proxySavePassword = optionsDialog->proxySavePasswordCheckBox->checkState() == Qt::Checked;
 	updatesNotification = optionsDialog->updatesNotificationCheckBox->checkState() == Qt::Checked;
 	usernameUnderAvatar = optionsDialog->usernameUnderAvatarCheckBox->checkState() == Qt::Checked;
@@ -383,6 +412,8 @@ void MainWindow::saveState() {
 	settings.setValue("interval", interval);
 	settings.setValue("messagesPerPage", messagesPerPage);
 	settings.setValue("messagesPerTray", messagesPerTray);
+   settings.setValue("retweetTag", retweetTag);
+   settings.setValue("retweetTagPlace", retweetTagPlace);
 	settings.setValue("updatesNotification", updatesNotification);
 	settings.setValue("usernameUnderAvatar", usernameUnderAvatar);
 	settings.setValue("serviceBaseURL", twitter.getServiceBaseURL());
@@ -430,6 +461,7 @@ void MainWindow::saveState() {
 
 	settings.beginGroup("Other");
 	settings.setValue("customUsername", customUsernameLineEdit->text());
+	settings.setValue("searchString", searchLineEdit->text());
 	settings.endGroup();
 
 	if (useProxy) {
@@ -515,6 +547,12 @@ QDateTime MainWindow::dateFromString(const QString &date) {
 	int year, day, hours, minutes, seconds;
 	sscanf(qPrintable(date), "%*s %s %d %d:%d:%d %*s %d", s, &day, &hours, &minutes, &seconds, &year);
 	int month = monthes[s];
+	return QDateTime(QDate(year, month, day), QTime(hours, minutes, seconds));
+}
+
+QDateTime MainWindow::dateFromStringAtom(const QString &date) {
+	int year, month, day, hours, minutes, seconds;
+	sscanf(qPrintable(date), "%d-%d-%dT%d:%d:%dZ", &year, &month, &day, &hours, &minutes, &seconds);
 	return QDateTime(QDate(year, month, day), QTime(hours, minutes, seconds));
 }
 
@@ -619,7 +657,7 @@ void MainWindow::updated(const QByteArray &buffer, int type) {
 		}
 		QDomNode node2 = node.firstChild();
 		QString message = "", timeStr = "", user = "", image = "", imageRecipient = "",recipientUser = "";
-		int id = 0, replyUserID = 0, replyStatusId = 0;
+		int id = 0;
 		while (!node2.isNull()) {
 			if (node2.toElement().tagName() == "created_at") {
 				timeStr = node2.toElement().text();
@@ -686,7 +724,6 @@ void MainWindow::updated(const QByteArray &buffer, int type) {
 			dir.mkdir(".qwit");
 			imageFileName = dir.absolutePath() + "/.qwit/" + imageFileName;
 			userpicsDownloader.download(image, imageFileName);
-//			twitterTabs[type].twitterWidget->addItem(imageFileName, user, message.simplified(), time.toLocalTime(), id, replyStatusId, j++, twitter.getServiceBaseURL());
 			twitterTabs[type].twitterWidget->addItem(imageFileName, user, message.simplified(), time.toLocalTime(), id, id, j++, twitter.getServiceBaseURL());
 		}
 		node = node.nextSibling();
@@ -697,7 +734,95 @@ void MainWindow::updated(const QByteArray &buffer, int type) {
 		trayIcon->showMessage(tr("Qwit updates"), trayMessage);
 	}
 	saveState();
-//	return;
+	return;
+	}
+
+
+//search ATOM
+	if (type==6)	{
+		twitterTabs[type].twitterWidget->clear();
+		if (root.tagName() == "feed") {
+			QDomNode node = root.firstChild();
+			QString html = "";
+			QString trayMessage = "";
+			int maxId = twitterTabs[type].lastId;
+			int a = 0;
+			int b = 0;
+			int j = 0;
+			QByteArray buf=buffer;
+			while (buf.indexOf("<entry>", a)!=-1 && buf.indexOf("<entry>", a)<buf.indexOf("</feed>", 0)) {
+				int id = 0;
+				QString message = "", timeStr = "", user = "", image = "";
+				a=buf.indexOf("<id>", a)+32;
+				b=buf.indexOf("</id>", a);
+				id=buf.mid(a,b-a).toInt();
+				a=buf.indexOf("<published>", a)+11;
+				b=buf.indexOf("</published>", a);
+				timeStr=buf.mid(a,b-a);
+				a=buf.indexOf("<content type=\"html\">", a)+21;
+				b=buf.indexOf("</content>", a);
+				message=buf.mid(a,b-a);
+				clearTags(message);
+				a=buf.indexOf("<link type=\"image/png\" rel=\"image\" href=\"", a)+41;
+				b=buf.indexOf("/>", a);
+				image=buf.mid(a,b-a-1);
+				a=buf.indexOf("<name>", a)+6;
+				b=buf.indexOf(" ", a);
+				user=buf.mid(a,b-a);
+				if (id) {
+					if (id > maxId) maxId = id;
+					QDateTime time = dateFromStringAtom(timeStr);
+					time = QDateTime(time.date(), time.time(), Qt::UTC);
+//					if ((id > twitterTabs[type].lastId)  && j < messagesPerTray) {
+//						trayMessage += user + ": " + message + " /" + TwitterWidget::formatDateTime(time.toLocalTime()) + "\n----------------------------\n";
+//					}
+					QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+					QString imageFileName = "";
+					for (int i = 0; i < hash.size(); ++i) {
+						unsigned char c = hash[i];
+						c >>= 4;
+						if (c < 10) {
+							c += '0';
+						} else {
+							c += 'A' - 10;
+						}
+						imageFileName += (char)c;
+						c = hash[i];
+						c &= 15;
+						if (c < 10) {
+							c += '0';
+						} else {
+							c += 'A' - 10;
+						}
+						imageFileName += (char)c;
+					}
+					imageFileName += "." + QFileInfo(QUrl(image).path()).suffix();
+					QDir dir(QDir::homePath());
+					dir.mkdir(".qwit");
+					imageFileName = dir.absolutePath() + "/.qwit/" + imageFileName;
+					userpicsDownloader.download(image, imageFileName);
+					twitterTabs[type].twitterWidget->addItem(imageFileName, user, message.simplified(), time.toLocalTime(), id, id, j++, twitter.getServiceBaseURL());
+				}
+			}
+			twitterTabs[type].lastId = maxId;
+			twitterTabs[type].lastUpdateTime = QDateTime::currentDateTime().toTime_t();
+//			if ((trayMessage != "") && updatesNotification) {
+//				trayIcon->showMessage(tr("Qwit updates"), trayMessage);
+//			}
+			saveState();
+			return;
+		}
+	}
+}
+
+void MainWindow::clearTags(QString &html){
+	QTextDocument m("");
+	m.setHtml(html);
+	html = m.toPlainText();
+	int a = 0;
+	while (html.indexOf("<", a)!=-1) {
+		a=html.indexOf("<", a);
+		html=html.remove(a,html.indexOf(">", a)-a+1);
 	}
 
 }
@@ -754,6 +879,17 @@ void MainWindow::customUsernameChanged() {
 
 	twitterTabs[CUSTOM_TWITTER_TAB].twitterWidget->clear();
 	twitterTabs[CUSTOM_TWITTER_TAB].lastId = 0;
+
+	saveState();
+
+	updateTimeline();
+}
+
+void MainWindow::searchChanged() {
+	twitter.setUrl(SEARCH_TWITTER_TAB, QString(SEARCH_ATOM_URL) +"?q=" + QUrl::toPercentEncoding(searchLineEdit->text()));
+
+	twitterTabs[SEARCH_TWITTER_TAB].twitterWidget->clear();
+	twitterTabs[SEARCH_TWITTER_TAB].lastId = 0;
 
 	saveState();
 
