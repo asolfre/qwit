@@ -102,7 +102,7 @@
            <item>
             <widget class="QLabel" name="label_13" >
              <property name="text" >
-              <string>Retweeting tag</string>
+              <string>Retweeting tag:</string>
              </property>
             </widget>
            </item>
@@ -146,6 +146,16 @@
             <widget class="QCheckBox" name="updatesNotificationCheckBox" >
              <property name="text" >
               <string>Notify about updates</string>
+             </property>
+             <property name="checked" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="verticalControlCheckBox" >
+             <property name="text" >
+              <string>Place controls vertically</string>
              </property>
              <property name="checked" >
               <bool>true</bool>

@@ -28,6 +28,7 @@ public:
 	QTextBrowser *status;
 	QLabel *icon;
 	QLabel *sign;
+	QLabel *contrl;
 	QString iconFileName;
 	int top;
 	int height;
@@ -57,6 +58,7 @@ class TwitterWidget: public QWidget {
 private:
 	int messagesPerPage;
 	bool usernameUnderAvatar;
+	bool verticalAlignControl;
 
 	QVector<TwitterWidgetItem> items;
 	QString prepare(const QString &text, const int &replyStatusId, const QString &serviceBaseURL);
@@ -73,7 +75,7 @@ public:
 	int getItemsCount();
 	void setMessagesPerPage(int value);
 	void setUsernameUnderAvatar(bool value);
-//        int replyStatusID;
+	void setVerticalAlignControl(bool value);
 
 	static QString formatDateTime(const QDateTime &time);
 
@@ -85,7 +87,6 @@ protected:
 public slots:
 
 	void replyClicked(const QUrl &url);
-        void rtClicked(const QUrl &url);
 	void directMessagesClicked(const QUrl &url);
 	void reloadUserpic(const QString &userpic);
 
