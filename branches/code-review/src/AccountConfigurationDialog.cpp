@@ -13,16 +13,17 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef IdenticaAccount_h
-#define IdenticaAccount_h
+#ifndef AccountConfigurationDialog_cpp
+#define AccountConfigurationDialog_cpp
 
-#include "AbstractAccount.h"
+#include "AccountConfigurationDialog.h"
 
-class IdenticaAccount: public AbstractAccount {
-public:
-	IdenticaAccount() {
-		type = ACCOUNT_IDENTICA;
-	}
-};
+#include <iostream>
+
+using namespace std;
+
+AccountConfigurationDialog::AccountConfigurationDialog(QWidget *parent): QDialog(parent) {
+	setupUi(this);
+}
 
 #endif

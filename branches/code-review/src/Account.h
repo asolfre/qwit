@@ -13,21 +13,30 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef TwitterAccountDialog_h
-#define TwitterAccountDialog_h
+#ifndef Account_h
+#define Account_h
 
-#include "ui_TwitterAccountDialog.h"
+const int ACCOUNT_TWITTER = 0;
+const int ACCOUNT_IDENTICA = 1;
+const int ACCOUNT_CUSTOM = 2;
 
-const int ACTION_ADD = 0;
-const int ACTION_EDIT = 1;
+const QString SERVICE_NAME[] = {"Twitter", "Identica", "Custom"};
 
-class TwitterAccountDialog: public QDialog, public Ui::TwitterAccountDialog {
-	Q_OBJECT
-	
+class Account {
 public:
-	int action;
+	int id;
+	int type;
+	QString username;
+	QString password;
+	QString serviceBaseURL;
+	QString serviceAPIURL;
 	
-	TwitterAccountDialog(QWidget *parent);
+	Account() {}
+	
+	Account(const QString &username, const QString &password) {
+		this->username = username;
+		this->password = password;
+	}
 };
 
 #endif
