@@ -20,9 +20,7 @@
 #include "OptionsDialog.h"
 #include "Configuration.h"
 
-#include "TwitterAccount.h"
-#include "IdenticaAccount.h"
-#include "CustomAccount.h"
+#include "Account.h"
 
 #include <iostream>
 
@@ -31,15 +29,17 @@ using namespace std;
 OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	setupUi(this);
 	
-	twitterAccountDialog = new TwitterAccountDialog(this);
-	twitterAccountDialog->setModal(true);
+	accountConfigurationDialog = new AccountConfigurationDialog(this);
+	accountConfigurationDialog->setModal(true);
 	
 	connect(optionsGroupTreeWidget, SIGNAL(itemActivated(QTreeWidgetItem*, int)), this, SLOT(changeOptionsGroup(QTreeWidgetItem*)));
 	optionsStackedWidget->setCurrentWidget(accountsPage);
 	connect(addAccountPushButton, SIGNAL(pressed()), this, SLOT(addAccount()));
 	connect(deleteAccountPushButton, SIGNAL(pressed()), this, SLOT(deleteAccount()));
 	connect(editAccountPushButton, SIGNAL(pressed()), this, SLOT(editAccount()));
-	connect(twitterAccountDialog, SIGNAL(accepted()), this, SLOT(commitTwitterAccount()));
+	connect(accountConfigurationDialog, SIGNAL(accepted()), this, SLOT(commitAccount()));
+	
+	optionsStackedWidget->setCurrentWidget(accountsPage);
 }
 
 void OptionsDialog::changeOptionsGroup(QTreeWidgetItem *item) {
@@ -55,17 +55,33 @@ void OptionsDialog::changeOptionsGroup(QTreeWidgetItem *item) {
 }
 
 void OptionsDialog::addAccount() {
-	twitterAccountDialog->action = ACTION_ADD;
-	twitterAccountDialog->showNormal();
-	twitterAccountDialog->twitterUsernameLineEdit->setText("");
-	twitterAccountDialog->twitterPasswordLineEdit->setText("");
-	twitterAccountDialog->twitterUsernameLineEdit->setFocus();
+	accountConfigurationDialog->action = ACTION_ADD;
+	accountConfigurationDialog->accountType = servicesComboBox->currentIndex();
+	accountConfigurationDialog->accountUsernameLineEdit->setText("");
+	accountConfigurationDialog->accountPasswordLineEdit->setText("");
+	accountConfigurationDialog->accountUsernameLineEdit->setFocus();
+	switch (servicesComboBox->currentIndex()) {
+		case ACCOUNT_TWITTER: {
+				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
+			}
+			break;
+		case ACCOUNT_IDENTICA: {
+				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
+			}
+			break;
+		case ACCOUNT_CUSTOM: {
+			}
+			break;
+	}
+	accountConfigurationDialog->showNormal();
 }
 
 void OptionsDialog::deleteAccount() {
 	int accountId = accountsListWidget->currentRow();
 	if (accountId == -1) return;
-	QMessageBox messageBox;
+	QMessageBox messageBox(this);
 	messageBox.setText("Do you really want to delete account \"" + accountsListWidget->currentItem()->text() + "\"?");
 	messageBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
 	messageBox.setDefaultButton(QMessageBox::Ok);
@@ -80,28 +96,48 @@ void OptionsDialog::editAccount() {
 	int accountId = accountsListWidget->currentRow();
 	if (accountId == -1) return;
 	Configuration *config = Configuration::getInstance();
+	accountConfigurationDialog->action = ACTION_EDIT;
+	accountConfigurationDialog->accountId = accountId;
+	accountConfigurationDialog->accountUsernameLineEdit->setText((config->accounts[accountId])->username);
+	accountConfigurationDialog->accountPasswordLineEdit->setText((config->accounts[accountId])->password);
+	accountConfigurationDialog->accountUsernameLineEdit->setFocus();
 	switch (config->accounts[accountId]->type) {
 		case ACCOUNT_TWITTER: {
-				twitterAccountDialog->action = ACTION_EDIT;
-				twitterAccountDialog->showNormal();
-				twitterAccountDialog->twitterUsernameLineEdit->setText(((TwitterAccount*)config->accounts[accountId])->username);
-				twitterAccountDialog->twitterPasswordLineEdit->setText(((TwitterAccount*)config->accounts[accountId])->password);
-				twitterAccountDialog->twitterUsernameLineEdit->setFocus();
+				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
+			}
+			break;
+		case ACCOUNT_IDENTICA: {
+				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
+			}
+			break;
+		case ACCOUNT_CUSTOM: {
 			}
 			break;
 	}
+	accountConfigurationDialog->showNormal();
 }
 
-void OptionsDialog::commitTwitterAccount() {
+void OptionsDialog::commitAccount() {
 	Configuration *config = Configuration::getInstance();
-	switch (twitterAccountDialog->action) {
+	switch (accountConfigurationDialog->action) {
 		case ACTION_ADD: {
-				TwitterAccount *account = new TwitterAccount(twitterAccountDialog->twitterUsernameLineEdit->text(), twitterAccountDialog->twitterPasswordLineEdit->text());
-				int accountId = config->addAccount(account);
-				accountsListWidget->addItem("Twitter: " + account->username);
+				Account *account = new Account(accountConfigurationDialog->accountUsernameLineEdit->text(), accountConfigurationDialog->accountPasswordLineEdit->text());
+				account->type = accountConfigurationDialog->accountType;
+				config->addAccount(account);
+				accountsListWidget->addItem(SERVICE_NAME[account->type] + ": " + account->username);
+				accountsListWidget->setCurrentRow(account->id);
 			}
 			break;
-		case ACTION_EDIT:
+		case ACTION_EDIT: {
+				Account *account = config->accounts[accountConfigurationDialog->accountId];
+				account->username = accountConfigurationDialog->accountUsernameLineEdit->text();
+				account->password = accountConfigurationDialog->accountPasswordLineEdit->text();
+				accountsListWidget->takeItem(account->id);
+				accountsListWidget->insertItem(account->id, SERVICE_NAME[account->type] + ": " + account->username);
+				accountsListWidget->setCurrentRow(account->id);
+			}
 			break;
 	}
 }

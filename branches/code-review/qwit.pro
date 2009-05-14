@@ -24,22 +24,19 @@ HEADERS += \
            src/MainWindow.h \
            src/StatusTextEdit.h \
            src/OptionsDialog.h \
-           src/AbstractAccount.h \
-           src/TwitterAccount.h \
-           src/IdenticaAccount.h \
-           src/CustomAccount.h \
-           src/TwitterAccountDialog.h
+           src/Account.h \
+           src/AccountConfigurationDialog.h
 FORMS += \
            src/MainWindow.ui \
            src/OptionsDialog.ui \
-           src/TwitterAccountDialog.ui
+           src/AccountConfigurationDialog.ui
 SOURCES += \
            src/qwit.cpp \
 	   src/Configuration.cpp \
            src/MainWindow.cpp \
            src/StatusTextEdit.cpp \
            src/OptionsDialog.cpp \
-           src/TwitterAccountDialog.cpp
+           src/AccountConfigurationDialog.cpp
 TRANSLATIONS += \
            translations/qwit_en_US.ts \
            translations/qwit_es_ES.ts \

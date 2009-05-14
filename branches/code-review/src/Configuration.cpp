@@ -68,7 +68,7 @@ void Configuration::save() {
 	settings.endGroup();
 }
 
-int Configuration::addAccount(AbstractAccount *account) {
+int Configuration::addAccount(Account *account) {
 	accounts.push_back(account);
 	account->id = accounts.size() - 1;
 	return account->id;
@@ -83,7 +83,7 @@ void Configuration::deleteAccount(int accountId) {
 }
 
 void Configuration::swapAccounts(int account1Id, int account2Id) {
-	AbstractAccount *temp = accounts[account1Id];
+	Account *temp = accounts[account1Id];
 	accounts[account1Id] = accounts[account2Id];
 	accounts[account2Id] = temp;
 }

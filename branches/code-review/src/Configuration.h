@@ -22,7 +22,7 @@
 #include <QSize>
 #include <QVector>
 
-#include "AbstractAccount.h"
+#include "Account.h"
 
 class Configuration {
 	Configuration();
@@ -46,11 +46,11 @@ public:
 	QSize size;
 
 // Accounts
-	QVector<AbstractAccount*> accounts;
+	QVector<Account*> accounts;
 
 	static Configuration* instance;
 	
-	int addAccount(AbstractAccount *account);
+	int addAccount(Account *account);
 	void deleteAccount(int accountId);
 	void swapAccounts(int account1Id, int account2Id);
 	

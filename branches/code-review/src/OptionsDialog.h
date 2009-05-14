@@ -18,19 +18,15 @@
 
 #include "ui_OptionsDialog.h"
 
-#include "TwitterAccountDialog.h"
+#include "AccountConfigurationDialog.h"
 
-#include "AbstractAccount.h"
+#include "Account.h"
 
 class OptionsDialog: public QDialog, public Ui::OptionsDialog {
 	Q_OBJECT
 
 public:
-	TwitterAccountDialog *twitterAccountDialog;
-	
-	QVector<AbstractAccount*> accounts;
-	
-	int currentAccountId;
+	AccountConfigurationDialog *accountConfigurationDialog;
 	
 	OptionsDialog(QWidget *parent);
 	
@@ -40,7 +36,7 @@ public slots:
 	void addAccount();
 	void deleteAccount();
 	void editAccount();
-	void commitTwitterAccount();
+	void commitAccount();
 };
 
 #endif
