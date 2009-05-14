@@ -1,0 +1,730 @@
+<ui version="4.0" >
+ <class>OptionsDialog</class>
+ <widget class="QDialog" name="OptionsDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>515</width>
+    <height>503</height>
+   </rect>
+  </property>
+  <property name="acceptDrops" >
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle" >
+   <string>Options</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_17" >
+   <item row="0" column="0" >
+    <layout class="QVBoxLayout" name="verticalLayout_10" >
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout" >
+       <item>
+        <widget class="QTreeWidget" name="optionsGroupTreeWidget" >
+         <property name="maximumSize" >
+          <size>
+           <width>150</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="horizontalScrollBarPolicy" >
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="rootIsDecorated" >
+          <bool>true</bool>
+         </property>
+         <property name="itemsExpandable" >
+          <bool>true</bool>
+         </property>
+         <property name="allColumnsShowFocus" >
+          <bool>false</bool>
+         </property>
+         <property name="headerHidden" >
+          <bool>true</bool>
+         </property>
+         <column>
+          <property name="text" >
+           <string>1</string>
+          </property>
+         </column>
+         <item>
+          <property name="text" >
+           <string>Accounts</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>URL shortener</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Connection</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>User interface</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QStackedWidget" name="optionsStackedWidget" >
+         <property name="frameShape" >
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="midLineWidth" >
+          <number>-4</number>
+         </property>
+         <property name="currentIndex" >
+          <number>4</number>
+         </property>
+         <widget class="QWidget" name="connectionPage" >
+          <layout class="QGridLayout" name="gridLayout_2" >
+           <item row="0" column="0" >
+            <widget class="QGroupBox" name="groupBox" >
+             <property name="title" >
+              <string>Connection</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout" >
+              <property name="leftMargin" >
+               <number>4</number>
+              </property>
+              <property name="verticalSpacing" >
+               <number>-1</number>
+              </property>
+              <item row="0" column="0" >
+               <layout class="QVBoxLayout" name="verticalLayout" >
+                <item>
+                 <widget class="QCheckBox" name="useProxyCheckBox" >
+                  <property name="text" >
+                   <string>use proxy</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_8" >
+                  <property name="text" >
+                   <string>Proxy address:</string>
+                  </property>
+                  <property name="buddy" >
+                   <cstring>proxyAddressLineEdit</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="proxyAddressLineEdit" />
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_9" >
+                  <property name="text" >
+                   <string>Proxy port:</string>
+                  </property>
+                  <property name="buddy" >
+                   <cstring>proxyPortLineEdit</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="proxyPortLineEdit" />
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_6" >
+                  <property name="text" >
+                   <string>Proxy username:</string>
+                  </property>
+                  <property name="buddy" >
+                   <cstring>proxyUsernameLineEdit</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="proxyUsernameLineEdit" />
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_7" >
+                  <property name="text" >
+                   <string>Proxy password:</string>
+                  </property>
+                  <property name="buddy" >
+                   <cstring>proxyPasswordLineEdit</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="proxyPasswordLineEdit" >
+                  <property name="echoMode" >
+                   <enum>QLineEdit::Password</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="proxySavePasswordCheckBox" >
+                  <property name="text" >
+                   <string>save proxy password</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer" >
+                  <property name="orientation" >
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0" >
+                   <size>
+                    <width>215</width>
+                    <height>13</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="userInterfacePage" >
+          <layout class="QGridLayout" name="gridLayout_7" >
+           <item row="0" column="0" >
+            <widget class="QGroupBox" name="groupBox_2" >
+             <property name="title" >
+              <string>User interface</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_6" >
+              <item row="0" column="0" >
+               <layout class="QVBoxLayout" name="verticalLayout_5" >
+                <item>
+                 <widget class="QCheckBox" name="showGreetingMessageCheckBox" >
+                  <property name="text" >
+                   <string>Show greeting message:</string>
+                  </property>
+                  <property name="checked" >
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="greetingMessageLineEdit" />
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="showLeftCharactersNumberCheckBox" >
+                  <property name="text" >
+                   <string>Show left characters number</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_4" >
+                  <property name="text" >
+                   <string>Number of messages per page:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="messagesPerPageLineEdit" />
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_12" >
+                  <property name="text" >
+                   <string>Number of messages in popup:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="messagesInPopupLineEdit" />
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_13" >
+                  <property name="text" >
+                   <string>Retweet tag:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="retweetTagLineEdit" />
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="retweetTagAfterTextCheckBox" >
+                  <property name="text" >
+                   <string>Display retweet tag after text instead of in front</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="placeUsernameUnderAvatarCheckBox" >
+                  <property name="text" >
+                   <string>Place username under avatar</string>
+                  </property>
+                  <property name="checked" >
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="showMessagesInTrayCheckBox" >
+                  <property name="text" >
+                   <string>Show messages in the tray</string>
+                  </property>
+                  <property name="checked" >
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="placeControlsVerticallyCheckBox" >
+                  <property name="text" >
+                   <string>Place controls vertically</string>
+                  </property>
+                  <property name="checked" >
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="showLastStatusCheckBox" >
+                  <property name="text" >
+                   <string>Show last status</string>
+                  </property>
+                  <property name="checked" >
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_2" >
+                  <property name="orientation" >
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0" >
+                   <size>
+                    <width>17</width>
+                    <height>38</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="accountsPage" >
+          <layout class="QGridLayout" name="gridLayout_9" >
+           <item row="0" column="0" >
+            <widget class="QGroupBox" name="groupBox_3" >
+             <property name="title" >
+              <string>Add an account</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_3" >
+              <item row="0" column="0" >
+               <layout class="QVBoxLayout" name="verticalLayout_3" >
+                <item>
+                 <widget class="QLabel" name="label" >
+                  <property name="text" >
+                   <string>Service:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_2" >
+                  <item>
+                   <widget class="QComboBox" name="serviceComboBox" >
+                    <item>
+                     <property name="text" >
+                      <string>Twitter</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text" >
+                      <string>Identi.ca</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text" >
+                      <string>custom</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="addAccountPushButton" >
+                    <property name="sizePolicy" >
+                     <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text" >
+                     <string>Add</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_3" >
+                  <item>
+                   <widget class="QListWidget" name="accountsListWidget" />
+                  </item>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_2" >
+                    <item>
+                     <widget class="QPushButton" name="editAccountPushButton" >
+                      <property name="text" >
+                       <string>Edit...</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="deleteAccountPushButton" >
+                      <property name="text" >
+                       <string>Delete...</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_4" >
+                      <property name="orientation" >
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0" >
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="urlShortenerPage" >
+          <layout class="QGridLayout" name="gridLayout_11" >
+           <item row="0" column="0" >
+            <widget class="QGroupBox" name="groupBox_4" >
+             <property name="title" >
+              <string>Url shortener</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_10" >
+              <item row="0" column="0" >
+               <layout class="QVBoxLayout" name="verticalLayout_7" >
+                <item>
+                 <widget class="QLabel" name="label_2" >
+                  <property name="text" >
+                   <string>Choose service:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="urlShortenerComboBox" >
+                  <item>
+                   <property name="text" >
+                    <string>tinyurl.com</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text" >
+                    <string>murl.kz</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text" >
+                    <string>clck.by</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_7" >
+                  <property name="orientation" >
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0" >
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="configureTwitterAccountPage" >
+          <layout class="QGridLayout" name="gridLayout_12" >
+           <item row="0" column="0" >
+            <widget class="QGroupBox" name="groupBox_7" >
+             <property name="title" >
+              <string>Configure twitter account</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_5" >
+              <item row="0" column="0" >
+               <layout class="QVBoxLayout" name="verticalLayout_4" >
+                <item>
+                 <widget class="QLabel" name="label_18" >
+                  <property name="text" >
+                   <string>Username:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="twitterUsernameLineEdit" />
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_19" >
+                  <property name="text" >
+                   <string>Password:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="twitterPasswordLineEdit" >
+                  <property name="echoMode" >
+                   <enum>QLineEdit::Password</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="savePasswordCheckBox_3" >
+                  <property name="text" >
+                   <string>save password</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_3" >
+                  <property name="orientation" >
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0" >
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="configureIdenticaAccountPage" >
+          <layout class="QGridLayout" name="gridLayout_14" >
+           <item row="0" column="0" >
+            <widget class="QGroupBox" name="groupBox_6" >
+             <property name="title" >
+              <string>Configure identica account</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_13" >
+              <item row="0" column="0" >
+               <layout class="QVBoxLayout" name="verticalLayout_8" >
+                <item>
+                 <widget class="QLabel" name="label_20" >
+                  <property name="text" >
+                   <string>Username:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="identicaUsernameLineEdit" />
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_21" >
+                  <property name="text" >
+                   <string>Password:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="identicaPasswordLineEdit" >
+                  <property name="echoMode" >
+                   <enum>QLineEdit::Password</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="savePasswordCheckBox_4" >
+                  <property name="text" >
+                   <string>save password</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_8" >
+                  <property name="orientation" >
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0" >
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="configureCustomAccountPage" >
+          <layout class="QGridLayout" name="gridLayout_16" >
+           <item row="0" column="0" >
+            <widget class="QGroupBox" name="groupBox_5" >
+             <property name="title" >
+              <string>Configure custom account</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_15" >
+              <item row="0" column="0" >
+               <layout class="QVBoxLayout" name="verticalLayout_9" >
+                <item>
+                 <widget class="QLabel" name="label_14" >
+                  <property name="text" >
+                   <string>Username:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="customUsernameLineEdit" />
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_15" >
+                  <property name="text" >
+                   <string>Password:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="customPasswordLineEdit" >
+                  <property name="echoMode" >
+                   <enum>QLineEdit::Password</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="savePasswordCheckBox_5" >
+                  <property name="text" >
+                   <string>save password</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_22" >
+                  <property name="text" >
+                   <string>Service base URL:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="customServiceBaseURLLineEdit" />
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_23" >
+                  <property name="text" >
+                   <string>Service API URL:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="customServiceAPIURLLineEdit" />
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_9" >
+                  <property name="orientation" >
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0" >
+                   <size>
+                    <width>344</width>
+                    <height>18</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons" >
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>OptionsDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>OptionsDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
