@@ -51,12 +51,20 @@ private:
 
 	StatusTextEdit *statusTextEdit;
 	OptionsDialog *optionsDialog;
+
+	QVector<QPushButton*> accountsButtons;
+	
+	QHBoxLayout *accountsLayout;
 	
 	static MainWindow* instance;
 	MainWindow(QWidget *parent = 0);
 	
 public:
+
 	static MainWindow* getInstance();
+	void addAccountButton(Account *account);
+	void deleteAccountButton(Account *account);
+	void updateAccountButton(Account *account);
 	
 public slots:
 	void leftCharsNumberChanged(int length);

@@ -87,8 +87,10 @@ void OptionsDialog::deleteAccount() {
 	messageBox.setDefaultButton(QMessageBox::Ok);
 	if (messageBox.exec() == QMessageBox::Ok) {
 		Configuration *config = Configuration::getInstance();
-		config->deleteAccount(accountId);
 		accountsListWidget->takeItem(accountId);
+		MainWindow *mainWindow = MainWindow::getInstance();
+		mainWindow->deleteAccountButton(config->accounts[accountId]);
+		config->deleteAccount(accountId);
 	}
 }
 
@@ -121,6 +123,7 @@ void OptionsDialog::editAccount() {
 
 void OptionsDialog::commitAccount() {
 	Configuration *config = Configuration::getInstance();
+	MainWindow *mainWindow = MainWindow::getInstance();
 	switch (accountConfigurationDialog->action) {
 		case ACTION_ADD: {
 				Account *account = new Account(accountConfigurationDialog->accountUsernameLineEdit->text(), accountConfigurationDialog->accountPasswordLineEdit->text());
@@ -128,6 +131,7 @@ void OptionsDialog::commitAccount() {
 				config->addAccount(account);
 				accountsListWidget->addItem(SERVICE_NAME[account->type] + ": " + account->username);
 				accountsListWidget->setCurrentRow(account->id);
+				mainWindow->addAccountButton(account);
 			}
 			break;
 		case ACTION_EDIT: {
@@ -137,6 +141,7 @@ void OptionsDialog::commitAccount() {
 				accountsListWidget->takeItem(account->id);
 				accountsListWidget->insertItem(account->id, SERVICE_NAME[account->type] + ": " + account->username);
 				accountsListWidget->setCurrentRow(account->id);
+				mainWindow->updateAccountButton(account);
 			}
 			break;
 	}

@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	statusTextEdit->setObjectName(QString::fromUtf8("statusTextEdit"));
 	verticalLayout->insertWidget(1, statusTextEdit);
 	connect(statusTextEdit, SIGNAL(leftCharsNumberChanged(int)), this, SLOT(leftCharsNumberChanged(int)));
-
+	
 	optionsDialog = new OptionsDialog(this);
 	optionsDialog->setModal(true);
 	connect(optionsPushButton, SIGNAL(pressed()), optionsDialog, SLOT(showNormal()));
@@ -131,6 +131,42 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->placeControlsVerticallyCheckBox->setCheckState(config->placeControlsVertically ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->showMessagesInTrayCheckBox->setCheckState(config->showMessagesInTray ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->placeUsernameUnderAvatarCheckBox->setCheckState(config->placeUsernameUnderAvatar ? Qt::Checked : Qt::Unchecked);
+}
+
+void MainWindow::addAccountButton(Account *account) {
+	QPushButton *accountButton = new QPushButton(account->username);
+	accountsButtons.push_back(accountButton);
+	if (accountsButtons.size() == 2) {
+		accountsLayout = new QHBoxLayout();
+		accountsLayout->addWidget(accountsButtons[0]);
+		accountsButtons[0]->setVisible(true);
+		verticalLayout->insertLayout(verticalLayout->count() - 1, accountsLayout);
+		accountsLayout->addStretch();
+	}
+	if (accountsButtons.size() >= 2) {
+		accountsLayout->insertWidget(accountsLayout->count() - 1, accountButton);
+	}
+}
+
+void MainWindow::updateAccountButton(Account *account) {
+	accountsButtons[account->id]->setText(account->username);
+}
+
+void MainWindow::deleteAccountButton(Account *account) {
+	if (accountsLayout) {
+		accountsLayout->removeWidget(accountsButtons[account->id]);
+	}
+	delete accountsButtons[account->id];
+	accountsButtons.erase(accountsButtons.begin() + account->id);
+	if (accountsButtons.size() <= 1) {
+		if (accountsButtons.size() == 1) {
+			accountsLayout->removeWidget(accountsButtons[0]);
+			accountsButtons[0]->setVisible(false);
+		}
+		verticalLayout->removeItem(accountsLayout);
+		delete accountsLayout;
+		accountsLayout = 0;
+	}
 }
 
 #endif
