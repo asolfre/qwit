@@ -72,6 +72,8 @@ void OptionsDialog::addAccount() {
 			}
 			break;
 		case Configuration::ACCOUNT_CUSTOM: {
+				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(true);
+				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(true);
 			}
 			break;
 	}

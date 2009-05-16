@@ -50,8 +50,17 @@ Configuration* Configuration::getInstance() {
 }
 
 void Configuration::load() {
+// State
+	settings.beginGroup("State");
+	position = settings.value("position", QPoint(100, 100)).toPoint();
+	size = settings.value("size", QSize(300, 600)).toSize();
+	currentAccountId = settings.value("currentAccountId", 0).toInt();
+	settings.endGroup();
+	
 // User interface
 	settings.beginGroup("User interface");
+	
+	settings.beginGroup("Misc");
 	showGreetingMessage = settings.value("showGreetingMessage", true).toBool();
 	greetingMessage = settings.value("greetingMessage", "What's up?").toString();
 	showLeftCharactersNumber = settings.value("showLeftCharactersNumber", true).toBool();
@@ -63,8 +72,25 @@ void Configuration::load() {
 	showMessagesInTray = settings.value("showMessagesInTray", true).toBool();
 	placeControlsVertically = settings.value("placeControlsVertically", true).toBool();
 	showLastStatus = settings.value("showLastStatus", true).toBool();
-	position = settings.value("position", QPoint(100, 100)).toPoint();
-	size = settings.value("size", QSize(300, 600)).toSize();
+	settings.endGroup();
+	
+	settings.beginGroup("Tabs");
+	showHomeTab = settings.value("showHomeTab", true).toBool();
+	updateHomeTabAlways = settings.value("updateHomeTabAlways", true).toBool();
+	showPublicTab = settings.value("showPublicTab", true).toBool();
+	updatePublicTabAlways = settings.value("updatePublicTabAlways", false).toBool();
+	showRepliesTab = settings.value("showRepliesTab", true).toBool();
+	updateRepliesTabAlways = settings.value("updateRepliesTabAlways", true).toBool();
+	showCustomTab = settings.value("showCustomTab", true).toBool();
+	updateCustomTabAlways = settings.value("updateCustomTabAlways", false).toBool();
+	showInboxTab = settings.value("showInboxTab", true).toBool();
+	updateInboxTabAlways = settings.value("updateInboxTabAlways", true).toBool();
+	showOutboxTab = settings.value("showOutboxTab", true).toBool();
+	updateOutboxTabAlways = settings.value("updateOutboxTabAlways", false).toBool();
+	showSearchTab = settings.value("showSearchTab", true).toBool();
+	updateSearchTabAlways = settings.value("updateSearchTabAlways", false).toBool();
+	settings.endGroup();
+	
 	settings.endGroup();
 
 // Accounts
@@ -84,8 +110,17 @@ void Configuration::load() {
 }
 
 void Configuration::save() {
+// State
+	settings.beginGroup("State");
+	settings.setValue("position", position);
+	settings.setValue("size", size);
+	settings.setValue("currentAccountId", currentAccountId);
+	settings.endGroup();
+
 // User interface
 	settings.beginGroup("User interface");
+	
+	settings.beginGroup("Misc");
 	settings.setValue("showGreetingMessage", showGreetingMessage);
 	settings.setValue("greetingMessage", greetingMessage);
 	settings.setValue("showLeftCharactersNumber", showLeftCharactersNumber);
@@ -97,8 +132,25 @@ void Configuration::save() {
 	settings.setValue("showMessagesInTray", showMessagesInTray);
 	settings.setValue("placeControlsVertically", placeControlsVertically);
 	settings.setValue("showLastStatus", showLastStatus);
-	settings.setValue("position", position);
-	settings.setValue("size", size);
+	settings.endGroup();
+
+	settings.beginGroup("Tabs");
+	settings.setValue("showHomeTab", showHomeTab);
+	settings.setValue("updateHomeTabAlways", updateHomeTabAlways);
+	settings.setValue("showPublicTab", showPublicTab);
+	settings.setValue("updatePublicTabAlways", updatePublicTabAlways);
+	settings.setValue("showRepliesTab", showRepliesTab);
+	settings.setValue("updateRepliesTabAlways", updateRepliesTabAlways);
+	settings.setValue("showCustomTab", showCustomTab);
+	settings.setValue("updateCustomTabAlways", updateCustomTabAlways);
+	settings.setValue("showInboxTab", showInboxTab);
+	settings.setValue("updateInboxTabAlways", updateInboxTabAlways);
+	settings.setValue("showOutboxTab", showOutboxTab);
+	settings.setValue("updateOutboxTabAlways", updateOutboxTabAlways);
+	settings.setValue("showSearchTab", showSearchTab);
+	settings.setValue("updateSearchTabAlways", updateSearchTabAlways);
+	settings.endGroup();
+
 	settings.endGroup();
 
 // Accounts

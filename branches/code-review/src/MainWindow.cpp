@@ -97,6 +97,21 @@ void MainWindow::saveOptions() {
 	config->placeControlsVertically = (optionsDialog->placeControlsVerticallyCheckBox->checkState() == Qt::Checked);
 	config->showMessagesInTray = (optionsDialog->showMessagesInTrayCheckBox->checkState() == Qt::Checked);
 	config->placeUsernameUnderAvatar = (optionsDialog->placeUsernameUnderAvatarCheckBox->checkState() == Qt::Checked);
+	
+	config->showHomeTab = (optionsDialog->homeTabCheckBox->checkState() == Qt::Checked);
+	config->updateHomeTabAlways = (optionsDialog->homeTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->showPublicTab = (optionsDialog->publicTabCheckBox->checkState() == Qt::Checked);
+	config->updatePublicTabAlways = (optionsDialog->publicTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->showRepliesTab = (optionsDialog->repliesTabCheckBox->checkState() == Qt::Checked);
+	config->updateRepliesTabAlways = (optionsDialog->repliesTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->showCustomTab = (optionsDialog->customTabCheckBox->checkState() == Qt::Checked);
+	config->updateCustomTabAlways = (optionsDialog->customTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->showInboxTab = (optionsDialog->inboxTabCheckBox->checkState() == Qt::Checked);
+	config->updateInboxTabAlways = (optionsDialog->inboxTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->showOutboxTab = (optionsDialog->outboxTabCheckBox->checkState() == Qt::Checked);
+	config->updateOutboxTabAlways = (optionsDialog->outboxTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->showSearchTab = (optionsDialog->searchTabCheckBox->checkState() == Qt::Checked);
+	config->updateSearchTabAlways = (optionsDialog->searchTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
 
 	saveState();
 	updateState();
@@ -125,6 +140,36 @@ void MainWindow::updateState() {
 	leftCharactersNumberLabel->setVisible(config->showLeftCharactersNumber);
 	lastStatusLabel->setVisible(config->showLastStatus);
 
+	mainTabWidget->removeTab(mainTabWidget->indexOf(homeTab));
+	mainTabWidget->removeTab(mainTabWidget->indexOf(publicTab));
+	mainTabWidget->removeTab(mainTabWidget->indexOf(repliesTab));
+	mainTabWidget->removeTab(mainTabWidget->indexOf(customTab));
+	mainTabWidget->removeTab(mainTabWidget->indexOf(inboxTab));
+	mainTabWidget->removeTab(mainTabWidget->indexOf(outboxTab));
+	mainTabWidget->removeTab(mainTabWidget->indexOf(searchTab));
+
+	if (config->showHomeTab) {
+		mainTabWidget->addTab(homeTab, tr("Home"));
+	}
+	if (config->showPublicTab) {
+		mainTabWidget->addTab(publicTab, tr("Public"));
+	}
+	if (config->showRepliesTab) {
+		mainTabWidget->addTab(repliesTab, tr("Replies"));
+	}
+	if (config->showCustomTab) {
+		mainTabWidget->addTab(customTab, tr("Custom"));
+	}
+	if (config->showInboxTab) {
+		mainTabWidget->addTab(inboxTab, tr("Inbox"));
+	}
+	if (config->showOutboxTab) {
+		mainTabWidget->addTab(outboxTab, tr("Outbox"));
+	}
+	if (config->showSearchTab) {
+		mainTabWidget->addTab(searchTab, tr("Search"));
+	}
+
 	move(config->position);
 	resize(config->size);
 }
@@ -144,6 +189,21 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->placeControlsVerticallyCheckBox->setCheckState(config->placeControlsVertically ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->showMessagesInTrayCheckBox->setCheckState(config->showMessagesInTray ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->placeUsernameUnderAvatarCheckBox->setCheckState(config->placeUsernameUnderAvatar ? Qt::Checked : Qt::Unchecked);
+	
+	optionsDialog->homeTabCheckBox->setCheckState(config->showHomeTab ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->homeTabUpdateAlwaysCheckBox->setCheckState(config->updateHomeTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->publicTabCheckBox->setCheckState(config->showPublicTab ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->publicTabUpdateAlwaysCheckBox->setCheckState(config->updatePublicTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->repliesTabCheckBox->setCheckState(config->showRepliesTab ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->repliesTabUpdateAlwaysCheckBox->setCheckState(config->updateRepliesTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->customTabCheckBox->setCheckState(config->showCustomTab ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->customTabUpdateAlwaysCheckBox->setCheckState(config->updateCustomTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->inboxTabCheckBox->setCheckState(config->showInboxTab ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->inboxTabUpdateAlwaysCheckBox->setCheckState(config->updateInboxTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->outboxTabCheckBox->setCheckState(config->showOutboxTab ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->outboxTabUpdateAlwaysCheckBox->setCheckState(config->updateOutboxTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->searchTabCheckBox->setCheckState(config->showSearchTab ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->searchTabUpdateAlwaysCheckBox->setCheckState(config->updateSearchTabAlways ? Qt::Checked : Qt::Unchecked);
 	
 // Accounts
 	optionsDialog->accountsListWidget->clear();
@@ -211,6 +271,8 @@ void MainWindow::showOptionsDialog() {
 
 void MainWindow::accountButtonClicked(int id) {
 	cout << id << endl;
+	Configuration *config = Configuration::getInstance();
+	config->currentAccountId = id;
 }
 
 #endif

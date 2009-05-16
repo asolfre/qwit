@@ -38,6 +38,11 @@ public:
 	static QMap<QString, int> SERVICES_IDS;
 	static QVector<QString> SERVICES;
 	
+// State
+	QPoint position;
+	QSize size;
+	int currentAccountId;
+	
 // User interface options
 	bool showGreetingMessage;
 	QString greetingMessage;
@@ -50,8 +55,20 @@ public:
 	bool showMessagesInTray;
 	bool placeControlsVertically;
 	bool showLastStatus;
-	QPoint position;
-	QSize size;
+	bool showHomeTab;
+	bool updateHomeTabAlways;
+	bool showPublicTab;
+	bool updatePublicTabAlways;
+	bool showRepliesTab;
+	bool updateRepliesTabAlways;
+	bool showCustomTab;
+	bool updateCustomTabAlways;
+	bool showInboxTab;
+	bool updateInboxTabAlways;
+	bool showOutboxTab;
+	bool updateOutboxTabAlways;
+	bool showSearchTab;
+	bool updateSearchTabAlways;
 
 // Accounts
 	QVector<Account*> accounts;
