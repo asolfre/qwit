@@ -21,6 +21,7 @@
 #include <QPoint>
 #include <QSize>
 #include <QVector>
+#include <QMap>
 
 #include "Account.h"
 
@@ -29,6 +30,13 @@ class Configuration {
 	static QSettings settings;
 	
 public:
+	static const int ACCOUNT_TWITTER = 0;
+	static const int ACCOUNT_IDENTICA = 1;
+	static const int ACCOUNT_CUSTOM = 2;
+
+	static QMap<QString, QString> SERVICES_NAMES;
+	static QMap<QString, int> SERVICES_IDS;
+	static QVector<QString> SERVICES;
 	
 // User interface options
 	bool showGreetingMessage;

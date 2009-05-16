@@ -16,16 +16,10 @@
 #ifndef Account_h
 #define Account_h
 
-const int ACCOUNT_TWITTER = 0;
-const int ACCOUNT_IDENTICA = 1;
-const int ACCOUNT_CUSTOM = 2;
-
-const QString SERVICE_NAME[] = {"Twitter", "Identica", "Custom"};
-
 class Account {
 public:
 	int id;
-	int type;
+	QString type;
 	QString username;
 	QString password;
 	QString serviceBaseURL;
@@ -33,7 +27,8 @@ public:
 	
 	Account() {}
 	
-	Account(const QString &username, const QString &password) {
+	Account(const QString &type, const QString &username, const QString &password) {
+		this->type = type;
 		this->username = username;
 		this->password = password;
 	}

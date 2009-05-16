@@ -56,6 +56,8 @@ private:
 	
 	QHBoxLayout *accountsLayout;
 	
+	QButtonGroup accountsButtonGroup;
+	
 	static MainWindow* instance;
 	MainWindow(QWidget *parent = 0);
 	
@@ -67,12 +69,15 @@ public:
 	void updateAccountButton(Account *account);
 	
 public slots:
+
 	void leftCharsNumberChanged(int length);
 	void saveState();
 	void loadState();
 	void updateState();
 	void saveOptions();
 	void resetOptionsDialog();
+	void showOptionsDialog();
+	void accountButtonClicked(int id);
 };
 
 #endif

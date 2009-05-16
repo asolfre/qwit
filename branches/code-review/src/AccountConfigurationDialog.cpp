@@ -25,5 +25,4 @@ using namespace std;
 AccountConfigurationDialog::AccountConfigurationDialog(QWidget *parent): QDialog(parent) {
 	setupUi(this);
 }
-
 #endif

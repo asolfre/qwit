@@ -18,13 +18,30 @@
 
 #include "Configuration.h"
 
+#include <iostream>
+
+using namespace std;
+
 const char *COMPANY_NAME = "arti";
 const char *APPLICATION_NAME = "qwit2";
 
 Configuration* Configuration::instance = NULL;
 QSettings Configuration::settings(COMPANY_NAME, APPLICATION_NAME);
 
+QMap<QString, QString> Configuration::SERVICES_NAMES;
+QMap<QString, int> Configuration::SERVICES_IDS;
+QVector<QString> Configuration::SERVICES;
+
 Configuration::Configuration() {
+	SERVICES_NAMES["twitter"] = "Twitter";
+	SERVICES_NAMES["identica"] = "Identica";
+	SERVICES_NAMES["custom"] = "Custom";
+	SERVICES_IDS["twitter"] = 0;
+	SERVICES_IDS["identica"] = 1;
+	SERVICES_IDS["custom"] = 2;
+	SERVICES.push_back("twitter");
+	SERVICES.push_back("identica");
+	SERVICES.push_back("custom");
 }
 
 Configuration* Configuration::getInstance() {
@@ -33,6 +50,7 @@ Configuration* Configuration::getInstance() {
 }
 
 void Configuration::load() {
+// User interface
 	settings.beginGroup("User interface");
 	showGreetingMessage = settings.value("showGreetingMessage", true).toBool();
 	greetingMessage = settings.value("greetingMessage", "What's up?").toString();
@@ -48,9 +66,25 @@ void Configuration::load() {
 	position = settings.value("position", QPoint(100, 100)).toPoint();
 	size = settings.value("size", QSize(300, 600)).toSize();
 	settings.endGroup();
+
+// Accounts
+	settings.beginGroup("Accounts");
+	int accountsNumber = settings.beginReadArray("Accounts");
+	accounts.clear();
+	for (int i = 0; i < accountsNumber; ++i) {
+		settings.setArrayIndex(i);
+		QString username = settings.value("username", "").toString();
+		QString password = settings.value("password", "").toString();
+		QString type = settings.value("type", "").toString();
+		Account *account = new Account(type, username, password);
+		addAccount(account);
+	}
+	settings.endArray();
+	settings.endGroup();
 }
 
 void Configuration::save() {
+// User interface
 	settings.beginGroup("User interface");
 	settings.setValue("showGreetingMessage", showGreetingMessage);
 	settings.setValue("greetingMessage", greetingMessage);
@@ -65,6 +99,18 @@ void Configuration::save() {
 	settings.setValue("showLastStatus", showLastStatus);
 	settings.setValue("position", position);
 	settings.setValue("size", size);
+	settings.endGroup();
+
+// Accounts
+	settings.beginGroup("Accounts");
+	settings.beginWriteArray("Accounts");
+	for (int i = 0; i < accounts.size(); ++i) {
+		settings.setArrayIndex(i);
+		settings.setValue("username", accounts[i]->username);
+		settings.setValue("password", accounts[i]->password);
+		settings.setValue("type", accounts[i]->type);
+	}
+	settings.endArray();
 	settings.endGroup();
 }
 

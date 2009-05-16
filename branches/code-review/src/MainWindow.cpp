@@ -41,12 +41,19 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	
 	optionsDialog = new OptionsDialog(this);
 	optionsDialog->setModal(true);
-	connect(optionsPushButton, SIGNAL(pressed()), optionsDialog, SLOT(showNormal()));
+	connect(optionsPushButton, SIGNAL(pressed()), this, SLOT(showOptionsDialog()));
 
 	connect(optionsDialog, SIGNAL(accepted()), this, SLOT(saveOptions()));
 	connect(optionsDialog, SIGNAL(rejected()), this, SLOT(resetOptionsDialog()));
 	
 	loadState();
+	
+	if (accountsButtons.size() > 0) {
+		accountsButtons[0]->setChecked(true);
+		accountButtonClicked(0);
+	}
+	
+	connect(&accountsButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(accountButtonClicked(int)));
 }
 
 void MainWindow::leftCharsNumberChanged(int count) {
@@ -59,6 +66,10 @@ void MainWindow::loadState() {
 	config->load();
 
 	updateState();
+	
+	for (int i = 0; i < config->accounts.size(); ++i) {
+		addAccountButton(config->accounts[i]);
+	}
 	
 	resetOptionsDialog();
 }
@@ -120,6 +131,8 @@ void MainWindow::updateState() {
 
 void MainWindow::resetOptionsDialog() {
 	Configuration *config = Configuration::getInstance();
+	
+// User interface
 	optionsDialog->showGreetingMessageCheckBox->setCheckState(config->showGreetingMessage ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->greetingMessageLineEdit->setText(config->greetingMessage);
 	optionsDialog->showLeftCharactersNumberCheckBox->setCheckState(config->showLeftCharactersNumber ? Qt::Checked : Qt::Unchecked);
@@ -131,11 +144,19 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->placeControlsVerticallyCheckBox->setCheckState(config->placeControlsVertically ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->showMessagesInTrayCheckBox->setCheckState(config->showMessagesInTray ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->placeUsernameUnderAvatarCheckBox->setCheckState(config->placeUsernameUnderAvatar ? Qt::Checked : Qt::Unchecked);
+	
+// Accounts
+	optionsDialog->accountsListWidget->clear();
+	for (int i = 0; i < config->accounts.size(); ++i) {
+		optionsDialog->accountsListWidget->addItem(Configuration::SERVICES_NAMES[config->accounts[i]->type] + ": " + config->accounts[i]->username);
+	}
 }
 
 void MainWindow::addAccountButton(Account *account) {
-	QPushButton *accountButton = new QPushButton(account->username);
+	QPushButton *accountButton = new QPushButton(QIcon(":/images/" + account->type + ".png"), account->username);
+	accountButton->setCheckable(true);
 	accountsButtons.push_back(accountButton);
+	accountsButtonGroup.addButton(accountButton, accountsButtons.size() - 1);
 	if (accountsButtons.size() == 2) {
 		accountsLayout = new QHBoxLayout();
 		accountsLayout->addWidget(accountsButtons[0]);
@@ -156,6 +177,8 @@ void MainWindow::deleteAccountButton(Account *account) {
 	if (accountsLayout) {
 		accountsLayout->removeWidget(accountsButtons[account->id]);
 	}
+	int checkedId = accountsButtonGroup.checkedId();
+	accountsButtonGroup.removeButton(accountsButtons[account->id]);
 	delete accountsButtons[account->id];
 	accountsButtons.erase(accountsButtons.begin() + account->id);
 	if (accountsButtons.size() <= 1) {
@@ -167,6 +190,27 @@ void MainWindow::deleteAccountButton(Account *account) {
 		delete accountsLayout;
 		accountsLayout = 0;
 	}
+	for (int i = 0; i < accountsButtons.size(); ++i) {
+		accountsButtonGroup.removeButton(accountsButtons[i]);
+	}
+	for (int i = 0; i < accountsButtons.size(); ++i) {
+		accountsButtonGroup.addButton(accountsButtons[i], i);
+	}
+	if (checkedId == account->id) {
+		checkedId = min(accountsButtons.size() - 1, checkedId);
+	} else if (checkedId > account->id) {
+		--checkedId;
+	}
+	accountsButtons[checkedId]->setChecked(true);
+	accountButtonClicked(checkedId);
+}
+
+void MainWindow::showOptionsDialog() {
+	optionsDialog->showNormal();
+}
+
+void MainWindow::accountButtonClicked(int id) {
+	cout << id << endl;
 }
 
 #endif
