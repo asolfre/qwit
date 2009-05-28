@@ -1,5 +1,7 @@
 /*  This file is part of Qwit.
 
+    Copyright (C) 2008, 2009 Artem Iglikov
+    
     Qwit is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -18,6 +20,7 @@
 
 #include <QToolTip>
 #include <QScrollBar>
+#include <QMenu>
 
 #include "StatusTextEdit.h"
 
@@ -32,6 +35,7 @@ StatusTextEdit::StatusTextEdit(QWidget *parent): QTextEdit(parent) {
 	setFixedHeight(STANDARD_HEIGHT);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setAcceptRichText(false);
+	setTabChangesFocus(true);
 	emit leftCharsNumberChanged(MAX_STATUS_CHARACTERS);
 	connect(this, SIGNAL(textChanged()), this, SLOT(textChangedToCharsNumberChanged()));
 }
@@ -69,6 +73,13 @@ void StatusTextEdit::updateSize() {
 	if (verticalScrollBar()->maximum() - verticalScrollBar()->minimum()) {
 		setFixedHeight(height() + verticalScrollBar()->maximum() - verticalScrollBar()->minimum());
 	}
+}
+
+void StatusTextEdit::contextMenuEvent(QContextMenuEvent *event) {
+	QMenu *menu = createStandardContextMenu();
+	menu->addAction(tr("My Menu Item"));
+	menu->exec(event->globalPos());
+	delete menu;
 }
 
 #endif

@@ -15,25 +15,26 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef Account_h
-#define Account_h
+#ifndef AbstractPage_h
+#define AbstractPage_h
 
-class Account {
+#include <QWidget>
+
+#include "TwitterWidget.h"
+
+class AbstractPage: public QWidget {
+	Q_OBJECT
+	
 public:
-	int id;
-	QString type;
-	QString username;
-	QString password;
-	QString serviceBaseURL;
-	QString serviceAPIURL;
+	TwitterWidget *twitterWidget;
+	bool visible;
 	
-	Account() {}
+	AbstractPage(QWidget *parent = 0);
 	
-	Account(const QString &type, const QString &username, const QString &password) {
-		this->type = type;
-		this->username = username;
-		this->password = password;
-	}
+	virtual void update();
+	virtual void addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId);
+	virtual void updateSize() = 0;
+	virtual QString title() = 0;
 };
 
 #endif

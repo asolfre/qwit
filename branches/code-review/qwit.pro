@@ -21,11 +21,18 @@ unix {
 # Input
 HEADERS += \
 	   src/Configuration.h \
+	   src/QwitException.h \
            src/MainWindow.h \
            src/StatusTextEdit.h \
            src/OptionsDialog.h \
            src/Account.h \
-           src/AccountConfigurationDialog.h
+           src/AccountConfigurationDialog.h \
+	   src/AbstractPage.h \
+	   src/HomePage.h \
+	   src/PublicPage.h \
+	   src/RepliesPage.h \
+	   src/TwitterWidget.h \
+	   src/QwitTools.h
 FORMS += \
            src/MainWindow.ui \
            src/OptionsDialog.ui \
@@ -36,13 +43,20 @@ SOURCES += \
            src/MainWindow.cpp \
            src/StatusTextEdit.cpp \
            src/OptionsDialog.cpp \
-           src/AccountConfigurationDialog.cpp
+           src/AccountConfigurationDialog.cpp \
+	   src/AbstractPage.cpp \
+	   src/HomePage.cpp \
+	   src/PublicPage.cpp \
+	   src/RepliesPage.cpp \
+	   src/TwitterWidget.cpp \
+	   src/QwitTools.cpp
 TRANSLATIONS += \
            translations/qwit_en_US.ts \
            translations/qwit_es_ES.ts \
            translations/qwit_it_IT.ts \
            translations/qwit_pt_BR.ts \
            translations/qwit_ru_RU.ts \
+           translations/qwit_kk_KZ.ts \
            translations/qwit_tr_TR.ts
 QT += network xml
 RESOURCES = qwit.qrc

@@ -15,24 +15,17 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef Account_h
-#define Account_h
+#ifndef QwitException_h
+#define QwitException_h
 
-class Account {
+#include <QString>
+
+class QwitException {
 public:
-	int id;
-	QString type;
-	QString username;
-	QString password;
-	QString serviceBaseURL;
-	QString serviceAPIURL;
+	QString message;
 	
-	Account() {}
-	
-	Account(const QString &type, const QString &username, const QString &password) {
-		this->type = type;
-		this->username = username;
-		this->password = password;
+	QwitException(QString message) {
+		this->message = message;
 	}
 };
 

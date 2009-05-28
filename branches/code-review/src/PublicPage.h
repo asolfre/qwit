@@ -15,25 +15,22 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef Account_h
-#define Account_h
+#ifndef PublicPage_h
+#define PublicPage_h
 
-class Account {
+#include <QScrollArea>
+
+#include "AbstractPage.h"
+
+class PublicPage: public AbstractPage {
+	Q_OBJECT
+private:
+	QScrollArea *scrollArea;
+	
 public:
-	int id;
-	QString type;
-	QString username;
-	QString password;
-	QString serviceBaseURL;
-	QString serviceAPIURL;
-	
-	Account() {}
-	
-	Account(const QString &type, const QString &username, const QString &password) {
-		this->type = type;
-		this->username = username;
-		this->password = password;
-	}
+	PublicPage(QWidget* parent = 0);
+	void updateSize();
+	QString title();
 };
 
 #endif

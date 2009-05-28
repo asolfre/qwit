@@ -15,25 +15,26 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef Account_h
-#define Account_h
+#ifndef QwitTools_h
+#define QwitTools_h
 
-class Account {
+#include <QIcon>
+#include <QString>
+#include <QDateTime>
+
+class QwitTools: public QObject {
+	Q_OBJECT
+	
+private:
+	static QwitTools *instance;
+	QwitTools();
+	static QwitTools* getInstance();
+	QIcon _getToolButtonIcon(const QString &iconFileName);
+	QString _formatDateTime(const QDateTime &time);
+	
 public:
-	int id;
-	QString type;
-	QString username;
-	QString password;
-	QString serviceBaseURL;
-	QString serviceAPIURL;
-	
-	Account() {}
-	
-	Account(const QString &type, const QString &username, const QString &password) {
-		this->type = type;
-		this->username = username;
-		this->password = password;
-	}
+	static QIcon getToolButtonIcon(const QString &iconFileName);
+	static QString formatDateTime(const QDateTime &time);
 };
 
 #endif

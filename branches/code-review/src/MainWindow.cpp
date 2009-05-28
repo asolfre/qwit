@@ -1,5 +1,7 @@
 /*  This file is part of Qwit.
 
+    Copyright (C) 2008, 2009 Artem Iglikov
+    
     Qwit is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,9 +18,14 @@
 #ifndef MainWindow_cpp
 #define MainWindow_cpp
 
+#include "TwitterWidget.cpp"
+
 #include "MainWindow.h"
 
 #include "Configuration.h"
+#include "HomePage.h"
+#include "RepliesPage.h"
+#include "PublicPage.h"
 
 #include <iostream>
 
@@ -33,20 +40,18 @@ MainWindow* MainWindow::getInstance() {
 
 MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	setupUi(this);
-	
+
 	statusTextEdit = new StatusTextEdit(this);
 	statusTextEdit->setObjectName(QString::fromUtf8("statusTextEdit"));
-	verticalLayout->insertWidget(1, statusTextEdit);
+	statusHorizontalLayout->insertWidget(0, statusTextEdit);
 	connect(statusTextEdit, SIGNAL(leftCharsNumberChanged(int)), this, SLOT(leftCharsNumberChanged(int)));
 	
 	optionsDialog = new OptionsDialog(this);
 	optionsDialog->setModal(true);
-	connect(optionsPushButton, SIGNAL(pressed()), this, SLOT(showOptionsDialog()));
+	connect(optionsToolButton, SIGNAL(pressed()), this, SLOT(showOptionsDialog()));
 
 	connect(optionsDialog, SIGNAL(accepted()), this, SLOT(saveOptions()));
 	connect(optionsDialog, SIGNAL(rejected()), this, SLOT(resetOptionsDialog()));
-	
-	loadState();
 	
 	if (accountsButtons.size() > 0) {
 		accountsButtons[0]->setChecked(true);
@@ -54,6 +59,10 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	}
 	
 	connect(&accountsButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(accountButtonClicked(int)));
+	
+	mainTabWidget->removeTab(0);
+	
+	loadState();
 }
 
 void MainWindow::leftCharsNumberChanged(int count) {
@@ -140,34 +149,24 @@ void MainWindow::updateState() {
 	leftCharactersNumberLabel->setVisible(config->showLeftCharactersNumber);
 	lastStatusLabel->setVisible(config->showLastStatus);
 
-	mainTabWidget->removeTab(mainTabWidget->indexOf(homeTab));
-	mainTabWidget->removeTab(mainTabWidget->indexOf(publicTab));
-	mainTabWidget->removeTab(mainTabWidget->indexOf(repliesTab));
-	mainTabWidget->removeTab(mainTabWidget->indexOf(customTab));
-	mainTabWidget->removeTab(mainTabWidget->indexOf(inboxTab));
-	mainTabWidget->removeTab(mainTabWidget->indexOf(outboxTab));
-	mainTabWidget->removeTab(mainTabWidget->indexOf(searchTab));
+	for (int i = 0; i < pages.size(); ++i) {
+		mainTabWidget->removeTab(mainTabWidget->indexOf(pages[i]));
+		delete pages[i];
+	}
+	pages.clear();
 
 	if (config->showHomeTab) {
-		mainTabWidget->addTab(homeTab, tr("Home"));
+		pages.push_back(new HomePage());
 	}
 	if (config->showPublicTab) {
-		mainTabWidget->addTab(publicTab, tr("Public"));
+		pages.push_back(new PublicPage());
 	}
 	if (config->showRepliesTab) {
-		mainTabWidget->addTab(repliesTab, tr("Replies"));
+		pages.push_back(new RepliesPage());
 	}
-	if (config->showCustomTab) {
-		mainTabWidget->addTab(customTab, tr("Custom"));
-	}
-	if (config->showInboxTab) {
-		mainTabWidget->addTab(inboxTab, tr("Inbox"));
-	}
-	if (config->showOutboxTab) {
-		mainTabWidget->addTab(outboxTab, tr("Outbox"));
-	}
-	if (config->showSearchTab) {
-		mainTabWidget->addTab(searchTab, tr("Search"));
+
+	for (int i = 0; i < pages.size(); ++i) {
+		mainTabWidget->addTab(pages[i], pages[i]->title());
 	}
 
 	move(config->position);
@@ -213,7 +212,11 @@ void MainWindow::resetOptionsDialog() {
 }
 
 void MainWindow::addAccountButton(Account *account) {
-	QPushButton *accountButton = new QPushButton(QIcon(":/images/" + account->type + ".png"), account->username);
+	QToolButton *accountButton = new QToolButton(this);
+	accountButton->setIcon(QIcon(":/images/" + account->type + ".png"));
+	accountButton->setText(account->username);
+	accountButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	accountButton->setAutoRaise(true);
 	accountButton->setCheckable(true);
 	accountsButtons.push_back(accountButton);
 	accountsButtonGroup.addButton(accountButton, accountsButtons.size() - 1);
@@ -273,6 +276,22 @@ void MainWindow::accountButtonClicked(int id) {
 	cout << id << endl;
 	Configuration *config = Configuration::getInstance();
 	config->currentAccountId = id;
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event) {
+	pages[0]->updateSize();
+}
+
+void MainWindow::showEvent(QShowEvent *event) {
+	Configuration *config = Configuration::getInstance();
+	resize(config->size);
+	move(config->position);
+
+	pages[0]->updateSize();
+	
+	statusTextEdit->setFocus(Qt::OtherFocusReason);
+
+	event->accept();
 }
 
 #endif

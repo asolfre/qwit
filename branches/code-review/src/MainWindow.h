@@ -1,5 +1,7 @@
 /*  This file is part of Qwit.
 
+    Copyright (C) 2008, 2009 Artem Iglikov
+    
     Qwit is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -41,6 +43,8 @@
 
 #include "ui_MainWindow.h"
 
+#include "AbstractPage.h"
+
 #include "StatusTextEdit.h"
 #include "OptionsDialog.h"
 
@@ -52,11 +56,13 @@ private:
 	StatusTextEdit *statusTextEdit;
 	OptionsDialog *optionsDialog;
 
-	QVector<QPushButton*> accountsButtons;
+	QVector<QToolButton*> accountsButtons;
 	
 	QHBoxLayout *accountsLayout;
 	
 	QButtonGroup accountsButtonGroup;
+	
+	QVector<AbstractPage*> pages;
 	
 	static MainWindow* instance;
 	MainWindow(QWidget *parent = 0);
@@ -78,6 +84,12 @@ public slots:
 	void resetOptionsDialog();
 	void showOptionsDialog();
 	void accountButtonClicked(int id);
+	
+protected:
+
+	void resizeEvent(QResizeEvent *event);
+	void showEvent(QShowEvent *event);
+	
 };
 
 #endif
