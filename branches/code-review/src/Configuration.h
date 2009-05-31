@@ -80,6 +80,7 @@ public:
 	int addAccount(Account *account);
 	void deleteAccount(int accountId);
 	void swapAccounts(int account1Id, int account2Id);
+	Account* currentAccount();
 	
 public:
 	static Configuration* getInstance();

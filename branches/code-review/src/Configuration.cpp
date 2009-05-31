@@ -188,4 +188,8 @@ void Configuration::swapAccounts(int account1Id, int account2Id) {
 	accounts[account2Id] = temp;
 }
 
+Account* Configuration::currentAccount() {
+	return accounts[currentAccountId];
+}
+
 #endif

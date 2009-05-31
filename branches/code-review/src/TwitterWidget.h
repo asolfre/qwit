@@ -65,7 +65,7 @@ public:
 	void clear();
 	void addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId);
 	void updateItems();
-
+	void reloadUserpics();
 
 protected:
 

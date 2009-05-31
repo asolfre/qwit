@@ -18,7 +18,16 @@
 #ifndef Account_h
 #define Account_h
 
-class Account {
+#include "Twitter.h"
+#include "Status.h"
+
+#include <QVector>
+
+class Twitter;
+
+class Account: public QObject {
+	Q_OBJECT
+	
 public:
 	int id;
 	QString type;
@@ -26,14 +35,24 @@ public:
 	QString password;
 	QString serviceBaseURL;
 	QString serviceAPIURL;
+	Twitter *twitter;
 	
-	Account() {}
+	QVector<Status> friendsStatuses;
+	QVector<Status> replies;
+	QVector<Status> publicStatuses;
 	
-	Account(const QString &type, const QString &username, const QString &password) {
-		this->type = type;
-		this->username = username;
-		this->password = password;
-	}
+	Account();
+	Account(const QString &type, const QString &username, const QString &password);
+
+public slots:
+	void addFriendsStatuses(const QByteArray &data);
+	void addReplies(const QByteArray &data);
+	void addPublicStatuses(const QByteArray &data);
+	
+signals:
+	void friendsStatusesReceived(const QVector<Status> &items);
+	void repliesReceived(const QVector<Status> &items);
+	void publicStatusesReceived(const QVector<Status> &items);
 };
 
 #endif

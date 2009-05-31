@@ -15,26 +15,24 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef HomePage_h
-#define HomePage_h
+#ifndef Services_cpp
+#define Services_cpp
 
-#include <QScrollArea>
+#include "Services.h"
 
-#include "AbstractPage.h"
+QMap<QString, QMap<QString, QString> > Services::options;
 
-class HomePage: public AbstractPage {
-	Q_OBJECT
-private:
-	QScrollArea *scrollArea;
-	
-public:
-	HomePage(QWidget* parent = 0);
-	void updateSize();
-	QString title();
-	void update();
-	
-public slots:
-	void updateItems(const QVector<Status> &items);
-};
+void Services::initialize() {
+	QMap<QString, QString> twitterOptions;
+	twitterOptions["apiurl"] = "http://twitter.com";
+	twitterOptions["baseurl"] = "http://twitter.com";
+	twitterOptions["friends"] = "/statuses/friends_timeline";
+	twitterOptions["public"] = "/statuses/public_timeline";
+	twitterOptions["replies"] = "/statuses/mentions";
+	twitterOptions["user"] = "/statuses/user_timeline/";
+	twitterOptions["direct_messages"] = "/direct_messages";
+	twitterOptions["direct_messages_sent"] = "/direct_messages";
+	options["twitter"] = twitterOptions;
+}
 
 #endif

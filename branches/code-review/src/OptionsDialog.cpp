@@ -32,7 +32,6 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	setupUi(this);
 	
 	accountConfigurationDialog = new AccountConfigurationDialog(this);
-	accountConfigurationDialog->setModal(true);
 	
 	connect(optionsGroupTreeWidget, SIGNAL(itemActivated(QTreeWidgetItem*, int)), this, SLOT(changeOptionsGroup(QTreeWidgetItem*)));
 	optionsStackedWidget->setCurrentWidget(accountsPage);

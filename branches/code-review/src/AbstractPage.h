@@ -21,6 +21,7 @@
 #include <QWidget>
 
 #include "TwitterWidget.h"
+#include "Configuration.h"
 
 class AbstractPage: public QWidget {
 	Q_OBJECT
@@ -31,10 +32,12 @@ public:
 	
 	AbstractPage(QWidget *parent = 0);
 	
-	virtual void update();
+	virtual void update() = 0;
 	virtual void addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId);
 	virtual void updateSize() = 0;
 	virtual QString title() = 0;
+	virtual void reloadUserpics();
+	void clear();
 };
 
 #endif

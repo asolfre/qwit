@@ -31,6 +31,10 @@ public:
 	PublicPage(QWidget* parent = 0);
 	void updateSize();
 	QString title();
+	void update();
+	
+public slots:
+	void updateItems(const QVector<Status> &items);
 };
 
 #endif

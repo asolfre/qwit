@@ -47,6 +47,10 @@
 
 #include "StatusTextEdit.h"
 #include "OptionsDialog.h"
+#include "AboutDialog.h"
+#include "HomePage.h"
+#include "RepliesPage.h"
+#include "PublicPage.h"
 
 class MainWindow: public QDialog, public Ui::MainWindow {
 	Q_OBJECT
@@ -55,14 +59,20 @@ private:
 
 	StatusTextEdit *statusTextEdit;
 	OptionsDialog *optionsDialog;
-
+	AboutDialog *aboutDialog;
 	QVector<QToolButton*> accountsButtons;
-	
 	QHBoxLayout *accountsLayout;
-	
 	QButtonGroup accountsButtonGroup;
-	
 	QVector<AbstractPage*> pages;
+	QSystemTrayIcon *trayIcon;
+	QMenu *trayIconMenu;
+	QAction *trayQuitAction;
+	QAction *trayShowhideAction;
+	HomePage *homePage;
+	RepliesPage *repliesPage;
+	PublicPage *publicPage;
+	
+	bool acceptClose;
 	
 	static MainWindow* instance;
 	MainWindow(QWidget *parent = 0);
@@ -73,9 +83,12 @@ public:
 	void addAccountButton(Account *account);
 	void deleteAccountButton(Account *account);
 	void updateAccountButton(Account *account);
+	void setupTrayIcon();
+	void reconnectAccountToTabs();
 	
 public slots:
 
+	void quit();
 	void leftCharsNumberChanged(int length);
 	void saveState();
 	void loadState();
@@ -84,12 +97,19 @@ public slots:
 	void resetOptionsDialog();
 	void showOptionsDialog();
 	void accountButtonClicked(int id);
+	void showhide();
+	void iconActivated(QSystemTrayIcon::ActivationReason reason);
+	void refresh();
+	void tabChanged(int tabIndex);
+	void reloadUserpics();
 	
 protected:
 
 	void resizeEvent(QResizeEvent *event);
 	void showEvent(QShowEvent *event);
-	
+	void hideEvent(QHideEvent *event);
+	void keyPressEvent(QKeyEvent *event);
+	void closeEvent(QCloseEvent *event);
 };
 
 #endif

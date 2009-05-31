@@ -20,6 +20,7 @@
 #include <QTranslator>
 
 #include "MainWindow.h"
+#include "Services.h"
 
 int main(int argc, char *argv[]) {
 	QApplication app(argc, argv);
@@ -28,6 +29,8 @@ int main(int argc, char *argv[]) {
 	QTranslator translator;
 	translator.load(QString(":/translations/qwit_") + locale);
 	app.installTranslator(&translator);
+
+	Services::initialize();
 
 	MainWindow::getInstance()->show();
 	return app.exec();

@@ -15,26 +15,17 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef HomePage_h
-#define HomePage_h
+#ifndef Status_cpp
+#define Status_cpp
 
-#include <QScrollArea>
+#include "Status.h"
 
-#include "AbstractPage.h"
-
-class HomePage: public AbstractPage {
-	Q_OBJECT
-private:
-	QScrollArea *scrollArea;
-	
-public:
-	HomePage(QWidget* parent = 0);
-	void updateSize();
-	QString title();
-	void update();
-	
-public slots:
-	void updateItems(const QVector<Status> &items);
-};
+Status::Status(int id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time) {
+	this->id = id;
+	this->status = status;
+	this->username = username;
+	this->userpicFilename = userpicFilename;
+	this->time = time;
+}
 
 #endif

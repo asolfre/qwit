@@ -48,8 +48,14 @@ void TwitterWidget::clear() {
 		delete items[i].status;
 		delete items[i].userpic;
 		delete items[i].sign;
+		delete items[i].replyButton;
+		delete items[i].favorButton;
+		delete items[i].retweetButton;
+		delete items[i].unfollowButton;
+		delete items[i].directMessageButton;
 	}
 	items.clear();
+	updateItems();
 }
 
 void TwitterWidget::addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId) {
@@ -194,5 +200,10 @@ void TwitterWidget::paintEvent(QPaintEvent *event) {
 	event->accept();
 }
 
+void TwitterWidget::reloadUserpics() {
+	for (int i = 0; i < items.size(); ++i) {
+		items[i].loadUserpic();
+	}
+}
 
 #endif

@@ -25,6 +25,7 @@ HEADERS += \
            src/MainWindow.h \
            src/StatusTextEdit.h \
            src/OptionsDialog.h \
+           src/AboutDialog.h \
            src/Account.h \
            src/AccountConfigurationDialog.h \
 	   src/AbstractPage.h \
@@ -32,10 +33,15 @@ HEADERS += \
 	   src/PublicPage.h \
 	   src/RepliesPage.h \
 	   src/TwitterWidget.h \
-	   src/QwitTools.h
+	   src/Twitter.h \
+	   src/Services.h \
+	   src/Status.h \
+	   src/QwitTools.h \
+	   src/UserpicsDownloader.h
 FORMS += \
            src/MainWindow.ui \
            src/OptionsDialog.ui \
+           src/AboutDialog.ui \
            src/AccountConfigurationDialog.ui
 SOURCES += \
            src/qwit.cpp \
@@ -43,13 +49,19 @@ SOURCES += \
            src/MainWindow.cpp \
            src/StatusTextEdit.cpp \
            src/OptionsDialog.cpp \
+           src/AboutDialog.cpp \
            src/AccountConfigurationDialog.cpp \
+           src/Account.cpp \
 	   src/AbstractPage.cpp \
 	   src/HomePage.cpp \
 	   src/PublicPage.cpp \
 	   src/RepliesPage.cpp \
 	   src/TwitterWidget.cpp \
-	   src/QwitTools.cpp
+	   src/Services.cpp \
+	   src/Twitter.cpp \
+	   src/Status.cpp \
+	   src/QwitTools.cpp \
+	   src/UserpicsDownloader.cpp
 TRANSLATIONS += \
            translations/qwit_en_US.ts \
            translations/qwit_es_ES.ts \

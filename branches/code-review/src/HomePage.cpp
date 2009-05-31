@@ -24,6 +24,10 @@
 
 #include "HomePage.h"
 
+#include <iostream>
+
+using namespace std;
+
 HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
@@ -39,9 +43,6 @@ HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
 	scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
-	
-	addItem("/home/arti/.qwit/0850B339F43DBD4C82B194D1E1CFE525", "arti", "Programing Qwit", QDateTime::currentDateTime(), 0);
-	addItem("/home/arti/.qwit/0850B339F43DBD4C82B194D1E1CFE525", "arti", "me and Chris Skyping about NewEurasia.net and other things :) I love this job :) http://murl.kz/NRk3", QDateTime::currentDateTime(), 1);
 }
 
 void HomePage::updateSize() {
@@ -50,6 +51,18 @@ void HomePage::updateSize() {
 
 QString HomePage::title() {
 	return tr("Home");
+}
+
+void HomePage::update() {
+	Configuration::getInstance()->currentAccount()->twitter->receiveFriendsStatuses(0, 20);
+}
+
+void HomePage::updateItems(const QVector<Status> &items) {
+	cout << "HomePage" << endl;
+	clear();
+	for (int i = 0; i < items.size(); ++i) {
+		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);
+	}
 }
 
 #endif

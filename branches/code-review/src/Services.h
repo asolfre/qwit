@@ -15,26 +15,16 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef HomePage_h
-#define HomePage_h
+#ifndef Services_h
+#define Services_h
 
-#include <QScrollArea>
+#include <QMap>
+#include <QString>
 
-#include "AbstractPage.h"
-
-class HomePage: public AbstractPage {
-	Q_OBJECT
-private:
-	QScrollArea *scrollArea;
-	
+class Services {
 public:
-	HomePage(QWidget* parent = 0);
-	void updateSize();
-	QString title();
-	void update();
-	
-public slots:
-	void updateItems(const QVector<Status> &items);
+	static QMap<QString, QMap<QString, QString> > options;
+	static void initialize();
 };
 
 #endif

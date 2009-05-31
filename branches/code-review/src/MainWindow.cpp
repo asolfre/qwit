@@ -21,11 +21,9 @@
 #include "TwitterWidget.cpp"
 
 #include "MainWindow.h"
+#include "UserpicsDownloader.h"
 
 #include "Configuration.h"
-#include "HomePage.h"
-#include "RepliesPage.h"
-#include "PublicPage.h"
 
 #include <iostream>
 
@@ -47,22 +45,34 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	connect(statusTextEdit, SIGNAL(leftCharsNumberChanged(int)), this, SLOT(leftCharsNumberChanged(int)));
 	
 	optionsDialog = new OptionsDialog(this);
-	optionsDialog->setModal(true);
-	connect(optionsToolButton, SIGNAL(pressed()), this, SLOT(showOptionsDialog()));
-
 	connect(optionsDialog, SIGNAL(accepted()), this, SLOT(saveOptions()));
 	connect(optionsDialog, SIGNAL(rejected()), this, SLOT(resetOptionsDialog()));
 	
-	if (accountsButtons.size() > 0) {
-		accountsButtons[0]->setChecked(true);
-		accountButtonClicked(0);
-	}
-	
+	aboutDialog = new AboutDialog(this);
+
+	connect(refreshToolButton, SIGNAL(pressed()), this, SLOT(refresh()));
+	connect(optionsToolButton, SIGNAL(pressed()), this, SLOT(showOptionsDialog()));
+	connect(aboutToolButton, SIGNAL(pressed()), aboutDialog, SLOT(show()));
+	connect(exitToolButton, SIGNAL(pressed()), this, SLOT(quit()));
+
 	connect(&accountsButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(accountButtonClicked(int)));
 	
+	connect(mainTabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 	mainTabWidget->removeTab(0);
 	
+	accountsLayout = 0;
+	
+	setupTrayIcon();
 	loadState();
+
+	if (accountsButtons.size() > 0) {
+		accountsButtons[0]->setChecked(true);
+		accountsButtons[0]->click();
+	}
+	
+	acceptClose = false;
+	
+	connect(UserpicsDownloader::getInstance(), SIGNAL(userpicDownloaded()), this, SLOT(reloadUserpics()));
 }
 
 void MainWindow::leftCharsNumberChanged(int count) {
@@ -150,25 +160,31 @@ void MainWindow::updateState() {
 	lastStatusLabel->setVisible(config->showLastStatus);
 
 	for (int i = 0; i < pages.size(); ++i) {
-		mainTabWidget->removeTab(mainTabWidget->indexOf(pages[i]));
+		mainTabWidget->removeTab(i);
 		delete pages[i];
 	}
 	pages.clear();
 
+	homePage = 0;
+	repliesPage = 0;
+	publicPage = 0;
+	
 	if (config->showHomeTab) {
-		pages.push_back(new HomePage());
+		pages.push_back(homePage = new HomePage());
 	}
 	if (config->showPublicTab) {
-		pages.push_back(new PublicPage());
+		pages.push_back(publicPage = new PublicPage());
 	}
 	if (config->showRepliesTab) {
-		pages.push_back(new RepliesPage());
+		pages.push_back(repliesPage = new RepliesPage());
 	}
 
 	for (int i = 0; i < pages.size(); ++i) {
 		mainTabWidget->addTab(pages[i], pages[i]->title());
 	}
-
+	
+	reconnectAccountToTabs();
+	
 	move(config->position);
 	resize(config->size);
 }
@@ -220,6 +236,9 @@ void MainWindow::addAccountButton(Account *account) {
 	accountButton->setCheckable(true);
 	accountsButtons.push_back(accountButton);
 	accountsButtonGroup.addButton(accountButton, accountsButtons.size() - 1);
+	if (accountsButtons.size() == 1) {
+		accountsButtons[0]->setVisible(false);
+	}
 	if (accountsButtons.size() == 2) {
 		accountsLayout = new QHBoxLayout();
 		accountsLayout->addWidget(accountsButtons[0]);
@@ -264,8 +283,10 @@ void MainWindow::deleteAccountButton(Account *account) {
 	} else if (checkedId > account->id) {
 		--checkedId;
 	}
-	accountsButtons[checkedId]->setChecked(true);
-	accountButtonClicked(checkedId);
+	if (checkedId != -1) {
+		accountsButtons[checkedId]->setChecked(true);
+		accountButtonClicked(checkedId);
+	}
 }
 
 void MainWindow::showOptionsDialog() {
@@ -273,13 +294,34 @@ void MainWindow::showOptionsDialog() {
 }
 
 void MainWindow::accountButtonClicked(int id) {
-	cout << id << endl;
 	Configuration *config = Configuration::getInstance();
 	config->currentAccountId = id;
+	reconnectAccountToTabs();
+}
+
+void MainWindow::reconnectAccountToTabs() {
+	Configuration *config = Configuration::getInstance();
+	if (homePage) {
+		disconnect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), 0, 0);
+		connect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), homePage, SLOT(updateItems(const QVector<Status> &)));
+		homePage->updateItems(config->accounts[config->currentAccountId]->friendsStatuses);
+	}
+	if (repliesPage) {
+		disconnect(config->accounts[config->currentAccountId], SIGNAL(repliesReceived(const QVector<Status> &)), 0, 0);
+		connect(config->accounts[config->currentAccountId], SIGNAL(repliesReceived(const QVector<Status> &)), repliesPage, SLOT(updateItems(const QVector<Status> &)));
+		repliesPage->updateItems(config->accounts[config->currentAccountId]->replies);
+	}
+	if (publicPage) {
+		disconnect(config->accounts[config->currentAccountId], SIGNAL(publicStatusesReceived(const QVector<Status> &)), 0, 0);
+		connect(config->accounts[config->currentAccountId], SIGNAL(publicStatusesReceived(const QVector<Status> &)), publicPage, SLOT(updateItems(const QVector<Status> &)));
+		publicPage->updateItems(config->accounts[config->currentAccountId]->publicStatuses);
+	}
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-	pages[0]->updateSize();
+	for (int i = 0; i < pages.size(); ++i) {
+		pages[i]->updateSize();
+	}
 }
 
 void MainWindow::showEvent(QShowEvent *event) {
@@ -287,11 +329,94 @@ void MainWindow::showEvent(QShowEvent *event) {
 	resize(config->size);
 	move(config->position);
 
-	pages[0]->updateSize();
+	for (int i = 0; i < pages.size(); ++i) {
+		pages[i]->updateSize();
+	}
 	
 	statusTextEdit->setFocus(Qt::OtherFocusReason);
 
 	event->accept();
+}
+
+void MainWindow::hideEvent(QHideEvent *event) {
+	saveState();
+	event->accept();
+}
+
+void MainWindow::setupTrayIcon() {
+	trayShowhideAction = new QAction(tr("&Show / Hide"), this);
+	connect(trayShowhideAction, SIGNAL(triggered()), this, SLOT(showhide()));
+	trayQuitAction = new QAction(tr("&Quit"), this);
+	connect(trayQuitAction, SIGNAL(triggered()), this, SLOT(quit()));
+	trayIconMenu = new QMenu(this);
+	trayIconMenu->addAction(trayShowhideAction);
+	trayIconMenu->addAction(trayQuitAction);
+	trayIcon = new QSystemTrayIcon(this);
+	trayIcon->setContextMenu(trayIconMenu);
+	trayIcon->setIcon(QIcon(":/images/qwit.png"));
+	trayIcon->show();
+//	connect(trayIcon, SIGNAL(messageClicked()), this, SLOT(makeActive()));
+	connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+}
+
+void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
+	if (reason == QSystemTrayIcon::Trigger) {
+		showhide();
+	}
+}
+
+void MainWindow::showhide() {
+	if (isVisible()) {
+		hide();
+	} else {
+		show();
+		activateWindow();
+//		for (int i = 0; i < TWITTER_TABS; ++i) {
+//			twitterTabs[i].twitterWidget->updateItems();
+//		}
+	}
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+	if (event->key() == Qt::Key_Escape) {
+		showhide();
+	} else if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Q)) {
+		acceptClose = true;
+		quit();
+	} else {
+		QDialog::keyPressEvent(event);
+	}
+}
+
+void MainWindow::quit() {
+	acceptClose = true;
+	close();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+	if (acceptClose) {
+		saveState();
+		event->accept();
+	} else {
+		hide();
+		event->ignore();
+	}
+}
+
+void MainWindow::refresh() {
+	pages[mainTabWidget->currentIndex()]->update();
+}
+
+void MainWindow::tabChanged(int tabIndex) {
+	if ((tabIndex >= 0) && (tabIndex < pages.size())) {
+		pages[tabIndex]->updateSize();
+	}
+}
+
+void MainWindow::reloadUserpics() {
+	for (int i = 0; i < pages.size(); ++i) {
+		pages[i]->reloadUserpics();
+	}
 }
 
 #endif

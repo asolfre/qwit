@@ -24,13 +24,17 @@
 
 #include "RepliesPage.h"
 
+#include <iostream>
+
+using namespace std;
+
 RepliesPage::RepliesPage(QWidget* parent): AbstractPage(parent) {
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
-	twitterWidget->setObjectName(QString::fromUtf8("repliesPageTwitterWidget"));
+	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
 
 	QGridLayout *gridLayout = new QGridLayout(this);
-	gridLayout->setObjectName(QString::fromUtf8("repliesPageGridLayout"));
+	gridLayout->setObjectName(QString::fromUtf8("homePageGridLayout"));
 
 	scrollArea = new QScrollArea(this);
 	scrollArea->setBackgroundRole(QPalette::Light);
@@ -47,6 +51,18 @@ void RepliesPage::updateSize() {
 
 QString RepliesPage::title() {
 	return tr("Replies");
+}
+
+void RepliesPage::update() {
+	Configuration::getInstance()->currentAccount()->twitter->receiveReplies(0, 20);
+}
+
+void RepliesPage::updateItems(const QVector<Status> &items) {
+	cout << "RepliesPage" << endl;
+	clear();
+	for (int i = 0; i < items.size(); ++i) {
+		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);
+	}
 }
 
 #endif

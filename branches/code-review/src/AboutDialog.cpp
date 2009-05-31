@@ -15,26 +15,15 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef HomePage_h
-#define HomePage_h
+#ifndef AboutDialog_cpp
+#define AboutDialog_cpp
 
-#include <QScrollArea>
+#include "AboutDialog.h"
 
-#include "AbstractPage.h"
+using namespace std;
 
-class HomePage: public AbstractPage {
-	Q_OBJECT
-private:
-	QScrollArea *scrollArea;
-	
-public:
-	HomePage(QWidget* parent = 0);
-	void updateSize();
-	QString title();
-	void update();
-	
-public slots:
-	void updateItems(const QVector<Status> &items);
-};
+AboutDialog::AboutDialog(QWidget *parent): QDialog(parent) {
+	setupUi(this);
+}
 
 #endif

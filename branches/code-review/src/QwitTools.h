@@ -21,20 +21,28 @@
 #include <QIcon>
 #include <QString>
 #include <QDateTime>
+#include <QMap>
+
+#include "Status.h"
 
 class QwitTools: public QObject {
 	Q_OBJECT
 	
 private:
+	QMap<QString, int> monthes;
 	static QwitTools *instance;
 	QwitTools();
 	static QwitTools* getInstance();
 	QIcon _getToolButtonIcon(const QString &iconFileName);
 	QString _formatDateTime(const QDateTime &time);
+	QDateTime _dateFromString(QString date);
+	QVector<Status> _parseStatuses(const QByteArray &data);
 	
 public:
+	static QDateTime dateFromString(QString date);
 	static QIcon getToolButtonIcon(const QString &iconFileName);
 	static QString formatDateTime(const QDateTime &time);
+	static QVector<Status> parseStatuses(const QByteArray &data);
 };
 
 #endif

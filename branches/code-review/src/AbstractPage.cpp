@@ -23,14 +23,23 @@
 
 #include "AbstractPage.h"
 
-AbstractPage::AbstractPage(QWidget *parent): QWidget(parent) {
-}
+#include <iostream>
 
-void AbstractPage::update() {
+using namespace std;
+
+AbstractPage::AbstractPage(QWidget *parent): QWidget(parent) {
 }
 
 void AbstractPage::addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId) {
 	twitterWidget->addItem(userpic, username, status, time, messageId);
-};
+}
+
+void AbstractPage::clear() {
+	twitterWidget->clear();
+}
+
+void AbstractPage::reloadUserpics() {
+	twitterWidget->reloadUserpics();
+}
 
 #endif

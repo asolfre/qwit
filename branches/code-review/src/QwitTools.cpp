@@ -19,12 +19,35 @@
 #define QwitTools_cpp
 
 #include <QTranslator>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
+#include <QDir>
+#include <QCryptographicHash>
 
 #include "QwitTools.h"
+#include "UserpicsDownloader.h"
+
+#include <cstdlib>
+#include <iostream>
+
+using namespace std;
 
 QwitTools* QwitTools::instance = 0;
 
 QwitTools::QwitTools() {
+	monthes["Jan"] = 1;
+	monthes["Feb"] = 2;
+	monthes["Mar"] = 3;
+	monthes["Apr"] = 4;
+	monthes["May"] = 5;
+	monthes["Jun"] = 6;
+	monthes["Jul"] = 7;
+	monthes["Aug"] = 8;
+	monthes["Sep"] = 9;
+	monthes["Oct"] = 10;
+	monthes["Nov"] = 11;
+	monthes["Dec"] = 12;
 }
 
 QwitTools* QwitTools::getInstance() {
@@ -34,12 +57,28 @@ QwitTools* QwitTools::getInstance() {
 	return instance;
 }
 
+QDateTime QwitTools::dateFromString(QString date) {
+	return getInstance()->_dateFromString(date);
+}
+
 QIcon QwitTools::getToolButtonIcon(const QString &iconFileName) {
 	return getInstance()->_getToolButtonIcon(iconFileName);
 }
 
 QString QwitTools::formatDateTime(const QDateTime &time) {
 	return getInstance()->_formatDateTime(time);
+}
+
+QVector<Status> QwitTools::parseStatuses(const QByteArray &data) {
+	return getInstance()->_parseStatuses(data);
+}
+
+QDateTime QwitTools::_dateFromString(QString date) {
+	char s[10];
+	int year, day, hours, minutes, seconds;
+	sscanf(qPrintable(date), "%*s %s %d %d:%d:%d %*s %d", s, &day, &hours, &minutes, &seconds, &year);
+	int month = monthes[s];
+	return QDateTime(QDate(year, month, day), QTime(hours, minutes, seconds));
 }
 
 QIcon QwitTools::_getToolButtonIcon(const QString &iconFileName) {
@@ -61,6 +100,86 @@ QString QwitTools::_formatDateTime(const QDateTime &time) {
 	if (hours <= 18) return tr("about %n hour(s) ago", "", hours);
 	int days = (seconds - 18 * 3600 + 24 * 3600 - 1) / (24 * 3600);
 	return tr("about %n day(s) ago", "", days);
+}
+
+QVector<Status> QwitTools::_parseStatuses(const QByteArray &data) {
+	QVector<Status> statuses;
+	
+	QDomDocument document;
+	document.setContent(data);
+
+	QDomElement root = document.documentElement();
+	
+	if (root.tagName() != "statuses") {
+		return statuses;
+	}
+	
+	QDomNode node = root.firstChild();
+	QString html = "";
+	QString trayMessage = "";
+	while (!node.isNull()) {
+		if (node.toElement().tagName() != "status") {
+			return statuses;
+		}
+		QDomNode node2 = node.firstChild();
+		QString message = "", timeStr = "", user = "", image = "";
+		int id = 0, replyUserID = 0, replyStatusId = 0;
+		while (!node2.isNull()) {
+			if (node2.toElement().tagName() == "created_at") {
+				timeStr = node2.toElement().text();
+			} else if (node2.toElement().tagName() == "text") {
+				message = node2.toElement().text();
+			} else if (node2.toElement().tagName() == "id") {
+				id = node2.toElement().text().toInt();
+			} else if (node2.toElement().tagName() == "in_reply_to_status_id") {
+				replyStatusId = node2.toElement().text().toInt();
+			} else if (node2.toElement().tagName() == "in_reply_to_user_id") {
+				replyUserID = node2.toElement().text().toInt();
+			} else if (node2.toElement().tagName() == "user") {
+				QDomNode node3 = node2.firstChild();
+				while (!node3.isNull()) {
+					if (node3.toElement().tagName() == "screen_name") {
+						user = node3.toElement().text();
+					} else if (node3.toElement().tagName() == "profile_image_url") {
+						image = node3.toElement().text();
+					}
+					node3 = node3.nextSibling();
+				}
+			}
+			node2 = node2.nextSibling();
+		}
+		if (id) {
+			QDateTime time = QwitTools::dateFromString(timeStr);
+			time = QDateTime(time.date(), time.time(), Qt::UTC);
+			QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+			QString imageFileName = "";
+			for (int i = 0; i < hash.size(); ++i) {
+				unsigned char c = hash[i];
+				c >>= 4;
+				if (c < 10) {
+					c += '0';
+				} else {
+					c += 'A' - 10;
+				}
+				imageFileName += (char)c;
+				c = hash[i];
+				c &= 15;
+				if (c < 10) {
+					c += '0';
+				} else {
+					c += 'A' - 10;
+				}
+				imageFileName += (char)c;
+			}
+			QDir dir(QDir::homePath());
+			dir.mkdir(".qwit2");
+			imageFileName = dir.absolutePath() + "/.qwit2/" + imageFileName;
+			UserpicsDownloader::getInstance()->download(image, imageFileName);
+			statuses.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime()));
+		}
+		node = node.nextSibling();
+	}
+	return statuses;
 }
 
 #endif

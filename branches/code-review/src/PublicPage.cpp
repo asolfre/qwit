@@ -24,6 +24,10 @@
 
 #include "PublicPage.h"
 
+#include <iostream>
+
+using namespace std;
+
 PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
@@ -47,6 +51,18 @@ void PublicPage::updateSize() {
 
 QString PublicPage::title() {
 	return tr("Public");
+}
+
+void PublicPage::update() {
+	Configuration::getInstance()->currentAccount()->twitter->receivePublicStatuses(0, 20);
+}
+
+void PublicPage::updateItems(const QVector<Status> &items) {
+	cout << "PublicPage" << endl;
+	clear();
+	for (int i = 0; i < items.size(); ++i) {
+		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);
+	}
 }
 
 #endif
