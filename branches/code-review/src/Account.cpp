@@ -1,19 +1,30 @@
-/*  This file is part of Qwit.
-
-    Copyright (C) 2008, 2009 Artem Iglikov
-    
-    Qwit is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Qwit is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
+/*!
+ *  @file
+ *  @author Artem Iglikov <artem.iglikov@gmail.com>
+ *  
+ *  @section LICENSE
+ *  
+ *  This file is part of Qwit.
+ *  
+ *  Copyright (C) 2008, 2009 Artem Iglikov
+ *  
+ *  Qwit is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  Qwit is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with Qwit.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ *  @section DESCRIPTION
+ *  
+ *  Account class implementation
+ */
 
 #ifndef Account_cpp
 #define Account_cpp
@@ -30,6 +41,7 @@ Account::Account() {
 	connect(twitter, SIGNAL(friendsStatusesReceived(const QByteArray&)), this, SLOT(addFriendsStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(repliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
 	connect(twitter, SIGNAL(publicStatusesReceived(const QByteArray&)), this, SLOT(addPublicStatuses(const QByteArray&)));
+	connect(twitter, SIGNAL(lastStatusReceived(const QByteArray&)), this, SLOT(updateLastStatus(const QByteArray&)));
 }
 
 Account::Account(const QString &type, const QString &username, const QString &password) {
@@ -40,6 +52,7 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(friendsStatusesReceived(const QByteArray&)), this, SLOT(addFriendsStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(repliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
 	connect(twitter, SIGNAL(publicStatusesReceived(const QByteArray&)), this, SLOT(addPublicStatuses(const QByteArray&)));
+	connect(twitter, SIGNAL(lastStatusReceived(const QByteArray&)), this, SLOT(updateLastStatus(const QByteArray&)));
 }
 
 void Account::addFriendsStatuses(const QByteArray &data) {
@@ -94,6 +107,15 @@ void Account::addPublicStatuses(const QByteArray &data) {
 		publicStatuses.push_back(statuses[i]);
 	}
 	emit publicStatusesReceived(publicStatuses);
+}
+
+void Account::updateLastStatus(const QByteArray &data) {
+	Status status = QwitTools::parseUser(data);
+	emit lastStatusReceived(status.status);
+}
+
+void Account::updateLastStatus() {
+	twitter->receiveLastStatus();
 }
 
 #endif

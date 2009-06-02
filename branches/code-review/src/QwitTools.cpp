@@ -1,19 +1,30 @@
-/*  This file is part of Qwit.
-
-    Copyright (C) 2008, 2009 Artem Iglikov
-    
-    Qwit is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Qwit is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
+/*!
+ *  @file
+ *  @author Artem Iglikov <artem.iglikov@gmail.com>
+ *  
+ *  @section LICENSE
+ *  
+ *  This file is part of Qwit.
+ *  
+ *  Copyright (C) 2008, 2009 Artem Iglikov
+ *  
+ *  Qwit is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  Qwit is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with Qwit.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ *  @section DESCRIPTION
+ *  
+ *  QwitTools class implementation
+ */
 
 #ifndef QwitTools_cpp
 #define QwitTools_cpp
@@ -71,6 +82,10 @@ QString QwitTools::formatDateTime(const QDateTime &time) {
 
 QVector<Status> QwitTools::parseStatuses(const QByteArray &data) {
 	return getInstance()->_parseStatuses(data);
+}
+
+Status QwitTools::parseUser(const QByteArray &data) {
+	return getInstance()->_parseUser(data);
 }
 
 QDateTime QwitTools::_dateFromString(QString date) {
@@ -180,6 +195,80 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data) {
 		node = node.nextSibling();
 	}
 	return statuses;
+}
+
+Status QwitTools::_parseUser(const QByteArray &data) {
+	Status status;
+	
+	QDomDocument document;
+	document.setContent(data);
+
+	QDomElement root = document.documentElement();
+	
+	if (root.tagName() != "user") {
+		return status;
+	}
+	
+	QDomNode node = root.firstChild();
+	QString html = "";
+	QString trayMessage = "";
+	while (!node.isNull()) {
+		if (node.toElement().tagName() == "status") {
+			QDomNode node2 = node.firstChild();
+			QString message = "", timeStr = "", user = "", image = "";
+			int id = 0, replyUserID = 0, replyStatusId = 0;
+			while (!node2.isNull()) {
+				if (node2.toElement().tagName() == "created_at") {
+					timeStr = node2.toElement().text();
+				} else if (node2.toElement().tagName() == "text") {
+					message = node2.toElement().text();
+				} else if (node2.toElement().tagName() == "id") {
+					id = node2.toElement().text().toInt();
+				} else if (node2.toElement().tagName() == "in_reply_to_status_id") {
+					replyStatusId = node2.toElement().text().toInt();
+				} else if (node2.toElement().tagName() == "in_reply_to_user_id") {
+					replyUserID = node2.toElement().text().toInt();
+				} else if (node2.toElement().tagName() == "screen_name") {
+					user = node2.toElement().text();
+				} else if (node2.toElement().tagName() == "profile_image_url") {
+					image = node2.toElement().text();
+				}
+				node2 = node2.nextSibling();
+			}
+			if (id) {
+				QDateTime time = QwitTools::dateFromString(timeStr);
+				time = QDateTime(time.date(), time.time(), Qt::UTC);
+				QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+				QString imageFileName = "";
+				for (int i = 0; i < hash.size(); ++i) {
+					unsigned char c = hash[i];
+					c >>= 4;
+					if (c < 10) {
+						c += '0';
+					} else {
+						c += 'A' - 10;
+					}
+					imageFileName += (char)c;
+					c = hash[i];
+					c &= 15;
+					if (c < 10) {
+						c += '0';
+					} else {
+						c += 'A' - 10;
+					}
+					imageFileName += (char)c;
+				}
+				QDir dir(QDir::homePath());
+				dir.mkdir(".qwit2");
+				imageFileName = dir.absolutePath() + "/.qwit2/" + imageFileName;
+				UserpicsDownloader::getInstance()->download(image, imageFileName);
+				status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime());
+			}
+		} else {
+		}
+		node = node.nextSibling();
+	}
+	return status;
 }
 
 #endif

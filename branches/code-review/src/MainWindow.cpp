@@ -1,19 +1,30 @@
-/*  This file is part of Qwit.
-
-    Copyright (C) 2008, 2009 Artem Iglikov
-    
-    Qwit is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Qwit is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
+/*!
+ *  @file
+ *  @author Artem Iglikov <artem.iglikov@gmail.com>
+ *  
+ *  @section LICENSE
+ *  
+ *  This file is part of Qwit.
+ *  
+ *  Copyright (C) 2008, 2009 Artem Iglikov
+ *  
+ *  Qwit is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  Qwit is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with Qwit.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ *  @section DESCRIPTION
+ *  
+ *  MainWindow class implementation
+ */
 
 #ifndef MainWindow_cpp
 #define MainWindow_cpp
@@ -114,6 +125,7 @@ void MainWindow::saveOptions() {
 	config->retweetTag = optionsDialog->retweetTagLineEdit->text();
 	config->retweetTagAfterText = (optionsDialog->retweetTagAfterTextCheckBox->checkState() == Qt::Checked);
 	config->placeControlsVertically = (optionsDialog->placeControlsVerticallyCheckBox->checkState() == Qt::Checked);
+	config->placeTabsVertically = (optionsDialog->placeTabsVerticallyCheckBox->checkState() == Qt::Checked);
 	config->showMessagesInTray = (optionsDialog->showMessagesInTrayCheckBox->checkState() == Qt::Checked);
 	config->placeUsernameUnderAvatar = (optionsDialog->placeUsernameUnderAvatarCheckBox->checkState() == Qt::Checked);
 	
@@ -159,6 +171,12 @@ void MainWindow::updateState() {
 	leftCharactersNumberLabel->setVisible(config->showLeftCharactersNumber);
 	lastStatusLabel->setVisible(config->showLastStatus);
 
+	if (config->placeTabsVertically) {
+		mainTabWidget->setTabPosition(QTabWidget::West);
+	} else {
+		mainTabWidget->setTabPosition(QTabWidget::South);
+	}
+	
 	for (int i = 0; i < pages.size(); ++i) {
 		mainTabWidget->removeTab(i);
 		delete pages[i];
@@ -183,7 +201,7 @@ void MainWindow::updateState() {
 		mainTabWidget->addTab(pages[i], pages[i]->title());
 	}
 	
-	reconnectAccountToTabs();
+	connectCurrentAccountSignals();
 	
 	move(config->position);
 	resize(config->size);
@@ -202,6 +220,7 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->retweetTagAfterTextCheckBox->setCheckState(config->retweetTagAfterText ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->retweetTagLineEdit->setText(config->retweetTag);
 	optionsDialog->placeControlsVerticallyCheckBox->setCheckState(config->placeControlsVertically ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->placeTabsVerticallyCheckBox->setCheckState(config->placeTabsVertically ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->showMessagesInTrayCheckBox->setCheckState(config->showMessagesInTray ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->placeUsernameUnderAvatarCheckBox->setCheckState(config->placeUsernameUnderAvatar ? Qt::Checked : Qt::Unchecked);
 	
@@ -290,16 +309,17 @@ void MainWindow::deleteAccountButton(Account *account) {
 }
 
 void MainWindow::showOptionsDialog() {
+	resetOptionsDialog();
 	optionsDialog->showNormal();
 }
 
 void MainWindow::accountButtonClicked(int id) {
 	Configuration *config = Configuration::getInstance();
 	config->currentAccountId = id;
-	reconnectAccountToTabs();
+	connectCurrentAccountSignals();
 }
 
-void MainWindow::reconnectAccountToTabs() {
+void MainWindow::connectCurrentAccountSignals() {
 	Configuration *config = Configuration::getInstance();
 	if (homePage) {
 		disconnect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), 0, 0);
@@ -316,6 +336,8 @@ void MainWindow::reconnectAccountToTabs() {
 		connect(config->accounts[config->currentAccountId], SIGNAL(publicStatusesReceived(const QVector<Status> &)), publicPage, SLOT(updateItems(const QVector<Status> &)));
 		publicPage->updateItems(config->accounts[config->currentAccountId]->publicStatuses);
 	}
+	disconnect(config->accounts[config->currentAccountId], SIGNAL(lastStatusReceived(const QString &)), 0, 0);
+	connect(config->accounts[config->currentAccountId], SIGNAL(lastStatusReceived(const QString &)), this, SLOT(updateLastStatus(const QString &)));
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
@@ -405,6 +427,8 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::refresh() {
 	pages[mainTabWidget->currentIndex()]->update();
+	Configuration *config = Configuration::getInstance();
+	config->accounts[config->currentAccountId]->updateLastStatus();
 }
 
 void MainWindow::tabChanged(int tabIndex) {
@@ -417,6 +441,10 @@ void MainWindow::reloadUserpics() {
 	for (int i = 0; i < pages.size(); ++i) {
 		pages[i]->reloadUserpics();
 	}
+}
+
+void MainWindow::updateLastStatus(const QString &status) {
+	lastStatusLabel->setText(status);
 }
 
 #endif

@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>515</width>
-    <height>521</height>
+    <height>541</height>
    </rect>
   </property>
   <property name="acceptDrops" >
@@ -207,7 +207,7 @@
               <item row="0" column="0" >
                <widget class="QTabWidget" name="tabWidget" >
                 <property name="currentIndex" >
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="Tab_2" >
                  <attribute name="title" >
@@ -477,6 +477,16 @@
                      <widget class="QCheckBox" name="placeControlsVerticallyCheckBox" >
                       <property name="text" >
                        <string>Place controls vertically</string>
+                      </property>
+                      <property name="checked" >
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="placeTabsVerticallyCheckBox" >
+                      <property name="text" >
+                       <string>Place tabs vertically</string>
                       </property>
                       <property name="checked" >
                        <bool>true</bool>
