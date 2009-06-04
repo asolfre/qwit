@@ -33,23 +33,28 @@
 #include "TwitterWidget.h"
 
 #include "AbstractPage.h"
+#include "QwitTools.h"
 
 #include <iostream>
 
 using namespace std;
 
 AbstractPage::AbstractPage(QWidget *parent): QWidget(parent) {
+	QwitTools::log("AbstractPage::AbstractPage()");
 }
 
 void AbstractPage::addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId) {
+	QwitTools::log("AbstractPage::addItem()");
 	twitterWidget->addItem(userpic, username, status, time, messageId);
 }
 
 void AbstractPage::clear() {
+	QwitTools::log("AbstractPage::clear()");
 	twitterWidget->clear();
 }
 
 void AbstractPage::reloadUserpics() {
+	QwitTools::log("AbstractPage::reloadUserpics()");
 	twitterWidget->reloadUserpics();
 }
 

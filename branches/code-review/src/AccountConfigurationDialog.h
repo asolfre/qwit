@@ -31,13 +31,13 @@
 
 #include "ui_AccountConfigurationDialog.h"
 
-const int ACTION_ADD = 0;
-const int ACTION_EDIT = 1;
-
 class AccountConfigurationDialog: public QDialog, public Ui::AccountConfigurationDialog {
 	Q_OBJECT
 	
 public:
+	static const int ActionAdd = 0;
+	static const int ActionEdit = 1;
+
 	int action;
 	int accountId;
 	int accountType;

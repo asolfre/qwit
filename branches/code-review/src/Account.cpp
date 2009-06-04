@@ -37,14 +37,17 @@
 using namespace std;
 
 Account::Account() {
+	QwitTools::log("Account::Account()");
 	twitter = new Twitter(this);
 	connect(twitter, SIGNAL(friendsStatusesReceived(const QByteArray&)), this, SLOT(addFriendsStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(repliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
 	connect(twitter, SIGNAL(publicStatusesReceived(const QByteArray&)), this, SLOT(addPublicStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(lastStatusReceived(const QByteArray&)), this, SLOT(updateLastStatus(const QByteArray&)));
+	connect(twitter, SIGNAL(statusSent(const QByteArray&)), this, SLOT(statusSent(const QByteArray&)));
 }
 
 Account::Account(const QString &type, const QString &username, const QString &password) {
+	QwitTools::log("Account::Account()");
 	twitter = new Twitter(this);
 	this->type = type;
 	this->username = username;
@@ -53,9 +56,11 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(repliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
 	connect(twitter, SIGNAL(publicStatusesReceived(const QByteArray&)), this, SLOT(addPublicStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(lastStatusReceived(const QByteArray&)), this, SLOT(updateLastStatus(const QByteArray&)));
+	connect(twitter, SIGNAL(statusSent(const QByteArray&)), this, SLOT(statusSent(const QByteArray&)));
 }
 
 void Account::addFriendsStatuses(const QByteArray &data) {
+	QwitTools::log("Account::addFriendsStatuses()");
 	QString trayMessage = "";
 	QVector<Status> statuses = QwitTools::parseStatuses(data);
 	int lastId = (friendsStatuses.size() ? friendsStatuses[friendsStatuses.size() - 1].id : 0);
@@ -74,6 +79,7 @@ void Account::addFriendsStatuses(const QByteArray &data) {
 }
 
 void Account::addReplies(const QByteArray &data) {
+	QwitTools::log("Account::addReplies()");
 	QString trayMessage = "";
 	QVector<Status> statuses = QwitTools::parseStatuses(data);
 	int lastId = (replies.size() ? replies[replies.size() - 1].id : 0);
@@ -92,6 +98,7 @@ void Account::addReplies(const QByteArray &data) {
 }
 
 void Account::addPublicStatuses(const QByteArray &data) {
+	QwitTools::log("Account::addPublicStatuses()");
 	QString trayMessage = "";
 	QVector<Status> statuses = QwitTools::parseStatuses(data);
 	int lastId = (replies.size() ? replies[replies.size() - 1].id : 0);
@@ -110,12 +117,25 @@ void Account::addPublicStatuses(const QByteArray &data) {
 }
 
 void Account::updateLastStatus(const QByteArray &data) {
-	Status status = QwitTools::parseUser(data);
-	emit lastStatusReceived(status.status);
+	QwitTools::log("Account::updateLastStatus()");
+	lastStatus = QwitTools::parseUser(data);
+	emit lastStatusReceived(lastStatus.status);
 }
 
 void Account::updateLastStatus() {
+	QwitTools::log("Account::updateLastStatus()");
 	twitter->receiveLastStatus();
+}
+
+void Account::sendStatus(const QString &status) {
+	QwitTools::log("Account::sendStatus()");
+	twitter->sendStatus(status);
+}
+
+void Account::statusSent(const QByteArray &data) {
+	QwitTools::log("Account::statusSent()");
+	lastStatus = QwitTools::parseStatus(data);
+	emit lastStatusReceived(lastStatus.status);
 }
 
 #endif

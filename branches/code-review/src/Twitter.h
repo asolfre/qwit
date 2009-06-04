@@ -59,6 +59,7 @@ public:
 	void receiveReplies(int lastStatusId, int count);
 	void receivePublicStatuses(int lastStatusId, int count);
 	void receiveLastStatus();
+	void sendStatus(const QString &status);
 	void abort();
 
 signals:
@@ -67,7 +68,8 @@ signals:
 	void friendsStatusesReceived(const QByteArray &);
 	void repliesReceived(const QByteArray &);
 	void publicStatusesReceived(const QByteArray &);
-	void lastStatusReceived(const QByteArray&);
+	void lastStatusReceived(const QByteArray &);
+	void statusSent(const QByteArray &);
 	
 public slots:
 

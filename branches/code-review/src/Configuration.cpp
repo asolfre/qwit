@@ -37,32 +37,32 @@
 
 using namespace std;
 
-const char *COMPANY_NAME = "arti";
-const char *APPLICATION_NAME = "qwit2";
+const char *CompanyName = "arti";
+const char *ApplicationName = "qwit2";
 
 Configuration* Configuration::instance = NULL;
-QSettings Configuration::settings(COMPANY_NAME, APPLICATION_NAME);
+QSettings Configuration::settings(CompanyName, ApplicationName);
 
-QMap<QString, QString> Configuration::SERVICES_NAMES;
-QMap<QString, int> Configuration::SERVICES_IDS;
-QVector<QString> Configuration::SERVICES;
+QMap<QString, QString> Configuration::ServicesNames;
+QMap<QString, int> Configuration::ServicesIds;
+QVector<QString> Configuration::Services;
 
 Configuration::Configuration() {
-	SERVICES_NAMES["twitter"] = "Twitter";
-	SERVICES_NAMES["identica"] = "Identica";
-	SERVICES_NAMES["custom"] = "Custom";
-	SERVICES_IDS["twitter"] = 0;
-	SERVICES_IDS["identica"] = 1;
-	SERVICES_IDS["custom"] = 2;
-	SERVICES.push_back("twitter");
-	SERVICES.push_back("identica");
-	SERVICES.push_back("custom");
+	ServicesNames["twitter"] = "Twitter";
+	ServicesNames["identica"] = "Identica";
+	ServicesNames["custom"] = "Custom";
+	ServicesIds["twitter"] = 0;
+	ServicesIds["identica"] = 1;
+	ServicesIds["custom"] = 2;
+	Services.push_back("twitter");
+	Services.push_back("identica");
+	Services.push_back("custom");
 	QFile file(settings.fileName());
 	file.setPermissions(QFile::ReadUser | QFile::WriteUser);
 }
 
 Configuration* Configuration::getInstance() {
-	if (instance == NULL) instance = new Configuration();
+	if (!instance) instance = new Configuration();
 	return instance;
 }
 

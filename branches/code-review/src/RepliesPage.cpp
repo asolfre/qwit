@@ -34,12 +34,15 @@
 #include <QScrollBar>
 
 #include "RepliesPage.h"
+#include "QwitTools.h"
 
 #include <iostream>
 
 using namespace std;
 
 RepliesPage::RepliesPage(QWidget* parent): AbstractPage(parent) {
+	QwitTools::log("RepliesPage::RepliesPage()");
+
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
@@ -57,6 +60,8 @@ RepliesPage::RepliesPage(QWidget* parent): AbstractPage(parent) {
 }
 
 void RepliesPage::updateSize() {
+	QwitTools::log("RepliesPage::updateSize()");
+
 	twitterWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() - 5, 500);
 }
 
@@ -65,11 +70,14 @@ QString RepliesPage::title() {
 }
 
 void RepliesPage::update() {
+	QwitTools::log("RepliesPage::update()");
+
 	Configuration::getInstance()->currentAccount()->twitter->receiveReplies(0, 20);
 }
 
 void RepliesPage::updateItems(const QVector<Status> &items) {
-	cout << "RepliesPage" << endl;
+	QwitTools::log("RepliesPage::updateItems()");
+
 	clear();
 	for (int i = 0; i < items.size(); ++i) {
 		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);

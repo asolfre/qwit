@@ -37,6 +37,8 @@ class StatusTextEdit: public QTextEdit {
 	Q_OBJECT
 
 public:
+	static const int MaxStatusCharacters = 140;
+	static const int StandardHeight = 45;
 
 	StatusTextEdit(QWidget *parent = 0);
 
@@ -51,7 +53,7 @@ protected:
 	
 signals:
 
-	void returnPressed();
+	void statusEntered(const QString &status);
 	void leftCharsNumberChanged(int);
 
 public slots:

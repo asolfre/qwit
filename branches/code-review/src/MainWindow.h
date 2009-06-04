@@ -95,7 +95,7 @@ public:
 	void deleteAccountButton(Account *account);
 	void updateAccountButton(Account *account);
 	void setupTrayIcon();
-	void connectCurrentAccountSignals();
+	void updateCurrentAccount(int id);
 	
 public slots:
 

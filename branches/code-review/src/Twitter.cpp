@@ -36,6 +36,7 @@
 #include <QNetworkProxy>
 
 #include "Twitter.h"
+#include "QwitTools.h"
 
 #include "Services.h"
 
@@ -44,21 +45,25 @@
 using namespace std;
 
 Twitter::Twitter(Account *account) {
+	QwitTools::log("Twitter::Twitter()");
+
 	this->account = account;
 	http = new QHttp();
 	connect(http, SIGNAL(requestStarted(int)), this, SLOT(requestStarted(int)));
 	connect(http, SIGNAL(requestFinished(int, bool)), this, SLOT(requestFinished(int, bool)));
 }
 
-void Twitter::sendStatus(QString status, QString replyId) {
-	QUrl url((account->serviceAPIURL == "" ? Services::options[account->type]["apiurl"] : account->serviceAPIURL) + Services::options[account->type]["friends"] + ".xml");
-	
+void Twitter::sendStatus(const QString &status) {
+	QwitTools::log("Twitter::sendStatus()");
+
+	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["update"] + ".xml");
+
 	QHttpRequestHeader header;
 	header.setRequest("POST", url.path());
 	header.setValue("Host", url.host());
 	header.setContentType("application/x-www-form-urlencoded");
 
-    if(url.toString().indexOf("https") == 0) {
+	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
     } else {
         http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
@@ -68,17 +73,19 @@ void Twitter::sendStatus(QString status, QString replyId) {
 
 	QByteArray data = "status=";
 	data += QUrl::toPercentEncoding(status);
-	if (replyId != "") {
-		data += "&in_reply_to_status_id=";
-		data += replyId;
-	}
 	data += "&source=qwit";
-	int id = http->request(header, data);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->request(header, data, &buffer);
+
 	sendStatusRequests[id] = tr("Sending status: %1").arg(url.host() + url.path());
 }
 
 void Twitter::receiveFriendsStatuses(int lastStatusId, int count) {
-	QUrl url((account->serviceAPIURL == "" ? Services::options[account->type]["apiurl"] : account->serviceAPIURL) + Services::options[account->type]["friends"] + ".xml");
+	QwitTools::log("Twitter::receiveFriendsStatuses()");
+
+	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["friends"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -95,7 +102,9 @@ void Twitter::receiveFriendsStatuses(int lastStatusId, int count) {
 }
 
 void Twitter::receiveReplies(int lastStatusId, int count) {
-	QUrl url((account->serviceAPIURL == "" ? Services::options[account->type]["apiurl"] : account->serviceAPIURL) + Services::options[account->type]["replies"] + ".xml");
+	QwitTools::log("Twitter::receiveReplies()");
+
+	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["replies"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -112,7 +121,9 @@ void Twitter::receiveReplies(int lastStatusId, int count) {
 }
 
 void Twitter::receivePublicStatuses(int lastStatusId, int count) {
-	QUrl url((account->serviceAPIURL == "" ? Services::options[account->type]["apiurl"] : account->serviceAPIURL) + Services::options[account->type]["public"] + ".xml");
+	QwitTools::log("Twitter::receivePublicStatuses()");
+
+	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["public"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -129,7 +140,9 @@ void Twitter::receivePublicStatuses(int lastStatusId, int count) {
 }
 
 void Twitter::receiveLastStatus() {
-	QUrl url((account->serviceAPIURL == "" ? Services::options[account->type]["apiurl"] : account->serviceAPIURL) + Services::options[account->type]["last"] + ".xml");
+	QwitTools::log("Twitter::receiveLastStatus()");
+
+	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["last"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -146,37 +159,53 @@ void Twitter::receiveLastStatus() {
 }
 
 void Twitter::abort() {
+	QwitTools::log("Twitter::abort()");
+
 }
 
 void Twitter::requestStarted(int id) {
+	QwitTools::log("Twitter::requestStarted() " + QString::number(id));
+
 	if (receiveFriendsStatusesRequests.find(id) != receiveFriendsStatusesRequests.end()) {
-		cout << "Request started: " << qPrintable(receiveFriendsStatusesRequests[id]) << endl;
+		QwitTools::log("Request started: " + receiveFriendsStatusesRequests[id]);
 	} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
-		cout << "Request started: " << qPrintable(receiveRepliesRequests[id]) << endl;
+		QwitTools::log("Request started: " + receiveRepliesRequests[id]);
 	} else if (receivePublicStatusesRequests.find(id) != receivePublicStatusesRequests.end()) {
-		cout << "Request started: " << qPrintable(receivePublicStatusesRequests[id]) << endl;
+		QwitTools::log("Request started: " + receivePublicStatusesRequests[id]);
 	} else if (receiveLastStatusRequests.find(id) != receiveLastStatusRequests.end()) {
-		cout << "Request started: " << qPrintable(receiveLastStatusRequests[id]) << endl;
+		QwitTools::log("Request started: " + receiveLastStatusRequests[id]);
+	} else if (sendStatusRequests.find(id) != sendStatusRequests.end()) {
+		QwitTools::log("Request started: " + sendStatusRequests[id]);
 	}
 }
 
 void Twitter::requestFinished(int id, bool error) {
-	if (receiveFriendsStatusesRequests.find(id) != receiveFriendsStatusesRequests.end()) {
-		cout << "Request finished: " << qPrintable(receiveFriendsStatusesRequests[id]) << endl;
-		buffer.close();
-		emit friendsStatusesReceived(buffer.data());
-	} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
-		cout << "Request finished: " << qPrintable(receiveRepliesRequests[id]) << endl;
-		buffer.close();
-		emit repliesReceived(buffer.data());
-	} else if (receivePublicStatusesRequests.find(id) != receivePublicStatusesRequests.end()) {
-		cout << "Request finished: " << qPrintable(receivePublicStatusesRequests[id]) << endl;
-		buffer.close();
-		emit publicStatusesReceived(buffer.data());
-	} else if (receiveLastStatusRequests.find(id) != receiveLastStatusRequests.end()) {
-		cout << "Request finished: " << qPrintable(receiveLastStatusRequests[id]) << endl;
-		buffer.close();
-		emit lastStatusReceived(buffer.data());
+	if (!error) {
+		QwitTools::log("Twitter::requestFinished() " + QString::number(id));
+
+		if (receiveFriendsStatusesRequests.find(id) != receiveFriendsStatusesRequests.end()) {
+			QwitTools::log("Request finished: " + receiveFriendsStatusesRequests[id]);
+			buffer.close();
+			emit friendsStatusesReceived(buffer.data());
+		} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
+			QwitTools::log("Request finished: " + receiveRepliesRequests[id]);
+			buffer.close();
+			emit repliesReceived(buffer.data());
+		} else if (receivePublicStatusesRequests.find(id) != receivePublicStatusesRequests.end()) {
+			QwitTools::log("Request finished: " + receivePublicStatusesRequests[id]);
+			buffer.close();
+			emit publicStatusesReceived(buffer.data());
+		} else if (receiveLastStatusRequests.find(id) != receiveLastStatusRequests.end()) {
+			QwitTools::log("Request finished: " + receiveLastStatusRequests[id]);
+			buffer.close();
+			emit lastStatusReceived(buffer.data());
+		} else if (sendStatusRequests.find(id) != sendStatusRequests.end()) {
+			QwitTools::log("Request finished: " + sendStatusRequests[id]);
+			buffer.close();
+			emit statusSent(buffer.data());
+		}
+	} else {
+		QwitTools::log("Twitter::requestFinished() " + QString::number(id) + " error");
 	}
 }
 

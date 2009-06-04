@@ -52,9 +52,13 @@ void TwitterWidgetItem::loadUserpic() {
 }
 
 TwitterWidget::TwitterWidget(QWidget *parent): QWidget(parent) {
+	QwitTools::log("TwitterWidget::TwitterWidget()");
+
 }
 
 void TwitterWidget::clear() {
+	QwitTools::log("TwitterWidget::clear()");
+
 	for (int i = 0; i < items.size(); ++i) {
 		delete items[i].status;
 		delete items[i].userpic;
@@ -70,6 +74,8 @@ void TwitterWidget::clear() {
 }
 
 void TwitterWidget::addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId) {
+	QwitTools::log("TwitterWidget::addItem()");
+
 	TwitterWidgetItem item = TwitterWidgetItem();
 
 	item.time = time;
@@ -144,6 +150,8 @@ void TwitterWidget::addItem(const QString &userpic, const QString &username, con
 }
 
 void TwitterWidget::updateItems() {
+	QwitTools::log("TwitterWidget::updateItems()");
+
 	int height = 0;
 	for (int i = 0; i < items.size(); ++i) {
 		QFontMetrics fontMetrics(items[i].status->font());
@@ -190,6 +198,8 @@ void TwitterWidget::updateItems() {
 }
 
 void TwitterWidget::resizeEvent(QResizeEvent *event) {
+	QwitTools::log("TwitterWidget::resizeEvent()");
+
 	if (event->oldSize() == event->size()) {
 		event->ignore();
 		return;
@@ -212,6 +222,8 @@ void TwitterWidget::paintEvent(QPaintEvent *event) {
 }
 
 void TwitterWidget::reloadUserpics() {
+	QwitTools::log("TwitterWidget::reloadUserpics()");
+
 	for (int i = 0; i < items.size(); ++i) {
 		items[i].loadUserpic();
 	}

@@ -67,23 +67,23 @@ void OptionsDialog::changeOptionsGroup(QTreeWidgetItem *item) {
 }
 
 void OptionsDialog::addAccount() {
-	accountConfigurationDialog->action = ACTION_ADD;
+	accountConfigurationDialog->action = AccountConfigurationDialog::ActionAdd;
 	accountConfigurationDialog->accountType = servicesComboBox->currentIndex();
 	accountConfigurationDialog->accountUsernameLineEdit->setText("");
 	accountConfigurationDialog->accountPasswordLineEdit->setText("");
 	accountConfigurationDialog->accountUsernameLineEdit->setFocus();
 	switch (servicesComboBox->currentIndex()) {
-		case Configuration::ACCOUNT_TWITTER: {
+		case Configuration::AccountTwitter: {
 				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
 				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
 			}
 			break;
-		case Configuration::ACCOUNT_IDENTICA: {
+		case Configuration::AccountIdentica: {
 				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
 				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
 			}
 			break;
-		case Configuration::ACCOUNT_CUSTOM: {
+		case Configuration::AccountCustom: {
 				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(true);
 				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(true);
 			}
@@ -112,21 +112,21 @@ void OptionsDialog::editAccount() {
 	int accountId = accountsListWidget->currentRow();
 	if (accountId == -1) return;
 	Configuration *config = Configuration::getInstance();
-	accountConfigurationDialog->action = ACTION_EDIT;
+	accountConfigurationDialog->action = AccountConfigurationDialog::ActionEdit;
 	accountConfigurationDialog->accountId = accountId;
 	accountConfigurationDialog->accountUsernameLineEdit->setText((config->accounts[accountId])->username);
 	accountConfigurationDialog->accountPasswordLineEdit->setText((config->accounts[accountId])->password);
 	accountConfigurationDialog->accountUsernameLineEdit->setFocus();
-	switch (Configuration::SERVICES_IDS[config->accounts[accountId]->type]) {
-		case Configuration::ACCOUNT_TWITTER: {
+	switch (Configuration::ServicesIds[config->accounts[accountId]->type]) {
+		case Configuration::AccountTwitter: {
 			accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
 			accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
 		}
-		case Configuration::ACCOUNT_IDENTICA: {
+		case Configuration::AccountIdentica: {
 			accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
 			accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
 		}
-		case Configuration::ACCOUNT_CUSTOM: {
+		case Configuration::AccountCustom: {
 			accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(true);
 			accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(true);
 		}
@@ -138,20 +138,20 @@ void OptionsDialog::commitAccount() {
 	Configuration *config = Configuration::getInstance();
 	MainWindow *mainWindow = MainWindow::getInstance();
 	switch (accountConfigurationDialog->action) {
-		case ACTION_ADD: {
-				Account *account = new Account(Configuration::SERVICES[accountConfigurationDialog->accountType], accountConfigurationDialog->accountUsernameLineEdit->text(), accountConfigurationDialog->accountPasswordLineEdit->text());
+		case AccountConfigurationDialog::ActionAdd: {
+				Account *account = new Account(Configuration::Services[accountConfigurationDialog->accountType], accountConfigurationDialog->accountUsernameLineEdit->text(), accountConfigurationDialog->accountPasswordLineEdit->text());
 				config->addAccount(account);
-				accountsListWidget->addItem(Configuration::SERVICES_NAMES[account->type] + ": " + account->username);
+				accountsListWidget->addItem(Configuration::ServicesNames[account->type] + ": " + account->username);
 				accountsListWidget->setCurrentRow(account->id);
 				mainWindow->addAccountButton(account);
 			}
 			break;
-		case ACTION_EDIT: {
+		case AccountConfigurationDialog::ActionEdit: {
 				Account *account = config->accounts[accountConfigurationDialog->accountId];
 				account->username = accountConfigurationDialog->accountUsernameLineEdit->text();
 				account->password = accountConfigurationDialog->accountPasswordLineEdit->text();
 				accountsListWidget->takeItem(account->id);
-				accountsListWidget->insertItem(account->id, Configuration::SERVICES_NAMES[account->type] + ": " + account->username);
+				accountsListWidget->insertItem(account->id, Configuration::ServicesNames[account->type] + ": " + account->username);
 				accountsListWidget->setCurrentRow(account->id);
 				mainWindow->updateAccountButton(account);
 			}

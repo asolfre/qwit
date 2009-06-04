@@ -49,6 +49,8 @@ private:
 	QDateTime _dateFromString(QString date);
 	QVector<Status> _parseStatuses(const QByteArray &data);
 	Status _parseUser(const QByteArray &data);
+	Status _parseStatus(const QByteArray &data);
+	void _log(const QString &message);
 	
 public:
 	static QDateTime dateFromString(QString date);
@@ -56,6 +58,8 @@ public:
 	static QString formatDateTime(const QDateTime &time);
 	static QVector<Status> parseStatuses(const QByteArray &data);
 	static Status parseUser(const QByteArray &data);
+	static Status parseStatus(const QByteArray &data);
+	static void log(const QString &message);
 };
 
 #endif

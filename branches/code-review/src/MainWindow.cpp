@@ -48,6 +48,8 @@ MainWindow* MainWindow::getInstance() {
 }
 
 MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
+	QwitTools::log("MainWindow::MainWindow()");
+
 	setupUi(this);
 
 	statusTextEdit = new StatusTextEdit(this);
@@ -91,6 +93,8 @@ void MainWindow::leftCharsNumberChanged(int count) {
 }
 
 void MainWindow::loadState() {
+	QwitTools::log("MainWindow::loadState()");
+
 	Configuration *config = Configuration::getInstance();
 	
 	config->load();
@@ -105,6 +109,8 @@ void MainWindow::loadState() {
 }
 
 void MainWindow::saveState() {
+	QwitTools::log("MainWindow::saveState()");
+
 	Configuration *config = Configuration::getInstance();
 	
 	config->position = pos();
@@ -114,6 +120,8 @@ void MainWindow::saveState() {
 }
 
 void MainWindow::saveOptions() {
+	QwitTools::log("MainWindow::saveOptions()");
+
 	Configuration *config = Configuration::getInstance();
 
 	config->showGreetingMessage = (optionsDialog->showGreetingMessageCheckBox->checkState() == Qt::Checked);
@@ -149,6 +157,8 @@ void MainWindow::saveOptions() {
 }
 
 void MainWindow::updateState() {
+	QwitTools::log("MainWindow::updateState()");
+
 	Configuration *config = Configuration::getInstance();
 
 	if (leftCharactersNumberLabel->isHidden() && greetingMessageLabel->isHidden()) {
@@ -201,13 +211,15 @@ void MainWindow::updateState() {
 		mainTabWidget->addTab(pages[i], pages[i]->title());
 	}
 	
-	connectCurrentAccountSignals();
+	updateCurrentAccount(config->currentAccountId);
 	
 	move(config->position);
 	resize(config->size);
 }
 
 void MainWindow::resetOptionsDialog() {
+	QwitTools::log("MainWindow::resetOptionsDialog()");
+
 	Configuration *config = Configuration::getInstance();
 	
 // User interface
@@ -242,11 +254,13 @@ void MainWindow::resetOptionsDialog() {
 // Accounts
 	optionsDialog->accountsListWidget->clear();
 	for (int i = 0; i < config->accounts.size(); ++i) {
-		optionsDialog->accountsListWidget->addItem(Configuration::SERVICES_NAMES[config->accounts[i]->type] + ": " + config->accounts[i]->username);
+		optionsDialog->accountsListWidget->addItem(Configuration::ServicesNames[config->accounts[i]->type] + ": " + config->accounts[i]->username);
 	}
 }
 
 void MainWindow::addAccountButton(Account *account) {
+	QwitTools::log("MainWindow::addAccountButton()");
+
 	QToolButton *accountButton = new QToolButton(this);
 	accountButton->setIcon(QIcon(":/images/" + account->type + ".png"));
 	accountButton->setText(account->username);
@@ -271,10 +285,14 @@ void MainWindow::addAccountButton(Account *account) {
 }
 
 void MainWindow::updateAccountButton(Account *account) {
+	QwitTools::log("MainWindow::updateAccountButton()");
+
 	accountsButtons[account->id]->setText(account->username);
 }
 
 void MainWindow::deleteAccountButton(Account *account) {
+	QwitTools::log("MainWindow::deleteAccountButton()");
+
 	if (accountsLayout) {
 		accountsLayout->removeWidget(accountsButtons[account->id]);
 	}
@@ -309,18 +327,23 @@ void MainWindow::deleteAccountButton(Account *account) {
 }
 
 void MainWindow::showOptionsDialog() {
+	QwitTools::log("MainWindow::showOptionsDialog()");
+
 	resetOptionsDialog();
 	optionsDialog->showNormal();
 }
 
 void MainWindow::accountButtonClicked(int id) {
-	Configuration *config = Configuration::getInstance();
-	config->currentAccountId = id;
-	connectCurrentAccountSignals();
+	QwitTools::log("MainWindow::accountButtonClicked()");
+
+	updateCurrentAccount(id);
 }
 
-void MainWindow::connectCurrentAccountSignals() {
+void MainWindow::updateCurrentAccount(int id) {
+	QwitTools::log("MainWindow::updateCurrentAccount()");
+
 	Configuration *config = Configuration::getInstance();
+	config->currentAccountId = id;
 	if (homePage) {
 		disconnect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), 0, 0);
 		connect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), homePage, SLOT(updateItems(const QVector<Status> &)));
@@ -338,15 +361,22 @@ void MainWindow::connectCurrentAccountSignals() {
 	}
 	disconnect(config->accounts[config->currentAccountId], SIGNAL(lastStatusReceived(const QString &)), 0, 0);
 	connect(config->accounts[config->currentAccountId], SIGNAL(lastStatusReceived(const QString &)), this, SLOT(updateLastStatus(const QString &)));
+	lastStatusLabel->setText(config->accounts[config->currentAccountId]->lastStatus.status);
+	disconnect(statusTextEdit, SIGNAL(statusEntered(const QString &)), 0, 0);
+	connect(statusTextEdit, SIGNAL(statusEntered(const QString &)), config->accounts[config->currentAccountId], SLOT(sendStatus(const QString &)));
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
+	QwitTools::log("MainWindow::resizeEvent()");
+
 	for (int i = 0; i < pages.size(); ++i) {
 		pages[i]->updateSize();
 	}
 }
 
 void MainWindow::showEvent(QShowEvent *event) {
+	QwitTools::log("MainWindow::showEvent()");
+
 	Configuration *config = Configuration::getInstance();
 	resize(config->size);
 	move(config->position);
@@ -361,11 +391,15 @@ void MainWindow::showEvent(QShowEvent *event) {
 }
 
 void MainWindow::hideEvent(QHideEvent *event) {
+	QwitTools::log("MainWindow::hideEvent()");
+
 	saveState();
 	event->accept();
 }
 
 void MainWindow::setupTrayIcon() {
+	QwitTools::log("MainWindow::setupTrayIcon()");
+
 	trayShowhideAction = new QAction(tr("&Show / Hide"), this);
 	connect(trayShowhideAction, SIGNAL(triggered()), this, SLOT(showhide()));
 	trayQuitAction = new QAction(tr("&Quit"), this);
@@ -382,12 +416,16 @@ void MainWindow::setupTrayIcon() {
 }
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
+	QwitTools::log("MainWindow::iconActivated()");
+
 	if (reason == QSystemTrayIcon::Trigger) {
 		showhide();
 	}
 }
 
 void MainWindow::showhide() {
+	QwitTools::log("MainWindow::showhide()");
+
 	if (isVisible()) {
 		hide();
 	} else {
@@ -400,6 +438,8 @@ void MainWindow::showhide() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
+	QwitTools::log("MainWindow::keyPressEvent()");
+
 	if (event->key() == Qt::Key_Escape) {
 		showhide();
 	} else if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Q)) {
@@ -411,11 +451,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 }
 
 void MainWindow::quit() {
+	QwitTools::log("MainWindow::quit()");
+
 	acceptClose = true;
 	close();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
+	QwitTools::log("MainWindow::closeEvent()");
+
 	if (acceptClose) {
 		saveState();
 		event->accept();
@@ -426,24 +470,32 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::refresh() {
+	QwitTools::log("MainWindow::refresh()");
+
 	pages[mainTabWidget->currentIndex()]->update();
 	Configuration *config = Configuration::getInstance();
 	config->accounts[config->currentAccountId]->updateLastStatus();
 }
 
 void MainWindow::tabChanged(int tabIndex) {
+	QwitTools::log("MainWindow::tabChanged()");
+
 	if ((tabIndex >= 0) && (tabIndex < pages.size())) {
 		pages[tabIndex]->updateSize();
 	}
 }
 
 void MainWindow::reloadUserpics() {
+	QwitTools::log("MainWindow::reloadUserpics()");
+
 	for (int i = 0; i < pages.size(); ++i) {
 		pages[i]->reloadUserpics();
 	}
 }
 
 void MainWindow::updateLastStatus(const QString &status) {
+	QwitTools::log("MainWindow::updateLastStatus()");
+
 	lastStatusLabel->setText(status);
 }
 

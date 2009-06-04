@@ -39,20 +39,20 @@
 
 using namespace std;
 
-const int MAX_STATUS_CHARACTERS = 140;
-const int STANDARD_HEIGHT = 45;
+const int StatusTextEdit::MaxStatusCharacters;
+const int StatusTextEdit::StandardHeight;
 
 StatusTextEdit::StatusTextEdit(QWidget *parent): QTextEdit(parent) {
-	setFixedHeight(STANDARD_HEIGHT);
+	setFixedHeight(StandardHeight);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setAcceptRichText(false);
 	setTabChangesFocus(true);
-	emit leftCharsNumberChanged(MAX_STATUS_CHARACTERS);
+	emit leftCharsNumberChanged(MaxStatusCharacters);
 	connect(this, SIGNAL(textChanged()), this, SLOT(textChangedToCharsNumberChanged()));
 }
 
 int StatusTextEdit::getMaxStatusCharactersNumber() {
-	return MAX_STATUS_CHARACTERS;
+	return MaxStatusCharacters;
 }
 
 void StatusTextEdit::focusInEvent(QFocusEvent *event) {
@@ -65,9 +65,10 @@ void StatusTextEdit::focusOutEvent(QFocusEvent *event) {
 
 void StatusTextEdit::keyPressEvent(QKeyEvent *e) {
 	if ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)) {
-		emit returnPressed();
-		if (height() != STANDARD_HEIGHT) {
-			setFixedHeight(STANDARD_HEIGHT);
+		emit statusEntered(toPlainText());
+		clear();
+		if (height() != StandardHeight) {
+			setFixedHeight(StandardHeight);
 		}
 		e->accept();
 		return;
@@ -76,7 +77,7 @@ void StatusTextEdit::keyPressEvent(QKeyEvent *e) {
 }
 
 void StatusTextEdit::textChangedToCharsNumberChanged() {
-	emit leftCharsNumberChanged(MAX_STATUS_CHARACTERS - toPlainText().length());
+	emit leftCharsNumberChanged(MaxStatusCharacters - toPlainText().length());
 	updateSize();
 }
 
@@ -87,6 +88,7 @@ void StatusTextEdit::updateSize() {
 }
 
 void StatusTextEdit::contextMenuEvent(QContextMenuEvent *event) {
+// custom context menu example
 	QMenu *menu = createStandardContextMenu();
 	menu->addAction(tr("My Menu Item"));
 	menu->exec(event->globalPos());

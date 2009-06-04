@@ -34,12 +34,15 @@
 #include <QScrollBar>
 
 #include "HomePage.h"
+#include "QwitTools.h"
 
 #include <iostream>
 
 using namespace std;
 
 HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
+	QwitTools::log("HomePage::HomePage()");
+
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
@@ -57,6 +60,7 @@ HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
 }
 
 void HomePage::updateSize() {
+	QwitTools::log("HomePage::updateSize()");
 	twitterWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() - 5, 500);
 }
 
@@ -65,11 +69,12 @@ QString HomePage::title() {
 }
 
 void HomePage::update() {
+	QwitTools::log("HomePage::update()");
 	Configuration::getInstance()->currentAccount()->twitter->receiveFriendsStatuses(0, 20);
 }
 
 void HomePage::updateItems(const QVector<Status> &items) {
-	cout << "HomePage" << endl;
+	QwitTools::log("HomePage::updateItems()");
 	clear();
 	for (int i = 0; i < items.size(); ++i) {
 		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);

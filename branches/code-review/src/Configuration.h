@@ -43,13 +43,13 @@ class Configuration {
 	static QSettings settings;
 	
 public:
-	static const int ACCOUNT_TWITTER = 0;
-	static const int ACCOUNT_IDENTICA = 1;
-	static const int ACCOUNT_CUSTOM = 2;
+	static const int AccountTwitter = 0;
+	static const int AccountIdentica = 1;
+	static const int AccountCustom = 2;
 
-	static QMap<QString, QString> SERVICES_NAMES;
-	static QMap<QString, int> SERVICES_IDS;
-	static QVector<QString> SERVICES;
+	static QMap<QString, QString> ServicesNames;
+	static QMap<QString, int> ServicesIds;
+	static QVector<QString> Services;
 	
 // State
 	QPoint position;

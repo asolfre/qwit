@@ -42,6 +42,7 @@ void Services::initialize() {
 	twitterOptions["replies"] = "/statuses/mentions";
 	twitterOptions["user"] = "/statuses/user_timeline/";
 	twitterOptions["last"] = "/users/show";
+	twitterOptions["update"] = "/statuses/update";
 	twitterOptions["direct_messages"] = "/direct_messages";
 	twitterOptions["direct_messages_sent"] = "/direct_messages";
 	options["twitter"] = twitterOptions;

@@ -271,4 +271,79 @@ Status QwitTools::_parseUser(const QByteArray &data) {
 	return status;
 }
 
+Status QwitTools::parseStatus(const QByteArray &data) {
+	return getInstance()->_parseStatus(data);
+}
+
+Status QwitTools::_parseStatus(const QByteArray &data) {
+	Status status;
+	
+	QDomDocument document;
+	document.setContent(data);
+
+	QDomElement root = document.documentElement();
+	
+	if (root.tagName() != "status") {
+		return status;
+	}
+	
+	QDomNode node = root.firstChild();
+	QString html = "";
+	QString trayMessage = "";
+	QString message = "", timeStr = "", user = "", image = "";
+	int id = 0, replyUserID = 0, replyStatusId = 0;
+	while (!node.isNull()) {
+		if (node.toElement().tagName() == "created_at") {
+			timeStr = node.toElement().text();
+		} else if (node.toElement().tagName() == "text") {
+			message = node.toElement().text();
+		} else if (node.toElement().tagName() == "id") {
+			id = node.toElement().text().toInt();
+		} else if (node.toElement().tagName() == "in_reply_to_status_id") {
+			replyStatusId = node.toElement().text().toInt();
+		} else if (node.toElement().tagName() == "in_reply_to_user_id") {
+			replyUserID = node.toElement().text().toInt();
+		}
+		node = node.nextSibling();
+	}
+	if (id) {
+		QDateTime time = QwitTools::dateFromString(timeStr);
+		time = QDateTime(time.date(), time.time(), Qt::UTC);
+		QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+		QString imageFileName = "";
+		for (int i = 0; i < hash.size(); ++i) {
+			unsigned char c = hash[i];
+			c >>= 4;
+			if (c < 10) {
+				c += '0';
+			} else {
+				c += 'A' - 10;
+			}
+			imageFileName += (char)c;
+			c = hash[i];
+			c &= 15;
+			if (c < 10) {
+				c += '0';
+			} else {
+				c += 'A' - 10;
+			}
+			imageFileName += (char)c;
+		}
+		QDir dir(QDir::homePath());
+		dir.mkdir(".qwit2");
+		imageFileName = dir.absolutePath() + "/.qwit2/" + imageFileName;
+		UserpicsDownloader::getInstance()->download(image, imageFileName);
+		status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime());
+	}
+	return status;
+}
+
+void QwitTools::log(const QString &message) {
+	getInstance()->_log(message);
+}
+
+void QwitTools::_log(const QString &message) {
+	cout << qPrintable(QDateTime::currentDateTime().toString()) << ":  " << qPrintable(message) << endl;
+}
+
 #endif

@@ -44,8 +44,9 @@ public:
 	QString type;
 	QString username;
 	QString password;
-	QString serviceBaseURL;
-	QString serviceAPIURL;
+	QString serviceBaseUrl;
+	QString serviceApiUrl;
+	Status lastStatus;
 	Twitter *twitter;
 	
 	QVector<Status> friendsStatuses;
@@ -61,6 +62,8 @@ public slots:
 	void addPublicStatuses(const QByteArray &data);
 	void updateLastStatus(const QByteArray &data);
 	void updateLastStatus();
+	void sendStatus(const QString &status);
+	void statusSent(const QByteArray &status);
 	
 signals:
 	void friendsStatusesReceived(const QVector<Status> &items);

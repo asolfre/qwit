@@ -34,12 +34,15 @@
 #include <QScrollBar>
 
 #include "PublicPage.h"
+#include "QwitTools.h"
 
 #include <iostream>
 
 using namespace std;
 
 PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
+	QwitTools::log("PublicPage::PublicPage()");
+
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("publicPageTwitterWidget"));
@@ -57,6 +60,8 @@ PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
 }
 
 void PublicPage::updateSize() {
+	QwitTools::log("PublicPage::updateSize()");
+
 	twitterWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() - 5, 500);
 }
 
@@ -65,11 +70,14 @@ QString PublicPage::title() {
 }
 
 void PublicPage::update() {
+	QwitTools::log("PublicPage::update()");
+
 	Configuration::getInstance()->currentAccount()->twitter->receivePublicStatuses(0, 20);
 }
 
 void PublicPage::updateItems(const QVector<Status> &items) {
-	cout << "PublicPage" << endl;
+	QwitTools::log("PublicPage::updateItems()");
+
 	clear();
 	for (int i = 0; i < items.size(); ++i) {
 		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);
