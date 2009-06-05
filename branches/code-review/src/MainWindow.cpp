@@ -40,15 +40,19 @@
 
 using namespace std;
 
-MainWindow* MainWindow::instance = NULL;
+MainWindow* MainWindow::instance = 0;
 
 MainWindow* MainWindow::getInstance() {
-	if (!instance) instance = new MainWindow();
+	if (!instance) {
+		instance = new MainWindow();
+	}
 	return instance;
 }
 
 MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	QwitTools::log("MainWindow::MainWindow()");
+	
+	instance = this;
 
 	setupUi(this);
 
@@ -77,7 +81,6 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	
 	setupTrayIcon();
 	loadState();
-
 	if (accountsButtons.size() > 0) {
 		accountsButtons[0]->setChecked(true);
 		accountsButtons[0]->click();
@@ -86,6 +89,14 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	acceptClose = false;
 	
 	connect(UserpicsDownloader::getInstance(), SIGNAL(userpicDownloaded()), this, SLOT(reloadUserpics()));
+
+	redrawTimer = new QTimer(this);
+	connect(redrawTimer, SIGNAL(timeout()), this, SLOT(redrawPages()));
+	redrawTimer->start(10000);
+
+	updateTimer = new QTimer(this);
+	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updatePages()));
+	updateTimer->start(60000);
 }
 
 void MainWindow::leftCharsNumberChanged(int count) {
@@ -346,18 +357,18 @@ void MainWindow::updateCurrentAccount(int id) {
 	int oldAccountId = config->currentAccountId;
 	config->currentAccountId = id;
 	if (homePage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), 0, 0);
-		connect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), homePage, SLOT(updateItems(const QVector<Status> &)));
+		disconnect(config->accounts[oldAccountId], SIGNAL(friendsStatusesUpdated(const QVector<Status> &)), 0, 0);
+		connect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesUpdated(const QVector<Status> &)), homePage, SLOT(updateItems(const QVector<Status> &)));
 		homePage->updateItems(config->accounts[config->currentAccountId]->friendsStatuses);
 	}
 	if (repliesPage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(repliesReceived(const QVector<Status> &)), 0, 0);
-		connect(config->accounts[config->currentAccountId], SIGNAL(repliesReceived(const QVector<Status> &)), repliesPage, SLOT(updateItems(const QVector<Status> &)));
+		disconnect(config->accounts[oldAccountId], SIGNAL(repliesUpdated(const QVector<Status> &)), 0, 0);
+		connect(config->accounts[config->currentAccountId], SIGNAL(repliesUpdated(const QVector<Status> &)), repliesPage, SLOT(updateItems(const QVector<Status> &)));
 		repliesPage->updateItems(config->accounts[config->currentAccountId]->replies);
 	}
 	if (publicPage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(publicStatusesReceived(const QVector<Status> &)), 0, 0);
-		connect(config->accounts[config->currentAccountId], SIGNAL(publicStatusesReceived(const QVector<Status> &)), publicPage, SLOT(updateItems(const QVector<Status> &)));
+		disconnect(config->accounts[oldAccountId], SIGNAL(publicStatusesUpdated(const QVector<Status> &)), 0, 0);
+		connect(config->accounts[config->currentAccountId], SIGNAL(publicStatusesUpdated(const QVector<Status> &)), publicPage, SLOT(updateItems(const QVector<Status> &)));
 		publicPage->updateItems(config->accounts[config->currentAccountId]->publicStatuses);
 	}
 	disconnect(config->accounts[oldAccountId], SIGNAL(lastStatusReceived(const QString &)), 0, 0);
@@ -498,6 +509,35 @@ void MainWindow::updateLastStatus(const QString &status) {
 	QwitTools::log("MainWindow::updateLastStatus()");
 
 	lastStatusLabel->setText(status);
+}
+
+void MainWindow::showNewStatuses(const QVector<Status> &statuses) {
+	QwitTools::log("MainWindow::showNewStatuses()");
+	Configuration *config = Configuration::getInstance();
+	QString trayMessage = "";
+	for (int i = 0; i < min(statuses.size(), config->messagesInPopup); ++i) {
+		if (trayMessage.length()) {
+			trayMessage += "----------------------------\n";
+		}
+		trayMessage += statuses[i].username + ": " + statuses[i].status + " /" + QwitTools::formatDateTime(statuses[i].time.toLocalTime()) + "\n";
+	}
+	if ((trayMessage != "") && config->showMessagesInTray) {
+		trayIcon->showMessage(tr("Qwit: new statuses receieved"), trayMessage);
+	}
+}
+
+void MainWindow::redrawPages() {
+	for (int i = 0; i < pages.size(); ++i) {
+		pages[i]->redraw();
+	}
+}
+
+void MainWindow::updatePages() {
+	Configuration *config = Configuration::getInstance();
+	for (int i = 0; i < config->accounts.size(); ++i) {
+		config->accounts[i]->receiveFriendsStatuses(config->messagesPerPage);
+		config->accounts[i]->receiveReplies(config->messagesPerPage);
+	}
 }
 
 #endif

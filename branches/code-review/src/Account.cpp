@@ -61,65 +61,47 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 
 void Account::addFriendsStatuses(const QByteArray &data) {
 	QwitTools::log("Account::addFriendsStatuses()");
-	QString trayMessage = "";
 	QVector<Status> statuses = QwitTools::parseStatuses(data);
 	int lastId = (friendsStatuses.size() ? friendsStatuses[friendsStatuses.size() - 1].id : 0);
 	int maxId = lastId;
 	for (int i = 0; i < statuses.size(); ++i) {
 		if (statuses[i].id > maxId) maxId = statuses[i].id;
-		if (statuses[i].id > lastId) {
-			if (trayMessage.length()) {
-				trayMessage += "----------------------------\n";
-			}
-			trayMessage += statuses[i].username + ": " + statuses[i].status + " /" + QwitTools::formatDateTime(statuses[i].time.toLocalTime()) + "\n";
-		}
 		friendsStatuses.push_back(statuses[i]);
 	}
 	qSort(friendsStatuses.begin(), friendsStatuses.end());
 	QwitTools::makeStatusesUnique(friendsStatuses);
-	emit friendsStatusesReceived(friendsStatuses);
+	emit friendsStatusesUpdated(friendsStatuses);
+	emit newStatusesReceived(statuses);
 }
 
 void Account::addReplies(const QByteArray &data) {
 	QwitTools::log("Account::addReplies()");
-	QString trayMessage = "";
 	QVector<Status> statuses = QwitTools::parseStatuses(data);
 	int lastId = (replies.size() ? replies[replies.size() - 1].id : 0);
 	int maxId = lastId;
 	for (int i = 0; i < statuses.size(); ++i) {
 		if (statuses[i].id > maxId) maxId = statuses[i].id;
-		if (statuses[i].id > lastId) {
-			if (trayMessage.length()) {
-				trayMessage += "----------------------------\n";
-			}
-			trayMessage += statuses[i].username + ": " + statuses[i].status + " /" + QwitTools::formatDateTime(statuses[i].time.toLocalTime()) + "\n";
-		}
 		replies.push_back(statuses[i]);
 	}
 	qSort(replies.begin(), replies.end());
 	QwitTools::makeStatusesUnique(replies);
-	emit repliesReceived(replies);
+	emit repliesUpdated(replies);
+	emit newStatusesReceived(statuses);
 }
 
 void Account::addPublicStatuses(const QByteArray &data) {
 	QwitTools::log("Account::addPublicStatuses()");
-	QString trayMessage = "";
 	QVector<Status> statuses = QwitTools::parseStatuses(data);
 	int lastId = (replies.size() ? replies[replies.size() - 1].id : 0);
 	int maxId = lastId;
 	for (int i = 0; i < statuses.size(); ++i) {
 		if (statuses[i].id > maxId) maxId = statuses[i].id;
-		if (statuses[i].id > lastId) {
-			if (trayMessage.length()) {
-				trayMessage += "----------------------------\n";
-			}
-			trayMessage += statuses[i].username + ": " + statuses[i].status + " /" + QwitTools::formatDateTime(statuses[i].time.toLocalTime()) + "\n";
-		}
 		publicStatuses.push_back(statuses[i]);
 	}
 	qSort(publicStatuses.begin(), publicStatuses.end());
 	QwitTools::makeStatusesUnique(publicStatuses);
-	emit publicStatusesReceived(publicStatuses);
+	emit publicStatusesUpdated(publicStatuses);
+	emit newStatusesReceived(statuses);
 }
 
 void Account::updateLastStatus(const QByteArray &data) {
@@ -169,9 +151,25 @@ void Account::receivePreviousFriendsStatuses(int count) {
 	twitter->receivePreviousFriendsStatuses((friendsStatuses.size() != 0 ? friendsStatuses[friendsStatuses.size() - 1].id : 0), count);
 }
 
+void Account::removePreviousFriendsStatuses(int count) {
+	QwitTools::log("Account::removePreviousFriendsStatuses()");
+	int oldItemsCount = friendsStatuses.size();
+	int newItemsCount = (oldItemsCount - 1) - (oldItemsCount - 1) % count;
+	friendsStatuses.resize(newItemsCount);
+	emit friendsStatusesUpdated(friendsStatuses);
+}
+
 void Account::receivePreviousReplies(int count) {
 	QwitTools::log("Account::receivePreviousReplies()");
 	twitter->receivePreviousReplies((replies.size() != 0 ? replies[replies.size() - 1].id : 0), count);
+}
+
+void Account::removePreviousReplies(int count) {
+	QwitTools::log("Account::removePreviousReplies()");
+	int oldItemsCount = replies.size();
+	int newItemsCount = (oldItemsCount - 1) - (oldItemsCount - 1) % count;
+	replies.resize(newItemsCount);
+	emit repliesUpdated(replies);
 }
 
 #endif

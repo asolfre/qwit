@@ -131,8 +131,6 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data) {
 	}
 	
 	QDomNode node = root.firstChild();
-	QString html = "";
-	QString trayMessage = "";
 	while (!node.isNull()) {
 		if (node.toElement().tagName() != "status") {
 			return statuses;
@@ -211,8 +209,6 @@ Status QwitTools::_parseUser(const QByteArray &data) {
 	}
 	
 	QDomNode node = root.firstChild();
-	QString html = "";
-	QString trayMessage = "";
 	while (!node.isNull()) {
 		if (node.toElement().tagName() == "status") {
 			QDomNode node2 = node.firstChild();
@@ -289,8 +285,6 @@ Status QwitTools::_parseStatus(const QByteArray &data) {
 	}
 	
 	QDomNode node = root.firstChild();
-	QString html = "";
-	QString trayMessage = "";
 	QString message = "", timeStr = "", user = "", image = "";
 	int id = 0, replyUserID = 0, replyStatusId = 0;
 	while (!node.isNull()) {

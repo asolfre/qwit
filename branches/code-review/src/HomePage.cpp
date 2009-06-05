@@ -46,7 +46,8 @@ HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
-	connect(twitterWidget->moreToolButton, SIGNAL(clicked()), this, SLOT(updatePrevious()));
+	connect(twitterWidget, SIGNAL(moreButtonClicked()), this, SLOT(updatePrevious()));
+	connect(twitterWidget, SIGNAL(lessButtonClicked()), this, SLOT(removePrevious()));
 
 	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setObjectName(QString::fromUtf8("homePageGridLayout"));
@@ -71,12 +72,20 @@ QString HomePage::title() {
 
 void HomePage::update() {
 	QwitTools::log("HomePage::update()");
-	Configuration::getInstance()->currentAccount()->receiveFriendsStatuses(20);
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->receiveFriendsStatuses(config->messagesPerPage);
 }
 
 void HomePage::updatePrevious() {
 	QwitTools::log("HomePage::updatePrevious()");
-	Configuration::getInstance()->currentAccount()->receivePreviousFriendsStatuses(20);
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->receivePreviousFriendsStatuses(config->messagesPerPage);
+}
+
+void HomePage::removePrevious() {
+	QwitTools::log("HomePage::removePrevious()");
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->removePreviousFriendsStatuses(config->messagesPerPage);
 }
 
 #endif

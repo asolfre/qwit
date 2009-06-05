@@ -31,6 +31,7 @@
 
 #include <QFile>
 
+#include "MainWindow.h"
 #include "Configuration.h"
 
 #include <iostream>
@@ -189,6 +190,7 @@ void Configuration::save() {
 int Configuration::addAccount(Account *account) {
 	accounts.push_back(account);
 	account->id = accounts.size() - 1;
+	QObject::connect(account, SIGNAL(newStatusesReceived(const QVector<Status>&)), MainWindow::getInstance(), SLOT(showNewStatuses(const QVector<Status>&)));
 	return account->id;
 }
 

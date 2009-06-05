@@ -68,4 +68,14 @@ void AbstractPage::updateItems(const QVector<Status> &items) {
 	scrollArea->verticalScrollBar()->setValue(scrollPosition);
 }
 
+void AbstractPage::updatePrevious() {
+}
+
+void AbstractPage::removePrevious() {
+}
+
+void AbstractPage::redraw() {
+	twitterWidget->updateItems();
+}
+
 #endif

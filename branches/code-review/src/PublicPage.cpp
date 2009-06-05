@@ -46,7 +46,8 @@ PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("publicPageTwitterWidget"));
-	connect(twitterWidget->moreToolButton, SIGNAL(clicked()), this, SLOT(updatePrevious()));
+	twitterWidget->disableMoreButton();
+	twitterWidget->disableLessButton();
 
 	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setObjectName(QString::fromUtf8("publicPageGridLayout"));
@@ -72,13 +73,8 @@ QString PublicPage::title() {
 
 void PublicPage::update() {
 	QwitTools::log("PublicPage::update()");
-
-	Configuration::getInstance()->currentAccount()->receivePublicStatuses(20);
-}
-
-void PublicPage::updatePrevious() {
-	QwitTools::log("PublicPage::updatePrevious()");
-	Configuration::getInstance()->currentAccount()->receivePreviousPublicStatuses(20);
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->receivePublicStatuses(config->messagesPerPage);
 }
 
 #endif

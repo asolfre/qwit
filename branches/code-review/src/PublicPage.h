@@ -41,9 +41,6 @@ public:
 	void updateSize();
 	QString title();
 	void update();
-	
-public slots:
-	void updatePrevious();
 };
 
 #endif

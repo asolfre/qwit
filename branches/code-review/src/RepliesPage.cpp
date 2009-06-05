@@ -46,7 +46,8 @@ RepliesPage::RepliesPage(QWidget* parent): AbstractPage(parent) {
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
-	connect(twitterWidget->moreToolButton, SIGNAL(clicked()), this, SLOT(updatePrevious()));
+	connect(twitterWidget, SIGNAL(moreButtonClicked()), this, SLOT(updatePrevious()));
+	connect(twitterWidget, SIGNAL(lessButtonClicked()), this, SLOT(removePrevious()));
 
 	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setObjectName(QString::fromUtf8("homePageGridLayout"));
@@ -78,7 +79,14 @@ void RepliesPage::update() {
 
 void RepliesPage::updatePrevious() {
 	QwitTools::log("RepliesPage::updatePrevious()");
-	Configuration::getInstance()->currentAccount()->receivePreviousReplies(20);
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->receivePreviousReplies(config->messagesPerPage);
+}
+
+void RepliesPage::removePrevious() {
+	QwitTools::log("RepliesPage::removePrevious()");
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->removePreviousReplies(config->messagesPerPage);
 }
 
 #endif

@@ -62,6 +62,7 @@
 #include "HomePage.h"
 #include "RepliesPage.h"
 #include "PublicPage.h"
+#include "Status.h"
 
 class MainWindow: public QDialog, public Ui::MainWindow {
 	Q_OBJECT
@@ -82,6 +83,8 @@ private:
 	HomePage *homePage;
 	RepliesPage *repliesPage;
 	PublicPage *publicPage;
+	QTimer *redrawTimer;
+	QTimer *updateTimer;
 	
 	bool acceptClose;
 	
@@ -114,6 +117,9 @@ public slots:
 	void tabChanged(int tabIndex);
 	void reloadUserpics();
 	void updateLastStatus(const QString &status);
+	void showNewStatuses(const QVector<Status> &statuses);
+	void redrawPages();
+	void updatePages();
 	
 protected:
 

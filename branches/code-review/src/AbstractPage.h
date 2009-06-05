@@ -46,6 +46,7 @@ public:
 	AbstractPage(QWidget *parent = 0);
 	
 	virtual void update() = 0;
+	virtual void redraw();
 	virtual void addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId);
 	virtual void updateSize() = 0;
 	virtual QString title() = 0;
@@ -54,6 +55,8 @@ public:
 	
 public slots:
 	virtual void updateItems(const QVector<Status> &items);
+	virtual void updatePrevious();
+	virtual void removePrevious();
 };
 
 #endif

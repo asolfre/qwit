@@ -70,12 +70,15 @@ public slots:
 	void receivePreviousPublicStatuses(int count);
 	void receivePreviousFriendsStatuses(int count);
 	void receivePreviousReplies(int count);
+	void removePreviousFriendsStatuses(int count);
+	void removePreviousReplies(int count);
 	
 signals:
-	void friendsStatusesReceived(const QVector<Status> &items);
-	void repliesReceived(const QVector<Status> &items);
-	void publicStatusesReceived(const QVector<Status> &items);
+	void friendsStatusesUpdated(const QVector<Status> &items);
+	void repliesUpdated(const QVector<Status> &items);
+	void publicStatusesUpdated(const QVector<Status> &items);
 	void lastStatusReceived(const QString &status);
+	void newStatusesReceived(const QVector<Status> &items);
 };
 
 #endif

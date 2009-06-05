@@ -44,6 +44,7 @@ public:
 	
 public slots:
 	void updatePrevious();
+	void removePrevious();
 };
 
 #endif

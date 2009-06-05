@@ -59,6 +59,7 @@ public:
 	QString rawStatus;
 	
 	void loadUserpic();
+	~TwitterWidgetItem();
 };
 
 const int ICON_SIZE = 48;
@@ -68,22 +69,32 @@ class TwitterWidget: public QWidget {
 	Q_OBJECT
 
 private:
-	QVector<TwitterWidgetItem> items;
+	QVector<TwitterWidgetItem*> items;
 
 public:
 
 	QToolButton *moreToolButton;
+	QToolButton *lessToolButton;
 	
 	TwitterWidget(QWidget *parent);
 	void clear();
 	void addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId);
 	void updateItems();
 	void reloadUserpics();
-
+	void disableMoreButton();
+	void disableLessButton();
+	void enableMoreButton();
+	void enableLessButton();
+	
 protected:
 
 	void resizeEvent(QResizeEvent *event);
 	void paintEvent(QPaintEvent *event);
+	
+signals:
+	
+	void moreButtonClicked();
+	void lessButtonClicked();
 };
 
 #endif
