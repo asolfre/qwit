@@ -343,23 +343,24 @@ void MainWindow::updateCurrentAccount(int id) {
 	QwitTools::log("MainWindow::updateCurrentAccount()");
 
 	Configuration *config = Configuration::getInstance();
+	int oldAccountId = config->currentAccountId;
 	config->currentAccountId = id;
 	if (homePage) {
-		disconnect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), 0, 0);
+		disconnect(config->accounts[oldAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), 0, 0);
 		connect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesReceived(const QVector<Status> &)), homePage, SLOT(updateItems(const QVector<Status> &)));
 		homePage->updateItems(config->accounts[config->currentAccountId]->friendsStatuses);
 	}
 	if (repliesPage) {
-		disconnect(config->accounts[config->currentAccountId], SIGNAL(repliesReceived(const QVector<Status> &)), 0, 0);
+		disconnect(config->accounts[oldAccountId], SIGNAL(repliesReceived(const QVector<Status> &)), 0, 0);
 		connect(config->accounts[config->currentAccountId], SIGNAL(repliesReceived(const QVector<Status> &)), repliesPage, SLOT(updateItems(const QVector<Status> &)));
 		repliesPage->updateItems(config->accounts[config->currentAccountId]->replies);
 	}
 	if (publicPage) {
-		disconnect(config->accounts[config->currentAccountId], SIGNAL(publicStatusesReceived(const QVector<Status> &)), 0, 0);
+		disconnect(config->accounts[oldAccountId], SIGNAL(publicStatusesReceived(const QVector<Status> &)), 0, 0);
 		connect(config->accounts[config->currentAccountId], SIGNAL(publicStatusesReceived(const QVector<Status> &)), publicPage, SLOT(updateItems(const QVector<Status> &)));
 		publicPage->updateItems(config->accounts[config->currentAccountId]->publicStatuses);
 	}
-	disconnect(config->accounts[config->currentAccountId], SIGNAL(lastStatusReceived(const QString &)), 0, 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(lastStatusReceived(const QString &)), 0, 0);
 	connect(config->accounts[config->currentAccountId], SIGNAL(lastStatusReceived(const QString &)), this, SLOT(updateLastStatus(const QString &)));
 	lastStatusLabel->setText(config->accounts[config->currentAccountId]->lastStatus.status);
 	disconnect(statusTextEdit, SIGNAL(statusEntered(const QString &)), 0, 0);

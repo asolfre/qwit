@@ -64,6 +64,12 @@ public slots:
 	void updateLastStatus();
 	void sendStatus(const QString &status);
 	void statusSent(const QByteArray &status);
+	void receivePublicStatuses(int count);
+	void receiveFriendsStatuses(int count);
+	void receiveReplies(int count);
+	void receivePreviousPublicStatuses(int count);
+	void receivePreviousFriendsStatuses(int count);
+	void receivePreviousReplies(int count);
 	
 signals:
 	void friendsStatusesReceived(const QVector<Status> &items);

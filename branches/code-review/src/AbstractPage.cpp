@@ -58,4 +58,14 @@ void AbstractPage::reloadUserpics() {
 	twitterWidget->reloadUserpics();
 }
 
+void AbstractPage::updateItems(const QVector<Status> &items) {
+	QwitTools::log("AbstractPage::updateItems()");
+	int scrollPosition = scrollArea->verticalScrollBar()->value();
+	clear();
+	for (int i = 0; i < items.size(); ++i) {
+		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);
+	}
+	scrollArea->verticalScrollBar()->setValue(scrollPosition);
+}
+
 #endif

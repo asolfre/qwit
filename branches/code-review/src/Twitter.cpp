@@ -158,6 +158,63 @@ void Twitter::receiveLastStatus() {
 	receiveLastStatusRequests[id] = tr("Updating last status: %1").arg(url.host() + url.path());
 }
 
+void Twitter::receivePreviousFriendsStatuses(int lastStatusId, int count) {
+	QwitTools::log("Twitter::receiveFriendsStatuses()");
+
+	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["friends"] + ".xml");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastStatusId ? "&max_id=" + QString::number(lastStatusId) : ""), &buffer);
+	receiveFriendsStatusesRequests[id] = tr("Updating friends statuses: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receivePreviousReplies(int lastStatusId, int count) {
+	QwitTools::log("Twitter::receiveReplies()");
+
+	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["replies"] + ".xml");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastStatusId ? "&max_id=" + QString::number(lastStatusId) : ""), &buffer);
+	receiveRepliesRequests[id] = tr("Updating replies: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receivePreviousPublicStatuses(int lastStatusId, int count) {
+	QwitTools::log("Twitter::receivePublicStatuses()");
+
+	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["public"] + ".xml");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastStatusId ? "&max_id=" + QString::number(lastStatusId) : ""), &buffer);
+	receivePublicStatusesRequests[id] = tr("Updating public statuses: %1").arg(url.host() + url.path());
+}
+
 void Twitter::abort() {
 	QwitTools::log("Twitter::abort()");
 

@@ -53,7 +53,8 @@ void TwitterWidgetItem::loadUserpic() {
 
 TwitterWidget::TwitterWidget(QWidget *parent): QWidget(parent) {
 	QwitTools::log("TwitterWidget::TwitterWidget()");
-
+	moreToolButton = new QToolButton(this);
+	moreToolButton->setText(tr("more"));
 }
 
 void TwitterWidget::clear() {
@@ -194,6 +195,9 @@ void TwitterWidget::updateItems() {
 		item.height = itemHeight;
 		height += itemHeight;
 	}
+	moreToolButton->move((width() - moreToolButton->width()) / 2, height + MARGIN);
+	moreToolButton->show();
+	height += moreToolButton->height() + 2 * MARGIN;
 	resize(width(), height);
 }
 

@@ -33,6 +33,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QMap>
+#include <QVector>
 
 #include "Status.h"
 
@@ -51,6 +52,7 @@ private:
 	Status _parseUser(const QByteArray &data);
 	Status _parseStatus(const QByteArray &data);
 	void _log(const QString &message);
+	void _makeStatusesUnique(QVector<Status> &v);
 	
 public:
 	static QDateTime dateFromString(QString date);
@@ -60,6 +62,7 @@ public:
 	static Status parseUser(const QByteArray &data);
 	static Status parseStatus(const QByteArray &data);
 	static void log(const QString &message);
+	static void makeStatusesUnique(QVector<Status> &statuses);
 };
 
 #endif

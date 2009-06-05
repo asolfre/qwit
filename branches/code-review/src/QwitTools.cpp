@@ -38,6 +38,7 @@
 
 #include "QwitTools.h"
 #include "UserpicsDownloader.h"
+#include "Configuration.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -187,8 +188,8 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data) {
 				imageFileName += (char)c;
 			}
 			QDir dir(QDir::homePath());
-			dir.mkdir(".qwit2");
-			imageFileName = dir.absolutePath() + "/.qwit2/" + imageFileName;
+			dir.mkdir(Configuration::CacheDirectory);
+			imageFileName = dir.absolutePath() + "/" + Configuration::CacheDirectory + "/" + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
 			statuses.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime()));
 		}
@@ -259,8 +260,8 @@ Status QwitTools::_parseUser(const QByteArray &data) {
 					imageFileName += (char)c;
 				}
 				QDir dir(QDir::homePath());
-				dir.mkdir(".qwit2");
-				imageFileName = dir.absolutePath() + "/.qwit2/" + imageFileName;
+				dir.mkdir(Configuration::CacheDirectory);
+				imageFileName = dir.absolutePath() + "/" + Configuration::CacheDirectory + "/" + imageFileName;
 				UserpicsDownloader::getInstance()->download(image, imageFileName);
 				status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime());
 			}
@@ -330,8 +331,8 @@ Status QwitTools::_parseStatus(const QByteArray &data) {
 			imageFileName += (char)c;
 		}
 		QDir dir(QDir::homePath());
-		dir.mkdir(".qwit2");
-		imageFileName = dir.absolutePath() + "/.qwit2/" + imageFileName;
+		dir.mkdir(Configuration::CacheDirectory);
+		imageFileName = dir.absolutePath() + "/" + Configuration::CacheDirectory + "/" + imageFileName;
 		UserpicsDownloader::getInstance()->download(image, imageFileName);
 		status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime());
 	}
@@ -344,6 +345,20 @@ void QwitTools::log(const QString &message) {
 
 void QwitTools::_log(const QString &message) {
 	cout << qPrintable(QDateTime::currentDateTime().toString()) << ":  " << qPrintable(message) << endl;
+}
+
+void QwitTools::makeStatusesUnique(QVector<Status> &v) {
+	getInstance()->_makeStatusesUnique(v);
+}
+
+void QwitTools::_makeStatusesUnique(QVector<Status> &v) {
+	int n = 0;
+	for (int i = 0; i < v.size(); ++i) {
+		if (!n || (v[i] != v[n - 1])) {
+			v[n++] = v[i];
+		}
+	}
+	v.resize(n);
 }
 
 #endif

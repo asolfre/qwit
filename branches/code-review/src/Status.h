@@ -40,6 +40,9 @@ public:
 	QDateTime time;
 	Status() {}
 	Status(int id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time);
+	bool operator<(const Status &x) const;
+	bool operator==(const Status &x) const;
+	bool operator!=(const Status &x) const;
 };
 
 #endif

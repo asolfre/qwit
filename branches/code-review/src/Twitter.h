@@ -59,6 +59,9 @@ public:
 	void receiveReplies(int lastStatusId, int count);
 	void receivePublicStatuses(int lastStatusId, int count);
 	void receiveLastStatus();
+	void receivePreviousFriendsStatuses(int lastStatusId, int count);
+	void receivePreviousReplies(int lastStatusId, int count);
+	void receivePreviousPublicStatuses(int lastStatusId, int count);
 	void sendStatus(const QString &status);
 	void abort();
 

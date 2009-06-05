@@ -37,8 +37,9 @@
 
 using namespace std;
 
-const char *CompanyName = "arti";
-const char *ApplicationName = "qwit2";
+const QString Configuration::CompanyName = "arti";
+const QString Configuration::ApplicationName = "qwit2";
+const QString Configuration::CacheDirectory = ".qwit2";
 
 Configuration* Configuration::instance = NULL;
 QSettings Configuration::settings(CompanyName, ApplicationName);

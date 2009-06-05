@@ -75,6 +75,8 @@ void Account::addFriendsStatuses(const QByteArray &data) {
 		}
 		friendsStatuses.push_back(statuses[i]);
 	}
+	qSort(friendsStatuses.begin(), friendsStatuses.end());
+	QwitTools::makeStatusesUnique(friendsStatuses);
 	emit friendsStatusesReceived(friendsStatuses);
 }
 
@@ -94,6 +96,8 @@ void Account::addReplies(const QByteArray &data) {
 		}
 		replies.push_back(statuses[i]);
 	}
+	qSort(replies.begin(), replies.end());
+	QwitTools::makeStatusesUnique(replies);
 	emit repliesReceived(replies);
 }
 
@@ -113,6 +117,8 @@ void Account::addPublicStatuses(const QByteArray &data) {
 		}
 		publicStatuses.push_back(statuses[i]);
 	}
+	qSort(publicStatuses.begin(), publicStatuses.end());
+	QwitTools::makeStatusesUnique(publicStatuses);
 	emit publicStatusesReceived(publicStatuses);
 }
 
@@ -136,6 +142,36 @@ void Account::statusSent(const QByteArray &data) {
 	QwitTools::log("Account::statusSent()");
 	lastStatus = QwitTools::parseStatus(data);
 	emit lastStatusReceived(lastStatus.status);
+}
+
+void Account::receivePublicStatuses(int count) {
+	QwitTools::log("Account::receivePublicStatuses()");
+	twitter->receivePublicStatuses((publicStatuses.size() != 0 ? publicStatuses[0].id : 0), count);
+}
+
+void Account::receiveFriendsStatuses(int count) {
+	QwitTools::log("Account::receiveFriendsStatuses()");
+	twitter->receiveFriendsStatuses((friendsStatuses.size() != 0 ? friendsStatuses[0].id : 0), count);
+}
+
+void Account::receiveReplies(int count) {
+	QwitTools::log("Account::receiveReplies()");
+	twitter->receiveReplies((replies.size() != 0 ? replies[0].id : 0), count);
+}
+
+void Account::receivePreviousPublicStatuses(int count) {
+	QwitTools::log("Account::receivePreviousPublicStatuses()");
+	twitter->receivePreviousPublicStatuses((publicStatuses.size() != 0 ? publicStatuses[publicStatuses.size() - 1].id : 0), count);
+}
+
+void Account::receivePreviousFriendsStatuses(int count) {
+	QwitTools::log("Account::receivePreviousFriendsStatuses()");
+	twitter->receivePreviousFriendsStatuses((friendsStatuses.size() != 0 ? friendsStatuses[friendsStatuses.size() - 1].id : 0), count);
+}
+
+void Account::receivePreviousReplies(int count) {
+	QwitTools::log("Account::receivePreviousReplies()");
+	twitter->receivePreviousReplies((replies.size() != 0 ? replies[replies.size() - 1].id : 0), count);
 }
 
 #endif

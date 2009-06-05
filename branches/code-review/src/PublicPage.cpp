@@ -46,6 +46,7 @@ PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("publicPageTwitterWidget"));
+	connect(twitterWidget->moreToolButton, SIGNAL(clicked()), this, SLOT(updatePrevious()));
 
 	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setObjectName(QString::fromUtf8("publicPageGridLayout"));
@@ -72,16 +73,12 @@ QString PublicPage::title() {
 void PublicPage::update() {
 	QwitTools::log("PublicPage::update()");
 
-	Configuration::getInstance()->currentAccount()->twitter->receivePublicStatuses(0, 20);
+	Configuration::getInstance()->currentAccount()->receivePublicStatuses(20);
 }
 
-void PublicPage::updateItems(const QVector<Status> &items) {
-	QwitTools::log("PublicPage::updateItems()");
-
-	clear();
-	for (int i = 0; i < items.size(); ++i) {
-		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);
-	}
+void PublicPage::updatePrevious() {
+	QwitTools::log("PublicPage::updatePrevious()");
+	Configuration::getInstance()->currentAccount()->receivePreviousPublicStatuses(20);
 }
 
 #endif

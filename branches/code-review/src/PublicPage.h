@@ -35,8 +35,6 @@
 
 class PublicPage: public AbstractPage {
 	Q_OBJECT
-private:
-	QScrollArea *scrollArea;
 	
 public:
 	PublicPage(QWidget* parent = 0);
@@ -45,7 +43,7 @@ public:
 	void update();
 	
 public slots:
-	void updateItems(const QVector<Status> &items);
+	void updatePrevious();
 };
 
 #endif

@@ -46,6 +46,10 @@ public:
 	static const int AccountTwitter = 0;
 	static const int AccountIdentica = 1;
 	static const int AccountCustom = 2;
+	static const QString CompanyName;
+	static const QString ApplicationName;
+	static const QString CacheDirectory;
+
 
 	static QMap<QString, QString> ServicesNames;
 	static QMap<QString, int> ServicesIds;

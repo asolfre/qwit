@@ -46,6 +46,7 @@ HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
+	connect(twitterWidget->moreToolButton, SIGNAL(clicked()), this, SLOT(updatePrevious()));
 
 	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setObjectName(QString::fromUtf8("homePageGridLayout"));
@@ -70,15 +71,12 @@ QString HomePage::title() {
 
 void HomePage::update() {
 	QwitTools::log("HomePage::update()");
-	Configuration::getInstance()->currentAccount()->twitter->receiveFriendsStatuses(0, 20);
+	Configuration::getInstance()->currentAccount()->receiveFriendsStatuses(20);
 }
 
-void HomePage::updateItems(const QVector<Status> &items) {
-	QwitTools::log("HomePage::updateItems()");
-	clear();
-	for (int i = 0; i < items.size(); ++i) {
-		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);
-	}
+void HomePage::updatePrevious() {
+	QwitTools::log("HomePage::updatePrevious()");
+	Configuration::getInstance()->currentAccount()->receivePreviousFriendsStatuses(20);
 }
 
 #endif

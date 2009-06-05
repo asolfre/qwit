@@ -30,6 +30,7 @@
 #define AbstractPage_h
 
 #include <QWidget>
+#include <QScrollArea>
 
 #include "TwitterWidget.h"
 #include "Configuration.h"
@@ -38,6 +39,7 @@ class AbstractPage: public QWidget {
 	Q_OBJECT
 	
 public:
+	QScrollArea *scrollArea;
 	TwitterWidget *twitterWidget;
 	bool visible;
 	
@@ -49,6 +51,9 @@ public:
 	virtual QString title() = 0;
 	virtual void reloadUserpics();
 	void clear();
+	
+public slots:
+	virtual void updateItems(const QVector<Status> &items);
 };
 
 #endif

@@ -39,4 +39,16 @@ Status::Status(int id, const QString &status, const QString &username, const QSt
 	this->time = time;
 }
 
+bool Status::operator<(const Status &x) const {
+	return id > x.id;
+}
+
+bool Status::operator==(const Status &x) const {
+	return id == x.id;
+}
+
+bool Status::operator!=(const Status &x) const {
+	return id != x.id;
+}
+
 #endif

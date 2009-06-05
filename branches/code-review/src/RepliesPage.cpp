@@ -46,6 +46,7 @@ RepliesPage::RepliesPage(QWidget* parent): AbstractPage(parent) {
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
+	connect(twitterWidget->moreToolButton, SIGNAL(clicked()), this, SLOT(updatePrevious()));
 
 	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setObjectName(QString::fromUtf8("homePageGridLayout"));
@@ -72,16 +73,12 @@ QString RepliesPage::title() {
 void RepliesPage::update() {
 	QwitTools::log("RepliesPage::update()");
 
-	Configuration::getInstance()->currentAccount()->twitter->receiveReplies(0, 20);
+	Configuration::getInstance()->currentAccount()->receiveReplies(20);
 }
 
-void RepliesPage::updateItems(const QVector<Status> &items) {
-	QwitTools::log("RepliesPage::updateItems()");
-
-	clear();
-	for (int i = 0; i < items.size(); ++i) {
-		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);
-	}
+void RepliesPage::updatePrevious() {
+	QwitTools::log("RepliesPage::updatePrevious()");
+	Configuration::getInstance()->currentAccount()->receivePreviousReplies(20);
 }
 
 #endif
