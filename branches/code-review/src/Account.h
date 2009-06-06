@@ -55,6 +55,8 @@ public:
 	
 	Account();
 	Account(const QString &type, const QString &username, const QString &password);
+	void saveMessages(QSettings &messagesCache);
+	void loadMessages(QSettings &messagesCache);
 
 public slots:
 	void addFriendsStatuses(const QByteArray &data);

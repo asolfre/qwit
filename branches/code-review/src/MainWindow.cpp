@@ -97,6 +97,8 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	updateTimer = new QTimer(this);
 	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updatePages()));
 	updateTimer->start(60000);
+	
+	updatePages();
 }
 
 void MainWindow::leftCharsNumberChanged(int count) {
@@ -537,6 +539,7 @@ void MainWindow::updatePages() {
 	for (int i = 0; i < config->accounts.size(); ++i) {
 		config->accounts[i]->receiveFriendsStatuses(config->messagesPerPage);
 		config->accounts[i]->receiveReplies(config->messagesPerPage);
+		config->accounts[i]->updateLastStatus();
 	}
 }
 

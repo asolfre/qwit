@@ -40,10 +40,12 @@ using namespace std;
 
 const QString Configuration::CompanyName = "arti";
 const QString Configuration::ApplicationName = "qwit2";
-const QString Configuration::CacheDirectory = ".qwit2";
+const QString Configuration::CacheDirectory = QDir::homePath() + "/.qwit2/";
+const QString Configuration::MessagesCacheFileName = Configuration::CacheDirectory + "/messages";
 
 Configuration* Configuration::instance = NULL;
 QSettings Configuration::settings(CompanyName, ApplicationName);
+QSettings Configuration::messagesCache(Configuration::MessagesCacheFileName, QSettings::IniFormat);
 
 QMap<QString, QString> Configuration::ServicesNames;
 QMap<QString, int> Configuration::ServicesIds;
@@ -127,6 +129,8 @@ void Configuration::load() {
 	}
 	settings.endArray();
 	settings.endGroup();
+	
+	loadMessages();
 }
 
 void Configuration::save() {
@@ -185,6 +189,8 @@ void Configuration::save() {
 	}
 	settings.endArray();
 	settings.endGroup();
+	
+	saveMessages();
 }
 
 int Configuration::addAccount(Account *account) {
@@ -210,6 +216,24 @@ void Configuration::swapAccounts(int account1Id, int account2Id) {
 
 Account* Configuration::currentAccount() {
 	return accounts[currentAccountId];
+}
+
+void Configuration::saveMessages() {
+	messagesCache.beginWriteArray("Accounts");
+	for (int i = 0; i < accounts.size(); ++i) {
+		messagesCache.setArrayIndex(i);
+		accounts[i]->saveMessages(messagesCache);
+	}
+	messagesCache.endArray();
+}
+
+void Configuration::loadMessages() {
+	int n = messagesCache.beginReadArray("Accounts");
+	for (int i = 0; i < accounts.size(); ++i) {
+		messagesCache.setArrayIndex(i);
+		accounts[i]->loadMessages(messagesCache);
+	}
+	messagesCache.endArray();
 }
 
 #endif

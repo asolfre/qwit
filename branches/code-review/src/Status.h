@@ -30,6 +30,7 @@
 #define Status_h
 
 #include <QDateTime>
+#include <QSettings>
 
 class Status {
 public:
@@ -43,6 +44,8 @@ public:
 	bool operator<(const Status &x) const;
 	bool operator==(const Status &x) const;
 	bool operator!=(const Status &x) const;
+	void save(QSettings &messagesCache);
+	static Status load(QSettings &messagesCache);
 };
 
 #endif

@@ -51,4 +51,22 @@ bool Status::operator!=(const Status &x) const {
 	return id != x.id;
 }
 
+void Status::save(QSettings &messagesCache) {
+	messagesCache.setValue("id", id);
+	messagesCache.setValue("status", status);
+	messagesCache.setValue("username", username);
+	messagesCache.setValue("userpicFilename", userpicFilename);
+	messagesCache.setValue("time", time);
+}
+
+Status Status::load(QSettings &messagesCache) {
+	return Status(
+		messagesCache.value("id").toInt(),
+		messagesCache.value("status").toString(),
+		messagesCache.value("username").toString(),
+		messagesCache.value("userpicFilename").toString(),
+		messagesCache.value("time").toDateTime()
+	);
+}
+
 #endif

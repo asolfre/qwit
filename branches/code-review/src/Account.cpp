@@ -172,4 +172,55 @@ void Account::removePreviousReplies(int count) {
 	emit repliesUpdated(replies);
 }
 
+void Account::saveMessages(QSettings &messagesCache) {
+	messagesCache.beginGroup("Status");
+	lastStatus.save(messagesCache);
+	messagesCache.endGroup();
+	messagesCache.beginWriteArray("Friends");
+	for (int i = 0; i < friendsStatuses.size(); ++i) {
+		messagesCache.setArrayIndex(i);
+		friendsStatuses[i].save(messagesCache);
+	}
+	messagesCache.endArray();
+	messagesCache.beginWriteArray("Replies");
+	for (int i = 0; i < replies.size(); ++i) {
+		messagesCache.setArrayIndex(i);
+		replies[i].save(messagesCache);
+	}
+	messagesCache.endArray();
+	messagesCache.beginWriteArray("Public");
+	for (int i = 0; i < publicStatuses.size(); ++i) {
+		messagesCache.setArrayIndex(i);
+		publicStatuses[i].save(messagesCache);
+	}
+	messagesCache.endArray();
+}
+
+void Account::loadMessages(QSettings &messagesCache) {
+	messagesCache.beginGroup("Status");
+	lastStatus = Status::load(messagesCache);
+	messagesCache.endGroup();
+	int n = messagesCache.beginReadArray("Friends");
+	friendsStatuses.clear();
+	for (int i = 0; i < n; ++i) {
+		messagesCache.setArrayIndex(i);
+		friendsStatuses.push_back(Status::load(messagesCache));
+	}
+	messagesCache.endArray();
+	n = messagesCache.beginReadArray("Replies");
+	replies.clear();
+	for (int i = 0; i < n; ++i) {
+		messagesCache.setArrayIndex(i);
+		replies.push_back(Status::load(messagesCache));
+	}
+	messagesCache.endArray();
+	n = messagesCache.beginReadArray("Public");
+	publicStatuses.clear();
+	for (int i = 0; i < n; ++i) {
+		messagesCache.setArrayIndex(i);
+		publicStatuses.push_back(Status::load(messagesCache));
+	}
+	messagesCache.endArray();
+}
+
 #endif

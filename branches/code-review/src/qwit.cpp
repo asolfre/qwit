@@ -34,6 +34,9 @@
 #include "Services.h"
 
 int main(int argc, char *argv[]) {
+	QDir dir(QDir::homePath());
+	dir.mkdir(Configuration::CacheDirectory);
+	
 	QApplication app(argc, argv);
 
 	QString locale = QLocale::system().name();

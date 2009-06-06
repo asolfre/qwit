@@ -185,9 +185,7 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data) {
 				}
 				imageFileName += (char)c;
 			}
-			QDir dir(QDir::homePath());
-			dir.mkdir(Configuration::CacheDirectory);
-			imageFileName = dir.absolutePath() + "/" + Configuration::CacheDirectory + "/" + imageFileName;
+			imageFileName = Configuration::CacheDirectory + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
 			statuses.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime()));
 		}
@@ -255,9 +253,7 @@ Status QwitTools::_parseUser(const QByteArray &data) {
 					}
 					imageFileName += (char)c;
 				}
-				QDir dir(QDir::homePath());
-				dir.mkdir(Configuration::CacheDirectory);
-				imageFileName = dir.absolutePath() + "/" + Configuration::CacheDirectory + "/" + imageFileName;
+				imageFileName = Configuration::CacheDirectory + imageFileName;
 				UserpicsDownloader::getInstance()->download(image, imageFileName);
 				status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime());
 			}
@@ -324,9 +320,7 @@ Status QwitTools::_parseStatus(const QByteArray &data) {
 			}
 			imageFileName += (char)c;
 		}
-		QDir dir(QDir::homePath());
-		dir.mkdir(Configuration::CacheDirectory);
-		imageFileName = dir.absolutePath() + "/" + Configuration::CacheDirectory + "/" + imageFileName;
+		imageFileName = Configuration::CacheDirectory + imageFileName;
 		UserpicsDownloader::getInstance()->download(image, imageFileName);
 		status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime());
 	}

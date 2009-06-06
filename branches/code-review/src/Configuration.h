@@ -41,6 +41,7 @@
 class Configuration {
 	Configuration();
 	static QSettings settings;
+	static QSettings messagesCache;
 	
 public:
 	static const int AccountTwitter = 0;
@@ -49,6 +50,7 @@ public:
 	static const QString CompanyName;
 	static const QString ApplicationName;
 	static const QString CacheDirectory;
+	static const QString MessagesCacheFileName;
 
 
 	static QMap<QString, QString> ServicesNames;
@@ -97,6 +99,8 @@ public:
 	void deleteAccount(int accountId);
 	void swapAccounts(int account1Id, int account2Id);
 	Account* currentAccount();
+	void saveMessages();
+	void loadMessages();
 	
 public:
 	static Configuration* getInstance();
