@@ -29,11 +29,7 @@
 #ifndef QwitTools_h
 #define QwitTools_h
 
-#include <QIcon>
-#include <QString>
-#include <QDateTime>
-#include <QMap>
-#include <QVector>
+#include "QwitHeaders.h"
 
 #include "Status.h"
 
@@ -41,6 +37,8 @@ class QwitTools: public QObject {
 	Q_OBJECT
 	
 private:
+	static QRegExp urlRegExp;
+	static QRegExp usernameRegExp;
 	QMap<QString, int> monthes;
 	static QwitTools *instance;
 	QwitTools();
@@ -48,21 +46,23 @@ private:
 	QIcon _getToolButtonIcon(const QString &iconFileName);
 	QString _formatDateTime(const QDateTime &time);
 	QDateTime _dateFromString(QString date);
-	QVector<Status> _parseStatuses(const QByteArray &data);
-	Status _parseUser(const QByteArray &data);
-	Status _parseStatus(const QByteArray &data);
+	QVector<Status> _parseStatuses(const QByteArray &data, Account *account);
+	Status _parseUser(const QByteArray &data, Account *account);
+	Status _parseStatus(const QByteArray &data, Account *account);
 	void _log(const QString &message);
 	void _makeStatusesUnique(QVector<Status> &v);
+	QString _prepareStatus(const QString &text, Account *account);
 	
 public:
 	static QDateTime dateFromString(QString date);
 	static QIcon getToolButtonIcon(const QString &iconFileName);
 	static QString formatDateTime(const QDateTime &time);
-	static QVector<Status> parseStatuses(const QByteArray &data);
-	static Status parseUser(const QByteArray &data);
-	static Status parseStatus(const QByteArray &data);
+	static QVector<Status> parseStatuses(const QByteArray &data, Account *account);
+	static Status parseUser(const QByteArray &data, Account *account);
+	static Status parseStatus(const QByteArray &data, Account *account);
 	static void log(const QString &message);
 	static void makeStatusesUnique(QVector<Status> &statuses);
+	static QString prepareStatus(const QString &text, Account *account);
 };
 
 #endif

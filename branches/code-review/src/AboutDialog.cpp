@@ -29,9 +29,9 @@
 #ifndef AboutDialog_cpp
 #define AboutDialog_cpp
 
-#include "AboutDialog.h"
+#include "QwitHeaders.h"
 
-using namespace std;
+#include "AboutDialog.h"
 
 AboutDialog::AboutDialog(QWidget *parent): QDialog(parent) {
 	setupUi(this);

@@ -29,25 +29,29 @@
 #ifndef Account_h
 #define Account_h
 
+#include "QwitHeaders.h"
+
 #include "Twitter.h"
 #include "Status.h"
 
-#include <QVector>
-
 class Twitter;
+class Status;
 
 class Account: public QObject {
 	Q_OBJECT
+	
+private:
+	QString _serviceBaseUrl;
+	QString _serviceApiUrl;
 	
 public:
 	int id;
 	QString type;
 	QString username;
 	QString password;
-	QString serviceBaseUrl;
-	QString serviceApiUrl;
 	Status lastStatus;
 	Twitter *twitter;
+	int remainingRequests;
 	
 	QVector<Status> friendsStatuses;
 	QVector<Status> replies;
@@ -57,6 +61,9 @@ public:
 	Account(const QString &type, const QString &username, const QString &password);
 	void saveMessages(QSettings &messagesCache);
 	void loadMessages(QSettings &messagesCache);
+	QString serviceApiUrl();
+	QString serviceBaseUrl();
+	void setRemainingRequests(int remainingRequests);
 
 public slots:
 	void addFriendsStatuses(const QByteArray &data);
@@ -76,11 +83,12 @@ public slots:
 	void removePreviousReplies(int count);
 	
 signals:
-	void friendsStatusesUpdated(const QVector<Status> &items);
-	void repliesUpdated(const QVector<Status> &items);
-	void publicStatusesUpdated(const QVector<Status> &items);
-	void lastStatusReceived(const QString &status);
-	void newStatusesReceived(const QVector<Status> &items);
+	void friendsStatusesUpdated(const QVector<Status> &, Account *);
+	void repliesUpdated(const QVector<Status> &, Account *);
+	void publicStatusesUpdated(const QVector<Status> &, Account *);
+	void lastStatusReceived(const QString &, Account *);
+	void newStatusesReceived(const QVector<Status> &, Account *);
+	void remainingRequestsUpdated(int, Account *);
 };
 
 #endif

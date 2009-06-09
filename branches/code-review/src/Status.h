@@ -29,23 +29,25 @@
 #ifndef Status_h
 #define Status_h
 
-#include <QDateTime>
-#include <QSettings>
+#include "QwitHeaders.h"
+
+class Account;
 
 class Status {
 public:
-	int id;
+	uint id;
 	QString status;
 	QString username;
 	QString userpicFilename;
 	QDateTime time;
+	Account *account;
 	Status() {}
-	Status(int id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time);
+	Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, Account *account);
 	bool operator<(const Status &x) const;
 	bool operator==(const Status &x) const;
 	bool operator!=(const Status &x) const;
 	void save(QSettings &messagesCache);
-	static Status load(QSettings &messagesCache);
+	static Status load(QSettings &messagesCache, Account *account);
 };
 
 #endif

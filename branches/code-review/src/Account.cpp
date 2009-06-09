@@ -29,15 +29,16 @@
 #ifndef Account_cpp
 #define Account_cpp
 
+#include "QwitHeaders.h"
+
 #include "Account.h"
 #include "QwitTools.h"
-
-#include <iostream>
-
-using namespace std;
+#include "Configuration.h"
+#include "Services.h"
 
 Account::Account() {
 	QwitTools::log("Account::Account()");
+	remainingRequests = -1;
 	twitter = new Twitter(this);
 	connect(twitter, SIGNAL(friendsStatusesReceived(const QByteArray&)), this, SLOT(addFriendsStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(repliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
@@ -48,6 +49,7 @@ Account::Account() {
 
 Account::Account(const QString &type, const QString &username, const QString &password) {
 	QwitTools::log("Account::Account()");
+	remainingRequests = -1;
 	twitter = new Twitter(this);
 	this->type = type;
 	this->username = username;
@@ -61,53 +63,73 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 
 void Account::addFriendsStatuses(const QByteArray &data) {
 	QwitTools::log("Account::addFriendsStatuses()");
-	QVector<Status> statuses = QwitTools::parseStatuses(data);
-	int lastId = (friendsStatuses.size() ? friendsStatuses[friendsStatuses.size() - 1].id : 0);
-	int maxId = lastId;
-	for (int i = 0; i < statuses.size(); ++i) {
-		if (statuses[i].id > maxId) maxId = statuses[i].id;
-		friendsStatuses.push_back(statuses[i]);
+	QVector<Status> statuses = QwitTools::parseStatuses(data, this);
+	if (statuses.size()) {
+		Configuration *config = Configuration::getInstance();
+		int size = max(config->messagesPerPage, friendsStatuses.size());
+		uint lastId = (friendsStatuses.size() ? friendsStatuses[friendsStatuses.size() - 1].id : 0);
+		uint maxId = lastId;
+		for (int i = 0; i < statuses.size(); ++i) {
+			if (statuses[i].id > maxId) maxId = statuses[i].id;
+			friendsStatuses.push_back(statuses[i]);
+		}
+		qSort(friendsStatuses.begin(), friendsStatuses.end());
+		QwitTools::makeStatusesUnique(friendsStatuses);
+		if ((maxId > lastId) && (friendsStatuses.size() > size)) {
+			friendsStatuses.resize(size);
+		}
+		emit friendsStatusesUpdated(friendsStatuses, this);
+		emit newStatusesReceived(statuses, this);
 	}
-	qSort(friendsStatuses.begin(), friendsStatuses.end());
-	QwitTools::makeStatusesUnique(friendsStatuses);
-	emit friendsStatusesUpdated(friendsStatuses);
-	emit newStatusesReceived(statuses);
 }
 
 void Account::addReplies(const QByteArray &data) {
 	QwitTools::log("Account::addReplies()");
-	QVector<Status> statuses = QwitTools::parseStatuses(data);
-	int lastId = (replies.size() ? replies[replies.size() - 1].id : 0);
-	int maxId = lastId;
-	for (int i = 0; i < statuses.size(); ++i) {
-		if (statuses[i].id > maxId) maxId = statuses[i].id;
-		replies.push_back(statuses[i]);
+	QVector<Status> statuses = QwitTools::parseStatuses(data, this);
+	if (statuses.size()) {
+		Configuration *config = Configuration::getInstance();
+		int size = max(config->messagesPerPage, friendsStatuses.size());
+		uint lastId = (replies.size() ? replies[replies.size() - 1].id : 0);
+		uint maxId = lastId;
+		for (int i = 0; i < statuses.size(); ++i) {
+			if (statuses[i].id > maxId) maxId = statuses[i].id;
+			replies.push_back(statuses[i]);
+		}
+		qSort(replies.begin(), replies.end());
+		QwitTools::makeStatusesUnique(replies);
+		if ((maxId > lastId) && (replies.size() > size)) {
+			replies.resize(size);
+		}
+		emit repliesUpdated(replies, this);
+		emit newStatusesReceived(statuses, this);
 	}
-	qSort(replies.begin(), replies.end());
-	QwitTools::makeStatusesUnique(replies);
-	emit repliesUpdated(replies);
-	emit newStatusesReceived(statuses);
 }
 
 void Account::addPublicStatuses(const QByteArray &data) {
 	QwitTools::log("Account::addPublicStatuses()");
-	QVector<Status> statuses = QwitTools::parseStatuses(data);
-	int lastId = (replies.size() ? replies[replies.size() - 1].id : 0);
-	int maxId = lastId;
-	for (int i = 0; i < statuses.size(); ++i) {
-		if (statuses[i].id > maxId) maxId = statuses[i].id;
-		publicStatuses.push_back(statuses[i]);
+	QVector<Status> statuses = QwitTools::parseStatuses(data, this);
+	if (statuses.size()) {
+		Configuration *config = Configuration::getInstance();
+		int size = max(config->messagesPerPage, friendsStatuses.size());
+		uint lastId = (replies.size() ? replies[replies.size() - 1].id : 0);
+		uint maxId = lastId;
+		for (int i = 0; i < statuses.size(); ++i) {
+			if (statuses[i].id > maxId) maxId = statuses[i].id;
+			publicStatuses.push_back(statuses[i]);
+		}
+		qSort(publicStatuses.begin(), publicStatuses.end());
+		QwitTools::makeStatusesUnique(publicStatuses);
+		if ((maxId > lastId) && (publicStatuses.size() > size)) {
+			publicStatuses.resize(size);
+		}
+		emit publicStatusesUpdated(publicStatuses, this);
+		emit newStatusesReceived(statuses, this);
 	}
-	qSort(publicStatuses.begin(), publicStatuses.end());
-	QwitTools::makeStatusesUnique(publicStatuses);
-	emit publicStatusesUpdated(publicStatuses);
-	emit newStatusesReceived(statuses);
 }
 
 void Account::updateLastStatus(const QByteArray &data) {
 	QwitTools::log("Account::updateLastStatus()");
-	lastStatus = QwitTools::parseUser(data);
-	emit lastStatusReceived(lastStatus.status);
+	lastStatus = QwitTools::parseUser(data, this);
 }
 
 void Account::updateLastStatus() {
@@ -122,8 +144,8 @@ void Account::sendStatus(const QString &status) {
 
 void Account::statusSent(const QByteArray &data) {
 	QwitTools::log("Account::statusSent()");
-	lastStatus = QwitTools::parseStatus(data);
-	emit lastStatusReceived(lastStatus.status);
+	lastStatus = QwitTools::parseStatus(data, this);
+	emit lastStatusReceived(lastStatus.status, this);
 }
 
 void Account::receivePublicStatuses(int count) {
@@ -156,7 +178,7 @@ void Account::removePreviousFriendsStatuses(int count) {
 	int oldItemsCount = friendsStatuses.size();
 	int newItemsCount = (oldItemsCount - 1) - (oldItemsCount - 1) % count;
 	friendsStatuses.resize(newItemsCount);
-	emit friendsStatusesUpdated(friendsStatuses);
+	emit friendsStatusesUpdated(friendsStatuses, this);
 }
 
 void Account::receivePreviousReplies(int count) {
@@ -169,27 +191,28 @@ void Account::removePreviousReplies(int count) {
 	int oldItemsCount = replies.size();
 	int newItemsCount = (oldItemsCount - 1) - (oldItemsCount - 1) % count;
 	replies.resize(newItemsCount);
-	emit repliesUpdated(replies);
+	emit repliesUpdated(replies, this);
 }
 
 void Account::saveMessages(QSettings &messagesCache) {
+	Configuration *config = Configuration::getInstance();
 	messagesCache.beginGroup("Status");
 	lastStatus.save(messagesCache);
 	messagesCache.endGroup();
 	messagesCache.beginWriteArray("Friends");
-	for (int i = 0; i < friendsStatuses.size(); ++i) {
+	for (int i = 0; i < min(friendsStatuses.size(), config->messagesPerPage); ++i) {
 		messagesCache.setArrayIndex(i);
 		friendsStatuses[i].save(messagesCache);
 	}
 	messagesCache.endArray();
 	messagesCache.beginWriteArray("Replies");
-	for (int i = 0; i < replies.size(); ++i) {
+	for (int i = 0; i < min(replies.size(), config->messagesPerPage); ++i) {
 		messagesCache.setArrayIndex(i);
 		replies[i].save(messagesCache);
 	}
 	messagesCache.endArray();
 	messagesCache.beginWriteArray("Public");
-	for (int i = 0; i < publicStatuses.size(); ++i) {
+	for (int i = 0; i < min(publicStatuses.size(), config->messagesPerPage); ++i) {
 		messagesCache.setArrayIndex(i);
 		publicStatuses[i].save(messagesCache);
 	}
@@ -198,29 +221,46 @@ void Account::saveMessages(QSettings &messagesCache) {
 
 void Account::loadMessages(QSettings &messagesCache) {
 	messagesCache.beginGroup("Status");
-	lastStatus = Status::load(messagesCache);
+	lastStatus = Status::load(messagesCache, this);
 	messagesCache.endGroup();
 	int n = messagesCache.beginReadArray("Friends");
 	friendsStatuses.clear();
 	for (int i = 0; i < n; ++i) {
 		messagesCache.setArrayIndex(i);
-		friendsStatuses.push_back(Status::load(messagesCache));
+		friendsStatuses.push_back(Status::load(messagesCache, this));
 	}
 	messagesCache.endArray();
 	n = messagesCache.beginReadArray("Replies");
 	replies.clear();
 	for (int i = 0; i < n; ++i) {
 		messagesCache.setArrayIndex(i);
-		replies.push_back(Status::load(messagesCache));
+		replies.push_back(Status::load(messagesCache, this));
 	}
 	messagesCache.endArray();
 	n = messagesCache.beginReadArray("Public");
 	publicStatuses.clear();
 	for (int i = 0; i < n; ++i) {
 		messagesCache.setArrayIndex(i);
-		publicStatuses.push_back(Status::load(messagesCache));
+		publicStatuses.push_back(Status::load(messagesCache, this));
 	}
 	messagesCache.endArray();
+	emit friendsStatusesUpdated(friendsStatuses, this);
+	emit repliesUpdated(replies, this);
+	emit publicStatusesUpdated(publicStatuses, this);
+	emit lastStatusReceived(lastStatus.status, this);
+}
+
+QString Account::serviceApiUrl() {
+	return _serviceApiUrl == "" ? Services::options[type]["apiurl"] : _serviceApiUrl;
+}
+
+QString Account::serviceBaseUrl() {
+	return _serviceBaseUrl == "" ? Services::options[type]["baseurl"] : _serviceBaseUrl;
+}
+
+void Account::setRemainingRequests(int remainingRequests) {
+	this->remainingRequests = remainingRequests;
+	emit remainingRequestsUpdated(remainingRequests, this);
 }
 
 #endif

@@ -29,14 +29,10 @@
 #ifndef Configuration_cpp
 #define Configuration_cpp
 
-#include <QFile>
+#include "QwitHeaders.h"
 
 #include "MainWindow.h"
 #include "Configuration.h"
-
-#include <iostream>
-
-using namespace std;
 
 const QString Configuration::CompanyName = "arti";
 const QString Configuration::ApplicationName = "qwit2";
@@ -196,7 +192,7 @@ void Configuration::save() {
 int Configuration::addAccount(Account *account) {
 	accounts.push_back(account);
 	account->id = accounts.size() - 1;
-	QObject::connect(account, SIGNAL(newStatusesReceived(const QVector<Status>&)), MainWindow::getInstance(), SLOT(showNewStatuses(const QVector<Status>&)));
+	QObject::connect(account, SIGNAL(newStatusesReceived(const QVector<Status>&, Account *)), MainWindow::getInstance(), SLOT(showNewStatuses(const QVector<Status>&, Account *)));
 	return account->id;
 }
 

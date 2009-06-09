@@ -29,16 +29,10 @@
 #ifndef HomePage_cpp
 #define HomePage_cpp
 
-#include <QGridLayout>
-#include <QScrollArea>
-#include <QScrollBar>
+#include "QwitHeaders.h"
 
 #include "HomePage.h"
 #include "QwitTools.h"
-
-#include <iostream>
-
-using namespace std;
 
 HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
 	QwitTools::log("HomePage::HomePage()");

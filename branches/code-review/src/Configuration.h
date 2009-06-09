@@ -29,12 +29,7 @@
 #ifndef Configuration_h
 #define Configuration_h
 
-#include <QSettings>
-#include <QString>
-#include <QPoint>
-#include <QSize>
-#include <QVector>
-#include <QMap>
+#include "QwitHeaders.h"
 
 #include "Account.h"
 

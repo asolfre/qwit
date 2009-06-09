@@ -29,9 +29,7 @@
 #ifndef StatusTextEdit_h
 #define StatusTextEdit_h
 
-#include <QWidget>
-#include <QTextEdit>
-#include <QFocusEvent>
+#include "QwitHeaders.h"
 
 class StatusTextEdit: public QTextEdit {
 	Q_OBJECT

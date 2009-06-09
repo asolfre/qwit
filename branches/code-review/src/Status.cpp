@@ -29,14 +29,17 @@
 #ifndef Status_cpp
 #define Status_cpp
 
+#include "QwitHeaders.h"
+
 #include "Status.h"
 
-Status::Status(int id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time) {
+Status::Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, Account *account) {
 	this->id = id;
 	this->status = status;
 	this->username = username;
 	this->userpicFilename = userpicFilename;
 	this->time = time;
+	this->account = account;
 }
 
 bool Status::operator<(const Status &x) const {
@@ -59,13 +62,14 @@ void Status::save(QSettings &messagesCache) {
 	messagesCache.setValue("time", time);
 }
 
-Status Status::load(QSettings &messagesCache) {
+Status Status::load(QSettings &messagesCache, Account *account) {
 	return Status(
 		messagesCache.value("id").toInt(),
 		messagesCache.value("status").toString(),
 		messagesCache.value("username").toString(),
 		messagesCache.value("userpicFilename").toString(),
-		messagesCache.value("time").toDateTime()
+		messagesCache.value("time").toDateTime(),
+		account
 	);
 }
 

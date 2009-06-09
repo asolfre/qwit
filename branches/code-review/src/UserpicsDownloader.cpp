@@ -29,11 +29,9 @@
 #ifndef UserpicsDownloader_cpp
 #define UserpicsDownloader_cpp
 
-#include <iostream>
+#include "QwitHeaders.h"
 
 #include "UserpicsDownloader.h"
-
-using namespace std;
 
 UserpicsDownloader* UserpicsDownloader::instance = 0;
 

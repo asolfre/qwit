@@ -29,15 +29,12 @@
 #ifndef OptionsDialog_cpp
 #define OptionsDialog_cpp
 
+#include "QwitHeaders.h"
+
 #include "MainWindow.h"
 #include "OptionsDialog.h"
 #include "Configuration.h"
-
 #include "Account.h"
-
-#include <iostream>
-
-using namespace std;
 
 OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	setupUi(this);

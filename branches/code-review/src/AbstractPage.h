@@ -29,8 +29,7 @@
 #ifndef AbstractPage_h
 #define AbstractPage_h
 
-#include <QWidget>
-#include <QScrollArea>
+#include "QwitHeaders.h"
 
 #include "TwitterWidget.h"
 #include "Configuration.h"
@@ -47,14 +46,14 @@ public:
 	
 	virtual void update() = 0;
 	virtual void redraw();
-	virtual void addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId);
+	virtual void addItem(const Status &status);
 	virtual void updateSize() = 0;
 	virtual QString title() = 0;
 	virtual void reloadUserpics();
 	void clear();
 	
 public slots:
-	virtual void updateItems(const QVector<Status> &items);
+	virtual void updateItems(const QVector<Status> &items, Account *account);
 	virtual void updatePrevious();
 	virtual void removePrevious();
 };

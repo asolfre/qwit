@@ -26,12 +26,11 @@
  *  Qwit main function
  */
 
-#include <QApplication>
-#include <QLocale>
-#include <QTranslator>
+#include "QwitHeaders.h"
 
 #include "MainWindow.h"
 #include "Services.h"
+
 
 int main(int argc, char *argv[]) {
 	QDir dir(QDir::homePath());

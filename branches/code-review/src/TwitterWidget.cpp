@@ -29,20 +29,12 @@
 #ifndef TwitterWidget_cpp
 #define TwitterWidget_cpp
 
-#include <QScrollBar>
-#include <QDesktopServices>
-#include <QPalette>
-#include <QChar>
-#include <QToolButton>
+#include "QwitHeaders.h"
 
 #include "TwitterWidget.h"
 #include "QwitException.h"
 #include "QwitTools.h"
 #include "Configuration.h"
-
-#include <iostream>
-
-using namespace std;
 
 void TwitterWidgetItem::loadUserpic() {
 	QPixmap pixmap(userpicFileName);
@@ -80,19 +72,19 @@ void TwitterWidget::clear() {
 	updateItems();
 }
 
-void TwitterWidget::addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId) {
+void TwitterWidget::addItem(const Status &status) {
 	QwitTools::log("TwitterWidget::addItem()");
 
 	TwitterWidgetItem *item = new TwitterWidgetItem();
 
-	item->time = time;
-	item->username = username;
-	item->messageId = messageId;
+	item->time = status.time;
+	item->username = status.username;
+	item->messageId = status.id;
 
-	item->rawStatus = status;
+	item->rawStatus = status.status;
 
 	item->status = new QTextBrowser(this);
-	item->status->setHtml(status);
+	item->status->setHtml(QwitTools::prepareStatus(status.status, status.account));
 	item->status->setReadOnly(true);
 	item->status->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	item->status->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -103,9 +95,9 @@ void TwitterWidget::addItem(const QString &userpic, const QString &username, con
 	item->status->document()->setDefaultFont(font);
 
 	item->userpic = new QLabel(this);
-	item->userpicFileName = userpic;
+	item->userpicFileName = status.userpicFilename;
 	item->loadUserpic();
-	item->sign = new QLabel("<a href=\"http://twitter.com/" + username + "\" style=\"font-weight:bold;text-decoration:none\">" + username + "</a> - <a href=\"http://twitter.com/" + username + "/statuses/" + QString::number(messageId) + "\" style=\"font-size:70%;text-decoration:none\">" + QwitTools::formatDateTime(time) + "</a>", this);
+	item->sign = new QLabel("<a href=\"http://twitter.com/" + status.username + "\" style=\"font-weight:bold;text-decoration:none\">" + status.username + "</a> - <a href=\"http://twitter.com/" + status.username + "/statuses/" + QString::number(status.id) + "\" style=\"font-size:70%;text-decoration:none\">" + QwitTools::formatDateTime(status.time) + "</a>", this);
 	item->sign->setAlignment(Qt::AlignRight);
 	item->sign->setOpenExternalLinks(true);
 
@@ -152,7 +144,7 @@ void TwitterWidget::addItem(const QString &userpic, const QString &username, con
 	item->userpic->show();
 	item->sign->show();
 
-	updateItems();
+//	updateItems();
 }
 
 void TwitterWidget::updateItems() {

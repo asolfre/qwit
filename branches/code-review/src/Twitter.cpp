@@ -29,20 +29,11 @@
 #ifndef Twitter_cpp
 #define Twitter_cpp
 
-#include <QUrl>
-#include <QHttpRequestHeader>
-#include <QByteArray>
-#include <QDateTime>
-#include <QNetworkProxy>
+#include "QwitHeaders.h"
 
 #include "Twitter.h"
 #include "QwitTools.h"
-
 #include "Services.h"
-
-#include <iostream>
-
-using namespace std;
 
 Twitter::Twitter(Account *account) {
 	QwitTools::log("Twitter::Twitter()");
@@ -56,7 +47,7 @@ Twitter::Twitter(Account *account) {
 void Twitter::sendStatus(const QString &status) {
 	QwitTools::log("Twitter::sendStatus()");
 
-	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["update"] + ".xml");
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["update"] + ".xml");
 
 	QHttpRequestHeader header;
 	header.setRequest("POST", url.path());
@@ -85,7 +76,7 @@ void Twitter::sendStatus(const QString &status) {
 void Twitter::receiveFriendsStatuses(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receiveFriendsStatuses()");
 
-	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["friends"] + ".xml");
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["friends"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -104,7 +95,7 @@ void Twitter::receiveFriendsStatuses(int lastStatusId, int count) {
 void Twitter::receiveReplies(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receiveReplies()");
 
-	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["replies"] + ".xml");
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["replies"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -123,7 +114,7 @@ void Twitter::receiveReplies(int lastStatusId, int count) {
 void Twitter::receivePublicStatuses(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receivePublicStatuses()");
 
-	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["public"] + ".xml");
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["public"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -142,7 +133,7 @@ void Twitter::receivePublicStatuses(int lastStatusId, int count) {
 void Twitter::receiveLastStatus() {
 	QwitTools::log("Twitter::receiveLastStatus()");
 
-	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["last"] + ".xml");
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["last"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -161,7 +152,7 @@ void Twitter::receiveLastStatus() {
 void Twitter::receivePreviousFriendsStatuses(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receiveFriendsStatuses()");
 
-	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["friends"] + ".xml");
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["friends"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -180,7 +171,7 @@ void Twitter::receivePreviousFriendsStatuses(int lastStatusId, int count) {
 void Twitter::receivePreviousReplies(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receiveReplies()");
 
-	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["replies"] + ".xml");
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["replies"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -199,7 +190,7 @@ void Twitter::receivePreviousReplies(int lastStatusId, int count) {
 void Twitter::receivePreviousPublicStatuses(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receivePublicStatuses()");
 
-	QUrl url((account->serviceApiUrl == "" ? Services::options[account->type]["apiurl"] : account->serviceApiUrl) + Services::options[account->type]["public"] + ".xml");
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["public"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -243,10 +234,16 @@ void Twitter::requestFinished(int id, bool error) {
 		if (receiveFriendsStatusesRequests.find(id) != receiveFriendsStatusesRequests.end()) {
 			QwitTools::log("Request finished: " + receiveFriendsStatusesRequests[id]);
 			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit friendsStatusesReceived(buffer.data());
 		} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
 			QwitTools::log("Request finished: " + receiveRepliesRequests[id]);
 			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit repliesReceived(buffer.data());
 		} else if (receivePublicStatusesRequests.find(id) != receivePublicStatusesRequests.end()) {
 			QwitTools::log("Request finished: " + receivePublicStatusesRequests[id]);
@@ -255,6 +252,9 @@ void Twitter::requestFinished(int id, bool error) {
 		} else if (receiveLastStatusRequests.find(id) != receiveLastStatusRequests.end()) {
 			QwitTools::log("Request finished: " + receiveLastStatusRequests[id]);
 			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit lastStatusReceived(buffer.data());
 		} else if (sendStatusRequests.find(id) != sendStatusRequests.end()) {
 			QwitTools::log("Request finished: " + sendStatusRequests[id]);

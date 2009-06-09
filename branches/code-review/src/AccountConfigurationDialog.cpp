@@ -29,11 +29,9 @@
 #ifndef AccountConfigurationDialog_cpp
 #define AccountConfigurationDialog_cpp
 
+#include "QwitHeaders.h"
+
 #include "AccountConfigurationDialog.h"
-
-#include <iostream>
-
-using namespace std;
 
 const int AccountConfigurationDialog::ActionAdd;
 const int AccountConfigurationDialog::ActionEdit;

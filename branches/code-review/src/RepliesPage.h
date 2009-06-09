@@ -29,7 +29,7 @@
 #ifndef RepliesPage_h
 #define RepliesPage_h
 
-#include <QScrollArea>
+#include "QwitHeaders.h"
 
 #include "AbstractPage.h"
 

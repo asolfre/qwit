@@ -29,14 +29,7 @@
 #ifndef UserpicsDownloader_h
 #define UserpicsDownloader_h
 
-#include <QObject>
-#include <QQueue>
-#include <QPair>
-#include <QString>
-#include <QFile>
-#include <QHttp>
-#include <QUrl>
-#include <QFileInfo>
+#include "QwitHeaders.h"
 
 class UserpicsDownloader: public QObject {
 	Q_OBJECT

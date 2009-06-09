@@ -29,23 +29,21 @@
 #ifndef AbstractPage_cpp
 #define AbstractPage_cpp
 
+#include "QwitHeaders.h"
+
 #include "MainWindow.h"
 #include "TwitterWidget.h"
 
 #include "AbstractPage.h"
 #include "QwitTools.h"
 
-#include <iostream>
-
-using namespace std;
-
 AbstractPage::AbstractPage(QWidget *parent): QWidget(parent) {
 	QwitTools::log("AbstractPage::AbstractPage()");
 }
 
-void AbstractPage::addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId) {
+void AbstractPage::addItem(const Status &status) {
 	QwitTools::log("AbstractPage::addItem()");
-	twitterWidget->addItem(userpic, username, status, time, messageId);
+	twitterWidget->addItem(status);
 }
 
 void AbstractPage::clear() {
@@ -58,13 +56,14 @@ void AbstractPage::reloadUserpics() {
 	twitterWidget->reloadUserpics();
 }
 
-void AbstractPage::updateItems(const QVector<Status> &items) {
+void AbstractPage::updateItems(const QVector<Status> &items, Account *account) {
 	QwitTools::log("AbstractPage::updateItems()");
 	int scrollPosition = scrollArea->verticalScrollBar()->value();
 	clear();
 	for (int i = 0; i < items.size(); ++i) {
-		addItem(items[i].userpicFilename, items[i].username, items[i].status, items[i].time, items[i].id);
+		addItem(items[i]);
 	}
+	twitterWidget->updateItems();
 	scrollArea->verticalScrollBar()->setValue(scrollPosition);
 }
 

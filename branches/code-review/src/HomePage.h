@@ -29,7 +29,7 @@
 #ifndef HomePage_h
 #define HomePage_h
 
-#include <QScrollArea>
+#include "QwitHeaders.h"
 
 #include "AbstractPage.h"
 

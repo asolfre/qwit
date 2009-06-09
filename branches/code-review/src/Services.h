@@ -29,8 +29,7 @@
 #ifndef Services_h
 #define Services_h
 
-#include <QMap>
-#include <QString>
+#include "QwitHeaders.h"
 
 class Services {
 public:

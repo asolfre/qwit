@@ -31,6 +31,8 @@
 
 #include "ui_AccountConfigurationDialog.h"
 
+#include "QwitHeaders.h"
+
 class AccountConfigurationDialog: public QDialog, public Ui::AccountConfigurationDialog {
 	Q_OBJECT
 	

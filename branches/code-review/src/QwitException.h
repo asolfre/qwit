@@ -29,7 +29,7 @@
 #ifndef QwitException_h
 #define QwitException_h
 
-#include <QString>
+#include "QwitHeaders.h"
 
 class QwitException {
 public:

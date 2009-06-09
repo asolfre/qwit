@@ -29,15 +29,9 @@
 #ifndef StatusTextEdit_cpp
 #define StatusTextEdit_cpp
 
-#include <QToolTip>
-#include <QScrollBar>
-#include <QMenu>
+#include "QwitHeaders.h"
 
 #include "StatusTextEdit.h"
-
-#include <iostream>
-
-using namespace std;
 
 const int StatusTextEdit::MaxStatusCharacters;
 const int StatusTextEdit::StandardHeight;

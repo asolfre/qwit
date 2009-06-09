@@ -29,13 +29,9 @@
 #ifndef TwitterWidget_h
 #define TwitterWidget_h
 
-#include <QWidget>
-#include <QPainter>
-#include <QPaintEvent>
-#include <QTextBrowser>
-#include <QLabel>
-#include <QDateTime>
-#include <QToolButton>
+#include "QwitHeaders.h"
+
+#include "Status.h"
 
 class TwitterWidgetItem {
 public:
@@ -78,7 +74,7 @@ public:
 	
 	TwitterWidget(QWidget *parent);
 	void clear();
-	void addItem(const QString &userpic, const QString &username, const QString &status, const QDateTime &time, int messageId);
+	void addItem(const Status &status);
 	void updateItems();
 	void reloadUserpics();
 	void disableMoreButton();

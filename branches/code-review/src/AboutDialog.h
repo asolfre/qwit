@@ -31,6 +31,8 @@
 
 #include "ui_AboutDialog.h"
 
+#include "QwitHeaders.h"
+
 //! Class for "About Qwit" dialog.
 
 class AboutDialog: public QDialog, public Ui::AboutDialog {

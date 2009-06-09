@@ -29,16 +29,12 @@
 #ifndef MainWindow_cpp
 #define MainWindow_cpp
 
-#include "TwitterWidget.cpp"
+#include "QwitHeaders.h"
 
+#include "TwitterWidget.cpp"
 #include "MainWindow.h"
 #include "UserpicsDownloader.h"
-
 #include "Configuration.h"
-
-#include <iostream>
-
-using namespace std;
 
 MainWindow* MainWindow::instance = 0;
 
@@ -51,7 +47,7 @@ MainWindow* MainWindow::getInstance() {
 
 MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	QwitTools::log("MainWindow::MainWindow()");
-	
+
 	instance = this;
 
 	setupUi(this);
@@ -99,6 +95,7 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	updateTimer->start(60000);
 	
 	updatePages();
+
 }
 
 void MainWindow::leftCharsNumberChanged(int count) {
@@ -359,25 +356,28 @@ void MainWindow::updateCurrentAccount(int id) {
 	int oldAccountId = config->currentAccountId;
 	config->currentAccountId = id;
 	if (homePage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(friendsStatusesUpdated(const QVector<Status> &)), 0, 0);
-		connect(config->accounts[config->currentAccountId], SIGNAL(friendsStatusesUpdated(const QVector<Status> &)), homePage, SLOT(updateItems(const QVector<Status> &)));
-		homePage->updateItems(config->accounts[config->currentAccountId]->friendsStatuses);
+		disconnect(config->accounts[oldAccountId], SIGNAL(friendsStatusesUpdated(const QVector<Status> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(friendsStatusesUpdated(const QVector<Status> &, Account *)), homePage, SLOT(updateItems(const QVector<Status> &, Account *)));
+		homePage->updateItems(config->currentAccount()->friendsStatuses, config->currentAccount());
 	}
 	if (repliesPage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(repliesUpdated(const QVector<Status> &)), 0, 0);
-		connect(config->accounts[config->currentAccountId], SIGNAL(repliesUpdated(const QVector<Status> &)), repliesPage, SLOT(updateItems(const QVector<Status> &)));
-		repliesPage->updateItems(config->accounts[config->currentAccountId]->replies);
+		disconnect(config->accounts[oldAccountId], SIGNAL(repliesUpdated(const QVector<Status> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(repliesUpdated(const QVector<Status> &, Account *)), repliesPage, SLOT(updateItems(const QVector<Status> &, Account *)));
+		repliesPage->updateItems(config->currentAccount()->replies, config->currentAccount());
 	}
 	if (publicPage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(publicStatusesUpdated(const QVector<Status> &)), 0, 0);
-		connect(config->accounts[config->currentAccountId], SIGNAL(publicStatusesUpdated(const QVector<Status> &)), publicPage, SLOT(updateItems(const QVector<Status> &)));
-		publicPage->updateItems(config->accounts[config->currentAccountId]->publicStatuses);
+		disconnect(config->accounts[oldAccountId], SIGNAL(publicStatusesUpdated(const QVector<Status> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(publicStatusesUpdated(const QVector<Status> &, Account *)), publicPage, SLOT(updateItems(const QVector<Status> &, Account *)));
+		publicPage->updateItems(config->currentAccount()->publicStatuses, config->currentAccount());
 	}
-	disconnect(config->accounts[oldAccountId], SIGNAL(lastStatusReceived(const QString &)), 0, 0);
-	connect(config->accounts[config->currentAccountId], SIGNAL(lastStatusReceived(const QString &)), this, SLOT(updateLastStatus(const QString &)));
-	lastStatusLabel->setText(config->accounts[config->currentAccountId]->lastStatus.status);
+	disconnect(config->accounts[oldAccountId], SIGNAL(lastStatusReceived(const QString &, Account *)), 0, 0);
+	connect(config->currentAccount(), SIGNAL(lastStatusReceived(const QString &, Account *)), this, SLOT(updateLastStatus(const QString &, Account *)));
+	disconnect(config->currentAccount(), SIGNAL(remainingRequestsUpdated(int, Account *)), 0, 0);
+	connect(config->currentAccount(), SIGNAL(remainingRequestsUpdated(int, Account *)), this, SLOT(updateRemainingRequests(int, Account *)));
 	disconnect(statusTextEdit, SIGNAL(statusEntered(const QString &)), 0, 0);
-	connect(statusTextEdit, SIGNAL(statusEntered(const QString &)), config->accounts[config->currentAccountId], SLOT(sendStatus(const QString &)));
+	connect(statusTextEdit, SIGNAL(statusEntered(const QString &)), config->currentAccount(), SLOT(sendStatus(const QString &)));
+	lastStatusLabel->setText(config->currentAccount()->lastStatus.status);
+	updateRemainingRequests(config->currentAccount()->remainingRequests, config->currentAccount());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
@@ -488,7 +488,7 @@ void MainWindow::refresh() {
 
 	pages[mainTabWidget->currentIndex()]->update();
 	Configuration *config = Configuration::getInstance();
-	config->accounts[config->currentAccountId]->updateLastStatus();
+	config->currentAccount()->updateLastStatus();
 }
 
 void MainWindow::tabChanged(int tabIndex) {
@@ -507,13 +507,13 @@ void MainWindow::reloadUserpics() {
 	}
 }
 
-void MainWindow::updateLastStatus(const QString &status) {
+void MainWindow::updateLastStatus(const QString &status, Account *account) {
 	QwitTools::log("MainWindow::updateLastStatus()");
 
 	lastStatusLabel->setText(status);
 }
 
-void MainWindow::showNewStatuses(const QVector<Status> &statuses) {
+void MainWindow::showNewStatuses(const QVector<Status> &statuses, Account *account) {
 	QwitTools::log("MainWindow::showNewStatuses()");
 	Configuration *config = Configuration::getInstance();
 	QString trayMessage = "";
@@ -540,6 +540,16 @@ void MainWindow::updatePages() {
 		config->accounts[i]->receiveFriendsStatuses(config->messagesPerPage);
 		config->accounts[i]->receiveReplies(config->messagesPerPage);
 		config->accounts[i]->updateLastStatus();
+	}
+}
+
+void MainWindow::updateRemainingRequests(int remainingRequests, Account *account) {
+	if (remainingRequests == -1) {
+		stateLabel->setText("");
+	} else if (remainingRequests == 0) {
+		stateLabel->setText("Rate limit exceeded");
+	} else {
+		stateLabel->setText(QString::number(remainingRequests) + " requests left");
 	}
 }
 

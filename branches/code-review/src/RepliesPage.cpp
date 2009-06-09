@@ -29,16 +29,10 @@
 #ifndef RepliesPage_cpp
 #define RepliesPage_cpp
 
-#include <QGridLayout>
-#include <QScrollArea>
-#include <QScrollBar>
+#include "QwitHeaders.h"
 
 #include "RepliesPage.h"
 #include "QwitTools.h"
-
-#include <iostream>
-
-using namespace std;
 
 RepliesPage::RepliesPage(QWidget* parent): AbstractPage(parent) {
 	QwitTools::log("RepliesPage::RepliesPage()");

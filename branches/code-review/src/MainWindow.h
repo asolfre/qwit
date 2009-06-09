@@ -29,33 +29,11 @@
 #ifndef MainWindow_h
 #define MainWindow_h
 
-#include <QDialog>
-#include <QTimer>
-#include <QMessageBox>
-#include <QBuffer>
-#include <QtNetwork/QHttp>
-#include <QUrl>
-#include <QtXml/QDomDocument>
-#include <QString>
-#include <QFile>
-#include <QTime>
-#include <QSystemTrayIcon>
-#include <QTextStream>
-#include <QMenu>
-#include <QCloseEvent>
-#include <QSettings>
-#include <QScrollArea>
-#include <QScrollBar>
-#include <QQueue>
-#include <QPair>
-#include <QCryptographicHash>
-#include <QFileInfo>
-#include <QDir>
-
 #include "ui_MainWindow.h"
 
-#include "AbstractPage.h"
+#include "QwitHeaders.h"
 
+#include "AbstractPage.h"
 #include "StatusTextEdit.h"
 #include "OptionsDialog.h"
 #include "AboutDialog.h"
@@ -116,10 +94,11 @@ public slots:
 	void refresh();
 	void tabChanged(int tabIndex);
 	void reloadUserpics();
-	void updateLastStatus(const QString &status);
-	void showNewStatuses(const QVector<Status> &statuses);
+	void updateLastStatus(const QString &status, Account *account);
+	void showNewStatuses(const QVector<Status> &statuses, Account *account);
 	void redrawPages();
 	void updatePages();
+	void updateRemainingRequests(int remainingRequests, Account *account);
 	
 protected:
 

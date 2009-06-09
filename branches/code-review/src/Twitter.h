@@ -29,11 +29,7 @@
 #ifndef Twitter_h
 #define Twitter_h
 
-#include <QObject>
-#include <QHttp>
-#include <QString>
-#include <QBuffer>
-#include <QSslError>
+#include "QwitHeaders.h"
 
 #include "Account.h"
 

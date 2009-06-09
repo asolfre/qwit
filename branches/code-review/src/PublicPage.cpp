@@ -29,16 +29,10 @@
 #ifndef PublicPage_cpp
 #define PublicPage_cpp
 
-#include <QGridLayout>
-#include <QScrollArea>
-#include <QScrollBar>
+#include "QwitHeaders.h"
 
 #include "PublicPage.h"
 #include "QwitTools.h"
-
-#include <iostream>
-
-using namespace std;
 
 PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
 	QwitTools::log("PublicPage::PublicPage()");

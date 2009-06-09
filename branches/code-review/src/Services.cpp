@@ -29,6 +29,8 @@
 #ifndef Services_cpp
 #define Services_cpp
 
+#include "QwitHeaders.h"
+
 #include "Services.h"
 
 QMap<QString, QMap<QString, QString> > Services::options;
@@ -46,6 +48,19 @@ void Services::initialize() {
 	twitterOptions["direct_messages"] = "/direct_messages";
 	twitterOptions["direct_messages_sent"] = "/direct_messages";
 	options["twitter"] = twitterOptions;
+
+	QMap<QString, QString> identicaOptions;
+	identicaOptions["apiurl"] = "http://identi.ca/api";
+	identicaOptions["baseurl"] = "http://identi.ca";
+	identicaOptions["friends"] = "/statuses/friends_timeline";
+	identicaOptions["public"] = "/statuses/public_timeline";
+	identicaOptions["replies"] = "/statuses/mentions";
+	identicaOptions["user"] = "/statuses/user_timeline/";
+	identicaOptions["last"] = "/users/show";
+	identicaOptions["update"] = "/statuses/update";
+	identicaOptions["direct_messages"] = "/direct_messages";
+	identicaOptions["direct_messages_sent"] = "/direct_messages";
+	options["identica"] = identicaOptions;
 }
 
 #endif

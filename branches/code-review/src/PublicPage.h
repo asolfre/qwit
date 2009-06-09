@@ -29,7 +29,7 @@
 #ifndef PublicPage_h
 #define PublicPage_h
 
-#include <QScrollArea>
+#include "QwitHeaders.h"
 
 #include "AbstractPage.h"
 

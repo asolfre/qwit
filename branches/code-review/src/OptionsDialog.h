@@ -31,8 +31,9 @@
 
 #include "ui_OptionsDialog.h"
 
-#include "AccountConfigurationDialog.h"
+#include "QwitHeaders.h"
 
+#include "AccountConfigurationDialog.h"
 #include "Account.h"
 
 class OptionsDialog: public QDialog, public Ui::OptionsDialog {
