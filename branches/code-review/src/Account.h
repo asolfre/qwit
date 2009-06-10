@@ -71,7 +71,7 @@ public slots:
 	void addPublicStatuses(const QByteArray &data);
 	void updateLastStatus(const QByteArray &data);
 	void updateLastStatus();
-	void sendStatus(const QString &status);
+	void sendStatus(const QString &status, int inReplyToStatusId);
 	void statusSent(const QByteArray &status);
 	void receivePublicStatuses(int count);
 	void receiveFriendsStatuses(int count);

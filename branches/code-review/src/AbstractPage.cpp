@@ -39,6 +39,10 @@
 
 AbstractPage::AbstractPage(QWidget *parent): QWidget(parent) {
 	QwitTools::log("AbstractPage::AbstractPage()");
+	twitterWidget = new TwitterWidget(this);
+	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+	connect(twitterWidget, SIGNAL(retweet(const Status &)), MainWindow::getInstance(), SIGNAL(retweet(const Status &)));
+	connect(twitterWidget, SIGNAL(reply(const Status &)), MainWindow::getInstance(), SIGNAL(reply(const Status &)));
 }
 
 void AbstractPage::addItem(const Status &status) {

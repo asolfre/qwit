@@ -47,7 +47,6 @@ class MainWindow: public QDialog, public Ui::MainWindow {
 
 private:
 
-	StatusTextEdit *statusTextEdit;
 	OptionsDialog *optionsDialog;
 	AboutDialog *aboutDialog;
 	QVector<QToolButton*> accountsButtons;
@@ -63,6 +62,7 @@ private:
 	PublicPage *publicPage;
 	QTimer *redrawTimer;
 	QTimer *updateTimer;
+	StatusTextEdit *statusTextEdit;
 	
 	bool acceptClose;
 	
@@ -99,6 +99,11 @@ public slots:
 	void redrawPages();
 	void updatePages();
 	void updateRemainingRequests(int remainingRequests, Account *account);
+	
+signals:
+
+	void retweet(const Status &);
+	void reply(const Status &);
 	
 protected:
 

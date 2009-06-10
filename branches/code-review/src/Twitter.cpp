@@ -34,6 +34,7 @@
 #include "Twitter.h"
 #include "QwitTools.h"
 #include "Services.h"
+#include "Configuration.h"
 
 Twitter::Twitter(Account *account) {
 	QwitTools::log("Twitter::Twitter()");
@@ -44,9 +45,20 @@ Twitter::Twitter(Account *account) {
 	connect(http, SIGNAL(requestFinished(int, bool)), this, SLOT(requestFinished(int, bool)));
 }
 
-void Twitter::sendStatus(const QString &status) {
-	QwitTools::log("Twitter::sendStatus()");
+void Twitter::setupProxy() {
+	Configuration *config = Configuration::getInstance();
+	if (config->useProxy) {
+		http->setProxy(config->proxyAddress, config->proxyPort, config->proxyUsername, config->proxyPassword);
+	} else {
+		http->setProxy(QNetworkProxy(QNetworkProxy::NoProxy));
+	}
+}
 
+void Twitter::sendStatus(const QString &status, int inReplyToStatusId) {
+	QwitTools::log("Twitter::sendStatus()");
+	
+	setupProxy();
+	
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["update"] + ".xml");
 
 	QHttpRequestHeader header;
@@ -64,6 +76,9 @@ void Twitter::sendStatus(const QString &status) {
 
 	QByteArray data = "status=";
 	data += QUrl::toPercentEncoding(status);
+	if (inReplyToStatusId) {
+		data += "&in_reply_to_status_id=" + QString::number(inReplyToStatusId);
+	}
 	data += "&source=qwit";
 
 	buffer.open(QIODevice::WriteOnly);
@@ -75,6 +90,8 @@ void Twitter::sendStatus(const QString &status) {
 
 void Twitter::receiveFriendsStatuses(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receiveFriendsStatuses()");
+	
+	setupProxy();
 
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["friends"] + ".xml");
 
@@ -94,6 +111,8 @@ void Twitter::receiveFriendsStatuses(int lastStatusId, int count) {
 
 void Twitter::receiveReplies(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receiveReplies()");
+	
+	setupProxy();
 
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["replies"] + ".xml");
 
@@ -113,6 +132,8 @@ void Twitter::receiveReplies(int lastStatusId, int count) {
 
 void Twitter::receivePublicStatuses(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receivePublicStatuses()");
+	
+	setupProxy();
 
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["public"] + ".xml");
 
@@ -132,6 +153,8 @@ void Twitter::receivePublicStatuses(int lastStatusId, int count) {
 
 void Twitter::receiveLastStatus() {
 	QwitTools::log("Twitter::receiveLastStatus()");
+	
+	setupProxy();
 
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["last"] + ".xml");
 
@@ -151,6 +174,8 @@ void Twitter::receiveLastStatus() {
 
 void Twitter::receivePreviousFriendsStatuses(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receiveFriendsStatuses()");
+	
+	setupProxy();
 
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["friends"] + ".xml");
 
@@ -170,6 +195,8 @@ void Twitter::receivePreviousFriendsStatuses(int lastStatusId, int count) {
 
 void Twitter::receivePreviousReplies(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receiveReplies()");
+	
+	setupProxy();
 
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["replies"] + ".xml");
 
@@ -189,6 +216,8 @@ void Twitter::receivePreviousReplies(int lastStatusId, int count) {
 
 void Twitter::receivePreviousPublicStatuses(int lastStatusId, int count) {
 	QwitTools::log("Twitter::receivePublicStatuses()");
+	
+	setupProxy();
 
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["public"] + ".xml");
 
@@ -213,7 +242,7 @@ void Twitter::abort() {
 
 void Twitter::requestStarted(int id) {
 	QwitTools::log("Twitter::requestStarted() " + QString::number(id));
-
+	
 	if (receiveFriendsStatusesRequests.find(id) != receiveFriendsStatusesRequests.end()) {
 		QwitTools::log("Request started: " + receiveFriendsStatusesRequests[id]);
 	} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {

@@ -37,8 +37,6 @@
 RepliesPage::RepliesPage(QWidget* parent): AbstractPage(parent) {
 	QwitTools::log("RepliesPage::RepliesPage()");
 
-	twitterWidget = new TwitterWidget(this);
-	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
 	connect(twitterWidget, SIGNAL(moreButtonClicked()), this, SLOT(updatePrevious()));
 	connect(twitterWidget, SIGNAL(lessButtonClicked()), this, SLOT(removePrevious()));

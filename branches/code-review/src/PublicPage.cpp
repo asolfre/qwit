@@ -37,8 +37,6 @@
 PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
 	QwitTools::log("PublicPage::PublicPage()");
 
-	twitterWidget = new TwitterWidget(this);
-	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	twitterWidget->setObjectName(QString::fromUtf8("publicPageTwitterWidget"));
 	twitterWidget->disableMoreButton();
 	twitterWidget->disableLessButton();

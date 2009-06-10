@@ -56,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	statusTextEdit->setObjectName(QString::fromUtf8("statusTextEdit"));
 	statusHorizontalLayout->insertWidget(0, statusTextEdit);
 	connect(statusTextEdit, SIGNAL(leftCharsNumberChanged(int)), this, SLOT(leftCharsNumberChanged(int)));
+	connect(this, SIGNAL(retweet(const Status &)), statusTextEdit, SLOT(retweet(const Status &)));
+	connect(this, SIGNAL(reply(const Status &)), statusTextEdit, SLOT(reply(const Status &)));
 	
 	optionsDialog = new OptionsDialog(this);
 	connect(optionsDialog, SIGNAL(accepted()), this, SLOT(saveOptions()));
@@ -75,6 +77,13 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	
 	accountsLayout = 0;
 	
+	redrawTimer = new QTimer(this);
+	connect(redrawTimer, SIGNAL(timeout()), this, SLOT(redrawPages()));
+	redrawTimer->start(10000);
+	
+	updateTimer = new QTimer(this);
+	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updatePages()));
+
 	setupTrayIcon();
 	loadState();
 	if (accountsButtons.size() > 0) {
@@ -86,14 +95,6 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	
 	connect(UserpicsDownloader::getInstance(), SIGNAL(userpicDownloaded()), this, SLOT(reloadUserpics()));
 
-	redrawTimer = new QTimer(this);
-	connect(redrawTimer, SIGNAL(timeout()), this, SLOT(redrawPages()));
-	redrawTimer->start(10000);
-
-	updateTimer = new QTimer(this);
-	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updatePages()));
-	updateTimer->start(60000);
-	
 	updatePages();
 
 }
@@ -162,6 +163,12 @@ void MainWindow::saveOptions() {
 	config->showSearchTab = (optionsDialog->searchTabCheckBox->checkState() == Qt::Checked);
 	config->updateSearchTabAlways = (optionsDialog->searchTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
 
+	config->useProxy = (optionsDialog->useProxyCheckBox->checkState() == Qt::Checked);
+	config->proxyAddress = optionsDialog->proxyAddressLineEdit->text();
+	config->proxyPort = optionsDialog->proxyPortLineEdit->text().toInt();
+	config->proxyUsername = optionsDialog->proxyUsernameLineEdit->text();
+	config->proxyPassword = optionsDialog->proxyPasswordLineEdit->text();
+	
 	saveState();
 	updateState();
 }
@@ -225,6 +232,11 @@ void MainWindow::updateState() {
 	
 	move(config->position);
 	resize(config->size);
+	for (int i = 0; i < pages.size(); ++i) {
+		pages[i]->updateSize();
+	}
+
+	updateTimer->start(300000);
 }
 
 void MainWindow::resetOptionsDialog() {
@@ -266,6 +278,13 @@ void MainWindow::resetOptionsDialog() {
 	for (int i = 0; i < config->accounts.size(); ++i) {
 		optionsDialog->accountsListWidget->addItem(Configuration::ServicesNames[config->accounts[i]->type] + ": " + config->accounts[i]->username);
 	}
+
+// Connection
+	optionsDialog->useProxyCheckBox->setCheckState(config->useProxy ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->proxyAddressLineEdit->setText(config->proxyAddress);
+	optionsDialog->proxyPortLineEdit->setText(QString::number(config->proxyPort));
+	optionsDialog->proxyUsernameLineEdit->setText(config->proxyUsername);
+	optionsDialog->proxyPasswordLineEdit->setText(config->proxyPassword);
 }
 
 void MainWindow::addAccountButton(Account *account) {
@@ -372,10 +391,10 @@ void MainWindow::updateCurrentAccount(int id) {
 	}
 	disconnect(config->accounts[oldAccountId], SIGNAL(lastStatusReceived(const QString &, Account *)), 0, 0);
 	connect(config->currentAccount(), SIGNAL(lastStatusReceived(const QString &, Account *)), this, SLOT(updateLastStatus(const QString &, Account *)));
-	disconnect(config->currentAccount(), SIGNAL(remainingRequestsUpdated(int, Account *)), 0, 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(remainingRequestsUpdated(int, Account *)), 0, 0);
 	connect(config->currentAccount(), SIGNAL(remainingRequestsUpdated(int, Account *)), this, SLOT(updateRemainingRequests(int, Account *)));
-	disconnect(statusTextEdit, SIGNAL(statusEntered(const QString &)), 0, 0);
-	connect(statusTextEdit, SIGNAL(statusEntered(const QString &)), config->currentAccount(), SLOT(sendStatus(const QString &)));
+	disconnect(statusTextEdit, SIGNAL(statusEntered(const QString &, int)), 0, 0);
+	connect(statusTextEdit, SIGNAL(statusEntered(const QString &, int)), config->currentAccount(), SLOT(sendStatus(const QString &, int)));
 	lastStatusLabel->setText(config->currentAccount()->lastStatus.status);
 	updateRemainingRequests(config->currentAccount()->remainingRequests, config->currentAccount());
 }

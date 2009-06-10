@@ -85,6 +85,13 @@ public:
 	bool showSearchTab;
 	bool updateSearchTabAlways;
 
+// Connection
+	bool useProxy;
+	QString proxyAddress;
+	int proxyPort;
+	QString proxyUsername;
+	QString proxyPassword;
+
 // Accounts
 	QVector<Account*> accounts;
 

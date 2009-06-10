@@ -126,6 +126,15 @@ void Configuration::load() {
 	settings.endArray();
 	settings.endGroup();
 	
+// Connection
+	settings.beginGroup("Connection");
+	useProxy = settings.value("useProxy", false).toBool();
+	proxyAddress = settings.value("proxyAddress", "").toString();
+	proxyPort = settings.value("proxyPort", "").toInt();
+	proxyUsername = settings.value("proxyUsername", "").toString();
+	proxyPassword = settings.value("proxyPassword", "").toString();
+	settings.endGroup();
+
 	loadMessages();
 }
 
@@ -186,6 +195,15 @@ void Configuration::save() {
 	settings.endArray();
 	settings.endGroup();
 	
+// Connection
+	settings.beginGroup("Connection");
+	settings.setValue("useProxy", useProxy);
+	settings.setValue("proxyAddress", proxyAddress);
+	settings.setValue("proxyPort", proxyPort);
+	settings.setValue("proxyUsername", proxyUsername);
+	settings.setValue("proxyPassword", proxyPassword);
+	settings.endGroup();
+
 	saveMessages();
 }
 

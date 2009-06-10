@@ -37,17 +37,17 @@
 #include "Configuration.h"
 
 void TwitterWidgetItem::loadUserpic() {
-	QPixmap pixmap(userpicFileName);
+	QPixmap pixmap(status.userpicFilename);
 	if (!pixmap.isNull()) {
-		userpic->setPixmap(pixmap.scaled(ICON_SIZE, ICON_SIZE));
+		userpicLabel->setPixmap(pixmap.scaled(ICON_SIZE, ICON_SIZE));
 	}
-	userpic->resize(ICON_SIZE, ICON_SIZE);
+	userpicLabel->resize(ICON_SIZE, ICON_SIZE);
 }
 
 TwitterWidgetItem::~TwitterWidgetItem() {
-	delete status;
-	delete userpic;
-	delete sign;
+	delete statusTextBrowser;
+	delete userpicLabel;
+	delete signLabel;
 	delete replyButton;
 	delete favorButton;
 	delete retweetButton;
@@ -60,6 +60,8 @@ TwitterWidget::TwitterWidget(QWidget *parent): QWidget(parent) {
 	moreToolButton = 0;
 	lessToolButton = 0;
 	enableMoreButton();
+	connect(&retweetButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(retweetButtonClicked(int)));
+	connect(&replyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(replyButtonClicked(int)));
 }
 
 void TwitterWidget::clear() {
@@ -77,29 +79,24 @@ void TwitterWidget::addItem(const Status &status) {
 
 	TwitterWidgetItem *item = new TwitterWidgetItem();
 
-	item->time = status.time;
-	item->username = status.username;
-	item->messageId = status.id;
+	item->status = status;
 
-	item->rawStatus = status.status;
-
-	item->status = new QTextBrowser(this);
-	item->status->setHtml(QwitTools::prepareStatus(status.status, status.account));
-	item->status->setReadOnly(true);
-	item->status->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	item->status->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	item->status->setFrameShape(QFrame::NoFrame);
-	item->status->setOpenExternalLinks(true);
-	QFont font = item->status->document()->defaultFont();
+	item->statusTextBrowser = new QTextBrowser(this);
+	item->statusTextBrowser->setHtml(QwitTools::prepareStatus(status.status, status.account));
+	item->statusTextBrowser->setReadOnly(true);
+	item->statusTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	item->statusTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	item->statusTextBrowser->setFrameShape(QFrame::NoFrame);
+	item->statusTextBrowser->setOpenExternalLinks(true);
+	QFont font = item->statusTextBrowser->document()->defaultFont();
 	font.setFamily("Verdana");
-	item->status->document()->setDefaultFont(font);
+	item->statusTextBrowser->document()->setDefaultFont(font);
 
-	item->userpic = new QLabel(this);
-	item->userpicFileName = status.userpicFilename;
+	item->userpicLabel = new QLabel(this);
 	item->loadUserpic();
-	item->sign = new QLabel("<a href=\"http://twitter.com/" + status.username + "\" style=\"font-weight:bold;text-decoration:none\">" + status.username + "</a> - <a href=\"http://twitter.com/" + status.username + "/statuses/" + QString::number(status.id) + "\" style=\"font-size:70%;text-decoration:none\">" + QwitTools::formatDateTime(status.time) + "</a>", this);
-	item->sign->setAlignment(Qt::AlignRight);
-	item->sign->setOpenExternalLinks(true);
+	item->signLabel = new QLabel("<a href=\"http://twitter.com/" + status.username + "\" style=\"font-weight:bold;text-decoration:none\">" + status.username + "</a> - <a href=\"http://twitter.com/" + status.username + "/statuses/" + QString::number(status.id) + "\" style=\"font-size:70%;text-decoration:none\">" + QwitTools::formatDateTime(status.time) + "</a>", this);
+	item->signLabel->setAlignment(Qt::AlignRight);
+	item->signLabel->setOpenExternalLinks(true);
 
 	item->favorButton = new QToolButton(this);
 	item->favorButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
@@ -121,7 +118,7 @@ void TwitterWidget::addItem(const Status &status) {
 	item->retweetButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	item->retweetButton->setAutoRaise(true);
 	item->retweetButton->show();
-
+	
 	item->unfollowButton = new QToolButton(this);
 	item->unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/unfollow.png"));
 	item->unfollowButton->setText("");
@@ -140,9 +137,9 @@ void TwitterWidget::addItem(const Status &status) {
 	
 	items.push_back(item);
 
-	item->status->show();
-	item->userpic->show();
-	item->sign->show();
+	item->statusTextBrowser->show();
+	item->userpicLabel->show();
+	item->signLabel->show();
 
 //	updateItems();
 }
@@ -150,24 +147,29 @@ void TwitterWidget::addItem(const Status &status) {
 void TwitterWidget::updateItems() {
 	QwitTools::log("TwitterWidget::updateItems()");
 
+	retweetButtonGroup.buttons().clear();
+	replyButtonGroup.buttons().clear();
+	
 	int height = 0;
 	for (int i = 0; i < items.size(); ++i) {
 		TwitterWidgetItem *item = items[i];
-		QFontMetrics fontMetrics(item->status->font());
+		retweetButtonGroup.addButton(item->retweetButton, i);
+		replyButtonGroup.addButton(item->replyButton, i);
+		QFontMetrics fontMetrics(item->statusTextBrowser->font());
 		int statusItemWidth = width() - (ICON_SIZE + 4 * MARGIN + item->favorButton->width());
-		int statusItemHeight = fontMetrics.boundingRect(0, 0, statusItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, item->status->toPlainText()).height() + MARGIN;
+		int statusItemHeight = fontMetrics.boundingRect(0, 0, statusItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, item->statusTextBrowser->toPlainText()).height() + MARGIN;
 		if (statusItemHeight < ICON_SIZE) {
 			statusItemHeight = ICON_SIZE;
 		}
-		item->status->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
-		item->status->resize(statusItemWidth, statusItemHeight);
-		statusItemHeight += item->status->verticalScrollBar()->maximum() - item->status->verticalScrollBar()->minimum();
-		item->status->resize(statusItemWidth, statusItemHeight);
-		item->userpic->move(MARGIN, height + MARGIN);
+		item->statusTextBrowser->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
+		item->statusTextBrowser->resize(statusItemWidth, statusItemHeight);
+		statusItemHeight += item->statusTextBrowser->verticalScrollBar()->maximum() - item->statusTextBrowser->verticalScrollBar()->minimum();
+		item->statusTextBrowser->resize(statusItemWidth, statusItemHeight);
+		item->userpicLabel->move(MARGIN, height + MARGIN);
 
-		item->sign->setText("<a href=\"http://twitter.com/" + item->username + "\" style=\"font-weight:bold;text-decoration:none;font-size:small\">" + item->username + "</a> - <a href=\"http://twitter.com/" + item->username + "/statuses/" + QString::number(item->messageId) + "\" style=\"font-size:small;text-decoration:none\">" + QwitTools::formatDateTime(item->time) + "</a> ");
-		item->sign->adjustSize();
-		item->sign->move(width() - item->sign->width() - MARGIN - item->favorButton->width(), height + statusItemHeight + MARGIN);
+		item->signLabel->setText("<a href=\"http://twitter.com/" + item->status.username + "\" style=\"font-weight:bold;text-decoration:none;font-size:small\">" + item->status.username + "</a> - <a href=\"http://twitter.com/" + item->status.username + "/statuses/" + QString::number(item->status.id) + "\" style=\"font-size:small;text-decoration:none\">" + QwitTools::formatDateTime(item->status.time) + "</a> ");
+		item->signLabel->adjustSize();
+		item->signLabel->move(width() - item->signLabel->width() - MARGIN - item->favorButton->width(), height + statusItemHeight + MARGIN);
 		
 		item->favorButton->move(width() - MARGIN - item->favorButton->width(), height);
 		item->favorButton->show();
@@ -186,8 +188,8 @@ void TwitterWidget::updateItems() {
 			item->color = QColor(180, 180, 180);
 		}
 
-		int itemHeight = statusItemHeight + item->sign->height() + MARGIN;
-		itemHeight = max(item->unfollowButton->y() + item->unfollowButton->height(), item->sign->y() + item->sign->height()) + MARGIN - height;
+		int itemHeight = statusItemHeight + item->signLabel->height() + MARGIN;
+		itemHeight = max(item->unfollowButton->y() + item->unfollowButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
 		item->top = height;
 		item->height = itemHeight;
 		height += itemHeight;
@@ -233,7 +235,7 @@ void TwitterWidget::paintEvent(QPaintEvent *event) {
 		QPalette p = palette();
 		p.setColor(QPalette::Active, QPalette::Base, item->color);
 		p.setColor(QPalette::Inactive, QPalette::Base, item->color);
-		item->status->setPalette(p);
+		item->statusTextBrowser->setPalette(p);
 	}
 	event->accept();
 }
@@ -278,6 +280,14 @@ void TwitterWidget::enableLessButton() {
 		lessToolButton->setText(tr("less"));
 		connect(lessToolButton, SIGNAL(clicked()), this, SIGNAL(lessButtonClicked()));
 	}
+}
+
+void TwitterWidget::retweetButtonClicked(int id) {
+	emit retweet(items[id]->status);
+}
+
+void TwitterWidget::replyButtonClicked(int id) {
+	emit reply(items[id]->status);
 }
 
 #endif

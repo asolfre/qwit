@@ -31,9 +31,14 @@
 
 #include "QwitHeaders.h"
 
+#include "Status.h"
+
 class StatusTextEdit: public QTextEdit {
 	Q_OBJECT
 
+private:
+	int inReplyToStatusId;
+	
 public:
 	static const int MaxStatusCharacters = 140;
 	static const int StandardHeight = 45;
@@ -51,13 +56,15 @@ protected:
 	
 signals:
 
-	void statusEntered(const QString &status);
+	void statusEntered(const QString &, int);
 	void leftCharsNumberChanged(int);
 
 public slots:
 
 	void textChangedToCharsNumberChanged();
 	void updateSize();
+	void retweet(const Status &status);
+	void reply(const Status &status);
 };
 
 #endif

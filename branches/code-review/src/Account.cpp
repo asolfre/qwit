@@ -137,9 +137,9 @@ void Account::updateLastStatus() {
 	twitter->receiveLastStatus();
 }
 
-void Account::sendStatus(const QString &status) {
+void Account::sendStatus(const QString &status, int inReplyToStatusId) {
 	QwitTools::log("Account::sendStatus()");
-	twitter->sendStatus(status);
+	twitter->sendStatus(status, inReplyToStatusId);
 }
 
 void Account::statusSent(const QByteArray &data) {

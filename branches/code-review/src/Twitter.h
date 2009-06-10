@@ -46,6 +46,7 @@ class Twitter: public QObject {
 	QMap<int, QString> receiveRepliesRequests;
 	QMap<int, QString> receivePublicStatusesRequests;
 	QMap<int, QString> receiveLastStatusRequests;
+	void setupProxy();
 
 public:
 
@@ -58,7 +59,7 @@ public:
 	void receivePreviousFriendsStatuses(int lastStatusId, int count);
 	void receivePreviousReplies(int lastStatusId, int count);
 	void receivePreviousPublicStatuses(int lastStatusId, int count);
-	void sendStatus(const QString &status);
+	void sendStatus(const QString &status, int inReplyToStatusId);
 	void abort();
 
 signals:

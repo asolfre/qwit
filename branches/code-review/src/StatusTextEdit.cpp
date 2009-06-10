@@ -32,6 +32,7 @@
 #include "QwitHeaders.h"
 
 #include "StatusTextEdit.h"
+#include "Configuration.h"
 
 const int StatusTextEdit::MaxStatusCharacters;
 const int StatusTextEdit::StandardHeight;
@@ -41,6 +42,7 @@ StatusTextEdit::StatusTextEdit(QWidget *parent): QTextEdit(parent) {
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setAcceptRichText(false);
 	setTabChangesFocus(true);
+	inReplyToStatusId = 0;
 	emit leftCharsNumberChanged(MaxStatusCharacters);
 	connect(this, SIGNAL(textChanged()), this, SLOT(textChangedToCharsNumberChanged()));
 }
@@ -59,7 +61,7 @@ void StatusTextEdit::focusOutEvent(QFocusEvent *event) {
 
 void StatusTextEdit::keyPressEvent(QKeyEvent *e) {
 	if ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)) {
-		emit statusEntered(toPlainText());
+		emit statusEntered(toPlainText(), inReplyToStatusId);
 		clear();
 		if (height() != StandardHeight) {
 			setFixedHeight(StandardHeight);
@@ -87,6 +89,38 @@ void StatusTextEdit::contextMenuEvent(QContextMenuEvent *event) {
 	menu->addAction(tr("My Menu Item"));
 	menu->exec(event->globalPos());
 	delete menu;
+}
+
+void StatusTextEdit::retweet(const Status &status) {
+	Configuration *config = Configuration::getInstance();
+	QString retweetTag = config->retweetTag;
+	int i = retweetTag.indexOf("@");
+	if (i != -1) {
+		QString firsthalf = retweetTag.left(i + 1);
+		QString secondhalf = retweetTag.right(retweetTag.size() - (i + 1));
+		retweetTag = firsthalf + status.username + secondhalf;
+	}
+	QString text = status.status;
+	if (config->retweetTagAfterText) {
+		setText(text + " " + retweetTag);
+	} else {
+		setText(retweetTag + " " + text);
+	}
+
+	setFocus(Qt::OtherFocusReason);
+	moveCursor(QTextCursor::End);
+}
+
+void StatusTextEdit::reply(const Status &status) {
+	Configuration *config = Configuration::getInstance();
+
+	QString text = toPlainText().simplified();
+	setText("@" + status.username + " " + text);
+
+	inReplyToStatusId = status.id;
+	
+	setFocus(Qt::OtherFocusReason);
+	moveCursor(QTextCursor::NextWord);
 }
 
 #endif

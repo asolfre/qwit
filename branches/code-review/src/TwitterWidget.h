@@ -35,24 +35,26 @@
 
 class TwitterWidgetItem {
 public:
-	QTextBrowser *status;
-	QLabel *userpic;
-	QLabel *sign;
+	QTextBrowser *statusTextBrowser;
+	QLabel *userpicLabel;
+	QLabel *signLabel;
 	QToolButton *replyButton;
 	QToolButton *favorButton;
 	QToolButton *retweetButton;
 	QToolButton *unfollowButton;
 	QToolButton *directMessageButton;
 	
-	QString userpicFileName;
 	int top;
 	int height;
+	Status status;
 	QColor color;
-	QDateTime time;
-	QString username;
-	int messageId;
 
-	QString rawStatus;
+	//QString userpicFileName;
+	//QDateTime time;
+	//QString username;
+	//int messageId;
+
+	//QString rawStatus;
 	
 	void loadUserpic();
 	~TwitterWidgetItem();
@@ -66,9 +68,11 @@ class TwitterWidget: public QWidget {
 
 private:
 	QVector<TwitterWidgetItem*> items;
+	QButtonGroup retweetButtonGroup;
+	QButtonGroup replyButtonGroup;
 
 public:
-
+	
 	QToolButton *moreToolButton;
 	QToolButton *lessToolButton;
 	
@@ -86,11 +90,18 @@ protected:
 
 	void resizeEvent(QResizeEvent *event);
 	void paintEvent(QPaintEvent *event);
-	
+
+public slots:
+
+	void retweetButtonClicked(int id);
+	void replyButtonClicked(int id);
+
 signals:
 	
 	void moreButtonClicked();
 	void lessButtonClicked();
+	void retweet(const Status &status);
+	void reply(const Status &status);
 };
 
 #endif
