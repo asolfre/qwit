@@ -32,12 +32,15 @@ HEADERS += \
 	   src/HomePage.h \
 	   src/PublicPage.h \
 	   src/RepliesPage.h \
+	   src/FavoritesPage.h \
+	   src/InboxPage.h \
 	   src/TwitterWidget.h \
 	   src/Twitter.h \
 	   src/Services.h \
 	   src/Status.h \
 	   src/QwitTools.h \
-	   src/UserpicsDownloader.h
+	   src/UserpicsDownloader.h \
+	   src/QwitHeaders.h
 FORMS += \
            src/MainWindow.ui \
            src/OptionsDialog.ui \
@@ -56,6 +59,8 @@ SOURCES += \
 	   src/HomePage.cpp \
 	   src/PublicPage.cpp \
 	   src/RepliesPage.cpp \
+	   src/FavoritesPage.cpp \
+	   src/InboxPage.cpp \
 	   src/TwitterWidget.cpp \
 	   src/Services.cpp \
 	   src/Twitter.cpp \
