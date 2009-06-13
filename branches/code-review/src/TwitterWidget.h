@@ -81,10 +81,10 @@ public:
 	void addItem(const Status &status);
 	void updateItems();
 	void reloadUserpics();
-	void disableMoreButton();
-	void disableLessButton();
-	void enableMoreButton();
-	void enableLessButton();
+	void addMoreButton();
+	void addLessButton();
+	void removeMoreButton();
+	void removeLessButton();
 	
 protected:
 
@@ -95,6 +95,10 @@ public slots:
 
 	void retweetButtonClicked(int id);
 	void replyButtonClicked(int id);
+	void disableMoreButton();
+	void disableLessButton();
+	void enableMoreButton();
+	void enableLessButton();
 
 signals:
 	

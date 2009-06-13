@@ -35,7 +35,7 @@
 #include "QwitTools.h"
 
 HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
-	QwitTools::log("HomePage::HomePage()");
+	qDebug() << ("HomePage::HomePage()");
 
 	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
 	connect(twitterWidget, SIGNAL(moreButtonClicked()), this, SLOT(updatePrevious()));
@@ -54,7 +54,7 @@ HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
 }
 
 void HomePage::updateSize() {
-	QwitTools::log("HomePage::updateSize()");
+	qDebug() << ("HomePage::updateSize()");
 	twitterWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() - 5, 500);
 }
 
@@ -63,21 +63,24 @@ QString HomePage::title() {
 }
 
 void HomePage::update() {
-	QwitTools::log("HomePage::update()");
+	qDebug() << ("HomePage::update()");
 	Configuration *config = Configuration::getInstance();
 	config->currentAccount()->receiveFriendsStatuses(config->messagesPerPage);
 }
 
 void HomePage::updatePrevious() {
-	QwitTools::log("HomePage::updatePrevious()");
+	qDebug() << ("HomePage::updatePrevious()");
+	twitterWidget->disableMoreButton();
 	Configuration *config = Configuration::getInstance();
 	config->currentAccount()->receivePreviousFriendsStatuses(config->messagesPerPage);
 }
 
 void HomePage::removePrevious() {
-	QwitTools::log("HomePage::removePrevious()");
+	qDebug() << ("HomePage::removePrevious()");
+	twitterWidget->disableLessButton();
 	Configuration *config = Configuration::getInstance();
 	config->currentAccount()->removePreviousFriendsStatuses(config->messagesPerPage);
+	twitterWidget->enableLessButton();
 }
 
 #endif

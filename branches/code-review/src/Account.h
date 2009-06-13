@@ -56,6 +56,8 @@ public:
 	QVector<Status> friendsStatuses;
 	QVector<Status> replies;
 	QVector<Status> publicStatuses;
+	QVector<Status> favorites;
+	QVector<Status> inboxMessages;
 	
 	Account();
 	Account(const QString &type, const QString &username, const QString &password);
@@ -69,6 +71,8 @@ public slots:
 	void addFriendsStatuses(const QByteArray &data);
 	void addReplies(const QByteArray &data);
 	void addPublicStatuses(const QByteArray &data);
+	void addFavorites(const QByteArray &data);
+	void addInboxMessages(const QByteArray &data);
 	void updateLastStatus(const QByteArray &data);
 	void updateLastStatus();
 	void sendStatus(const QString &status, int inReplyToStatusId);
@@ -76,19 +80,32 @@ public slots:
 	void receivePublicStatuses(int count);
 	void receiveFriendsStatuses(int count);
 	void receiveReplies(int count);
+	void receiveFavorites();
+	void receiveInboxMessages(int count);
 	void receivePreviousPublicStatuses(int count);
 	void receivePreviousFriendsStatuses(int count);
 	void receivePreviousReplies(int count);
+	void receivePreviousFavorites();
+	void receivePreviousInboxMessages(int count);
 	void removePreviousFriendsStatuses(int count);
 	void removePreviousReplies(int count);
+	void removePreviousFavorites();
+	void removePreviousInboxMessages(int count);
 	
 signals:
 	void friendsStatusesUpdated(const QVector<Status> &, Account *);
 	void repliesUpdated(const QVector<Status> &, Account *);
 	void publicStatusesUpdated(const QVector<Status> &, Account *);
+	void favoritesUpdated(const QVector<Status> &, Account *);
 	void lastStatusReceived(const QString &, Account *);
 	void newStatusesReceived(const QVector<Status> &, Account *);
+	void inboxMessagesUpdated(const QVector<Status> &, Account *);
 	void remainingRequestsUpdated(int, Account *);
+	void previousFriendsStatusesReceived();
+	void previousRepliesReceived();
+	void previousPublicStatusesReceived();
+	void previousFavoritesReceived();
+	void previousInboxMessagesReceived();
 };
 
 #endif

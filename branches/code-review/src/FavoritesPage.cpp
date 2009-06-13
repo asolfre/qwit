@@ -23,26 +23,26 @@
  *  
  *  @section DESCRIPTION
  *  
- *  PublicPage class implementation
+ *  FavoritesPage class implementation
  */
 
-#ifndef PublicPage_cpp
-#define PublicPage_cpp
+#ifndef FavoritesPage_cpp
+#define FavoritesPage_cpp
 
 #include "QwitHeaders.h"
 
-#include "PublicPage.h"
+#include "FavoritesPage.h"
 #include "QwitTools.h"
 
-PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
-	qDebug() << ("PublicPage::PublicPage()");
+FavoritesPage::FavoritesPage(QWidget* parent): AbstractPage(parent) {
+	qDebug() << ("FavoritesPage::FavoritesPage()");
 
-	twitterWidget->setObjectName(QString::fromUtf8("publicPageTwitterWidget"));
-	twitterWidget->removeMoreButton();
-	twitterWidget->removeLessButton();
+	twitterWidget->setObjectName(QString::fromUtf8("favoritesPageTwitterWidget"));
+	connect(twitterWidget, SIGNAL(moreButtonClicked()), this, SLOT(updatePrevious()));
+	connect(twitterWidget, SIGNAL(lessButtonClicked()), this, SLOT(removePrevious()));
 
 	QGridLayout *gridLayout = new QGridLayout(this);
-	gridLayout->setObjectName(QString::fromUtf8("publicPageGridLayout"));
+	gridLayout->setObjectName(QString::fromUtf8("favoritesPageGridLayout"));
 
 	scrollArea = new QScrollArea(this);
 	scrollArea->setBackgroundRole(QPalette::Light);
@@ -53,20 +53,34 @@ PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
 	gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
 }
 
-void PublicPage::updateSize() {
-	qDebug() << ("PublicPage::updateSize()");
-
+void FavoritesPage::updateSize() {
+	qDebug() << ("FavoritesPage::updateSize()");
 	twitterWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() - 5, 500);
 }
 
-QString PublicPage::title() {
-	return tr("Public");
+QString FavoritesPage::title() {
+	return tr("Favorites");
 }
 
-void PublicPage::update() {
-	qDebug() << ("PublicPage::update()");
+void FavoritesPage::update() {
+	qDebug() << ("FavoritesPage::update()");
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->receivePublicStatuses(config->messagesPerPage);
+	config->currentAccount()->receiveFavorites();
+}
+
+void FavoritesPage::updatePrevious() {
+	qDebug() << ("FavoritesPage::updatePrevious()");
+	twitterWidget->disableMoreButton();
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->receivePreviousFavorites();
+}
+
+void FavoritesPage::removePrevious() {
+	qDebug() << ("FavoritesPage::removePrevious()");
+	twitterWidget->disableLessButton();
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->removePreviousFavorites();
+	twitterWidget->enableLessButton();
 }
 
 #endif

@@ -38,7 +38,7 @@
 #include "QwitTools.h"
 
 AbstractPage::AbstractPage(QWidget *parent): QWidget(parent) {
-	QwitTools::log("AbstractPage::AbstractPage()");
+	qDebug() << ("AbstractPage::AbstractPage()");
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 	connect(twitterWidget, SIGNAL(retweet(const Status &)), MainWindow::getInstance(), SIGNAL(retweet(const Status &)));
@@ -46,22 +46,22 @@ AbstractPage::AbstractPage(QWidget *parent): QWidget(parent) {
 }
 
 void AbstractPage::addItem(const Status &status) {
-	QwitTools::log("AbstractPage::addItem()");
+//	qDebug() << ("AbstractPage::addItem()");
 	twitterWidget->addItem(status);
 }
 
 void AbstractPage::clear() {
-	QwitTools::log("AbstractPage::clear()");
+	qDebug() << ("AbstractPage::clear()");
 	twitterWidget->clear();
 }
 
 void AbstractPage::reloadUserpics() {
-	QwitTools::log("AbstractPage::reloadUserpics()");
+	qDebug() << ("AbstractPage::reloadUserpics()");
 	twitterWidget->reloadUserpics();
 }
 
 void AbstractPage::updateItems(const QVector<Status> &items, Account *account) {
-	QwitTools::log("AbstractPage::updateItems()");
+	qDebug() << ("AbstractPage::updateItems()");
 	int scrollPosition = scrollArea->verticalScrollBar()->value();
 	clear();
 	for (int i = 0; i < items.size(); ++i) {

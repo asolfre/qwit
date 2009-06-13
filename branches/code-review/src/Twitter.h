@@ -45,21 +45,31 @@ class Twitter: public QObject {
 	QMap<int, QString> receiveFriendsStatusesRequests;
 	QMap<int, QString> receiveRepliesRequests;
 	QMap<int, QString> receivePublicStatusesRequests;
+	QMap<int, QString> receiveFavoritesRequests;
+	QMap<int, QString> receiveInboxMessagesRequests;
 	QMap<int, QString> receiveLastStatusRequests;
+	QMap<int, QString> receivePreviousFriendsStatusesRequests;
+	QMap<int, QString> receivePreviousRepliesRequests;
+	QMap<int, QString> receivePreviousPublicStatusesRequests;
+	QMap<int, QString> receivePreviousFavoritesRequests;
+	QMap<int, QString> receivePreviousInboxMessagesRequests;
 	void setupProxy();
 
 public:
 
 	Twitter(Account *account);
-	void sendStatus(QString status, QString replyId);
-	void receiveFriendsStatuses(int lastStatusId, int count);
-	void receiveReplies(int lastStatusId, int count);
-	void receivePublicStatuses(int lastStatusId, int count);
+	void receiveFriendsStatuses(uint lastStatusId, int count);
+	void receiveReplies(uint lastStatusId, int count);
+	void receivePublicStatuses(uint lastStatusId, int count);
+	void receiveInboxMessages(uint lastStatusId, int count);
+	void receiveFavorites();
 	void receiveLastStatus();
-	void receivePreviousFriendsStatuses(int lastStatusId, int count);
-	void receivePreviousReplies(int lastStatusId, int count);
-	void receivePreviousPublicStatuses(int lastStatusId, int count);
-	void sendStatus(const QString &status, int inReplyToStatusId);
+	void receivePreviousFriendsStatuses(uint lastStatusId, int count);
+	void receivePreviousReplies(uint lastStatusId, int count);
+	void receivePreviousPublicStatuses(uint lastStatusId, int count);
+	void receivePreviousInboxMessages(uint lastStatusId, int count);
+	void receivePreviousFavorites(int page);
+	void sendStatus(const QString &status, uint inReplyToStatusId);
 	void abort();
 
 signals:
@@ -69,7 +79,14 @@ signals:
 	void repliesReceived(const QByteArray &);
 	void publicStatusesReceived(const QByteArray &);
 	void lastStatusReceived(const QByteArray &);
+	void favoritesReceived(const QByteArray &);
+	void inboxMessagesReceived(const QByteArray &);
 	void statusSent(const QByteArray &);
+	void previousFriendsStatusesReceived(const QByteArray &);
+	void previousRepliesReceived(const QByteArray &);
+	void previousPublicStatusesReceived(const QByteArray &);
+	void previousFavoritesReceived(const QByteArray &);
+	void previousInboxMessagesReceived(const QByteArray &);
 	
 public slots:
 

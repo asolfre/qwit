@@ -35,7 +35,7 @@
 #include "QwitTools.h"
 
 RepliesPage::RepliesPage(QWidget* parent): AbstractPage(parent) {
-	QwitTools::log("RepliesPage::RepliesPage()");
+	qDebug() << ("RepliesPage::RepliesPage()");
 
 	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
 	connect(twitterWidget, SIGNAL(moreButtonClicked()), this, SLOT(updatePrevious()));
@@ -54,7 +54,7 @@ RepliesPage::RepliesPage(QWidget* parent): AbstractPage(parent) {
 }
 
 void RepliesPage::updateSize() {
-	QwitTools::log("RepliesPage::updateSize()");
+	qDebug() << ("RepliesPage::updateSize()");
 
 	twitterWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() - 5, 500);
 }
@@ -64,21 +64,24 @@ QString RepliesPage::title() {
 }
 
 void RepliesPage::update() {
-	QwitTools::log("RepliesPage::update()");
+	qDebug() << ("RepliesPage::update()");
 
 	Configuration::getInstance()->currentAccount()->receiveReplies(20);
 }
 
 void RepliesPage::updatePrevious() {
-	QwitTools::log("RepliesPage::updatePrevious()");
+	qDebug() << ("RepliesPage::updatePrevious()");
+	twitterWidget->disableMoreButton();
 	Configuration *config = Configuration::getInstance();
 	config->currentAccount()->receivePreviousReplies(config->messagesPerPage);
 }
 
 void RepliesPage::removePrevious() {
-	QwitTools::log("RepliesPage::removePrevious()");
+	qDebug() << ("RepliesPage::removePrevious()");
+	twitterWidget->disableLessButton();
 	Configuration *config = Configuration::getInstance();
 	config->currentAccount()->removePreviousReplies(config->messagesPerPage);
+	twitterWidget->enableLessButton();
 }
 
 #endif

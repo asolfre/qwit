@@ -1,4 +1,4 @@
-/*!
+/*! 
  *  @file
  *  @author Artem Iglikov <artem.iglikov@gmail.com>
  *  
@@ -20,33 +20,23 @@
  *  
  *  You should have received a copy of the GNU General Public License
  *  along with Qwit.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  *  @section DESCRIPTION
- *  
- *  Qwit main function
+ *
+ *  Qwit headers
  */
 
-#include "QwitHeaders.h"
+#ifndef QwitHeaders_h
+#define QwitHeaders_h
 
-#include "MainWindow.h"
-#include "Services.h"
-#include "QwitTools.h"
+#include <QtCore>
+#include <QtGui>
+#include <QtNetwork>
+#include <QtXml>
 
-int main(int argc, char *argv[]) {
-	QDir dir(QDir::homePath());
-	dir.mkdir(Configuration::CacheDirectory);
-	
-	qInstallMsgHandler(handleMessage);
-	
-	QApplication app(argc, argv);
+#include <iostream>
+#include <cstdlib>
 
-	QString locale = QLocale::system().name();
-	QTranslator translator;
-	translator.load(QString(":/translations/qwit_") + locale);
-	app.installTranslator(&translator);
+using namespace std;
 
-	Services::initialize();
-
-	MainWindow::getInstance()->show();
-	return app.exec();
-}
+#endif

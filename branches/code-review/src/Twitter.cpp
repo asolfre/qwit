@@ -37,7 +37,7 @@
 #include "Configuration.h"
 
 Twitter::Twitter(Account *account) {
-	QwitTools::log("Twitter::Twitter()");
+	qDebug() << ("Twitter::Twitter()");
 
 	this->account = account;
 	http = new QHttp();
@@ -54,8 +54,8 @@ void Twitter::setupProxy() {
 	}
 }
 
-void Twitter::sendStatus(const QString &status, int inReplyToStatusId) {
-	QwitTools::log("Twitter::sendStatus()");
+void Twitter::sendStatus(const QString &status, uint inReplyToStatusId) {
+	qDebug() << ("Twitter::sendStatus()");
 	
 	setupProxy();
 	
@@ -88,8 +88,8 @@ void Twitter::sendStatus(const QString &status, int inReplyToStatusId) {
 	sendStatusRequests[id] = tr("Sending status: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receiveFriendsStatuses(int lastStatusId, int count) {
-	QwitTools::log("Twitter::receiveFriendsStatuses()");
+void Twitter::receiveFriendsStatuses(uint lastStatusId, int count) {
+	qDebug() << ("Twitter::receiveFriendsStatuses()");
 	
 	setupProxy();
 
@@ -109,8 +109,8 @@ void Twitter::receiveFriendsStatuses(int lastStatusId, int count) {
 	receiveFriendsStatusesRequests[id] = tr("Updating friends statuses: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receiveReplies(int lastStatusId, int count) {
-	QwitTools::log("Twitter::receiveReplies()");
+void Twitter::receiveReplies(uint lastStatusId, int count) {
+	qDebug() << ("Twitter::receiveReplies()");
 	
 	setupProxy();
 
@@ -130,8 +130,8 @@ void Twitter::receiveReplies(int lastStatusId, int count) {
 	receiveRepliesRequests[id] = tr("Updating replies: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePublicStatuses(int lastStatusId, int count) {
-	QwitTools::log("Twitter::receivePublicStatuses()");
+void Twitter::receivePublicStatuses(uint lastStatusId, int count) {
+	qDebug() << ("Twitter::receivePublicStatuses()");
 	
 	setupProxy();
 
@@ -152,7 +152,7 @@ void Twitter::receivePublicStatuses(int lastStatusId, int count) {
 }
 
 void Twitter::receiveLastStatus() {
-	QwitTools::log("Twitter::receiveLastStatus()");
+	qDebug() << ("Twitter::receiveLastStatus()");
 	
 	setupProxy();
 
@@ -172,8 +172,8 @@ void Twitter::receiveLastStatus() {
 	receiveLastStatusRequests[id] = tr("Updating last status: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePreviousFriendsStatuses(int lastStatusId, int count) {
-	QwitTools::log("Twitter::receiveFriendsStatuses()");
+void Twitter::receivePreviousFriendsStatuses(uint lastStatusId, int count) {
+	qDebug() << ("Twitter::receiveFriendsStatuses()");
 	
 	setupProxy();
 
@@ -190,11 +190,11 @@ void Twitter::receivePreviousFriendsStatuses(int lastStatusId, int count) {
 	buffer.open(QIODevice::WriteOnly);
 
 	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastStatusId ? "&max_id=" + QString::number(lastStatusId) : ""), &buffer);
-	receiveFriendsStatusesRequests[id] = tr("Updating friends statuses: %1").arg(url.host() + url.path());
+	receivePreviousFriendsStatusesRequests[id] = tr("Updating friends statuses: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePreviousReplies(int lastStatusId, int count) {
-	QwitTools::log("Twitter::receiveReplies()");
+void Twitter::receivePreviousReplies(uint lastStatusId, int count) {
+	qDebug() << ("Twitter::receiveReplies()");
 	
 	setupProxy();
 
@@ -211,11 +211,11 @@ void Twitter::receivePreviousReplies(int lastStatusId, int count) {
 	buffer.open(QIODevice::WriteOnly);
 
 	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastStatusId ? "&max_id=" + QString::number(lastStatusId) : ""), &buffer);
-	receiveRepliesRequests[id] = tr("Updating replies: %1").arg(url.host() + url.path());
+	receivePreviousRepliesRequests[id] = tr("Updating replies: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePreviousPublicStatuses(int lastStatusId, int count) {
-	QwitTools::log("Twitter::receivePublicStatuses()");
+void Twitter::receivePreviousPublicStatuses(uint lastStatusId, int count) {
+	qDebug() << ("Twitter::receivePublicStatuses()");
 	
 	setupProxy();
 
@@ -232,66 +232,196 @@ void Twitter::receivePreviousPublicStatuses(int lastStatusId, int count) {
 	buffer.open(QIODevice::WriteOnly);
 
 	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastStatusId ? "&max_id=" + QString::number(lastStatusId) : ""), &buffer);
-	receivePublicStatusesRequests[id] = tr("Updating public statuses: %1").arg(url.host() + url.path());
+	receivePreviousPublicStatusesRequests[id] = tr("Updating public statuses: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receiveFavorites() {
+	qDebug() << ("Twitter::receiveFavorites()");
+	
+	setupProxy();
+
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["favorites"] + ".xml");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->get(url.path(), &buffer);
+	receiveFavoritesRequests[id] = tr("Updating favorites: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receivePreviousFavorites(int page) {
+	qDebug() << ("Twitter::receivePreviousFavorites()");
+	
+	setupProxy();
+
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["favorites"] + ".xml");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->get(url.path() + "?page=" + QString::number(page), &buffer);
+	receivePreviousFavoritesRequests[id] = tr("Updating favorites: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receiveInboxMessages(uint lastStatusId, int count) {
+	qDebug() << ("Twitter::receiveInboxMessages()");
+	
+	setupProxy();
+
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["inbox"] + ".xml");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastStatusId ? "&since_id=" + QString::number(lastStatusId) : ""), &buffer);
+	receiveInboxMessagesRequests[id] = tr("Updating inbox messages: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receivePreviousInboxMessages(uint lastStatusId, int count) {
+	qDebug() << ("Twitter::receivePreviousInboxMessages()");
+	
+	setupProxy();
+
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["inbox"] + ".xml");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastStatusId ? "&max_id=" + QString::number(lastStatusId) : ""), &buffer);
+	receivePreviousInboxMessagesRequests[id] = tr("Updating inbox messages: %1").arg(url.host() + url.path());
 }
 
 void Twitter::abort() {
-	QwitTools::log("Twitter::abort()");
+	qDebug() << ("Twitter::abort()");
 
 }
 
 void Twitter::requestStarted(int id) {
-	QwitTools::log("Twitter::requestStarted() " + QString::number(id));
+	qDebug() << ("Twitter::requestStarted() " + QString::number(id));
 	
 	if (receiveFriendsStatusesRequests.find(id) != receiveFriendsStatusesRequests.end()) {
-		QwitTools::log("Request started: " + receiveFriendsStatusesRequests[id]);
+		qDebug() << ("Request started: " + receiveFriendsStatusesRequests[id]);
 	} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
-		QwitTools::log("Request started: " + receiveRepliesRequests[id]);
+		qDebug() << ("Request started: " + receiveRepliesRequests[id]);
 	} else if (receivePublicStatusesRequests.find(id) != receivePublicStatusesRequests.end()) {
-		QwitTools::log("Request started: " + receivePublicStatusesRequests[id]);
+		qDebug() << ("Request started: " + receivePublicStatusesRequests[id]);
 	} else if (receiveLastStatusRequests.find(id) != receiveLastStatusRequests.end()) {
-		QwitTools::log("Request started: " + receiveLastStatusRequests[id]);
+		qDebug() << ("Request started: " + receiveLastStatusRequests[id]);
 	} else if (sendStatusRequests.find(id) != sendStatusRequests.end()) {
-		QwitTools::log("Request started: " + sendStatusRequests[id]);
+		qDebug() << ("Request started: " + sendStatusRequests[id]);
 	}
 }
 
 void Twitter::requestFinished(int id, bool error) {
 	if (!error) {
-		QwitTools::log("Twitter::requestFinished() " + QString::number(id));
+		qDebug() << ("Twitter::requestFinished() " + QString::number(id));
 
 		if (receiveFriendsStatusesRequests.find(id) != receiveFriendsStatusesRequests.end()) {
-			QwitTools::log("Request finished: " + receiveFriendsStatusesRequests[id]);
+			qDebug() << ("Request finished: " + receiveFriendsStatusesRequests[id]);
 			buffer.close();
 			QHttpResponseHeader response = http->lastResponse();
 			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit friendsStatusesReceived(buffer.data());
 		} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
-			QwitTools::log("Request finished: " + receiveRepliesRequests[id]);
+			qDebug() << ("Request finished: " + receiveRepliesRequests[id]);
 			buffer.close();
 			QHttpResponseHeader response = http->lastResponse();
 			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit repliesReceived(buffer.data());
 		} else if (receivePublicStatusesRequests.find(id) != receivePublicStatusesRequests.end()) {
-			QwitTools::log("Request finished: " + receivePublicStatusesRequests[id]);
+			qDebug() << ("Request finished: " + receivePublicStatusesRequests[id]);
 			buffer.close();
 			emit publicStatusesReceived(buffer.data());
 		} else if (receiveLastStatusRequests.find(id) != receiveLastStatusRequests.end()) {
-			QwitTools::log("Request finished: " + receiveLastStatusRequests[id]);
+			qDebug() << ("Request finished: " + receiveLastStatusRequests[id]);
 			buffer.close();
 			QHttpResponseHeader response = http->lastResponse();
 			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit lastStatusReceived(buffer.data());
 		} else if (sendStatusRequests.find(id) != sendStatusRequests.end()) {
-			QwitTools::log("Request finished: " + sendStatusRequests[id]);
+			qDebug() << ("Request finished: " + sendStatusRequests[id]);
 			buffer.close();
 			emit statusSent(buffer.data());
+		} else if (receiveFavoritesRequests.find(id) != receiveFavoritesRequests.end()) {
+			qDebug() << ("Request finished: " + receiveFavoritesRequests[id]);
+			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			emit favoritesReceived(buffer.data());
+		} else if (receivePreviousFriendsStatusesRequests.find(id) != receivePreviousFriendsStatusesRequests.end()) {
+			qDebug() << ("Request finished: " + receivePreviousFriendsStatusesRequests[id]);
+			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			emit previousFriendsStatusesReceived(buffer.data());
+		} else if (receivePreviousRepliesRequests.find(id) != receivePreviousRepliesRequests.end()) {
+			qDebug() << ("Request finished: " + receivePreviousRepliesRequests[id]);
+			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			emit previousRepliesReceived(buffer.data());
+		} else if (receivePreviousPublicStatusesRequests.find(id) != receivePreviousPublicStatusesRequests.end()) {
+			qDebug() << ("Request finished: " + receivePreviousPublicStatusesRequests[id]);
+			buffer.close();
+			emit previousPublicStatusesReceived(buffer.data());
+		} else if (receivePreviousFavoritesRequests.find(id) != receivePreviousFavoritesRequests.end()) {
+			qDebug() << ("Request finished: " + receivePreviousFavoritesRequests[id]);
+			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			emit previousFavoritesReceived(buffer.data());
+		} else if (receiveInboxMessagesRequests.find(id) != receiveInboxMessagesRequests.end()) {
+			qDebug() << ("Request finished: " + receiveInboxMessagesRequests[id]);
+			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			emit inboxMessagesReceived(buffer.data());
+		} else if (receivePreviousInboxMessagesRequests.find(id) != receivePreviousInboxMessagesRequests.end()) {
+			qDebug() << ("Request finished: " + receivePreviousInboxMessagesRequests[id]);
+			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			emit previousInboxMessagesReceived(buffer.data());
 		}
 	} else {
-		QwitTools::log("Twitter::requestFinished() " + QString::number(id) + " error");
+		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error");
 	}
 }
 

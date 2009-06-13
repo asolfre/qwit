@@ -84,6 +84,8 @@ public:
 	bool updateOutboxTabAlways;
 	bool showSearchTab;
 	bool updateSearchTabAlways;
+	bool showFavoritesTab;
+	bool updateFavoritesTabAlways;
 
 // Connection
 	bool useProxy;

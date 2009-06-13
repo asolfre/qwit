@@ -46,7 +46,7 @@ MainWindow* MainWindow::getInstance() {
 }
 
 MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
-	QwitTools::log("MainWindow::MainWindow()");
+	qDebug() << ("MainWindow::MainWindow()");
 
 	instance = this;
 
@@ -104,7 +104,7 @@ void MainWindow::leftCharsNumberChanged(int count) {
 }
 
 void MainWindow::loadState() {
-	QwitTools::log("MainWindow::loadState()");
+	qDebug() << ("MainWindow::loadState()");
 
 	Configuration *config = Configuration::getInstance();
 	
@@ -120,7 +120,7 @@ void MainWindow::loadState() {
 }
 
 void MainWindow::saveState() {
-	QwitTools::log("MainWindow::saveState()");
+	qDebug() << ("MainWindow::saveState()");
 
 	Configuration *config = Configuration::getInstance();
 	
@@ -131,7 +131,7 @@ void MainWindow::saveState() {
 }
 
 void MainWindow::saveOptions() {
-	QwitTools::log("MainWindow::saveOptions()");
+	qDebug() << ("MainWindow::saveOptions()");
 
 	Configuration *config = Configuration::getInstance();
 
@@ -162,6 +162,8 @@ void MainWindow::saveOptions() {
 	config->updateOutboxTabAlways = (optionsDialog->outboxTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
 	config->showSearchTab = (optionsDialog->searchTabCheckBox->checkState() == Qt::Checked);
 	config->updateSearchTabAlways = (optionsDialog->searchTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->showFavoritesTab = (optionsDialog->favoritesTabCheckBox->checkState() == Qt::Checked);
+	config->updateFavoritesTabAlways = (optionsDialog->favoritesTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
 
 	config->useProxy = (optionsDialog->useProxyCheckBox->checkState() == Qt::Checked);
 	config->proxyAddress = optionsDialog->proxyAddressLineEdit->text();
@@ -174,7 +176,7 @@ void MainWindow::saveOptions() {
 }
 
 void MainWindow::updateState() {
-	QwitTools::log("MainWindow::updateState()");
+	qDebug() << ("MainWindow::updateState()");
 
 	Configuration *config = Configuration::getInstance();
 
@@ -207,12 +209,15 @@ void MainWindow::updateState() {
 	for (int i = 0; i < pages.size(); ++i) {
 		mainTabWidget->removeTab(i);
 		delete pages[i];
+		pages[i] = 0;
 	}
 	pages.clear();
 
 	homePage = 0;
 	repliesPage = 0;
 	publicPage = 0;
+	favoritesPage = 0;
+	inboxPage = 0;
 	
 	if (config->showHomeTab) {
 		pages.push_back(homePage = new HomePage());
@@ -222,6 +227,12 @@ void MainWindow::updateState() {
 	}
 	if (config->showRepliesTab) {
 		pages.push_back(repliesPage = new RepliesPage());
+	}
+	if (config->showFavoritesTab) {
+		pages.push_back(favoritesPage = new FavoritesPage());
+	}
+	if (config->showInboxTab) {
+		pages.push_back(inboxPage = new InboxPage());
 	}
 
 	for (int i = 0; i < pages.size(); ++i) {
@@ -240,7 +251,7 @@ void MainWindow::updateState() {
 }
 
 void MainWindow::resetOptionsDialog() {
-	QwitTools::log("MainWindow::resetOptionsDialog()");
+	qDebug() << ("MainWindow::resetOptionsDialog()");
 
 	Configuration *config = Configuration::getInstance();
 	
@@ -272,6 +283,8 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->outboxTabUpdateAlwaysCheckBox->setCheckState(config->updateOutboxTabAlways ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->searchTabCheckBox->setCheckState(config->showSearchTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->searchTabUpdateAlwaysCheckBox->setCheckState(config->updateSearchTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->favoritesTabCheckBox->setCheckState(config->showFavoritesTab ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->favoritesTabUpdateAlwaysCheckBox->setCheckState(config->updateFavoritesTabAlways ? Qt::Checked : Qt::Unchecked);
 	
 // Accounts
 	optionsDialog->accountsListWidget->clear();
@@ -288,7 +301,7 @@ void MainWindow::resetOptionsDialog() {
 }
 
 void MainWindow::addAccountButton(Account *account) {
-	QwitTools::log("MainWindow::addAccountButton()");
+	qDebug() << ("MainWindow::addAccountButton()");
 
 	QToolButton *accountButton = new QToolButton(this);
 	accountButton->setIcon(QIcon(":/images/" + account->type + ".png"));
@@ -314,13 +327,13 @@ void MainWindow::addAccountButton(Account *account) {
 }
 
 void MainWindow::updateAccountButton(Account *account) {
-	QwitTools::log("MainWindow::updateAccountButton()");
+	qDebug() << ("MainWindow::updateAccountButton()");
 
 	accountsButtons[account->id]->setText(account->username);
 }
 
 void MainWindow::deleteAccountButton(Account *account) {
-	QwitTools::log("MainWindow::deleteAccountButton()");
+	qDebug() << ("MainWindow::deleteAccountButton()");
 
 	if (accountsLayout) {
 		accountsLayout->removeWidget(accountsButtons[account->id]);
@@ -356,20 +369,20 @@ void MainWindow::deleteAccountButton(Account *account) {
 }
 
 void MainWindow::showOptionsDialog() {
-	QwitTools::log("MainWindow::showOptionsDialog()");
+	qDebug() << ("MainWindow::showOptionsDialog()");
 
 	resetOptionsDialog();
 	optionsDialog->showNormal();
 }
 
 void MainWindow::accountButtonClicked(int id) {
-	QwitTools::log("MainWindow::accountButtonClicked()");
+	qDebug() << ("MainWindow::accountButtonClicked()");
 
 	updateCurrentAccount(id);
 }
 
 void MainWindow::updateCurrentAccount(int id) {
-	QwitTools::log("MainWindow::updateCurrentAccount()");
+	qDebug() << ("MainWindow::updateCurrentAccount()");
 
 	Configuration *config = Configuration::getInstance();
 	int oldAccountId = config->currentAccountId;
@@ -378,16 +391,36 @@ void MainWindow::updateCurrentAccount(int id) {
 		disconnect(config->accounts[oldAccountId], SIGNAL(friendsStatusesUpdated(const QVector<Status> &, Account *)), 0, 0);
 		connect(config->currentAccount(), SIGNAL(friendsStatusesUpdated(const QVector<Status> &, Account *)), homePage, SLOT(updateItems(const QVector<Status> &, Account *)));
 		homePage->updateItems(config->currentAccount()->friendsStatuses, config->currentAccount());
+		disconnect(config->accounts[oldAccountId], SIGNAL(previousFriendsStatusesReceived()), 0, 0);
+		connect(config->currentAccount(), SIGNAL(previousFriendsStatusesReceived()), homePage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	if (repliesPage) {
 		disconnect(config->accounts[oldAccountId], SIGNAL(repliesUpdated(const QVector<Status> &, Account *)), 0, 0);
 		connect(config->currentAccount(), SIGNAL(repliesUpdated(const QVector<Status> &, Account *)), repliesPage, SLOT(updateItems(const QVector<Status> &, Account *)));
 		repliesPage->updateItems(config->currentAccount()->replies, config->currentAccount());
+		disconnect(config->accounts[oldAccountId], SIGNAL(previousRepliesReceived()), 0, 0);
+		connect(config->currentAccount(), SIGNAL(previousRepliesReceived()), repliesPage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	if (publicPage) {
 		disconnect(config->accounts[oldAccountId], SIGNAL(publicStatusesUpdated(const QVector<Status> &, Account *)), 0, 0);
 		connect(config->currentAccount(), SIGNAL(publicStatusesUpdated(const QVector<Status> &, Account *)), publicPage, SLOT(updateItems(const QVector<Status> &, Account *)));
 		publicPage->updateItems(config->currentAccount()->publicStatuses, config->currentAccount());
+		disconnect(config->accounts[oldAccountId], SIGNAL(previousPublicStatusesReceived()), 0, 0);
+		connect(config->currentAccount(), SIGNAL(previousPublicStatusesReceived()), publicPage->twitterWidget, SLOT(enableMoreButton()));
+	}
+	if (favoritesPage) {
+		disconnect(config->accounts[oldAccountId], SIGNAL(favoritesUpdated(const QVector<Status> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(favoritesUpdated(const QVector<Status> &, Account *)), favoritesPage, SLOT(updateItems(const QVector<Status> &, Account *)));
+		favoritesPage->updateItems(config->currentAccount()->favorites, config->currentAccount());
+		disconnect(config->accounts[oldAccountId], SIGNAL(previousFavoritesReceived()), 0, 0);
+		connect(config->currentAccount(), SIGNAL(previousFavoritesReceived()), favoritesPage->twitterWidget, SLOT(enableMoreButton()));
+	}
+	if (inboxPage) {
+		disconnect(config->accounts[oldAccountId], SIGNAL(inboxMessagesUpdated(const QVector<Status> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(inboxMessagesUpdated(const QVector<Status> &, Account *)), inboxPage, SLOT(updateItems(const QVector<Status> &, Account *)));
+		inboxPage->updateItems(config->currentAccount()->inboxMessages, config->currentAccount());
+		disconnect(config->accounts[oldAccountId], SIGNAL(previousInboxMessagesReceived()), 0, 0);
+		connect(config->currentAccount(), SIGNAL(previousInboxMessagesReceived()), inboxPage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	disconnect(config->accounts[oldAccountId], SIGNAL(lastStatusReceived(const QString &, Account *)), 0, 0);
 	connect(config->currentAccount(), SIGNAL(lastStatusReceived(const QString &, Account *)), this, SLOT(updateLastStatus(const QString &, Account *)));
@@ -400,7 +433,7 @@ void MainWindow::updateCurrentAccount(int id) {
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-	QwitTools::log("MainWindow::resizeEvent()");
+	qDebug() << ("MainWindow::resizeEvent()");
 
 	for (int i = 0; i < pages.size(); ++i) {
 		pages[i]->updateSize();
@@ -408,7 +441,7 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 }
 
 void MainWindow::showEvent(QShowEvent *event) {
-	QwitTools::log("MainWindow::showEvent()");
+	qDebug() << ("MainWindow::showEvent()");
 
 	Configuration *config = Configuration::getInstance();
 	resize(config->size);
@@ -424,14 +457,14 @@ void MainWindow::showEvent(QShowEvent *event) {
 }
 
 void MainWindow::hideEvent(QHideEvent *event) {
-	QwitTools::log("MainWindow::hideEvent()");
+	qDebug() << ("MainWindow::hideEvent()");
 
 	saveState();
 	event->accept();
 }
 
 void MainWindow::setupTrayIcon() {
-	QwitTools::log("MainWindow::setupTrayIcon()");
+	qDebug() << ("MainWindow::setupTrayIcon()");
 
 	trayShowhideAction = new QAction(tr("&Show / Hide"), this);
 	connect(trayShowhideAction, SIGNAL(triggered()), this, SLOT(showhide()));
@@ -449,7 +482,7 @@ void MainWindow::setupTrayIcon() {
 }
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
-	QwitTools::log("MainWindow::iconActivated()");
+	qDebug() << ("MainWindow::iconActivated()");
 
 	if (reason == QSystemTrayIcon::Trigger) {
 		showhide();
@@ -457,7 +490,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 }
 
 void MainWindow::showhide() {
-	QwitTools::log("MainWindow::showhide()");
+	qDebug() << ("MainWindow::showhide()");
 
 	if (isVisible()) {
 		hide();
@@ -471,7 +504,7 @@ void MainWindow::showhide() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
-	QwitTools::log("MainWindow::keyPressEvent()");
+	qDebug() << ("MainWindow::keyPressEvent()");
 
 	if (event->key() == Qt::Key_Escape) {
 		showhide();
@@ -484,14 +517,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 }
 
 void MainWindow::quit() {
-	QwitTools::log("MainWindow::quit()");
+	qDebug() << ("MainWindow::quit()");
 
 	acceptClose = true;
 	close();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-	QwitTools::log("MainWindow::closeEvent()");
+	qDebug() << ("MainWindow::closeEvent()");
 
 	if (acceptClose) {
 		saveState();
@@ -503,7 +536,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::refresh() {
-	QwitTools::log("MainWindow::refresh()");
+	qDebug() << ("MainWindow::refresh()");
 
 	pages[mainTabWidget->currentIndex()]->update();
 	Configuration *config = Configuration::getInstance();
@@ -511,15 +544,14 @@ void MainWindow::refresh() {
 }
 
 void MainWindow::tabChanged(int tabIndex) {
-	QwitTools::log("MainWindow::tabChanged()");
-
-	if ((tabIndex >= 0) && (tabIndex < pages.size())) {
+	qDebug() << ("MainWindow::tabChanged()");
+	if ((tabIndex >= 0) && (tabIndex < pages.size()) && pages[tabIndex]) {
 		pages[tabIndex]->updateSize();
 	}
 }
 
 void MainWindow::reloadUserpics() {
-	QwitTools::log("MainWindow::reloadUserpics()");
+	qDebug() << ("MainWindow::reloadUserpics()");
 
 	for (int i = 0; i < pages.size(); ++i) {
 		pages[i]->reloadUserpics();
@@ -527,13 +559,13 @@ void MainWindow::reloadUserpics() {
 }
 
 void MainWindow::updateLastStatus(const QString &status, Account *account) {
-	QwitTools::log("MainWindow::updateLastStatus()");
+	qDebug() << ("MainWindow::updateLastStatus()");
 
 	lastStatusLabel->setText(status);
 }
 
 void MainWindow::showNewStatuses(const QVector<Status> &statuses, Account *account) {
-	QwitTools::log("MainWindow::showNewStatuses()");
+	qDebug() << ("MainWindow::showNewStatuses()");
 	Configuration *config = Configuration::getInstance();
 	QString trayMessage = "";
 	for (int i = 0; i < min(statuses.size(), config->messagesInPopup); ++i) {
@@ -558,6 +590,8 @@ void MainWindow::updatePages() {
 	for (int i = 0; i < config->accounts.size(); ++i) {
 		config->accounts[i]->receiveFriendsStatuses(config->messagesPerPage);
 		config->accounts[i]->receiveReplies(config->messagesPerPage);
+		config->accounts[i]->receiveFavorites();
+		config->accounts[i]->receiveInboxMessages(config->messagesPerPage);
 		config->accounts[i]->updateLastStatus();
 	}
 }

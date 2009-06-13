@@ -40,6 +40,8 @@
 #include "HomePage.h"
 #include "RepliesPage.h"
 #include "PublicPage.h"
+#include "FavoritesPage.h"
+#include "InboxPage.h"
 #include "Status.h"
 
 class MainWindow: public QDialog, public Ui::MainWindow {
@@ -60,6 +62,8 @@ private:
 	HomePage *homePage;
 	RepliesPage *repliesPage;
 	PublicPage *publicPage;
+	FavoritesPage *favoritesPage;
+	InboxPage *inboxPage;
 	QTimer *redrawTimer;
 	QTimer *updateTimer;
 	StatusTextEdit *statusTextEdit;

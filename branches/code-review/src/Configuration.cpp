@@ -107,6 +107,8 @@ void Configuration::load() {
 	updateOutboxTabAlways = settings.value("updateOutboxTabAlways", false).toBool();
 	showSearchTab = settings.value("showSearchTab", true).toBool();
 	updateSearchTabAlways = settings.value("updateSearchTabAlways", false).toBool();
+	showFavoritesTab = settings.value("showFavoritesTab", true).toBool();
+	updateFavoritesTabAlways = settings.value("updateFavoritesTabAlways", false).toBool();
 	settings.endGroup();
 	
 	settings.endGroup();
@@ -179,6 +181,8 @@ void Configuration::save() {
 	settings.setValue("updateOutboxTabAlways", updateOutboxTabAlways);
 	settings.setValue("showSearchTab", showSearchTab);
 	settings.setValue("updateSearchTabAlways", updateSearchTabAlways);
+	settings.setValue("showFavoritesTab", showFavoritesTab);
+	settings.setValue("updateFavoritesTabAlways", updateFavoritesTabAlways);
 	settings.endGroup();
 
 	settings.endGroup();

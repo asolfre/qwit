@@ -23,26 +23,26 @@
  *  
  *  @section DESCRIPTION
  *  
- *  PublicPage class implementation
+ *  InboxPage class implementation
  */
 
-#ifndef PublicPage_cpp
-#define PublicPage_cpp
+#ifndef InboxPage_cpp
+#define InboxPage_cpp
 
 #include "QwitHeaders.h"
 
-#include "PublicPage.h"
+#include "InboxPage.h"
 #include "QwitTools.h"
 
-PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
-	qDebug() << ("PublicPage::PublicPage()");
+InboxPage::InboxPage(QWidget* parent): AbstractPage(parent) {
+	qDebug() << ("InboxPage::InboxPage()");
 
-	twitterWidget->setObjectName(QString::fromUtf8("publicPageTwitterWidget"));
-	twitterWidget->removeMoreButton();
-	twitterWidget->removeLessButton();
+	twitterWidget->setObjectName(QString::fromUtf8("inboxPageTwitterWidget"));
+	connect(twitterWidget, SIGNAL(moreButtonClicked()), this, SLOT(updatePrevious()));
+	connect(twitterWidget, SIGNAL(lessButtonClicked()), this, SLOT(removePrevious()));
 
 	QGridLayout *gridLayout = new QGridLayout(this);
-	gridLayout->setObjectName(QString::fromUtf8("publicPageGridLayout"));
+	gridLayout->setObjectName(QString::fromUtf8("inboxPageGridLayout"));
 
 	scrollArea = new QScrollArea(this);
 	scrollArea->setBackgroundRole(QPalette::Light);
@@ -53,20 +53,34 @@ PublicPage::PublicPage(QWidget* parent): AbstractPage(parent) {
 	gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
 }
 
-void PublicPage::updateSize() {
-	qDebug() << ("PublicPage::updateSize()");
-
+void InboxPage::updateSize() {
+	qDebug() << ("InboxPage::updateSize()");
 	twitterWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() - 5, 500);
 }
 
-QString PublicPage::title() {
-	return tr("Public");
+QString InboxPage::title() {
+	return tr("Inbox");
 }
 
-void PublicPage::update() {
-	qDebug() << ("PublicPage::update()");
+void InboxPage::update() {
+	qDebug() << ("InboxPage::update()");
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->receivePublicStatuses(config->messagesPerPage);
+	config->currentAccount()->receiveInboxMessages(config->messagesPerPage);
+}
+
+void InboxPage::updatePrevious() {
+	qDebug() << ("InboxPage::updatePrevious()");
+	twitterWidget->disableMoreButton();
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->receivePreviousInboxMessages(config->messagesPerPage);
+}
+
+void InboxPage::removePrevious() {
+	qDebug() << ("InboxPage::removePrevious()");
+	twitterWidget->disableLessButton();
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->removePreviousInboxMessages(config->messagesPerPage);
+	twitterWidget->enableLessButton();
 }
 
 #endif

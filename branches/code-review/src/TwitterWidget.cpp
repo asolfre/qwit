@@ -56,16 +56,16 @@ TwitterWidgetItem::~TwitterWidgetItem() {
 }
 
 TwitterWidget::TwitterWidget(QWidget *parent): QWidget(parent) {
-	QwitTools::log("TwitterWidget::TwitterWidget()");
+	qDebug() << ("TwitterWidget::TwitterWidget()");
 	moreToolButton = 0;
 	lessToolButton = 0;
-	enableMoreButton();
+	addMoreButton();
 	connect(&retweetButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(retweetButtonClicked(int)));
 	connect(&replyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(replyButtonClicked(int)));
 }
 
 void TwitterWidget::clear() {
-	QwitTools::log("TwitterWidget::clear()");
+	qDebug() << ("TwitterWidget::clear()");
 
 	for (int i = 0; i < items.size(); ++i) {
 		delete items[i];
@@ -75,7 +75,7 @@ void TwitterWidget::clear() {
 }
 
 void TwitterWidget::addItem(const Status &status) {
-	QwitTools::log("TwitterWidget::addItem()");
+//	qDebug() << ("TwitterWidget::addItem()");
 
 	TwitterWidgetItem *item = new TwitterWidgetItem();
 
@@ -145,7 +145,7 @@ void TwitterWidget::addItem(const Status &status) {
 }
 
 void TwitterWidget::updateItems() {
-	QwitTools::log("TwitterWidget::updateItems()");
+	qDebug() << ("TwitterWidget::updateItems()");
 
 	retweetButtonGroup.buttons().clear();
 	replyButtonGroup.buttons().clear();
@@ -200,9 +200,9 @@ void TwitterWidget::updateItems() {
 		moreToolButton->show();
 	}
 	if (moreToolButton && (config->messagesPerPage < items.size())) {
-		enableLessButton();
+		addLessButton();
 	} else {
-		disableLessButton();
+		removeLessButton();
 	}
 	if (lessToolButton) {
 		moreToolButton->move((width() - (moreToolButton->width() + lessToolButton->width() + MARGIN)) / 2, height + MARGIN);
@@ -217,7 +217,7 @@ void TwitterWidget::updateItems() {
 }
 
 void TwitterWidget::resizeEvent(QResizeEvent *event) {
-	QwitTools::log("TwitterWidget::resizeEvent()");
+	qDebug() << ("TwitterWidget::resizeEvent()");
 
 	if (event->oldSize() == event->size()) {
 		event->ignore();
@@ -241,43 +241,45 @@ void TwitterWidget::paintEvent(QPaintEvent *event) {
 }
 
 void TwitterWidget::reloadUserpics() {
-	QwitTools::log("TwitterWidget::reloadUserpics()");
+//	qDebug() << ("TwitterWidget::reloadUserpics()");
 
 	for (int i = 0; i < items.size(); ++i) {
 		items[i]->loadUserpic();
 	}
 }
 
-void TwitterWidget::disableMoreButton() {
+void TwitterWidget::removeMoreButton() {
 	if (moreToolButton) {
-		QwitTools::log("TwitterWidget::disableMoreButton()");
+		qDebug() << ("TwitterWidget::removeMoreButton()");
 		delete moreToolButton;
 		moreToolButton = 0;
 	}
 }
 
-void TwitterWidget::disableLessButton() {
+void TwitterWidget::removeLessButton() {
 	if (lessToolButton) {
-		QwitTools::log("TwitterWidget::disableLessButton()");
+		qDebug() << ("TwitterWidget::removeLessButton()");
 		delete lessToolButton;
 		lessToolButton = 0;
 	}
 }
 
-void TwitterWidget::enableMoreButton() {
+void TwitterWidget::addMoreButton() {
 	if (!moreToolButton) {
-		QwitTools::log("TwitterWidget::enableMoreButton()");
+		qDebug() << ("TwitterWidget::addMoreButton()");
 		moreToolButton = new QToolButton(this);
 		moreToolButton->setText(tr("more"));
+		moreToolButton->setCheckable(true);
 		connect(moreToolButton, SIGNAL(clicked()), this, SIGNAL(moreButtonClicked()));
 	}
 }
 
-void TwitterWidget::enableLessButton() {
+void TwitterWidget::addLessButton() {
 	if (!lessToolButton) {
-		QwitTools::log("TwitterWidget::enableLessButton()");
+		qDebug() << ("TwitterWidget::addLessButton()");
 		lessToolButton = new QToolButton(this);
 		lessToolButton->setText(tr("less"));
+		lessToolButton->setCheckable(true);
 		connect(lessToolButton, SIGNAL(clicked()), this, SIGNAL(lessButtonClicked()));
 	}
 }
@@ -288,6 +290,32 @@ void TwitterWidget::retweetButtonClicked(int id) {
 
 void TwitterWidget::replyButtonClicked(int id) {
 	emit reply(items[id]->status);
+}
+
+void TwitterWidget::enableMoreButton() {
+	if (moreToolButton) {
+		moreToolButton->setEnabled(true);
+		moreToolButton->setChecked(false);
+	}
+}
+
+void TwitterWidget::enableLessButton() {
+	if (lessToolButton) {
+		lessToolButton->setEnabled(true);
+		moreToolButton->setChecked(false);
+	}
+}
+
+void TwitterWidget::disableMoreButton() {
+	if (moreToolButton) {
+		moreToolButton->setEnabled(false);
+	}
+}
+
+void TwitterWidget::disableLessButton() {
+	if (lessToolButton) {
+		lessToolButton->setEnabled(false);
+	}
 }
 
 #endif

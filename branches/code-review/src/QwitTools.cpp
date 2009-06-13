@@ -77,6 +77,10 @@ QVector<Status> QwitTools::parseStatuses(const QByteArray &data, Account *accoun
 	return getInstance()->_parseStatuses(data, account);
 }
 
+QVector<Status> QwitTools::parseInboxMessages(const QByteArray &data, Account *account) {
+	return getInstance()->_parseInboxMessages(data, account);
+}
+
 Status QwitTools::parseUser(const QByteArray &data, Account *account) {
 	return getInstance()->_parseUser(data, account);
 }
@@ -185,6 +189,78 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *accou
 		node = node.nextSibling();
 	}
 	return statuses;
+}
+
+QVector<Status> QwitTools::_parseInboxMessages(const QByteArray &data, Account *account) {
+	QVector<Status> messages;
+	
+	QDomDocument document;
+	document.setContent(data);
+
+	QDomElement root = document.documentElement();
+	
+	if (root.tagName() != "direct-messages") {
+		return messages;
+	}
+	
+	QDomNode node = root.firstChild();
+	while (!node.isNull()) {
+		if (node.toElement().tagName() != "direct_message") {
+			return messages;
+		}
+		QDomNode node2 = node.firstChild();
+		QString message = "", timeStr = "", user = "", image = "";
+		uint id = 0;
+		while (!node2.isNull()) {
+			if (node2.toElement().tagName() == "created_at") {
+				timeStr = node2.toElement().text();
+			} else if (node2.toElement().tagName() == "text") {
+				message = node2.toElement().text();
+			} else if (node2.toElement().tagName() == "id") {
+				id = node2.toElement().text().toUInt();
+			} else if (node2.toElement().tagName() == "sender") {
+				QDomNode node3 = node2.firstChild();
+				while (!node3.isNull()) {
+					if (node3.toElement().tagName() == "screen_name") {
+						user = node3.toElement().text();
+					} else if (node3.toElement().tagName() == "profile_image_url") {
+						image = node3.toElement().text();
+					}
+					node3 = node3.nextSibling();
+				}
+			}
+			node2 = node2.nextSibling();
+		}
+		if (id) {
+			QDateTime time = QwitTools::dateFromString(timeStr);
+			time = QDateTime(time.date(), time.time(), Qt::UTC);
+			QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+			QString imageFileName = "";
+			for (int i = 0; i < hash.size(); ++i) {
+				unsigned char c = hash[i];
+				c >>= 4;
+				if (c < 10) {
+					c += '0';
+				} else {
+					c += 'A' - 10;
+				}
+				imageFileName += (char)c;
+				c = hash[i];
+				c &= 15;
+				if (c < 10) {
+					c += '0';
+				} else {
+					c += 'A' - 10;
+				}
+				imageFileName += (char)c;
+			}
+			imageFileName = Configuration::CacheDirectory + imageFileName;
+			UserpicsDownloader::getInstance()->download(image, imageFileName);
+			messages.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), account));
+		}
+		node = node.nextSibling();
+	}
+	return messages;
 }
 
 Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
@@ -322,14 +398,6 @@ Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
 	return status;
 }
 
-void QwitTools::log(const QString &message) {
-	getInstance()->_log(message);
-}
-
-void QwitTools::_log(const QString &message) {
-	cout << qPrintable(QDateTime::currentDateTime().toString()) << ":  " << qPrintable(message) << endl;
-}
-
 void QwitTools::makeStatusesUnique(QVector<Status> &v) {
 	getInstance()->_makeStatusesUnique(v);
 }
@@ -386,6 +454,42 @@ QString QwitTools::_prepareStatus(const QString &text, Account *account) {
 
 QString QwitTools::prepareStatus(const QString &text, Account *account) {
 	return getInstance()->_prepareStatus(text, account);
+}
+
+void handleMessage(QtMsgType type, const char *msg) {
+	switch (type) {
+		case QtDebugMsg:
+			cout << qPrintable(QDateTime::currentDateTime().toString()) << " Debug: " << msg << endl;
+			break;
+		case QtWarningMsg:
+			cerr << qPrintable(QDateTime::currentDateTime().toString()) << " Warning: " << msg << endl;
+			break;
+		case QtCriticalMsg:
+			cerr << qPrintable(QDateTime::currentDateTime().toString()) << " Critical: " << msg << endl;
+			break;
+		case QtFatalMsg:
+			cerr << qPrintable(QDateTime::currentDateTime().toString()) << " Fatal: " << msg << endl;
+			abort();
+	}
+}
+
+QVector<Status> QwitTools::_mergeStatuses(QVector<Status> &statuses, QVector<Status> &receivedStatuses) {
+	QVector<Status> newStatuses;
+	for (int i = 0; i < receivedStatuses.size(); ++i) {
+		if (qBinaryFind(statuses.begin(), statuses.end(), receivedStatuses[i]) == statuses.end()) {
+			newStatuses.push_back(receivedStatuses[i]);
+		}
+	}
+	for (int i = 0; i < newStatuses.size(); ++i) {
+		statuses.push_back(newStatuses[i]);
+	}
+	qSort(statuses.begin(), statuses.end());
+	makeStatusesUnique(statuses);
+	return newStatuses;
+}
+
+QVector<Status> QwitTools::mergeStatuses(QVector<Status> &statuses, QVector<Status> &receivedStatuses) {
+	return getInstance()->_mergeStatuses(statuses, receivedStatuses);
 }
 
 #endif

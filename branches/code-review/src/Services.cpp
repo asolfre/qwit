@@ -42,11 +42,12 @@ void Services::initialize() {
 	twitterOptions["friends"] = "/statuses/friends_timeline";
 	twitterOptions["public"] = "/statuses/public_timeline";
 	twitterOptions["replies"] = "/statuses/mentions";
+	twitterOptions["favorites"] = "/favorites";
 	twitterOptions["user"] = "/statuses/user_timeline/";
 	twitterOptions["last"] = "/users/show";
 	twitterOptions["update"] = "/statuses/update";
-	twitterOptions["direct_messages"] = "/direct_messages";
-	twitterOptions["direct_messages_sent"] = "/direct_messages";
+	twitterOptions["inbox"] = "/direct_messages";
+	twitterOptions["outbox"] = "/direct_messages/sent";
 	options["twitter"] = twitterOptions;
 
 	QMap<QString, QString> identicaOptions;
@@ -55,11 +56,12 @@ void Services::initialize() {
 	identicaOptions["friends"] = "/statuses/friends_timeline";
 	identicaOptions["public"] = "/statuses/public_timeline";
 	identicaOptions["replies"] = "/statuses/mentions";
+	identicaOptions["favorites"] = "/favorites";
 	identicaOptions["user"] = "/statuses/user_timeline/";
 	identicaOptions["last"] = "/users/show";
 	identicaOptions["update"] = "/statuses/update";
-	identicaOptions["direct_messages"] = "/direct_messages";
-	identicaOptions["direct_messages_sent"] = "/direct_messages";
+	identicaOptions["inbox"] = "/direct_messages";
+	identicaOptions["outbox"] = "/direct_messages/sent";
 	options["identica"] = identicaOptions;
 }
 

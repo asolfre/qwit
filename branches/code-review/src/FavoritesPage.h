@@ -1,4 +1,4 @@
-/*!
+/*! 
  *  @file
  *  @author Artem Iglikov <artem.iglikov@gmail.com>
  *  
@@ -20,33 +20,31 @@
  *  
  *  You should have received a copy of the GNU General Public License
  *  along with Qwit.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  *  @section DESCRIPTION
- *  
- *  Qwit main function
+ *
+ *  FavoritesPage class declaration
  */
+
+#ifndef FavoritesPage_h
+#define FavoritesPage_h
 
 #include "QwitHeaders.h"
 
-#include "MainWindow.h"
-#include "Services.h"
-#include "QwitTools.h"
+#include "AbstractPage.h"
 
-int main(int argc, char *argv[]) {
-	QDir dir(QDir::homePath());
-	dir.mkdir(Configuration::CacheDirectory);
+class FavoritesPage: public AbstractPage {
+	Q_OBJECT
 	
-	qInstallMsgHandler(handleMessage);
+public:
+	FavoritesPage(QWidget* parent = 0);
+	void updateSize();
+	QString title();
+	void update();
 	
-	QApplication app(argc, argv);
+public slots:
+	void updatePrevious();
+	void removePrevious();
+};
 
-	QString locale = QLocale::system().name();
-	QTranslator translator;
-	translator.load(QString(":/translations/qwit_") + locale);
-	app.installTranslator(&translator);
-
-	Services::initialize();
-
-	MainWindow::getInstance()->show();
-	return app.exec();
-}
+#endif

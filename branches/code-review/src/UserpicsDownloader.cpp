@@ -66,7 +66,6 @@ void UserpicsDownloader::startDownload() {
 void UserpicsDownloader::download(const QString &url, const QString &filename) {
 	QFileInfo fi = QFileInfo(filename);
 	if (fi.exists() && (fi.size() > 0)) return;
-	cout << qPrintable(url) << " " << qPrintable(filename) << endl;
 	queue.enqueue(qMakePair(url, filename));
 	if (queue.size() == 1) {
 		startDownload();
