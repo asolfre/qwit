@@ -385,6 +385,10 @@ void MainWindow::updateCurrentAccount(int id) {
 	qDebug() << ("MainWindow::updateCurrentAccount()");
 
 	Configuration *config = Configuration::getInstance();
+	if (config->currentAccountId == -1) {
+		return;
+	}
+	
 	int oldAccountId = config->currentAccountId;
 	config->currentAccountId = id;
 	if (homePage) {

@@ -58,6 +58,7 @@ Configuration::Configuration() {
 	Services.push_back("identica");
 	Services.push_back("custom");
 	QFile file(settings.fileName());
+	currentAccountId = -1;
 	file.setPermissions(QFile::ReadUser | QFile::WriteUser);
 }
 
@@ -71,7 +72,7 @@ void Configuration::load() {
 	settings.beginGroup("State");
 	position = settings.value("position", QPoint(100, 100)).toPoint();
 	size = settings.value("size", QSize(300, 600)).toSize();
-	currentAccountId = settings.value("currentAccountId", 0).toInt();
+	currentAccountId = settings.value("currentAccountId", -1).toInt();
 	settings.endGroup();
 	
 // User interface
@@ -215,6 +216,9 @@ int Configuration::addAccount(Account *account) {
 	accounts.push_back(account);
 	account->id = accounts.size() - 1;
 	QObject::connect(account, SIGNAL(newStatusesReceived(const QVector<Status>&, Account *)), MainWindow::getInstance(), SLOT(showNewStatuses(const QVector<Status>&, Account *)));
+	if (currentAccountId == -1) {
+		currentAccountId = account->id;
+	}
 	return account->id;
 }
 
