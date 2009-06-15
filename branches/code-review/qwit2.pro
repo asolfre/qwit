@@ -26,6 +26,7 @@ HEADERS += \
            src/StatusTextEdit.h \
            src/OptionsDialog.h \
            src/AboutDialog.h \
+           src/DirectMessageDialog.h \
            src/Account.h \
            src/AccountConfigurationDialog.h \
 	   src/AbstractPage.h \
@@ -45,7 +46,8 @@ FORMS += \
            src/MainWindow.ui \
            src/OptionsDialog.ui \
            src/AboutDialog.ui \
-           src/AccountConfigurationDialog.ui
+           src/AccountConfigurationDialog.ui \
+           src/DirectMessageDialog.ui
 SOURCES += \
            src/qwit.cpp \
 	   src/Configuration.cpp \
@@ -53,6 +55,7 @@ SOURCES += \
            src/StatusTextEdit.cpp \
            src/OptionsDialog.cpp \
            src/AboutDialog.cpp \
+           src/DirectMessageDialog.cpp \
            src/AccountConfigurationDialog.cpp \
            src/Account.cpp \
 	   src/AbstractPage.cpp \

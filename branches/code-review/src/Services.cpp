@@ -48,6 +48,7 @@ void Services::initialize() {
 	twitterOptions["update"] = "/statuses/update";
 	twitterOptions["inbox"] = "/direct_messages";
 	twitterOptions["outbox"] = "/direct_messages/sent";
+	twitterOptions["send"] = "/direct_messages/new";
 	options["twitter"] = twitterOptions;
 
 	QMap<QString, QString> identicaOptions;
@@ -62,6 +63,7 @@ void Services::initialize() {
 	identicaOptions["update"] = "/statuses/update";
 	identicaOptions["inbox"] = "/direct_messages";
 	identicaOptions["outbox"] = "/direct_messages/sent";
+	identicaOptions["send"] = "/direct_messages/new";
 	options["identica"] = identicaOptions;
 }
 

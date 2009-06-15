@@ -62,6 +62,7 @@ TwitterWidget::TwitterWidget(QWidget *parent): QWidget(parent) {
 	addMoreButton();
 	connect(&retweetButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(retweetButtonClicked(int)));
 	connect(&replyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(replyButtonClicked(int)));
+	connect(&directMessageButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(directMessageButtonClicked(int)));
 }
 
 void TwitterWidget::clear() {
@@ -149,12 +150,14 @@ void TwitterWidget::updateItems() {
 
 	retweetButtonGroup.buttons().clear();
 	replyButtonGroup.buttons().clear();
+	directMessageButtonGroup.buttons().clear();
 	
 	int height = 0;
 	for (int i = 0; i < items.size(); ++i) {
 		TwitterWidgetItem *item = items[i];
 		retweetButtonGroup.addButton(item->retweetButton, i);
 		replyButtonGroup.addButton(item->replyButton, i);
+		directMessageButtonGroup.addButton(item->directMessageButton, i);
 		QFontMetrics fontMetrics(item->statusTextBrowser->font());
 		int statusItemWidth = width() - (ICON_SIZE + 4 * MARGIN + item->favorButton->width());
 		int statusItemHeight = fontMetrics.boundingRect(0, 0, statusItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, item->statusTextBrowser->toPlainText()).height() + MARGIN;
@@ -290,6 +293,10 @@ void TwitterWidget::retweetButtonClicked(int id) {
 
 void TwitterWidget::replyButtonClicked(int id) {
 	emit reply(items[id]->status);
+}
+
+void TwitterWidget::directMessageButtonClicked(int id) {
+	emit directMessage(items[id]->status);
 }
 
 void TwitterWidget::enableMoreButton() {

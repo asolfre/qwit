@@ -91,6 +91,7 @@ public slots:
 	void removePreviousReplies(int count);
 	void removePreviousFavorites();
 	void removePreviousInboxMessages(int count);
+	void sendDirectMessage(const QString &username, const QString &message);
 	
 signals:
 	void friendsStatusesUpdated(const QVector<Status> &, Account *);

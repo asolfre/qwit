@@ -319,6 +319,35 @@ void Twitter::receivePreviousInboxMessages(uint lastStatusId, int count) {
 	receivePreviousInboxMessagesRequests[id] = tr("Updating inbox messages: %1").arg(url.host() + url.path());
 }
 
+void Twitter::sendDirectMessage(const QString &username, const QString &message) {
+	qDebug() << ("Twitter::sendDirectMessage()");
+	
+	setupProxy();
+	
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["send"] + ".xml");
+
+	QHttpRequestHeader header;
+	header.setRequest("POST", url.path());
+	header.setValue("Host", url.host());
+	header.setContentType("application/x-www-form-urlencoded");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	QByteArray data = "user=" + QUrl::toPercentEncoding(username) + "&text=" + QUrl::toPercentEncoding(message);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->request(header, data, &buffer);
+
+	sendDirectMessageRequests[id] = tr("Sending direct message: %1").arg(url.host() + url.path());
+}
+
 void Twitter::abort() {
 	qDebug() << ("Twitter::abort()");
 
@@ -337,6 +366,22 @@ void Twitter::requestStarted(int id) {
 		qDebug() << ("Request started: " + receiveLastStatusRequests[id]);
 	} else if (sendStatusRequests.find(id) != sendStatusRequests.end()) {
 		qDebug() << ("Request started: " + sendStatusRequests[id]);
+	} else if (receiveFavoritesRequests.find(id) != receiveFavoritesRequests.end()) {
+		qDebug() << ("Request started: " + receiveFavoritesRequests[id]);
+	} else if (receivePreviousFriendsStatusesRequests.find(id) != receivePreviousFriendsStatusesRequests.end()) {
+		qDebug() << ("Request started: " + receivePreviousFriendsStatusesRequests[id]);
+	} else if (receivePreviousRepliesRequests.find(id) != receivePreviousRepliesRequests.end()) {
+		qDebug() << ("Request started: " + receivePreviousRepliesRequests[id]);
+	} else if (receivePreviousPublicStatusesRequests.find(id) != receivePreviousPublicStatusesRequests.end()) {
+		qDebug() << ("Request started: " + receivePreviousPublicStatusesRequests[id]);
+	} else if (receivePreviousFavoritesRequests.find(id) != receivePreviousFavoritesRequests.end()) {
+		qDebug() << ("Request started: " + receivePreviousFavoritesRequests[id]);
+	} else if (receiveInboxMessagesRequests.find(id) != receiveInboxMessagesRequests.end()) {
+		qDebug() << ("Request started: " + receiveInboxMessagesRequests[id]);
+	} else if (receivePreviousInboxMessagesRequests.find(id) != receivePreviousInboxMessagesRequests.end()) {
+		qDebug() << ("Request started: " + receivePreviousInboxMessagesRequests[id]);
+	} else if (sendDirectMessageRequests.find(id) != sendDirectMessageRequests.end()) {
+		qDebug() << ("Request started: " + sendDirectMessageRequests[id]);
 	}
 }
 
@@ -419,6 +464,10 @@ void Twitter::requestFinished(int id, bool error) {
 			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit previousInboxMessagesReceived(buffer.data());
+		} else if (sendDirectMessageRequests.find(id) != sendDirectMessageRequests.end()) {
+			qDebug() << ("Request finished: " + sendDirectMessageRequests[id]);
+			buffer.close();
+			emit directMessageSent(buffer.data());
 		}
 	} else {
 		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error");

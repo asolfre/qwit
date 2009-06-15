@@ -367,4 +367,8 @@ void Account::addFavorites(const QByteArray &data) {
 	}
 }
 
+void Account::sendDirectMessage(const QString &username, const QString &message) {
+	twitter->sendDirectMessage(username, message);
+}
+
 #endif

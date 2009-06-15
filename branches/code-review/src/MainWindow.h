@@ -37,6 +37,7 @@
 #include "StatusTextEdit.h"
 #include "OptionsDialog.h"
 #include "AboutDialog.h"
+#include "DirectMessageDialog.h"
 #include "HomePage.h"
 #include "RepliesPage.h"
 #include "PublicPage.h"
@@ -51,6 +52,7 @@ private:
 
 	OptionsDialog *optionsDialog;
 	AboutDialog *aboutDialog;
+	DirectMessageDialog *directMessageDialog;
 	QVector<QToolButton*> accountsButtons;
 	QHBoxLayout *accountsLayout;
 	QButtonGroup accountsButtonGroup;
@@ -103,6 +105,8 @@ public slots:
 	void redrawPages();
 	void updatePages();
 	void updateRemainingRequests(int remainingRequests, Account *account);
+	void directMessage(const Status &status);
+	void sendDirectMessage();
 	
 signals:
 

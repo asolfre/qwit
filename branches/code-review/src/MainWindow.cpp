@@ -64,6 +64,9 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	connect(optionsDialog, SIGNAL(rejected()), this, SLOT(resetOptionsDialog()));
 	
 	aboutDialog = new AboutDialog(this);
+	
+	directMessageDialog = new DirectMessageDialog(this);
+	connect(directMessageDialog , SIGNAL(accepted()), this, SLOT(sendDirectMessage()));
 
 	connect(refreshToolButton, SIGNAL(pressed()), this, SLOT(refresh()));
 	connect(optionsToolButton, SIGNAL(pressed()), this, SLOT(showOptionsDialog()));
@@ -608,6 +611,24 @@ void MainWindow::updateRemainingRequests(int remainingRequests, Account *account
 	} else {
 		stateLabel->setText(QString::number(remainingRequests) + " requests left");
 	}
+}
+
+void MainWindow::directMessage(const Status &status) {
+	Configuration *config = Configuration::getInstance();
+	directMessageDialog->accountsComboBox->clear();
+	for (int i = 0; i < config->accounts.size(); ++i) {
+		directMessageDialog->accountsComboBox->addItem(QIcon(":/images/" + config->accounts[i]->type + ".png"), config->accounts[i]->username);
+	}
+	directMessageDialog->accountsComboBox->setCurrentIndex(config->currentAccountId);
+	directMessageDialog->usernameLineEdit->setText(status.username);
+	directMessageDialog->messagePlainTextEdit->clear();
+	directMessageDialog->messagePlainTextEdit->setFocus();
+	directMessageDialog->showNormal();
+}
+
+void MainWindow::sendDirectMessage() {
+	Configuration *config = Configuration::getInstance();
+	config->accounts[directMessageDialog->accountsComboBox->currentIndex()]->sendDirectMessage(directMessageDialog->usernameLineEdit->text(), directMessageDialog->messagePlainTextEdit->toPlainText());
 }
 
 #endif

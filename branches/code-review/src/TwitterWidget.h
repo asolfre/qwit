@@ -49,13 +49,6 @@ public:
 	Status status;
 	QColor color;
 
-	//QString userpicFileName;
-	//QDateTime time;
-	//QString username;
-	//int messageId;
-
-	//QString rawStatus;
-	
 	void loadUserpic();
 	~TwitterWidgetItem();
 };
@@ -70,6 +63,7 @@ private:
 	QVector<TwitterWidgetItem*> items;
 	QButtonGroup retweetButtonGroup;
 	QButtonGroup replyButtonGroup;
+	QButtonGroup directMessageButtonGroup;
 
 public:
 	
@@ -95,6 +89,7 @@ public slots:
 
 	void retweetButtonClicked(int id);
 	void replyButtonClicked(int id);
+	void directMessageButtonClicked(int id);
 	void disableMoreButton();
 	void disableLessButton();
 	void enableMoreButton();
@@ -106,6 +101,7 @@ signals:
 	void lessButtonClicked();
 	void retweet(const Status &status);
 	void reply(const Status &status);
+	void directMessage(const Status &status);
 };
 
 #endif
