@@ -47,10 +47,13 @@ Account::Account() {
 	connect(twitter, SIGNAL(lastStatusReceived(const QByteArray&)), this, SLOT(updateLastStatus(const QByteArray&)));
 	connect(twitter, SIGNAL(inboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(statusSent(const QByteArray&)), this, SLOT(statusSent(const QByteArray&)));
+	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
+	connect(twitter, SIGNAL(statusFavored(const QByteArray&)), this, SLOT(statusFavorChanged(const QByteArray&)));
+	connect(twitter, SIGNAL(statusUnfavored(const QByteArray&)), this, SLOT(statusFavorChanged(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsStatusesReceived(const QByteArray&)), this, SLOT(addFriendsStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(previousRepliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
 	connect(twitter, SIGNAL(previousPublicStatusesReceived(const QByteArray&)), this, SLOT(addPublicStatuses(const QByteArray&)));
-	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SLOT(addFavorites(const QByteArray&)));
+	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SLOT(addPreviousFavorites(const QByteArray&)));
 	connect(twitter, SIGNAL(previousInboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsStatusesReceived(const QByteArray&)), this, SIGNAL(previousFriendsStatusesReceived()));
 	connect(twitter, SIGNAL(previousRepliesReceived(const QByteArray&)), this, SIGNAL(previousRepliesReceived()));
@@ -73,10 +76,13 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(lastStatusReceived(const QByteArray&)), this, SLOT(updateLastStatus(const QByteArray&)));
 	connect(twitter, SIGNAL(inboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(statusSent(const QByteArray&)), this, SLOT(statusSent(const QByteArray&)));
+	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
+	connect(twitter, SIGNAL(statusFavored(const QByteArray&)), this, SLOT(statusFavorChanged(const QByteArray&)));
+	connect(twitter, SIGNAL(statusUnfavored(const QByteArray&)), this, SLOT(statusFavorChanged(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsStatusesReceived(const QByteArray&)), this, SLOT(addFriendsStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(previousRepliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
 	connect(twitter, SIGNAL(previousPublicStatusesReceived(const QByteArray&)), this, SLOT(addPublicStatuses(const QByteArray&)));
-	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SLOT(addFavorites(const QByteArray&)));
+	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SLOT(addPreviousFavorites(const QByteArray&)));
 	connect(twitter, SIGNAL(previousInboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsStatusesReceived(const QByteArray&)), this, SIGNAL(previousFriendsStatusesReceived()));
 	connect(twitter, SIGNAL(previousRepliesReceived(const QByteArray&)), this, SIGNAL(previousRepliesReceived()));
@@ -354,6 +360,21 @@ void Account::removePreviousFavorites() {
 void Account::addFavorites(const QByteArray &data) {
 	qDebug() << ("Account::addFavorites()");
 	QVector<Status> statuses = QwitTools::parseStatuses(data, this);
+	Configuration *config = Configuration::getInstance();
+	int size = max(config->messagesPerPage, favorites.size());
+	favorites.clear();
+	uint maxId = (favorites.size() ? favorites[0].id : 0);
+	statuses = QwitTools::mergeStatuses(favorites, statuses);
+	if ((favorites.size() > size) && (favorites[0].id > maxId)) {
+		favorites.resize(size);
+	}
+	emit favoritesUpdated(favorites, this);
+	emit newStatusesReceived(statuses, this);
+}
+
+void Account::addPreviousFavorites(const QByteArray &data) {
+	qDebug() << ("Account::addPreviousFavorites()");
+	QVector<Status> statuses = QwitTools::parseStatuses(data, this);
 	if (statuses.size()) {
 		Configuration *config = Configuration::getInstance();
 		int size = max(config->messagesPerPage, favorites.size());
@@ -368,7 +389,91 @@ void Account::addFavorites(const QByteArray &data) {
 }
 
 void Account::sendDirectMessage(const QString &username, const QString &message) {
+	qDebug() << ("Account::sendDirectMessage()");
 	twitter->sendDirectMessage(username, message);
+}
+
+void Account::favorStatus(const Status &status) {
+	qDebug() << ("Account::favorStatus()");
+	twitter->favorStatus(status.id);
+}
+
+void Account::unfavorStatus(const Status &status) {
+	qDebug() << ("Account::favorStatus()");
+	twitter->unfavorStatus(status.id);
+}
+
+void Account::directMessageSent(const QByteArray &data) {
+}
+
+void Account::statusFavorChanged(const QByteArray &data) {
+	qDebug() << ("Account::statusFavored()");
+	QString errorRequest = QwitTools::parseError(data);
+	uint statusId = 0;
+	bool favorited = false;
+	if (errorRequest == "") {
+		Status status = QwitTools::parseStatus(data, this);
+		statusId = status.id;
+		favorited = status.favorited;
+	} else {
+		statusId = errorRequest.mid(errorRequest.lastIndexOf("/") + 1, errorRequest.lastIndexOf(".") - errorRequest.lastIndexOf("/") - 1).toUInt();
+		for (int i = 0; i < friendsStatuses.size(); ++i) {
+			if (friendsStatuses[i].id == statusId) {
+				favorited = friendsStatuses[i].favorited;
+			}
+		}
+		for (int i = 0; i < replies.size(); ++i) {
+			if (replies[i].id == statusId) {
+				favorited = replies[i].favorited;
+			}
+		}
+		for (int i = 0; i < publicStatuses.size(); ++i) {
+			if (publicStatuses[i].id == statusId) {
+				favorited = publicStatuses[i].favorited;
+			}
+		}
+		for (int i = 0; i < favorites.size(); ++i) {
+			if (favorites[i].id == statusId) {
+				favorited = favorites[i].favorited;
+			}
+		}
+		favorited = !favorited;
+	}
+	Status status;
+	for (int i = 0; i < friendsStatuses.size(); ++i) {
+		if (friendsStatuses[i].id == statusId) {
+			friendsStatuses[i].favorited = favorited;
+			status = friendsStatuses[i];
+		}
+	}
+	for (int i = 0; i < replies.size(); ++i) {
+		if (replies[i].id == statusId) {
+			replies[i].favorited = favorited;
+			status = replies[i];
+		}
+	}
+	for (int i = 0; i < publicStatuses.size(); ++i) {
+		if (publicStatuses[i].id == statusId) {
+			publicStatuses[i].favorited = favorited;
+			status = publicStatuses[i];
+		}
+	}
+	int index = -1;
+	for (int i = 0; i < favorites.size(); ++i) {
+		if (favorites[i].id == statusId) {
+			favorites[i].favorited = favorited;
+			index = i;
+		}
+	}
+	if (!favorited && (index != -1)) {
+		favorites.erase(favorites.begin() + index);
+	} else if (favorited) {
+		favorites.push_front(status);
+	}
+	emit friendsStatusesUpdated(friendsStatuses, this);
+	emit repliesUpdated(replies, this);
+	emit publicStatusesUpdated(publicStatuses, this);
+	emit favoritesUpdated(favorites, this);
 }
 
 #endif

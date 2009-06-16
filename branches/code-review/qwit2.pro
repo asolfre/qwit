@@ -27,6 +27,7 @@ HEADERS += \
            src/OptionsDialog.h \
            src/AboutDialog.h \
            src/DirectMessageDialog.h \
+           src/TwitPicDialog.h \
            src/Account.h \
            src/AccountConfigurationDialog.h \
 	   src/AbstractPage.h \
@@ -56,6 +57,7 @@ SOURCES += \
            src/OptionsDialog.cpp \
            src/AboutDialog.cpp \
            src/DirectMessageDialog.cpp \
+           src/TwitPicDialog.cpp \
            src/AccountConfigurationDialog.cpp \
            src/Account.cpp \
 	   src/AbstractPage.cpp \

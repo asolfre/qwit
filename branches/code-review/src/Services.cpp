@@ -43,6 +43,8 @@ void Services::initialize() {
 	twitterOptions["public"] = "/statuses/public_timeline";
 	twitterOptions["replies"] = "/statuses/mentions";
 	twitterOptions["favorites"] = "/favorites";
+	twitterOptions["favor"] = "/favorites/create/";
+	twitterOptions["unfavor"] = "/favorites/destroy/";
 	twitterOptions["user"] = "/statuses/user_timeline/";
 	twitterOptions["last"] = "/users/show";
 	twitterOptions["update"] = "/statuses/update";
@@ -58,6 +60,8 @@ void Services::initialize() {
 	identicaOptions["public"] = "/statuses/public_timeline";
 	identicaOptions["replies"] = "/statuses/mentions";
 	identicaOptions["favorites"] = "/favorites";
+	identicaOptions["favor"] = "/favorites/create/";
+	identicaOptions["unfavor"] = "/favorites/destroy/";
 	identicaOptions["user"] = "/statuses/user_timeline/";
 	identicaOptions["last"] = "/users/show";
 	identicaOptions["update"] = "/statuses/update";

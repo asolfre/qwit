@@ -106,7 +106,10 @@ public slots:
 	void updatePages();
 	void updateRemainingRequests(int remainingRequests, Account *account);
 	void directMessage(const Status &status);
+	void favor(const Status &status);
+	void unfavor(const Status &status);
 	void sendDirectMessage();
+	void postTwitPic();
 	
 signals:
 

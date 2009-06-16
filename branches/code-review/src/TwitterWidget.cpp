@@ -63,6 +63,7 @@ TwitterWidget::TwitterWidget(QWidget *parent): QWidget(parent) {
 	connect(&retweetButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(retweetButtonClicked(int)));
 	connect(&replyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(replyButtonClicked(int)));
 	connect(&directMessageButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(directMessageButtonClicked(int)));
+	connect(&favorButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(favorButtonClicked(int)));
 }
 
 void TwitterWidget::clear() {
@@ -100,7 +101,7 @@ void TwitterWidget::addItem(const Status &status) {
 	item->signLabel->setOpenExternalLinks(true);
 
 	item->favorButton = new QToolButton(this);
-	item->favorButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
+	item->favorButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png", status.favorited));
 	item->favorButton->setText("");
 	item->favorButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	item->favorButton->setAutoRaise(true);
@@ -151,6 +152,7 @@ void TwitterWidget::updateItems() {
 	retweetButtonGroup.buttons().clear();
 	replyButtonGroup.buttons().clear();
 	directMessageButtonGroup.buttons().clear();
+	favorButtonGroup.buttons().clear();
 	
 	int height = 0;
 	for (int i = 0; i < items.size(); ++i) {
@@ -158,6 +160,7 @@ void TwitterWidget::updateItems() {
 		retweetButtonGroup.addButton(item->retweetButton, i);
 		replyButtonGroup.addButton(item->replyButton, i);
 		directMessageButtonGroup.addButton(item->directMessageButton, i);
+		favorButtonGroup.addButton(item->favorButton, i);
 		QFontMetrics fontMetrics(item->statusTextBrowser->font());
 		int statusItemWidth = width() - (ICON_SIZE + 4 * MARGIN + item->favorButton->width());
 		int statusItemHeight = fontMetrics.boundingRect(0, 0, statusItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, item->statusTextBrowser->toPlainText()).height() + MARGIN;
@@ -297,6 +300,14 @@ void TwitterWidget::replyButtonClicked(int id) {
 
 void TwitterWidget::directMessageButtonClicked(int id) {
 	emit directMessage(items[id]->status);
+}
+
+void TwitterWidget::favorButtonClicked(int id) {
+	if (items[id]->status.favorited) {
+		emit unfavor(items[id]->status);
+	} else {
+		emit favor(items[id]->status);
+	}
 }
 
 void TwitterWidget::enableMoreButton() {

@@ -72,11 +72,14 @@ public slots:
 	void addReplies(const QByteArray &data);
 	void addPublicStatuses(const QByteArray &data);
 	void addFavorites(const QByteArray &data);
+	void addPreviousFavorites(const QByteArray &data);
 	void addInboxMessages(const QByteArray &data);
 	void updateLastStatus(const QByteArray &data);
 	void updateLastStatus();
 	void sendStatus(const QString &status, int inReplyToStatusId);
-	void statusSent(const QByteArray &status);
+	void statusSent(const QByteArray &data);
+	void directMessageSent(const QByteArray &data);
+	void statusFavorChanged(const QByteArray &data);
 	void receivePublicStatuses(int count);
 	void receiveFriendsStatuses(int count);
 	void receiveReplies(int count);
@@ -92,6 +95,8 @@ public slots:
 	void removePreviousFavorites();
 	void removePreviousInboxMessages(int count);
 	void sendDirectMessage(const QString &username, const QString &message);
+	void favorStatus(const Status &status);
+	void unfavorStatus(const Status &status);
 	
 signals:
 	void friendsStatusesUpdated(const QVector<Status> &, Account *);

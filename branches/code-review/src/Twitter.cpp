@@ -40,7 +40,7 @@ Twitter::Twitter(Account *account) {
 	qDebug() << ("Twitter::Twitter()");
 
 	this->account = account;
-	http = new QHttp();
+	http = new QHttp(this);
 	connect(http, SIGNAL(requestStarted(int)), this, SLOT(requestStarted(int)));
 	connect(http, SIGNAL(requestFinished(int, bool)), this, SLOT(requestFinished(int, bool)));
 }
@@ -348,6 +348,64 @@ void Twitter::sendDirectMessage(const QString &username, const QString &message)
 	sendDirectMessageRequests[id] = tr("Sending direct message: %1").arg(url.host() + url.path());
 }
 
+void Twitter::favorStatus(uint statusId) {
+	qDebug() << ("Twitter::favorStatus()");
+	
+	setupProxy();
+	
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["favor"] + QString::number(statusId) + ".xml");
+
+	QHttpRequestHeader header;
+	header.setRequest("POST", url.path());
+	header.setValue("Host", url.host());
+	header.setContentType("application/x-www-form-urlencoded");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	QByteArray data;
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->request(header, data, &buffer);
+
+	favorStatusRequests[id] = tr("Favoring status: %1").arg(url.host() + url.path());
+}
+
+void Twitter::unfavorStatus(uint statusId) {
+	qDebug() << ("Twitter::unfavorStatus()");
+	
+	setupProxy();
+	
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["unfavor"] + QString::number(statusId) + ".xml");
+
+	QHttpRequestHeader header;
+	header.setRequest("POST", url.path());
+	header.setValue("Host", url.host());
+	header.setContentType("application/x-www-form-urlencoded");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	QByteArray data;
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->request(header, data, &buffer);
+
+	unfavorStatusRequests[id] = tr("Unfavoring status: %1").arg(url.host() + url.path());
+}
+
 void Twitter::abort() {
 	qDebug() << ("Twitter::abort()");
 
@@ -382,6 +440,10 @@ void Twitter::requestStarted(int id) {
 		qDebug() << ("Request started: " + receivePreviousInboxMessagesRequests[id]);
 	} else if (sendDirectMessageRequests.find(id) != sendDirectMessageRequests.end()) {
 		qDebug() << ("Request started: " + sendDirectMessageRequests[id]);
+	} else if (favorStatusRequests.find(id) != favorStatusRequests.end()) {
+		qDebug() << ("Request started: " + favorStatusRequests[id]);
+	} else if (unfavorStatusRequests.find(id) != unfavorStatusRequests.end()) {
+		qDebug() << ("Request started: " + unfavorStatusRequests[id]);
 	}
 }
 
@@ -468,6 +530,14 @@ void Twitter::requestFinished(int id, bool error) {
 			qDebug() << ("Request finished: " + sendDirectMessageRequests[id]);
 			buffer.close();
 			emit directMessageSent(buffer.data());
+		} else if (favorStatusRequests.find(id) != favorStatusRequests.end()) {
+			qDebug() << ("Request finished: " + favorStatusRequests[id]);
+			buffer.close();
+			emit statusFavored(buffer.data());
+		} else if (unfavorStatusRequests.find(id) != unfavorStatusRequests.end()) {
+			qDebug() << ("Request finished: " + unfavorStatusRequests[id]);
+			buffer.close();
+			emit statusUnfavored(buffer.data());
 		}
 	} else {
 		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error");

@@ -64,6 +64,7 @@ private:
 	QButtonGroup retweetButtonGroup;
 	QButtonGroup replyButtonGroup;
 	QButtonGroup directMessageButtonGroup;
+	QButtonGroup favorButtonGroup;
 
 public:
 	
@@ -90,6 +91,7 @@ public slots:
 	void retweetButtonClicked(int id);
 	void replyButtonClicked(int id);
 	void directMessageButtonClicked(int id);
+	void favorButtonClicked(int id);
 	void disableMoreButton();
 	void disableLessButton();
 	void enableMoreButton();
@@ -102,6 +104,8 @@ signals:
 	void retweet(const Status &status);
 	void reply(const Status &status);
 	void directMessage(const Status &status);
+	void favor(const Status &status);
+	void unfavor(const Status &status);
 };
 
 #endif

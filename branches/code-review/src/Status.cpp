@@ -33,13 +33,14 @@
 
 #include "Status.h"
 
-Status::Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, Account *account) {
+Status::Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account) {
 	this->id = id;
 	this->status = status;
 	this->username = username;
 	this->userpicFilename = userpicFilename;
 	this->time = time;
 	this->account = account;
+	this->favorited = favorited;
 }
 
 bool Status::operator<(const Status &x) const {
@@ -60,6 +61,7 @@ void Status::save(QSettings &messagesCache) {
 	messagesCache.setValue("username", username);
 	messagesCache.setValue("userpicFilename", userpicFilename);
 	messagesCache.setValue("time", time);
+	messagesCache.setValue("favorited", favorited);
 }
 
 Status Status::load(QSettings &messagesCache, Account *account) {
@@ -69,6 +71,7 @@ Status Status::load(QSettings &messagesCache, Account *account) {
 		messagesCache.value("username").toString(),
 		messagesCache.value("userpicFilename").toString(),
 		messagesCache.value("time").toDateTime(),
+		messagesCache.value("favorited").toBool(),
 		account
 	);
 }

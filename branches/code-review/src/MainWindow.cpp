@@ -35,6 +35,7 @@
 #include "MainWindow.h"
 #include "UserpicsDownloader.h"
 #include "Configuration.h"
+#include "TwitPicDialog.h"
 
 MainWindow* MainWindow::instance = 0;
 
@@ -67,6 +68,8 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	
 	directMessageDialog = new DirectMessageDialog(this);
 	connect(directMessageDialog , SIGNAL(accepted()), this, SLOT(sendDirectMessage()));
+
+	connect(twitPicButton, SIGNAL(clicked()), this, SLOT(postTwitPic()));
 
 	connect(refreshToolButton, SIGNAL(pressed()), this, SLOT(refresh()));
 	connect(optionsToolButton, SIGNAL(pressed()), this, SLOT(showOptionsDialog()));
@@ -629,6 +632,29 @@ void MainWindow::directMessage(const Status &status) {
 void MainWindow::sendDirectMessage() {
 	Configuration *config = Configuration::getInstance();
 	config->accounts[directMessageDialog->accountsComboBox->currentIndex()]->sendDirectMessage(directMessageDialog->usernameLineEdit->text(), directMessageDialog->messagePlainTextEdit->toPlainText());
+}
+
+void MainWindow::favor(const Status &status) {
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->favorStatus(status);
+}
+
+void MainWindow::unfavor(const Status &status) {
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->unfavorStatus(status);
+}
+
+void MainWindow::postTwitPic() {
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Pick an image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.jpeg *.bmp)"));
+	if (fileName.isEmpty()) {
+		return;
+	}
+	TwitPicDialog dialog(fileName, this);
+	Configuration *config = Configuration::getInstance();
+	dialog.setUser(config->currentAccount()->username, config->currentAccount()->password);
+	if (dialog.exec() == QDialog::Accepted) {
+		statusTextEdit->append(dialog.twitPickedUrlString());
+	}
 }
 
 #endif

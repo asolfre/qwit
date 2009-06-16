@@ -43,25 +43,27 @@ private:
 	static QwitTools *instance;
 	QwitTools();
 	static QwitTools* getInstance();
-	QIcon _getToolButtonIcon(const QString &iconFileName);
+	QIcon _getToolButtonIcon(const QString &iconFileName, bool active);
 	QString _formatDateTime(const QDateTime &time);
 	QDateTime _dateFromString(QString date);
 	QVector<Status> _parseStatuses(const QByteArray &data, Account *account);
 	QVector<Status> _parseInboxMessages(const QByteArray &data, Account *account);
 	Status _parseUser(const QByteArray &data, Account *account);
 	Status _parseStatus(const QByteArray &data, Account *account);
+	QString _parseError(const QByteArray &data);
 	void _makeStatusesUnique(QVector<Status> &v);
 	QString _prepareStatus(const QString &text, Account *account);
 	QVector<Status> _mergeStatuses(QVector<Status> &statuses, QVector<Status> &receivedStatuses);
 	
 public:
 	static QDateTime dateFromString(QString date);
-	static QIcon getToolButtonIcon(const QString &iconFileName);
+	static QIcon getToolButtonIcon(const QString &iconFileName, bool active = false);
 	static QString formatDateTime(const QDateTime &time);
 	static QVector<Status> parseStatuses(const QByteArray &data, Account *account);
 	static QVector<Status> parseInboxMessages(const QByteArray &data, Account *account);
 	static Status parseUser(const QByteArray &data, Account *account);
 	static Status parseStatus(const QByteArray &data, Account *account);
+	static QString parseError(const QByteArray &data);
 	static void makeStatusesUnique(QVector<Status> &statuses);
 	static QString prepareStatus(const QString &text, Account *account);
 	static QVector<Status> mergeStatuses(QVector<Status> &statuses, QVector<Status> &receivedStatuses);
