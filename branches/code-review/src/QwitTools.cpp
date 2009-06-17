@@ -38,6 +38,7 @@
 QwitTools* QwitTools::instance = 0;
 QRegExp QwitTools::urlRegExp("((ht|f)tp(s?)\\:\\/\\/|~/|/)?(\\w+:\\w+@)?(([-\\w]+\\.)+(com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))(:[\\d]{1,5})?(((/([-\\w~!$+|.=]|%[a-f\\d]{2})+)+|/)+|\\?|#)?((\\?([-\\w]|%[a-f\\d{2}])+=([-\\w~!$+|*:=]|%[a-f\\d]{2})*)(&([-\\w~!$+|.,*:]|%[a-f\\d{2}])+=([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?");
 QRegExp QwitTools::usernameRegExp("(^|\\W+)@(\\w+)($|\\W+)");
+QRegExp QwitTools::hashtagRegExp("(^|\\W+)#(\\w+)($|\\W+)");
 
 QwitTools::QwitTools() {
 	monthes["Jan"] = 1;
@@ -137,7 +138,7 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *accou
 			return statuses;
 		}
 		QDomNode node2 = node.firstChild();
-		QString message = "", timeStr = "", user = "", image = "";
+		QString message = "", timeStr = "", user = "", image = "", source = "";
 		uint id = 0;
 		int replyUserID = 0, replyStatusId = 0;
 		bool favorited = false;
@@ -154,6 +155,8 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *accou
 				replyUserID = node2.toElement().text().toInt();
 			} else if (node2.toElement().tagName() == "favorited") {
 				favorited = node2.toElement().text() == "true";
+			} else if (node2.toElement().tagName() == "source") {
+				source = node2.toElement().text();
 			} else if (node2.toElement().tagName() == "user") {
 				QDomNode node3 = node2.firstChild();
 				while (!node3.isNull()) {
@@ -192,7 +195,7 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *accou
 			}
 			imageFileName = Configuration::CacheDirectory + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
-			statuses.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account));
+			statuses.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source));
 		}
 		node = node.nextSibling();
 	}
@@ -217,7 +220,7 @@ QVector<Status> QwitTools::_parseInboxMessages(const QByteArray &data, Account *
 			return messages;
 		}
 		QDomNode node2 = node.firstChild();
-		QString message = "", timeStr = "", user = "", image = "";
+		QString message = "", timeStr = "", user = "", image = "", source = "";
 		uint id = 0;
 		while (!node2.isNull()) {
 			if (node2.toElement().tagName() == "created_at") {
@@ -264,7 +267,7 @@ QVector<Status> QwitTools::_parseInboxMessages(const QByteArray &data, Account *
 			}
 			imageFileName = Configuration::CacheDirectory + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
-			messages.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), false, account));
+			messages.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), false, account, source));
 		}
 		node = node.nextSibling();
 	}
@@ -287,7 +290,7 @@ Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
 	while (!node.isNull()) {
 		if (node.toElement().tagName() == "status") {
 			QDomNode node2 = node.firstChild();
-			QString message = "", timeStr = "", user = "", image = "";
+			QString message = "", timeStr = "", user = "", image = "", source = "";
 			uint id = 0;
 			int replyUserID = 0, replyStatusId = 0;
 			bool favorited = false;
@@ -308,8 +311,9 @@ Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
 					image = node2.toElement().text();
 				} else if (node2.toElement().tagName() == "favorited") {
 					favorited = node2.toElement().text() == "true";
+				} else if (node2.toElement().tagName() == "source") {
+					source = node2.toElement().text();
 				}
-				
 				node2 = node2.nextSibling();
 			}
 			if (id) {
@@ -337,7 +341,7 @@ Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
 				}
 				imageFileName = Configuration::CacheDirectory + imageFileName;
 				UserpicsDownloader::getInstance()->download(image, imageFileName);
-				status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account);
+				status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source);
 			}
 		} else {
 		}
@@ -363,7 +367,7 @@ Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
 	}
 	
 	QDomNode node = root.firstChild();
-	QString message = "", timeStr = "", user = "", image = "";
+	QString message = "", timeStr = "", user = "", image = "", source = "";
 	uint id = 0;
 	int replyUserID = 0, replyStatusId = 0;
 	bool favorited = false;
@@ -380,6 +384,8 @@ Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
 			replyUserID = node.toElement().text().toInt();
 		} else if (node.toElement().tagName() == "favorited") {
 			favorited = node.toElement().text() == "true";
+		} else if (node.toElement().tagName() == "source") {
+			source = node.toElement().text();
 		}
 		node = node.nextSibling();
 	}
@@ -408,7 +414,7 @@ Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
 		}
 		imageFileName = Configuration::CacheDirectory + imageFileName;
 		UserpicsDownloader::getInstance()->download(image, imageFileName);
-		status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account);
+		status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source);
 	}
 	return status;
 }
@@ -464,6 +470,23 @@ QString QwitTools::_prepareStatus(const QString &text, Account *account) {
 			t += s.mid(lastPos, pos - lastPos);
 			t += "<a href=\"" + account->serviceBaseUrl() + "/" + username + "\" style=\"font-weight:bold;text-decoration:none\">" + username + "</a>";
 			lastPos = pos + username.length();
+		}
+		t += s.mid(lastPos);
+		s = t;
+	}
+// Process hashtags
+	{
+		int pos = 0;
+		int lastPos = 0;
+		QString t = "";
+		while ((pos = hashtagRegExp.indexIn(s, lastPos)) != -1) {
+			QStringList list = hashtagRegExp.capturedTexts();
+			QStringList::iterator it = list.begin();
+			pos = hashtagRegExp.pos(2);
+			QString hashtag = hashtagRegExp.cap(2);
+			t += s.mid(lastPos, pos - lastPos);
+			t += "<a href=\"" + account->searchBaseUrl() + hashtag + "\" style=\"font-weight:bold;text-decoration:none\">" + hashtag + "</a>";
+			lastPos = pos + hashtag.length();
 		}
 		t += s.mid(lastPos);
 		s = t;

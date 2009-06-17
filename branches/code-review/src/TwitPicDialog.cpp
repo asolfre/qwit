@@ -31,6 +31,9 @@
 
 #include "Configuration.h"
 
+// Original (roop's) version worked with QNetworkAccessManager, but without proxy support
+// It's strange, but the request could not finish when proxy support was added, so I decided to move to QHttp
+
 TwitPicDialog::TwitPicDialog(const QString &fileName, QWidget *parent)
 		: QDialog(parent),
 		m_fileName(fileName),

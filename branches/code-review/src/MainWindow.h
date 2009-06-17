@@ -69,6 +69,9 @@ private:
 	QTimer *redrawTimer;
 	QTimer *updateTimer;
 	StatusTextEdit *statusTextEdit;
+	QLabel *greetingMessageLabel;
+	QLabel *leftCharactersNumberLabel;
+
 	
 	bool acceptClose;
 	

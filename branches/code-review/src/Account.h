@@ -43,6 +43,7 @@ class Account: public QObject {
 private:
 	QString _serviceBaseUrl;
 	QString _serviceApiUrl;
+	QString _searchBaseUrl;
 	
 public:
 	int id;
@@ -65,6 +66,7 @@ public:
 	void loadMessages(QSettings &messagesCache);
 	QString serviceApiUrl();
 	QString serviceBaseUrl();
+	QString searchBaseUrl();
 	void setRemainingRequests(int remainingRequests);
 
 public slots:

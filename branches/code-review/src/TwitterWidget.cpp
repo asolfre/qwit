@@ -96,9 +96,10 @@ void TwitterWidget::addItem(const Status &status) {
 
 	item->userpicLabel = new QLabel(this);
 	item->loadUserpic();
-	item->signLabel = new QLabel("<a href=\"http://twitter.com/" + status.username + "\" style=\"font-weight:bold;text-decoration:none\">" + status.username + "</a> - <a href=\"http://twitter.com/" + status.username + "/statuses/" + QString::number(status.id) + "\" style=\"font-size:70%;text-decoration:none\">" + QwitTools::formatDateTime(status.time) + "</a>", this);
+	item->signLabel = new QLabel(this);
 	item->signLabel->setAlignment(Qt::AlignRight);
 	item->signLabel->setOpenExternalLinks(true);
+	item->signLabel->setStyleSheet("a{text-decoration:none;}");
 
 	item->favorButton = new QToolButton(this);
 	item->favorButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png", status.favorited));
@@ -173,7 +174,7 @@ void TwitterWidget::updateItems() {
 		item->statusTextBrowser->resize(statusItemWidth, statusItemHeight);
 		item->userpicLabel->move(MARGIN, height + MARGIN);
 
-		item->signLabel->setText("<a href=\"http://twitter.com/" + item->status.username + "\" style=\"font-weight:bold;text-decoration:none;font-size:small\">" + item->status.username + "</a> - <a href=\"http://twitter.com/" + item->status.username + "/statuses/" + QString::number(item->status.id) + "\" style=\"font-size:small;text-decoration:none\">" + QwitTools::formatDateTime(item->status.time) + "</a> ");
+		item->signLabel->setText("<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"http://twitter.com/" + item->status.username + "\" style=\"font-weight:bold\">" + item->status.username + "</a> - <a href=\"http://twitter.com/" + item->status.username + "/statuses/" + QString::number(item->status.id) + "\">" + QwitTools::formatDateTime(item->status.time) + "</a> - from " + item->status.source + "</div>");
 		item->signLabel->adjustSize();
 		item->signLabel->move(width() - item->signLabel->width() - MARGIN - item->favorButton->width(), height + statusItemHeight + MARGIN);
 		

@@ -39,6 +39,7 @@ class QwitTools: public QObject {
 private:
 	static QRegExp urlRegExp;
 	static QRegExp usernameRegExp;
+	static QRegExp hashtagRegExp;
 	QMap<QString, int> monthes;
 	static QwitTools *instance;
 	QwitTools();

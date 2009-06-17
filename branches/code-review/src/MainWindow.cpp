@@ -52,6 +52,9 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	instance = this;
 
 	setupUi(this);
+	
+	greetingMessageLabel = new QLabel(this);
+	leftCharactersNumberLabel = new QLabel(this);
 
 	statusTextEdit = new StatusTextEdit(this);
 	statusTextEdit->setObjectName(QString::fromUtf8("statusTextEdit"));
@@ -186,24 +189,33 @@ void MainWindow::updateState() {
 
 	Configuration *config = Configuration::getInstance();
 
-	if (leftCharactersNumberLabel->isHidden() && greetingMessageLabel->isHidden()) {
-		if (config->showLeftCharactersNumber || config->showGreetingMessage) {
-			QHBoxLayout *layout = new QHBoxLayout();
-			layout->addWidget(greetingMessageLabel);
-			layout->addWidget(leftCharactersNumberLabel);
-			verticalLayout->insertLayout(0, layout);
-		}
-	} else {
-		if (!config->showLeftCharactersNumber && !config->showGreetingMessage) {
+	if ((greetingMessageLabel->isVisible() != config->showGreetingMessage) || (leftCharactersNumberLabel->isVisible() != config->showLeftCharactersNumber)) {
+		if (greetingMessageLabel->isVisible()) {
 			QLayout *layout = (QLayout*)verticalLayout->itemAt(0);
 			verticalLayout->removeItem(verticalLayout->itemAt(0));
 			delete layout;
+		} else {
+			toolbuttonsVerticalLayout->removeWidget(leftCharactersNumberLabel);
 		}
+		if (config->showGreetingMessage) {
+			QHBoxLayout *layout = new QHBoxLayout(this);
+			layout->addWidget(greetingMessageLabel);
+			layout->addStretch();
+			if (config->showLeftCharactersNumber) {
+				layout->addWidget(leftCharactersNumberLabel);
+			}
+			verticalLayout->insertLayout(0, layout);
+		} else {
+			if (config->showLeftCharactersNumber) {
+				toolbuttonsVerticalLayout->insertWidget(0, leftCharactersNumberLabel);
+			}
+		}
+		greetingMessageLabel->setVisible(config->showGreetingMessage);
+		leftCharactersNumberLabel->setVisible(config->showLeftCharactersNumber);
 	}
 
 	greetingMessageLabel->setText(config->greetingMessage);
-	greetingMessageLabel->setVisible(config->showGreetingMessage);
-	leftCharactersNumberLabel->setVisible(config->showLeftCharactersNumber);
+	leftCharactersNumberLabel->setText(QString::number(StatusTextEdit::MaxStatusCharacters - statusTextEdit->toPlainText().length()));
 	lastStatusLabel->setVisible(config->showLastStatus);
 
 	if (config->placeTabsVertically) {

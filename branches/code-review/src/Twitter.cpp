@@ -156,7 +156,7 @@ void Twitter::receiveLastStatus() {
 	
 	setupProxy();
 
-	QUrl url(account->serviceApiUrl() + Services::options[account->type]["last"] + ".xml");
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["last"] + account->username + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -168,7 +168,7 @@ void Twitter::receiveLastStatus() {
 
 	buffer.open(QIODevice::WriteOnly);
 
-	int id = http->get(url.path() + "?screen_name=" + account->username, &buffer);
+	int id = http->get(url.path(), &buffer);
 	receiveLastStatusRequests[id] = tr("Updating last status: %1").arg(url.host() + url.path());
 }
 

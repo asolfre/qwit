@@ -39,6 +39,7 @@ void Services::initialize() {
 	QMap<QString, QString> twitterOptions;
 	twitterOptions["apiurl"] = "http://twitter.com";
 	twitterOptions["baseurl"] = "http://twitter.com";
+	twitterOptions["searchbaseurl"] = "http://search.twitter.com/search?q=";
 	twitterOptions["friends"] = "/statuses/friends_timeline";
 	twitterOptions["public"] = "/statuses/public_timeline";
 	twitterOptions["replies"] = "/statuses/mentions";
@@ -46,7 +47,7 @@ void Services::initialize() {
 	twitterOptions["favor"] = "/favorites/create/";
 	twitterOptions["unfavor"] = "/favorites/destroy/";
 	twitterOptions["user"] = "/statuses/user_timeline/";
-	twitterOptions["last"] = "/users/show";
+	twitterOptions["last"] = "/users/show/";
 	twitterOptions["update"] = "/statuses/update";
 	twitterOptions["inbox"] = "/direct_messages";
 	twitterOptions["outbox"] = "/direct_messages/sent";
@@ -56,6 +57,7 @@ void Services::initialize() {
 	QMap<QString, QString> identicaOptions;
 	identicaOptions["apiurl"] = "http://identi.ca/api";
 	identicaOptions["baseurl"] = "http://identi.ca";
+	identicaOptions["searchbaseurl"] = "http://identi.ca/search/notice?q=";
 	identicaOptions["friends"] = "/statuses/friends_timeline";
 	identicaOptions["public"] = "/statuses/public_timeline";
 	identicaOptions["replies"] = "/statuses/mentions";
@@ -63,7 +65,7 @@ void Services::initialize() {
 	identicaOptions["favor"] = "/favorites/create/";
 	identicaOptions["unfavor"] = "/favorites/destroy/";
 	identicaOptions["user"] = "/statuses/user_timeline/";
-	identicaOptions["last"] = "/users/show";
+	identicaOptions["last"] = "/users/show/";
 	identicaOptions["update"] = "/statuses/update";
 	identicaOptions["inbox"] = "/direct_messages";
 	identicaOptions["outbox"] = "/direct_messages/sent";

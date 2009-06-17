@@ -334,6 +334,10 @@ QString Account::serviceBaseUrl() {
 	return _serviceBaseUrl == "" ? Services::options[type]["baseurl"] : _serviceBaseUrl;
 }
 
+QString Account::searchBaseUrl() {
+	return _searchBaseUrl == "" ? Services::options[type]["searchbaseurl"] : _searchBaseUrl;
+}
+
 void Account::setRemainingRequests(int remainingRequests) {
 	this->remainingRequests = remainingRequests;
 	emit remainingRequestsUpdated(remainingRequests, this);

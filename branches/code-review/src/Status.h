@@ -42,8 +42,9 @@ public:
 	QDateTime time;
 	Account *account;
 	bool favorited;
+	QString source;
 	Status() {}
-	Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account);
+	Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source);
 	bool operator<(const Status &x) const;
 	bool operator==(const Status &x) const;
 	bool operator!=(const Status &x) const;
