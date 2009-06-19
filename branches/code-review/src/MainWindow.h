@@ -111,6 +111,7 @@ public slots:
 	void directMessage(const Status &status);
 	void favor(const Status &status);
 	void unfavor(const Status &status);
+	void destroy(const Status &status);
 	void sendDirectMessage();
 	void postTwitPic();
 	

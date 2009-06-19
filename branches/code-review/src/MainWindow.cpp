@@ -634,7 +634,7 @@ void MainWindow::directMessage(const Status &status) {
 	for (int i = 0; i < config->accounts.size(); ++i) {
 		directMessageDialog->accountsComboBox->addItem(QIcon(":/images/" + config->accounts[i]->type + ".png"), config->accounts[i]->username);
 	}
-	directMessageDialog->accountsComboBox->setCurrentIndex(config->currentAccountId);
+	directMessageDialog->accountsComboBox->setCurrentIndex(status.account->id);
 	directMessageDialog->usernameLineEdit->setText(status.username);
 	directMessageDialog->messagePlainTextEdit->clear();
 	directMessageDialog->messagePlainTextEdit->setFocus();
@@ -647,13 +647,15 @@ void MainWindow::sendDirectMessage() {
 }
 
 void MainWindow::favor(const Status &status) {
-	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->favorStatus(status);
+	status.account->favorStatus(status);
 }
 
 void MainWindow::unfavor(const Status &status) {
-	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->unfavorStatus(status);
+	status.account->unfavorStatus(status);
+}
+
+void MainWindow::destroy(const Status &status) {
+	status.account->destroyStatus(status);
 }
 
 void MainWindow::postTwitPic() {

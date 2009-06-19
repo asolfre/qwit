@@ -43,6 +43,7 @@ public:
 	QToolButton *retweetButton;
 	QToolButton *unfollowButton;
 	QToolButton *directMessageButton;
+	QToolButton *destroyButton;
 	
 	int top;
 	int height;
@@ -50,6 +51,7 @@ public:
 	QColor color;
 
 	void loadUserpic();
+	TwitterWidgetItem();
 	~TwitterWidgetItem();
 };
 
@@ -65,6 +67,9 @@ private:
 	QButtonGroup replyButtonGroup;
 	QButtonGroup directMessageButtonGroup;
 	QButtonGroup favorButtonGroup;
+	QButtonGroup destroyButtonGroup;
+	int instanceId;
+	static int instances;
 
 public:
 	
@@ -92,6 +97,7 @@ public slots:
 	void replyButtonClicked(int id);
 	void directMessageButtonClicked(int id);
 	void favorButtonClicked(int id);
+	void destroyButtonClicked(int id);
 	void disableMoreButton();
 	void disableLessButton();
 	void enableMoreButton();
@@ -106,6 +112,7 @@ signals:
 	void directMessage(const Status &status);
 	void favor(const Status &status);
 	void unfavor(const Status &status);
+	void destroy(const Status &status);
 };
 
 #endif

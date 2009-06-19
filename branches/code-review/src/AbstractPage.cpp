@@ -46,6 +46,7 @@ AbstractPage::AbstractPage(QWidget *parent): QWidget(parent) {
 	connect(twitterWidget, SIGNAL(directMessage(const Status &)), MainWindow::getInstance(), SLOT(directMessage(const Status &)));
 	connect(twitterWidget, SIGNAL(favor(const Status &)), MainWindow::getInstance(), SLOT(favor(const Status &)));
 	connect(twitterWidget, SIGNAL(unfavor(const Status &)), MainWindow::getInstance(), SLOT(unfavor(const Status &)));
+	connect(twitterWidget, SIGNAL(destroy(const Status &)), MainWindow::getInstance(), SLOT(destroy(const Status &)));
 }
 
 void AbstractPage::addItem(const Status &status) {

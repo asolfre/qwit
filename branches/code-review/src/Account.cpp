@@ -50,6 +50,7 @@ Account::Account() {
 	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(statusFavored(const QByteArray&)), this, SLOT(statusFavorChanged(const QByteArray&)));
 	connect(twitter, SIGNAL(statusUnfavored(const QByteArray&)), this, SLOT(statusFavorChanged(const QByteArray&)));
+	connect(twitter, SIGNAL(statusDestroyed(const QByteArray&)), this, SLOT(statusDestroyed(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsStatusesReceived(const QByteArray&)), this, SLOT(addFriendsStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(previousRepliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
 	connect(twitter, SIGNAL(previousPublicStatusesReceived(const QByteArray&)), this, SLOT(addPublicStatuses(const QByteArray&)));
@@ -79,6 +80,7 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(statusFavored(const QByteArray&)), this, SLOT(statusFavorChanged(const QByteArray&)));
 	connect(twitter, SIGNAL(statusUnfavored(const QByteArray&)), this, SLOT(statusFavorChanged(const QByteArray&)));
+	connect(twitter, SIGNAL(statusDestroyed(const QByteArray&)), this, SLOT(statusDestroyed(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsStatusesReceived(const QByteArray&)), this, SLOT(addFriendsStatuses(const QByteArray&)));
 	connect(twitter, SIGNAL(previousRepliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
 	connect(twitter, SIGNAL(previousPublicStatusesReceived(const QByteArray&)), this, SLOT(addPublicStatuses(const QByteArray&)));
@@ -99,11 +101,9 @@ void Account::addFriendsStatuses(const QByteArray &data) {
 		int size = max(config->messagesPerPage, friendsStatuses.size());
 		uint maxId = (friendsStatuses.size() ? friendsStatuses[0].id : 0);
 		statuses = QwitTools::mergeStatuses(friendsStatuses, statuses);
-		cerr << friendsStatuses.size() << endl;
 		if ((friendsStatuses[0].id > maxId) && (friendsStatuses.size() > size)) {
 			friendsStatuses.resize(size);
 		}
-		cerr << friendsStatuses.size() << endl;
 		emit friendsStatusesUpdated(friendsStatuses, this);
 		emit newStatusesReceived(statuses, this);
 	}
@@ -338,6 +338,10 @@ QString Account::searchBaseUrl() {
 	return _searchBaseUrl == "" ? Services::options[type]["searchbaseurl"] : _searchBaseUrl;
 }
 
+QString Account::singleStatusUrl() {
+	return _singleStatusUrl == "" ? Services::options[type]["singlestatusurl"] : _singleStatusUrl;
+}
+
 void Account::setRemainingRequests(int remainingRequests) {
 	this->remainingRequests = remainingRequests;
 	emit remainingRequestsUpdated(remainingRequests, this);
@@ -366,14 +370,14 @@ void Account::addFavorites(const QByteArray &data) {
 	QVector<Status> statuses = QwitTools::parseStatuses(data, this);
 	Configuration *config = Configuration::getInstance();
 	int size = max(config->messagesPerPage, favorites.size());
-	favorites.clear();
 	uint maxId = (favorites.size() ? favorites[0].id : 0);
-	statuses = QwitTools::mergeStatuses(favorites, statuses);
+	QVector<Status> newStatuses = QwitTools::mergeStatuses(favorites, statuses);
+	favorites = statuses;
 	if ((favorites.size() > size) && (favorites[0].id > maxId)) {
 		favorites.resize(size);
 	}
 	emit favoritesUpdated(favorites, this);
-	emit newStatusesReceived(statuses, this);
+	emit newStatusesReceived(newStatuses, this);
 }
 
 void Account::addPreviousFavorites(const QByteArray &data) {
@@ -403,15 +407,20 @@ void Account::favorStatus(const Status &status) {
 }
 
 void Account::unfavorStatus(const Status &status) {
-	qDebug() << ("Account::favorStatus()");
+	qDebug() << ("Account::unfavorStatus()");
 	twitter->unfavorStatus(status.id);
+}
+
+void Account::destroyStatus(const Status &status) {
+	qDebug() << ("Account::destroyStatus()");
+	twitter->destroyStatus(status.id);
 }
 
 void Account::directMessageSent(const QByteArray &data) {
 }
 
 void Account::statusFavorChanged(const QByteArray &data) {
-	qDebug() << ("Account::statusFavored()");
+	qDebug() << ("Account::statusFavorChanged()");
 	QString errorRequest = QwitTools::parseError(data);
 	uint statusId = 0;
 	bool favorited = false;
@@ -473,6 +482,43 @@ void Account::statusFavorChanged(const QByteArray &data) {
 		favorites.erase(favorites.begin() + index);
 	} else if (favorited) {
 		favorites.push_front(status);
+	}
+	emit friendsStatusesUpdated(friendsStatuses, this);
+	emit repliesUpdated(replies, this);
+	emit publicStatusesUpdated(publicStatuses, this);
+	emit favoritesUpdated(favorites, this);
+}
+
+void Account::statusDestroyed(const QByteArray &data) {
+	qDebug() << ("Account::statusDestroyed()");
+	QString errorRequest = QwitTools::parseError(data);
+	uint statusId = 0;
+	if (errorRequest == "") {
+		Status status = QwitTools::parseStatus(data, this);
+		statusId = status.id;
+	} else {
+		return;
+	}
+	for (int i = 0; i < friendsStatuses.size(); ++i) {
+		if (friendsStatuses[i].id == statusId) {
+			friendsStatuses.erase(friendsStatuses.begin() + i);
+		}
+	}
+	for (int i = 0; i < replies.size(); ++i) {
+		if (replies[i].id == statusId) {
+			replies.erase(replies.begin() + i);
+		}
+	}
+	for (int i = 0; i < publicStatuses.size(); ++i) {
+		if (publicStatuses[i].id == statusId) {
+			publicStatuses.erase(publicStatuses.begin() + i);
+		}
+	}
+	int index = -1;
+	for (int i = 0; i < favorites.size(); ++i) {
+		if (favorites[i].id == statusId) {
+			favorites.erase(favorites.begin() + i);
+		}
 	}
 	emit friendsStatusesUpdated(friendsStatuses, this);
 	emit repliesUpdated(replies, this);

@@ -33,7 +33,7 @@
 
 #include "Status.h"
 
-Status::Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source) {
+Status::Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, uint inReplyToStatusId, const QString &inReplyToUsername) {
 	this->id = id;
 	this->status = status;
 	this->username = username;
@@ -42,6 +42,8 @@ Status::Status(uint id, const QString &status, const QString &username, const QS
 	this->account = account;
 	this->favorited = favorited;
 	this->source = source;
+	this->inReplyToStatusId = inReplyToStatusId;
+	this->inReplyToUsername = inReplyToUsername;
 }
 
 bool Status::operator<(const Status &x) const {
@@ -64,6 +66,8 @@ void Status::save(QSettings &messagesCache) {
 	messagesCache.setValue("time", time);
 	messagesCache.setValue("favorited", favorited);
 	messagesCache.setValue("source", source);
+	messagesCache.setValue("inReplyToStatusId", inReplyToStatusId);
+	messagesCache.setValue("inReplyToUsername", inReplyToUsername);
 }
 
 Status Status::load(QSettings &messagesCache, Account *account) {
@@ -75,7 +79,9 @@ Status Status::load(QSettings &messagesCache, Account *account) {
 		messagesCache.value("time").toDateTime(),
 		messagesCache.value("favorited").toBool(),
 		account,
-		messagesCache.value("source").toString()
+		messagesCache.value("source").toString(),
+		messagesCache.value("inReplyToStatusId").toUInt(),
+		messagesCache.value("inReplyToUsername").toString()
 	);
 }
 

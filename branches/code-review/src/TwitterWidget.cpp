@@ -36,6 +36,8 @@
 #include "QwitTools.h"
 #include "Configuration.h"
 
+int TwitterWidget::instances = 0;
+
 void TwitterWidgetItem::loadUserpic() {
 	QPixmap pixmap(status.userpicFilename);
 	if (!pixmap.isNull()) {
@@ -44,19 +46,37 @@ void TwitterWidgetItem::loadUserpic() {
 	userpicLabel->resize(ICON_SIZE, ICON_SIZE);
 }
 
+TwitterWidgetItem::TwitterWidgetItem() {
+	statusTextBrowser = 0;
+	userpicLabel = 0;
+	signLabel = 0;
+	replyButton = 0;
+	favorButton = 0;
+	destroyButton = 0;
+	retweetButton = 0;
+	unfollowButton = 0;
+	directMessageButton = 0;
+}
+
 TwitterWidgetItem::~TwitterWidgetItem() {
 	delete statusTextBrowser;
 	delete userpicLabel;
 	delete signLabel;
 	delete replyButton;
 	delete favorButton;
-	delete retweetButton;
 	delete unfollowButton;
 	delete directMessageButton;
+	if (retweetButton) {
+		delete retweetButton;
+	}
+	if (destroyButton) {
+		delete destroyButton;
+	}
 }
 
 TwitterWidget::TwitterWidget(QWidget *parent): QWidget(parent) {
 	qDebug() << ("TwitterWidget::TwitterWidget()");
+	instanceId = instances++;
 	moreToolButton = 0;
 	lessToolButton = 0;
 	addMoreButton();
@@ -64,6 +84,7 @@ TwitterWidget::TwitterWidget(QWidget *parent): QWidget(parent) {
 	connect(&replyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(replyButtonClicked(int)));
 	connect(&directMessageButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(directMessageButtonClicked(int)));
 	connect(&favorButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(favorButtonClicked(int)));
+	connect(&destroyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(destroyButtonClicked(int)));
 }
 
 void TwitterWidget::clear() {
@@ -115,12 +136,21 @@ void TwitterWidget::addItem(const Status &status) {
 	item->replyButton->setAutoRaise(true);
 	item->replyButton->show();
 
-	item->retweetButton = new QToolButton(this);
-	item->retweetButton->setIcon(QwitTools::getToolButtonIcon(":/images/retweet.png"));
-	item->retweetButton->setText("");
-	item->retweetButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-	item->retweetButton->setAutoRaise(true);
-	item->retweetButton->show();
+	if (status.username == status.account->username) {
+		item->destroyButton = new QToolButton(this);
+		item->destroyButton->setIcon(QwitTools::getToolButtonIcon(":/images/destroy.png"));
+		item->destroyButton->setText("");
+		item->destroyButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		item->destroyButton->setAutoRaise(true);
+		item->destroyButton->show();
+	} else {
+		item->retweetButton = new QToolButton(this);
+		item->retweetButton->setIcon(QwitTools::getToolButtonIcon(":/images/retweet.png"));
+		item->retweetButton->setText("");
+		item->retweetButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		item->retweetButton->setAutoRaise(true);
+		item->retweetButton->show();
+	}
 	
 	item->unfollowButton = new QToolButton(this);
 	item->unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/unfollow.png"));
@@ -154,14 +184,19 @@ void TwitterWidget::updateItems() {
 	replyButtonGroup.buttons().clear();
 	directMessageButtonGroup.buttons().clear();
 	favorButtonGroup.buttons().clear();
-	
+	destroyButtonGroup.buttons().clear();
 	int height = 0;
 	for (int i = 0; i < items.size(); ++i) {
 		TwitterWidgetItem *item = items[i];
-		retweetButtonGroup.addButton(item->retweetButton, i);
 		replyButtonGroup.addButton(item->replyButton, i);
 		directMessageButtonGroup.addButton(item->directMessageButton, i);
 		favorButtonGroup.addButton(item->favorButton, i);
+		if (item->retweetButton) {
+			retweetButtonGroup.addButton(item->retweetButton, i);
+		}
+		if (item->destroyButton) {
+			destroyButtonGroup.addButton(item->destroyButton, i);
+		}
 		QFontMetrics fontMetrics(item->statusTextBrowser->font());
 		int statusItemWidth = width() - (ICON_SIZE + 4 * MARGIN + item->favorButton->width());
 		int statusItemHeight = fontMetrics.boundingRect(0, 0, statusItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, item->statusTextBrowser->toPlainText()).height() + MARGIN;
@@ -173,21 +208,45 @@ void TwitterWidget::updateItems() {
 		statusItemHeight += item->statusTextBrowser->verticalScrollBar()->maximum() - item->statusTextBrowser->verticalScrollBar()->minimum();
 		item->statusTextBrowser->resize(statusItemWidth, statusItemHeight);
 		item->userpicLabel->move(MARGIN, height + MARGIN);
-
-		item->signLabel->setText("<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"http://twitter.com/" + item->status.username + "\" style=\"font-weight:bold\">" + item->status.username + "</a> - <a href=\"http://twitter.com/" + item->status.username + "/statuses/" + QString::number(item->status.id) + "\">" + QwitTools::formatDateTime(item->status.time) + "</a> - from " + item->status.source + "</div>");
-		item->signLabel->adjustSize();
-		item->signLabel->move(width() - item->signLabel->width() - MARGIN - item->favorButton->width(), height + statusItemHeight + MARGIN);
 		
 		item->favorButton->move(width() - MARGIN - item->favorButton->width(), height);
 		item->favorButton->show();
 		item->replyButton->move(width() - MARGIN - item->replyButton->width(), height + item->favorButton->height());
 		item->replyButton->show();
-		item->retweetButton->move(width() - MARGIN - item->retweetButton->width(), height + item->favorButton->height() + item->retweetButton->height());
-		item->retweetButton->show();
+		if (item->retweetButton) {
+			item->retweetButton->move(width() - MARGIN - item->retweetButton->width(), height + item->favorButton->height() + item->replyButton->height());
+			item->retweetButton->show();
+		}
+		if (item->destroyButton) {
+			item->destroyButton->move(width() - MARGIN - item->destroyButton->width(), height + item->favorButton->height() + item->replyButton->height());
+			item->destroyButton->show();
+		}
 		item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
 		item->directMessageButton->show();
 		item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
 		item->unfollowButton->show();
+		
+		QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" + item->status.account->serviceBaseUrl() + "/" + item->status.username + "\" style=\"font-weight:bold\">" + item->status.username + "</a> - <a href=\"" + item->status.account->serviceBaseUrl() + "/" + item->status.username + "/statuses/" + QString::number(item->status.id) + "\">" + QwitTools::formatDateTime(item->status.time) + "</a> - from " + item->status.source;
+		if (item->status.inReplyToStatusId) {
+			QString inReplyToStatusUrl = item->status.account->singleStatusUrl().replace("%username", item->status.inReplyToUsername).replace("%statusid", QString::number(item->status.inReplyToStatusId));
+			sign += " - <a href=\"" + inReplyToStatusUrl + "\">in reply to " + item->status.inReplyToUsername + "</a>";
+		}
+		sign += "</div>";
+		item->signLabel->setText(sign);
+		item->signLabel->adjustSize();
+		int signY = 0;
+		if (item->retweetButton) {
+			signY = item->retweetButton->pos().y() + item->retweetButton->height() - item->signLabel->height();
+		} else {
+			signY = item->destroyButton->pos().y() + item->destroyButton->height() - item->signLabel->height();
+		}
+		signY = max(signY, item->statusTextBrowser->pos().y() + item->statusTextBrowser->height() + MARGIN);
+		int signX = width() - item->signLabel->width() - MARGIN - item->favorButton->width();
+		if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
+			signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
+		}
+		item->signLabel->move(signX, signY);
+//		item->signLabel->move(width() - item->signLabel->width() - MARGIN - item->favorButton->width(), max(item->retweetButton->pos().y() + item->retweetButton->height(), item->userpicLabel->pos().y() + item->userpicLabel->height()) + MARGIN);
 		
 		if (i & 1) {
 			item->color = QColor(230, 230, 230);
@@ -221,6 +280,7 @@ void TwitterWidget::updateItems() {
 		height += moreToolButton->height() + 2 * MARGIN;
 	}
 	resize(width(), height);
+	qDebug() << ("TwitterWidget::updateItems() finished");
 }
 
 void TwitterWidget::resizeEvent(QResizeEvent *event) {
@@ -293,6 +353,12 @@ void TwitterWidget::addLessButton() {
 
 void TwitterWidget::retweetButtonClicked(int id) {
 	emit retweet(items[id]->status);
+}
+
+void TwitterWidget::destroyButtonClicked(int id) {
+	if (QMessageBox::question(this, tr("Delete message"), tr("Are you sure to delete this message?"), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) == QMessageBox::Ok) {
+		emit destroy(items[id]->status);
+	}
 }
 
 void TwitterWidget::replyButtonClicked(int id) {

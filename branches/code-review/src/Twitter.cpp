@@ -406,6 +406,35 @@ void Twitter::unfavorStatus(uint statusId) {
 	unfavorStatusRequests[id] = tr("Unfavoring status: %1").arg(url.host() + url.path());
 }
 
+void Twitter::destroyStatus(uint statusId) {
+	qDebug() << ("Twitter::destroyStatus()");
+	
+	setupProxy();
+	
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["destroy"] + QString::number(statusId) + ".xml");
+
+	QHttpRequestHeader header;
+	header.setRequest("POST", url.path());
+	header.setValue("Host", url.host());
+	header.setContentType("application/x-www-form-urlencoded");
+
+	if(url.toString().indexOf("https") == 0) {
+	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+	http->setUser(account->username, account->password);
+
+	QByteArray data;
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->request(header, data, &buffer);
+
+	destroyStatusRequests[id] = tr("Destroying status: %1").arg(url.host() + url.path());
+}
+
 void Twitter::abort() {
 	qDebug() << ("Twitter::abort()");
 
@@ -444,13 +473,14 @@ void Twitter::requestStarted(int id) {
 		qDebug() << ("Request started: " + favorStatusRequests[id]);
 	} else if (unfavorStatusRequests.find(id) != unfavorStatusRequests.end()) {
 		qDebug() << ("Request started: " + unfavorStatusRequests[id]);
+	} else if (destroyStatusRequests.find(id) != destroyStatusRequests.end()) {
+		qDebug() << ("Request started: " + destroyStatusRequests[id]);
 	}
 }
 
 void Twitter::requestFinished(int id, bool error) {
-	if (!error) {
+	if (!error && http->lastResponse().isValid() && (http->lastResponse().statusCode() == 200)) {
 		qDebug() << ("Twitter::requestFinished() " + QString::number(id));
-
 		if (receiveFriendsStatusesRequests.find(id) != receiveFriendsStatusesRequests.end()) {
 			qDebug() << ("Request finished: " + receiveFriendsStatusesRequests[id]);
 			buffer.close();
@@ -538,9 +568,15 @@ void Twitter::requestFinished(int id, bool error) {
 			qDebug() << ("Request finished: " + unfavorStatusRequests[id]);
 			buffer.close();
 			emit statusUnfavored(buffer.data());
+		} else if (destroyStatusRequests.find(id) != destroyStatusRequests.end()) {
+			qDebug() << ("Request finished: " + destroyStatusRequests[id]);
+			buffer.close();
+			emit statusDestroyed(buffer.data());
 		}
-	} else {
+	} else if (error) {
 		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error");
+	} else if (http->lastResponse().isValid()) {
+		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->lastResponse().statusCode()) + " " + http->lastResponse().reasonPhrase());
 	}
 }
 

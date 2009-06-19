@@ -43,8 +43,10 @@ public:
 	Account *account;
 	bool favorited;
 	QString source;
+	uint inReplyToStatusId;
+	QString inReplyToUsername;
 	Status() {}
-	Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source);
+	Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, uint inReplyToStatusId, const QString &inReplyToUsername);
 	bool operator<(const Status &x) const;
 	bool operator==(const Status &x) const;
 	bool operator!=(const Status &x) const;

@@ -140,7 +140,8 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *accou
 		QDomNode node2 = node.firstChild();
 		QString message = "", timeStr = "", user = "", image = "", source = "";
 		uint id = 0;
-		int replyUserID = 0, replyStatusId = 0;
+		uint inReplyToStatusId = 0;
+		QString inReplyToUsername = "";
 		bool favorited = false;
 		while (!node2.isNull()) {
 			if (node2.toElement().tagName() == "created_at") {
@@ -150,9 +151,9 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *accou
 			} else if (node2.toElement().tagName() == "id") {
 				id = node2.toElement().text().toUInt();
 			} else if (node2.toElement().tagName() == "in_reply_to_status_id") {
-				replyStatusId = node2.toElement().text().toInt();
-			} else if (node2.toElement().tagName() == "in_reply_to_user_id") {
-				replyUserID = node2.toElement().text().toInt();
+				inReplyToStatusId = node2.toElement().text().toUInt();
+			} else if (node2.toElement().tagName() == "in_reply_to_screen_name") {
+				inReplyToUsername = node2.toElement().text();
 			} else if (node2.toElement().tagName() == "favorited") {
 				favorited = node2.toElement().text() == "true";
 			} else if (node2.toElement().tagName() == "source") {
@@ -195,7 +196,7 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *accou
 			}
 			imageFileName = Configuration::CacheDirectory + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
-			statuses.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source));
+			statuses.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToStatusId, inReplyToUsername));
 		}
 		node = node.nextSibling();
 	}
@@ -267,7 +268,7 @@ QVector<Status> QwitTools::_parseInboxMessages(const QByteArray &data, Account *
 			}
 			imageFileName = Configuration::CacheDirectory + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
-			messages.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), false, account, source));
+			messages.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), false, account, source, 0, ""));
 		}
 		node = node.nextSibling();
 	}
@@ -292,7 +293,8 @@ Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
 			QDomNode node2 = node.firstChild();
 			QString message = "", timeStr = "", user = "", image = "", source = "";
 			uint id = 0;
-			int replyUserID = 0, replyStatusId = 0;
+			int inReplyToStatusId = 0;
+			QString inReplyToUsername = "";
 			bool favorited = false;
 			while (!node2.isNull()) {
 				if (node2.toElement().tagName() == "created_at") {
@@ -302,9 +304,9 @@ Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
 				} else if (node2.toElement().tagName() == "id") {
 					id = node2.toElement().text().toUInt();
 				} else if (node2.toElement().tagName() == "in_reply_to_status_id") {
-					replyStatusId = node2.toElement().text().toInt();
-				} else if (node2.toElement().tagName() == "in_reply_to_user_id") {
-					replyUserID = node2.toElement().text().toInt();
+					inReplyToStatusId = node2.toElement().text().toUInt();
+				} else if (node2.toElement().tagName() == "in_reply_to_screen_name") {
+					inReplyToUsername = node2.toElement().text();
 				} else if (node2.toElement().tagName() == "screen_name") {
 					user = node2.toElement().text();
 				} else if (node2.toElement().tagName() == "profile_image_url") {
@@ -341,7 +343,7 @@ Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
 				}
 				imageFileName = Configuration::CacheDirectory + imageFileName;
 				UserpicsDownloader::getInstance()->download(image, imageFileName);
-				status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source);
+				status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToStatusId, inReplyToUsername);
 			}
 		} else {
 		}
@@ -369,7 +371,8 @@ Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
 	QDomNode node = root.firstChild();
 	QString message = "", timeStr = "", user = "", image = "", source = "";
 	uint id = 0;
-	int replyUserID = 0, replyStatusId = 0;
+	int inReplyToStatusId = 0;
+	QString inReplyToUsername = "";
 	bool favorited = false;
 	while (!node.isNull()) {
 		if (node.toElement().tagName() == "created_at") {
@@ -379,9 +382,9 @@ Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
 		} else if (node.toElement().tagName() == "id") {
 			id = node.toElement().text().toUInt();
 		} else if (node.toElement().tagName() == "in_reply_to_status_id") {
-			replyStatusId = node.toElement().text().toInt();
-		} else if (node.toElement().tagName() == "in_reply_to_user_id") {
-			replyUserID = node.toElement().text().toInt();
+			inReplyToStatusId = node.toElement().text().toUInt();
+		} else if (node.toElement().tagName() == "in_reply_to_screen_name") {
+			inReplyToUsername = node.toElement().text();
 		} else if (node.toElement().tagName() == "favorited") {
 			favorited = node.toElement().text() == "true";
 		} else if (node.toElement().tagName() == "source") {
@@ -414,7 +417,7 @@ Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
 		}
 		imageFileName = Configuration::CacheDirectory + imageFileName;
 		UserpicsDownloader::getInstance()->download(image, imageFileName);
-		status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source);
+		status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToStatusId, inReplyToUsername);
 	}
 	return status;
 }
@@ -517,6 +520,8 @@ void handleMessage(QtMsgType type, const char *msg) {
 
 QVector<Status> QwitTools::_mergeStatuses(QVector<Status> &statuses, QVector<Status> &receivedStatuses) {
 	QVector<Status> newStatuses;
+	cerr << statuses.size() << endl;
+	cerr << receivedStatuses.size() << endl;
 	for (int i = 0; i < receivedStatuses.size(); ++i) {
 		QVector<Status>::iterator j = qBinaryFind(statuses.begin(), statuses.end(), receivedStatuses[i]);
 		if (j == statuses.end()) {
@@ -530,6 +535,8 @@ QVector<Status> QwitTools::_mergeStatuses(QVector<Status> &statuses, QVector<Sta
 	}
 	qSort(statuses.begin(), statuses.end());
 	makeStatusesUnique(statuses);
+	cerr << statuses.size() << endl;
+	cerr << newStatuses.size() << endl;
 	return newStatuses;
 }
 

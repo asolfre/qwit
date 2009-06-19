@@ -56,6 +56,7 @@ class Twitter: public QObject {
 	QMap<int, QString> sendDirectMessageRequests;
 	QMap<int, QString> favorStatusRequests;
 	QMap<int, QString> unfavorStatusRequests;
+	QMap<int, QString> destroyStatusRequests;
 	void setupProxy();
 
 public:
@@ -76,6 +77,7 @@ public:
 	void sendDirectMessage(const QString &username, const QString &message);
 	void favorStatus(uint statusId);
 	void unfavorStatus(uint statusId);
+	void destroyStatus(uint statusId);
 	void abort();
 
 signals:
@@ -91,6 +93,7 @@ signals:
 	void directMessageSent(const QByteArray &);
 	void statusFavored(const QByteArray &);
 	void statusUnfavored(const QByteArray &);
+	void statusDestroyed(const QByteArray &);
 	void previousFriendsStatusesReceived(const QByteArray &);
 	void previousRepliesReceived(const QByteArray &);
 	void previousPublicStatusesReceived(const QByteArray &);

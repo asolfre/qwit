@@ -44,6 +44,7 @@ private:
 	QString _serviceBaseUrl;
 	QString _serviceApiUrl;
 	QString _searchBaseUrl;
+	QString _singleStatusUrl;
 	
 public:
 	int id;
@@ -67,6 +68,7 @@ public:
 	QString serviceApiUrl();
 	QString serviceBaseUrl();
 	QString searchBaseUrl();
+	QString singleStatusUrl();
 	void setRemainingRequests(int remainingRequests);
 
 public slots:
@@ -82,6 +84,7 @@ public slots:
 	void statusSent(const QByteArray &data);
 	void directMessageSent(const QByteArray &data);
 	void statusFavorChanged(const QByteArray &data);
+	void statusDestroyed(const QByteArray &data);
 	void receivePublicStatuses(int count);
 	void receiveFriendsStatuses(int count);
 	void receiveReplies(int count);
@@ -99,6 +102,7 @@ public slots:
 	void sendDirectMessage(const QString &username, const QString &message);
 	void favorStatus(const Status &status);
 	void unfavorStatus(const Status &status);
+	void destroyStatus(const Status &status);
 	
 signals:
 	void friendsStatusesUpdated(const QVector<Status> &, Account *);
