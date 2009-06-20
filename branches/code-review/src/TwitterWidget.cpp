@@ -39,7 +39,7 @@
 int TwitterWidget::instances = 0;
 
 void TwitterWidgetItem::loadUserpic() {
-	QPixmap pixmap(status.userpicFilename);
+	QPixmap pixmap(message.userpicFilename);
 	if (!pixmap.isNull()) {
 		userpicLabel->setPixmap(pixmap.scaled(ICON_SIZE, ICON_SIZE));
 	}
@@ -47,7 +47,7 @@ void TwitterWidgetItem::loadUserpic() {
 }
 
 TwitterWidgetItem::TwitterWidgetItem() {
-	statusTextBrowser = 0;
+	messageTextBrowser = 0;
 	userpicLabel = 0;
 	signLabel = 0;
 	replyButton = 0;
@@ -59,7 +59,7 @@ TwitterWidgetItem::TwitterWidgetItem() {
 }
 
 TwitterWidgetItem::~TwitterWidgetItem() {
-	delete statusTextBrowser;
+	delete messageTextBrowser;
 	delete userpicLabel;
 	delete signLabel;
 	delete replyButton;
@@ -97,23 +97,23 @@ void TwitterWidget::clear() {
 	updateItems();
 }
 
-void TwitterWidget::addItem(const Status &status) {
+void TwitterWidget::addItem(const Message &message) {
 //	qDebug() << ("TwitterWidget::addItem()");
 
 	TwitterWidgetItem *item = new TwitterWidgetItem();
 
-	item->status = status;
+	item->message = message;
 
-	item->statusTextBrowser = new QTextBrowser(this);
-	item->statusTextBrowser->setHtml(QwitTools::prepareStatus(status.status, status.account));
-	item->statusTextBrowser->setReadOnly(true);
-	item->statusTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	item->statusTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	item->statusTextBrowser->setFrameShape(QFrame::NoFrame);
-	item->statusTextBrowser->setOpenExternalLinks(true);
-	QFont font = item->statusTextBrowser->document()->defaultFont();
+	item->messageTextBrowser = new QTextBrowser(this);
+	item->messageTextBrowser->setHtml(QwitTools::prepareMessage(message.text, message.account));
+	item->messageTextBrowser->setReadOnly(true);
+	item->messageTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	item->messageTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	item->messageTextBrowser->setFrameShape(QFrame::NoFrame);
+	item->messageTextBrowser->setOpenExternalLinks(true);
+	QFont font = item->messageTextBrowser->document()->defaultFont();
 	font.setFamily("Verdana");
-	item->statusTextBrowser->document()->setDefaultFont(font);
+	item->messageTextBrowser->document()->setDefaultFont(font);
 
 	item->userpicLabel = new QLabel(this);
 	item->loadUserpic();
@@ -122,13 +122,15 @@ void TwitterWidget::addItem(const Status &status) {
 	item->signLabel->setOpenExternalLinks(true);
 	item->signLabel->setStyleSheet("a{text-decoration:none;}");
 
-	item->favorButton = new QToolButton(this);
-	item->favorButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png", status.favorited));
-	item->favorButton->setText("");
-	item->favorButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-	item->favorButton->setAutoRaise(true);
-	item->favorButton->show();
-
+	if (!message.directMessage) {
+		item->favorButton = new QToolButton(this);
+		item->favorButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png", message.favorited));
+		item->favorButton->setText("");
+		item->favorButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		item->favorButton->setAutoRaise(true);
+		item->favorButton->show();
+	}
+	
 	item->replyButton = new QToolButton(this);
 	item->replyButton->setIcon(QwitTools::getToolButtonIcon(":/images/reply.png"));
 	item->replyButton->setText("");
@@ -136,14 +138,29 @@ void TwitterWidget::addItem(const Status &status) {
 	item->replyButton->setAutoRaise(true);
 	item->replyButton->show();
 
-	if (status.username == status.account->username) {
+	if (!message.directMessage) {
+		if (message.username == message.account->username) {
+			item->destroyButton = new QToolButton(this);
+			item->destroyButton->setIcon(QwitTools::getToolButtonIcon(":/images/destroy.png"));
+			item->destroyButton->setText("");
+			item->destroyButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+			item->destroyButton->setAutoRaise(true);
+			item->destroyButton->show();
+		} else {
+			item->retweetButton = new QToolButton(this);
+			item->retweetButton->setIcon(QwitTools::getToolButtonIcon(":/images/retweet.png"));
+			item->retweetButton->setText("");
+			item->retweetButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+			item->retweetButton->setAutoRaise(true);
+			item->retweetButton->show();
+		}
+	} else {
 		item->destroyButton = new QToolButton(this);
 		item->destroyButton->setIcon(QwitTools::getToolButtonIcon(":/images/destroy.png"));
 		item->destroyButton->setText("");
 		item->destroyButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 		item->destroyButton->setAutoRaise(true);
 		item->destroyButton->show();
-	} else {
 		item->retweetButton = new QToolButton(this);
 		item->retweetButton->setIcon(QwitTools::getToolButtonIcon(":/images/retweet.png"));
 		item->retweetButton->setText("");
@@ -170,11 +187,136 @@ void TwitterWidget::addItem(const Status &status) {
 	
 	items.push_back(item);
 
-	item->statusTextBrowser->show();
+	item->messageTextBrowser->show();
 	item->userpicLabel->show();
 	item->signLabel->show();
 
 //	updateItems();
+}
+
+int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height) {
+	QFontMetrics fontMetrics(item->messageTextBrowser->font());
+	int messageItemWidth = width() - (ICON_SIZE + 4 * MARGIN + item->favorButton->width());
+	int messageItemHeight = fontMetrics.boundingRect(0, 0, messageItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, item->messageTextBrowser->toPlainText()).height() + MARGIN;
+	if (messageItemHeight < ICON_SIZE) {
+		messageItemHeight = ICON_SIZE;
+	}
+	item->messageTextBrowser->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
+	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
+	messageItemHeight += item->messageTextBrowser->verticalScrollBar()->maximum() - item->messageTextBrowser->verticalScrollBar()->minimum();
+	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
+	item->userpicLabel->move(MARGIN, height + MARGIN);
+	
+	item->favorButton->move(width() - MARGIN - item->favorButton->width(), height);
+	item->favorButton->show();
+	item->replyButton->move(width() - MARGIN - item->replyButton->width(), height + item->favorButton->height());
+	item->replyButton->show();
+	if (item->retweetButton) {
+		item->retweetButton->move(width() - MARGIN - item->retweetButton->width(), height + item->favorButton->height() + item->replyButton->height());
+		item->retweetButton->show();
+	}
+	if (item->destroyButton) {
+		item->destroyButton->move(width() - MARGIN - item->destroyButton->width(), height + item->favorButton->height() + item->replyButton->height());
+		item->destroyButton->show();
+	}
+	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
+	item->directMessageButton->show();
+	item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
+	item->unfollowButton->show();
+	
+	QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" + item->message.account->serviceBaseUrl() + "/" + item->message.username + "\" style=\"font-weight:bold\">" + item->message.username + "</a> - <a href=\"" + item->message.account->serviceBaseUrl() + "/" + item->message.username + "/messagees/" + QString::number(item->message.id) + "\">" + QwitTools::formatDateTime(item->message.time) + "</a>";
+	if (item->message.source != "") {
+		sign += " - from " + item->message.source;
+	}
+	if (item->message.inReplyToMessageId) {
+		QString inReplyToMessageUrl = item->message.account->singleMessageUrl().replace("%username", item->message.inReplyToUsername).replace("%messageid", QString::number(item->message.inReplyToMessageId));
+		sign += " - <a href=\"" + inReplyToMessageUrl + "\">in reply to " + item->message.inReplyToUsername + "</a>";
+	}
+	sign += "</div>";
+	item->signLabel->setText(sign);
+	item->signLabel->adjustSize();
+	int signY = 0;
+	if (item->retweetButton) {
+		signY = item->retweetButton->pos().y() + item->retweetButton->height() - item->signLabel->height();
+	} else {
+		signY = item->destroyButton->pos().y() + item->destroyButton->height() - item->signLabel->height();
+	}
+	signY = max(signY, item->messageTextBrowser->pos().y() + item->messageTextBrowser->height() + MARGIN);
+	int signX = width() - item->signLabel->width() - MARGIN - item->favorButton->width();
+	if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
+		signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
+	}
+	item->signLabel->move(signX, signY);
+	
+	if (index & 1) {
+		item->color = QColor(230, 230, 230);
+	} else {
+		item->color = QColor(180, 180, 180);
+	}
+
+	int itemHeight = messageItemHeight + item->signLabel->height() + MARGIN;
+	itemHeight = max(item->unfollowButton->y() + item->unfollowButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
+	item->top = height;
+	item->height = itemHeight;
+	return itemHeight;
+}
+
+int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int height) {
+	QFontMetrics fontMetrics(item->messageTextBrowser->font());
+	int messageItemWidth = width() - (ICON_SIZE + 4 * MARGIN + item->replyButton->width());
+	int messageItemHeight = fontMetrics.boundingRect(0, 0, messageItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, item->messageTextBrowser->toPlainText()).height() + MARGIN;
+	if (messageItemHeight < ICON_SIZE) {
+		messageItemHeight = ICON_SIZE;
+	}
+	item->messageTextBrowser->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
+	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
+	messageItemHeight += item->messageTextBrowser->verticalScrollBar()->maximum() - item->messageTextBrowser->verticalScrollBar()->minimum();
+	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
+	item->userpicLabel->move(MARGIN, height + MARGIN);
+	
+	item->replyButton->move(width() - MARGIN - item->replyButton->width(), height);
+	item->replyButton->show();
+	item->retweetButton->move(width() - MARGIN - item->retweetButton->width(), height + item->replyButton->height());
+	item->retweetButton->show();
+	item->destroyButton->move(width() - MARGIN - item->destroyButton->width(), height + item->replyButton->height() + item->retweetButton->height());
+	item->destroyButton->show();
+	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
+	item->directMessageButton->show();
+	item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
+	item->unfollowButton->show();
+	
+	QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" + item->message.account->serviceBaseUrl() + "/" + item->message.username + "\" style=\"font-weight:bold\">" + item->message.username + "</a> - <a href=\"" + item->message.account->serviceBaseUrl() + "/" + item->message.username + "/messagees/" + QString::number(item->message.id) + "\">" + QwitTools::formatDateTime(item->message.time) + "</a>";
+	if (item->message.source != "") {
+		sign += " - from " + item->message.source;
+	}
+	if (item->message.inReplyToMessageId) {
+		QString inReplyToMessageUrl = item->message.account->singleMessageUrl().replace("%username", item->message.inReplyToUsername).replace("%messageid", QString::number(item->message.inReplyToMessageId));
+		sign += " - <a href=\"" + inReplyToMessageUrl + "\">in reply to " + item->message.inReplyToUsername + "</a>";
+	}
+	sign += "</div>";
+	item->signLabel->setText(sign);
+	item->signLabel->adjustSize();
+	int signY = 0;
+	signY = item->retweetButton->pos().y() + item->retweetButton->height() - item->signLabel->height();
+	signY = item->destroyButton->pos().y() + item->destroyButton->height() - item->signLabel->height();
+	signY = max(signY, item->messageTextBrowser->pos().y() + item->messageTextBrowser->height() + MARGIN);
+	int signX = width() - item->signLabel->width() - MARGIN - item->replyButton->width();
+	if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
+		signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
+	}
+	item->signLabel->move(signX, signY);
+	
+	if (index & 1) {
+		item->color = QColor(230, 230, 230);
+	} else {
+		item->color = QColor(180, 180, 180);
+	}
+
+	int itemHeight = messageItemHeight + item->signLabel->height() + MARGIN;
+	itemHeight = max(item->unfollowButton->y() + item->unfollowButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
+	item->top = height;
+	item->height = itemHeight;
+	return itemHeight;
 }
 
 void TwitterWidget::updateItems() {
@@ -188,77 +330,24 @@ void TwitterWidget::updateItems() {
 	int height = 0;
 	for (int i = 0; i < items.size(); ++i) {
 		TwitterWidgetItem *item = items[i];
-		replyButtonGroup.addButton(item->replyButton, i);
-		directMessageButtonGroup.addButton(item->directMessageButton, i);
-		favorButtonGroup.addButton(item->favorButton, i);
-		if (item->retweetButton) {
+		if (!item->message.directMessage) {
+			replyButtonGroup.addButton(item->replyButton, i);
+			directMessageButtonGroup.addButton(item->directMessageButton, i);
+			favorButtonGroup.addButton(item->favorButton, i);
+			if (item->retweetButton) {
+				retweetButtonGroup.addButton(item->retweetButton, i);
+			}
+			if (item->destroyButton) {
+				destroyButtonGroup.addButton(item->destroyButton, i);
+			}
+			height += arrangeMessage(item, i, height);
+		} else {
+			replyButtonGroup.addButton(item->replyButton, i);
 			retweetButtonGroup.addButton(item->retweetButton, i);
-		}
-		if (item->destroyButton) {
 			destroyButtonGroup.addButton(item->destroyButton, i);
+			directMessageButtonGroup.addButton(item->directMessageButton, i);
+			height += arrangeDirectMessage(item, i, height);
 		}
-		QFontMetrics fontMetrics(item->statusTextBrowser->font());
-		int statusItemWidth = width() - (ICON_SIZE + 4 * MARGIN + item->favorButton->width());
-		int statusItemHeight = fontMetrics.boundingRect(0, 0, statusItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, item->statusTextBrowser->toPlainText()).height() + MARGIN;
-		if (statusItemHeight < ICON_SIZE) {
-			statusItemHeight = ICON_SIZE;
-		}
-		item->statusTextBrowser->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
-		item->statusTextBrowser->resize(statusItemWidth, statusItemHeight);
-		statusItemHeight += item->statusTextBrowser->verticalScrollBar()->maximum() - item->statusTextBrowser->verticalScrollBar()->minimum();
-		item->statusTextBrowser->resize(statusItemWidth, statusItemHeight);
-		item->userpicLabel->move(MARGIN, height + MARGIN);
-		
-		item->favorButton->move(width() - MARGIN - item->favorButton->width(), height);
-		item->favorButton->show();
-		item->replyButton->move(width() - MARGIN - item->replyButton->width(), height + item->favorButton->height());
-		item->replyButton->show();
-		if (item->retweetButton) {
-			item->retweetButton->move(width() - MARGIN - item->retweetButton->width(), height + item->favorButton->height() + item->replyButton->height());
-			item->retweetButton->show();
-		}
-		if (item->destroyButton) {
-			item->destroyButton->move(width() - MARGIN - item->destroyButton->width(), height + item->favorButton->height() + item->replyButton->height());
-			item->destroyButton->show();
-		}
-		item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
-		item->directMessageButton->show();
-		item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
-		item->unfollowButton->show();
-		
-		QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" + item->status.account->serviceBaseUrl() + "/" + item->status.username + "\" style=\"font-weight:bold\">" + item->status.username + "</a> - <a href=\"" + item->status.account->serviceBaseUrl() + "/" + item->status.username + "/statuses/" + QString::number(item->status.id) + "\">" + QwitTools::formatDateTime(item->status.time) + "</a> - from " + item->status.source;
-		if (item->status.inReplyToStatusId) {
-			QString inReplyToStatusUrl = item->status.account->singleStatusUrl().replace("%username", item->status.inReplyToUsername).replace("%statusid", QString::number(item->status.inReplyToStatusId));
-			sign += " - <a href=\"" + inReplyToStatusUrl + "\">in reply to " + item->status.inReplyToUsername + "</a>";
-		}
-		sign += "</div>";
-		item->signLabel->setText(sign);
-		item->signLabel->adjustSize();
-		int signY = 0;
-		if (item->retweetButton) {
-			signY = item->retweetButton->pos().y() + item->retweetButton->height() - item->signLabel->height();
-		} else {
-			signY = item->destroyButton->pos().y() + item->destroyButton->height() - item->signLabel->height();
-		}
-		signY = max(signY, item->statusTextBrowser->pos().y() + item->statusTextBrowser->height() + MARGIN);
-		int signX = width() - item->signLabel->width() - MARGIN - item->favorButton->width();
-		if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
-			signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
-		}
-		item->signLabel->move(signX, signY);
-//		item->signLabel->move(width() - item->signLabel->width() - MARGIN - item->favorButton->width(), max(item->retweetButton->pos().y() + item->retweetButton->height(), item->userpicLabel->pos().y() + item->userpicLabel->height()) + MARGIN);
-		
-		if (i & 1) {
-			item->color = QColor(230, 230, 230);
-		} else {
-			item->color = QColor(180, 180, 180);
-		}
-
-		int itemHeight = statusItemHeight + item->signLabel->height() + MARGIN;
-		itemHeight = max(item->unfollowButton->y() + item->unfollowButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
-		item->top = height;
-		item->height = itemHeight;
-		height += itemHeight;
 	}
 	Configuration *config = Configuration::getInstance();
 	if (moreToolButton) {
@@ -302,7 +391,7 @@ void TwitterWidget::paintEvent(QPaintEvent *event) {
 		QPalette p = palette();
 		p.setColor(QPalette::Active, QPalette::Base, item->color);
 		p.setColor(QPalette::Inactive, QPalette::Base, item->color);
-		item->statusTextBrowser->setPalette(p);
+		item->messageTextBrowser->setPalette(p);
 	}
 	event->accept();
 }
@@ -352,28 +441,28 @@ void TwitterWidget::addLessButton() {
 }
 
 void TwitterWidget::retweetButtonClicked(int id) {
-	emit retweet(items[id]->status);
+	emit retweet(items[id]->message);
 }
 
 void TwitterWidget::destroyButtonClicked(int id) {
 	if (QMessageBox::question(this, tr("Delete message"), tr("Are you sure to delete this message?"), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) == QMessageBox::Ok) {
-		emit destroy(items[id]->status);
+		emit destroy(items[id]->message);
 	}
 }
 
 void TwitterWidget::replyButtonClicked(int id) {
-	emit reply(items[id]->status);
+	emit reply(items[id]->message);
 }
 
 void TwitterWidget::directMessageButtonClicked(int id) {
-	emit directMessage(items[id]->status);
+	emit directMessage(items[id]->message);
 }
 
 void TwitterWidget::favorButtonClicked(int id) {
-	if (items[id]->status.favorited) {
-		emit unfavor(items[id]->status);
+	if (items[id]->message.favorited) {
+		emit unfavor(items[id]->message);
 	} else {
-		emit favor(items[id]->status);
+		emit favor(items[id]->message);
 	}
 }
 

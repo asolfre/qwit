@@ -23,26 +23,26 @@
  *  
  *  @section DESCRIPTION
  *  
- *  HomePage class implementation
+ *  OutboxPage class implementation
  */
 
-#ifndef HomePage_cpp
-#define HomePage_cpp
+#ifndef OutboxPage_cpp
+#define OutboxPage_cpp
 
 #include "QwitHeaders.h"
 
-#include "HomePage.h"
+#include "OutboxPage.h"
 #include "QwitTools.h"
 
-HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
-	qDebug() << ("HomePage::HomePage()");
+OutboxPage::OutboxPage(QWidget* parent): AbstractPage(parent) {
+	qDebug() << ("OutboxPage::OutboxPage()");
 
-	twitterWidget->setObjectName(QString::fromUtf8("homePageTwitterWidget"));
+	twitterWidget->setObjectName(QString::fromUtf8("outboxPageTwitterWidget"));
 	connect(twitterWidget, SIGNAL(moreButtonClicked()), this, SLOT(updatePrevious()));
 	connect(twitterWidget, SIGNAL(lessButtonClicked()), this, SLOT(removePrevious()));
 
 	QGridLayout *gridLayout = new QGridLayout(this);
-	gridLayout->setObjectName(QString::fromUtf8("homePageGridLayout"));
+	gridLayout->setObjectName(QString::fromUtf8("oOutboxPageGridLayout"));
 
 	scrollArea = new QScrollArea(this);
 	scrollArea->setBackgroundRole(QPalette::Light);
@@ -53,33 +53,33 @@ HomePage::HomePage(QWidget* parent): AbstractPage(parent) {
 	gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
 }
 
-void HomePage::updateSize() {
-	qDebug() << ("HomePage::updateSize()");
+void OutboxPage::updateSize() {
+	qDebug() << ("OutboxPage::updateSize()");
 	twitterWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() - 5, 500);
 }
 
-QString HomePage::title() {
-	return tr("Home");
+QString OutboxPage::title() {
+	return tr("Outbox");
 }
 
-void HomePage::update() {
-	qDebug() << ("HomePage::update()");
+void OutboxPage::update() {
+	qDebug() << ("OutboxPage::update()");
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->receiveFriendsMessages(config->messagesPerPage);
+	config->currentAccount()->receiveOutboxMessages(config->messagesPerPage);
 }
 
-void HomePage::updatePrevious() {
-	qDebug() << ("HomePage::updatePrevious()");
+void OutboxPage::updatePrevious() {
+	qDebug() << ("OutboxPage::updatePrevious()");
 	twitterWidget->disableMoreButton();
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->receivePreviousFriendsMessages(config->messagesPerPage);
+	config->currentAccount()->receivePreviousOutboxMessages(config->messagesPerPage);
 }
 
-void HomePage::removePrevious() {
-	qDebug() << ("HomePage::removePrevious()");
+void OutboxPage::removePrevious() {
+	qDebug() << ("OutboxPage::removePrevious()");
 	twitterWidget->disableLessButton();
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->removePreviousFriendsMessages(config->messagesPerPage);
+	config->currentAccount()->removePreviousOutboxMessages(config->messagesPerPage);
 	twitterWidget->enableLessButton();
 }
 

@@ -56,12 +56,12 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	greetingMessageLabel = new QLabel(this);
 	leftCharactersNumberLabel = new QLabel(this);
 
-	statusTextEdit = new StatusTextEdit(this);
-	statusTextEdit->setObjectName(QString::fromUtf8("statusTextEdit"));
-	statusHorizontalLayout->insertWidget(0, statusTextEdit);
-	connect(statusTextEdit, SIGNAL(leftCharsNumberChanged(int)), this, SLOT(leftCharsNumberChanged(int)));
-	connect(this, SIGNAL(retweet(const Status &)), statusTextEdit, SLOT(retweet(const Status &)));
-	connect(this, SIGNAL(reply(const Status &)), statusTextEdit, SLOT(reply(const Status &)));
+	messageTextEdit = new MessageTextEdit(this);
+	messageTextEdit->setObjectName(QString::fromUtf8("messageTextEdit"));
+	messageHorizontalLayout->insertWidget(0, messageTextEdit);
+	connect(messageTextEdit, SIGNAL(leftCharsNumberChanged(int)), this, SLOT(leftCharsNumberChanged(int)));
+	connect(this, SIGNAL(retweet(const Message &)), messageTextEdit, SLOT(retweet(const Message &)));
+	connect(this, SIGNAL(reply(const Message &)), messageTextEdit, SLOT(reply(const Message &)));
 	
 	optionsDialog = new OptionsDialog(this);
 	connect(optionsDialog, SIGNAL(accepted()), this, SLOT(saveOptions()));
@@ -147,7 +147,7 @@ void MainWindow::saveOptions() {
 	config->showGreetingMessage = (optionsDialog->showGreetingMessageCheckBox->checkState() == Qt::Checked);
 	config->greetingMessage = optionsDialog->greetingMessageLineEdit->text();
 	config->showLeftCharactersNumber = (optionsDialog->showLeftCharactersNumberCheckBox->checkState() == Qt::Checked);
-	config->showLastStatus = (optionsDialog->showLastStatusCheckBox->checkState() == Qt::Checked);
+	config->showLastMessage = (optionsDialog->showLastMessageCheckBox->checkState() == Qt::Checked);
 	config->messagesPerPage = optionsDialog->messagesPerPageLineEdit->text().toInt();
 	config->messagesInPopup = optionsDialog->messagesInPopupLineEdit->text().toInt();
 	config->retweetTag = optionsDialog->retweetTagLineEdit->text();
@@ -215,8 +215,8 @@ void MainWindow::updateState() {
 	}
 
 	greetingMessageLabel->setText(config->greetingMessage);
-	leftCharactersNumberLabel->setText(QString::number(StatusTextEdit::MaxStatusCharacters - statusTextEdit->toPlainText().length()));
-	lastStatusLabel->setVisible(config->showLastStatus);
+	leftCharactersNumberLabel->setText(QString::number(MessageTextEdit::MaxMessageCharacters - messageTextEdit->toPlainText().length()));
+	lastMessageLabel->setVisible(config->showLastMessage);
 
 	if (config->placeTabsVertically) {
 		mainTabWidget->setTabPosition(QTabWidget::West);
@@ -236,6 +236,7 @@ void MainWindow::updateState() {
 	publicPage = 0;
 	favoritesPage = 0;
 	inboxPage = 0;
+	outboxPage = 0;
 	
 	if (config->showHomeTab) {
 		pages.push_back(homePage = new HomePage());
@@ -251,6 +252,9 @@ void MainWindow::updateState() {
 	}
 	if (config->showInboxTab) {
 		pages.push_back(inboxPage = new InboxPage());
+	}
+	if (config->showOutboxTab) {
+		pages.push_back(outboxPage = new OutboxPage());
 	}
 
 	for (int i = 0; i < pages.size(); ++i) {
@@ -277,7 +281,7 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->showGreetingMessageCheckBox->setCheckState(config->showGreetingMessage ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->greetingMessageLineEdit->setText(config->greetingMessage);
 	optionsDialog->showLeftCharactersNumberCheckBox->setCheckState(config->showLeftCharactersNumber ? Qt::Checked : Qt::Unchecked);
-	optionsDialog->showLastStatusCheckBox->setCheckState(config->showLastStatus ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->showLastMessageCheckBox->setCheckState(config->showLastMessage ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->messagesPerPageLineEdit->setText(QString::number(config->messagesPerPage));
 	optionsDialog->messagesInPopupLineEdit->setText(QString::number(config->messagesInPopup));
 	optionsDialog->retweetTagAfterTextCheckBox->setCheckState(config->retweetTagAfterText ? Qt::Checked : Qt::Unchecked);
@@ -410,47 +414,54 @@ void MainWindow::updateCurrentAccount(int id) {
 	int oldAccountId = config->currentAccountId;
 	config->currentAccountId = id;
 	if (homePage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(friendsStatusesUpdated(const QVector<Status> &, Account *)), 0, 0);
-		connect(config->currentAccount(), SIGNAL(friendsStatusesUpdated(const QVector<Status> &, Account *)), homePage, SLOT(updateItems(const QVector<Status> &, Account *)));
-		homePage->updateItems(config->currentAccount()->friendsStatuses, config->currentAccount());
-		disconnect(config->accounts[oldAccountId], SIGNAL(previousFriendsStatusesReceived()), 0, 0);
-		connect(config->currentAccount(), SIGNAL(previousFriendsStatusesReceived()), homePage->twitterWidget, SLOT(enableMoreButton()));
+		disconnect(config->accounts[oldAccountId], SIGNAL(friendsMessagesUpdated(const QVector<Message> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(friendsMessagesUpdated(const QVector<Message> &, Account *)), homePage, SLOT(updateItems(const QVector<Message> &, Account *)));
+		homePage->updateItems(config->currentAccount()->friendsMessages, config->currentAccount());
+		disconnect(config->accounts[oldAccountId], SIGNAL(previousFriendsMessagesReceived()), 0, 0);
+		connect(config->currentAccount(), SIGNAL(previousFriendsMessagesReceived()), homePage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	if (repliesPage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(repliesUpdated(const QVector<Status> &, Account *)), 0, 0);
-		connect(config->currentAccount(), SIGNAL(repliesUpdated(const QVector<Status> &, Account *)), repliesPage, SLOT(updateItems(const QVector<Status> &, Account *)));
+		disconnect(config->accounts[oldAccountId], SIGNAL(repliesUpdated(const QVector<Message> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(repliesUpdated(const QVector<Message> &, Account *)), repliesPage, SLOT(updateItems(const QVector<Message> &, Account *)));
 		repliesPage->updateItems(config->currentAccount()->replies, config->currentAccount());
 		disconnect(config->accounts[oldAccountId], SIGNAL(previousRepliesReceived()), 0, 0);
 		connect(config->currentAccount(), SIGNAL(previousRepliesReceived()), repliesPage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	if (publicPage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(publicStatusesUpdated(const QVector<Status> &, Account *)), 0, 0);
-		connect(config->currentAccount(), SIGNAL(publicStatusesUpdated(const QVector<Status> &, Account *)), publicPage, SLOT(updateItems(const QVector<Status> &, Account *)));
-		publicPage->updateItems(config->currentAccount()->publicStatuses, config->currentAccount());
-		disconnect(config->accounts[oldAccountId], SIGNAL(previousPublicStatusesReceived()), 0, 0);
-		connect(config->currentAccount(), SIGNAL(previousPublicStatusesReceived()), publicPage->twitterWidget, SLOT(enableMoreButton()));
+		disconnect(config->accounts[oldAccountId], SIGNAL(publicMessagesUpdated(const QVector<Message> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(publicMessagesUpdated(const QVector<Message> &, Account *)), publicPage, SLOT(updateItems(const QVector<Message> &, Account *)));
+		publicPage->updateItems(config->currentAccount()->publicMessages, config->currentAccount());
+		disconnect(config->accounts[oldAccountId], SIGNAL(previousPublicMessagesReceived()), 0, 0);
+		connect(config->currentAccount(), SIGNAL(previousPublicMessagesReceived()), publicPage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	if (favoritesPage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(favoritesUpdated(const QVector<Status> &, Account *)), 0, 0);
-		connect(config->currentAccount(), SIGNAL(favoritesUpdated(const QVector<Status> &, Account *)), favoritesPage, SLOT(updateItems(const QVector<Status> &, Account *)));
+		disconnect(config->accounts[oldAccountId], SIGNAL(favoritesUpdated(const QVector<Message> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(favoritesUpdated(const QVector<Message> &, Account *)), favoritesPage, SLOT(updateItems(const QVector<Message> &, Account *)));
 		favoritesPage->updateItems(config->currentAccount()->favorites, config->currentAccount());
 		disconnect(config->accounts[oldAccountId], SIGNAL(previousFavoritesReceived()), 0, 0);
 		connect(config->currentAccount(), SIGNAL(previousFavoritesReceived()), favoritesPage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	if (inboxPage) {
-		disconnect(config->accounts[oldAccountId], SIGNAL(inboxMessagesUpdated(const QVector<Status> &, Account *)), 0, 0);
-		connect(config->currentAccount(), SIGNAL(inboxMessagesUpdated(const QVector<Status> &, Account *)), inboxPage, SLOT(updateItems(const QVector<Status> &, Account *)));
+		disconnect(config->accounts[oldAccountId], SIGNAL(inboxMessagesUpdated(const QVector<Message> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(inboxMessagesUpdated(const QVector<Message> &, Account *)), inboxPage, SLOT(updateItems(const QVector<Message> &, Account *)));
 		inboxPage->updateItems(config->currentAccount()->inboxMessages, config->currentAccount());
 		disconnect(config->accounts[oldAccountId], SIGNAL(previousInboxMessagesReceived()), 0, 0);
 		connect(config->currentAccount(), SIGNAL(previousInboxMessagesReceived()), inboxPage->twitterWidget, SLOT(enableMoreButton()));
 	}
-	disconnect(config->accounts[oldAccountId], SIGNAL(lastStatusReceived(const QString &, Account *)), 0, 0);
-	connect(config->currentAccount(), SIGNAL(lastStatusReceived(const QString &, Account *)), this, SLOT(updateLastStatus(const QString &, Account *)));
+	if (outboxPage) {
+		disconnect(config->accounts[oldAccountId], SIGNAL(outboxMessagesUpdated(const QVector<Message> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(outboxMessagesUpdated(const QVector<Message> &, Account *)), outboxPage, SLOT(updateItems(const QVector<Message> &, Account *)));
+		outboxPage->updateItems(config->currentAccount()->outboxMessages, config->currentAccount());
+		disconnect(config->accounts[oldAccountId], SIGNAL(previousOutboxMessagesReceived()), 0, 0);
+		connect(config->currentAccount(), SIGNAL(previousOutboxMessagesReceived()), outboxPage->twitterWidget, SLOT(enableMoreButton()));
+	}
+	disconnect(config->accounts[oldAccountId], SIGNAL(lastMessageReceived(const QString &, Account *)), 0, 0);
+	connect(config->currentAccount(), SIGNAL(lastMessageReceived(const QString &, Account *)), this, SLOT(updateLastMessage(const QString &, Account *)));
 	disconnect(config->accounts[oldAccountId], SIGNAL(remainingRequestsUpdated(int, Account *)), 0, 0);
 	connect(config->currentAccount(), SIGNAL(remainingRequestsUpdated(int, Account *)), this, SLOT(updateRemainingRequests(int, Account *)));
-	disconnect(statusTextEdit, SIGNAL(statusEntered(const QString &, int)), 0, 0);
-	connect(statusTextEdit, SIGNAL(statusEntered(const QString &, int)), config->currentAccount(), SLOT(sendStatus(const QString &, int)));
-	lastStatusLabel->setText(config->currentAccount()->lastStatus.status);
+	disconnect(messageTextEdit, SIGNAL(messageEntered(const QString &, int)), 0, 0);
+	connect(messageTextEdit, SIGNAL(messageEntered(const QString &, int)), config->currentAccount(), SLOT(sendMessage(const QString &, int)));
+	lastMessageLabel->setText(config->currentAccount()->lastMessage.text);
 	updateRemainingRequests(config->currentAccount()->remainingRequests, config->currentAccount());
 }
 
@@ -473,7 +484,7 @@ void MainWindow::showEvent(QShowEvent *event) {
 		pages[i]->updateSize();
 	}
 	
-	statusTextEdit->setFocus(Qt::OtherFocusReason);
+	messageTextEdit->setFocus(Qt::OtherFocusReason);
 
 	event->accept();
 }
@@ -562,7 +573,7 @@ void MainWindow::refresh() {
 
 	pages[mainTabWidget->currentIndex()]->update();
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->updateLastStatus();
+	config->currentAccount()->updateLastMessage();
 }
 
 void MainWindow::tabChanged(int tabIndex) {
@@ -580,24 +591,24 @@ void MainWindow::reloadUserpics() {
 	}
 }
 
-void MainWindow::updateLastStatus(const QString &status, Account *account) {
-	qDebug() << ("MainWindow::updateLastStatus()");
+void MainWindow::updateLastMessage(const QString &message, Account *account) {
+	qDebug() << ("MainWindow::updateLastMessage()");
 
-	lastStatusLabel->setText(status);
+	lastMessageLabel->setText(message);
 }
 
-void MainWindow::showNewStatuses(const QVector<Status> &statuses, Account *account) {
-	qDebug() << ("MainWindow::showNewStatuses()");
+void MainWindow::showNewMessages(const QVector<Message> &messagees, Account *account) {
+	qDebug() << ("MainWindow::showNewMessages()");
 	Configuration *config = Configuration::getInstance();
 	QString trayMessage = "";
-	for (int i = 0; i < min(statuses.size(), config->messagesInPopup); ++i) {
+	for (int i = 0; i < min(messagees.size(), config->messagesInPopup); ++i) {
 		if (trayMessage.length()) {
 			trayMessage += "----------------------------\n";
 		}
-		trayMessage += statuses[i].username + ": " + statuses[i].status + " /" + QwitTools::formatDateTime(statuses[i].time.toLocalTime()) + "\n";
+		trayMessage += messagees[i].username + ": " + messagees[i].text + " /" + QwitTools::formatDateTime(messagees[i].time.toLocalTime()) + "\n";
 	}
 	if ((trayMessage != "") && config->showMessagesInTray) {
-		trayIcon->showMessage(tr("Qwit: new statuses receieved"), trayMessage);
+		trayIcon->showMessage(tr("Qwit: new messagees receieved"), trayMessage);
 	}
 }
 
@@ -610,11 +621,22 @@ void MainWindow::redrawPages() {
 void MainWindow::updatePages() {
 	Configuration *config = Configuration::getInstance();
 	for (int i = 0; i < config->accounts.size(); ++i) {
-		config->accounts[i]->receiveFriendsStatuses(config->messagesPerPage);
-		config->accounts[i]->receiveReplies(config->messagesPerPage);
-		config->accounts[i]->receiveFavorites();
-		config->accounts[i]->receiveInboxMessages(config->messagesPerPage);
-		config->accounts[i]->updateLastStatus();
+		if (config->updateHomeTabAlways) {
+			config->accounts[i]->receiveFriendsMessages(config->messagesPerPage);
+		}
+		if (config->updateRepliesTabAlways) {
+			config->accounts[i]->receiveReplies(config->messagesPerPage);
+		}
+		if (config->updateFavoritesTabAlways) {
+			config->accounts[i]->receiveFavorites();
+		}
+		if (config->updateInboxTabAlways) {
+			config->accounts[i]->receiveInboxMessages(config->messagesPerPage);
+		}
+		if (config->updateOutboxTabAlways) {
+			config->accounts[i]->receiveOutboxMessages(config->messagesPerPage);
+		}
+		config->accounts[i]->updateLastMessage();
 	}
 }
 
@@ -628,14 +650,14 @@ void MainWindow::updateRemainingRequests(int remainingRequests, Account *account
 	}
 }
 
-void MainWindow::directMessage(const Status &status) {
+void MainWindow::directMessage(const Message &message) {
 	Configuration *config = Configuration::getInstance();
 	directMessageDialog->accountsComboBox->clear();
 	for (int i = 0; i < config->accounts.size(); ++i) {
 		directMessageDialog->accountsComboBox->addItem(QIcon(":/images/" + config->accounts[i]->type + ".png"), config->accounts[i]->username);
 	}
-	directMessageDialog->accountsComboBox->setCurrentIndex(status.account->id);
-	directMessageDialog->usernameLineEdit->setText(status.username);
+	directMessageDialog->accountsComboBox->setCurrentIndex(message.account->id);
+	directMessageDialog->usernameLineEdit->setText(message.username);
 	directMessageDialog->messagePlainTextEdit->clear();
 	directMessageDialog->messagePlainTextEdit->setFocus();
 	directMessageDialog->showNormal();
@@ -646,16 +668,16 @@ void MainWindow::sendDirectMessage() {
 	config->accounts[directMessageDialog->accountsComboBox->currentIndex()]->sendDirectMessage(directMessageDialog->usernameLineEdit->text(), directMessageDialog->messagePlainTextEdit->toPlainText());
 }
 
-void MainWindow::favor(const Status &status) {
-	status.account->favorStatus(status);
+void MainWindow::favor(const Message &message) {
+	message.account->favorMessage(message);
 }
 
-void MainWindow::unfavor(const Status &status) {
-	status.account->unfavorStatus(status);
+void MainWindow::unfavor(const Message &message) {
+	message.account->unfavorMessage(message);
 }
 
-void MainWindow::destroy(const Status &status) {
-	status.account->destroyStatus(status);
+void MainWindow::destroy(const Message &message) {
+	message.account->destroyMessage(message);
 }
 
 void MainWindow::postTwitPic() {
@@ -667,7 +689,7 @@ void MainWindow::postTwitPic() {
 	Configuration *config = Configuration::getInstance();
 	dialog.setUser(config->currentAccount()->username, config->currentAccount()->password);
 	if (dialog.exec() == QDialog::Accepted) {
-		statusTextEdit->append(dialog.twitPickedUrlString());
+		messageTextEdit->append(dialog.twitPickedUrlString());
 	}
 }
 

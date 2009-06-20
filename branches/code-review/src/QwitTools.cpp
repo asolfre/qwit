@@ -74,15 +74,19 @@ QString QwitTools::formatDateTime(const QDateTime &time) {
 	return getInstance()->_formatDateTime(time);
 }
 
-QVector<Status> QwitTools::parseStatuses(const QByteArray &data, Account *account) {
-	return getInstance()->_parseStatuses(data, account);
+QVector<Message> QwitTools::parseMessages(const QByteArray &data, Account *account) {
+	return getInstance()->_parseMessages(data, account);
 }
 
-QVector<Status> QwitTools::parseInboxMessages(const QByteArray &data, Account *account) {
+QVector<Message> QwitTools::parseInboxMessages(const QByteArray &data, Account *account) {
 	return getInstance()->_parseInboxMessages(data, account);
 }
 
-Status QwitTools::parseUser(const QByteArray &data, Account *account) {
+QVector<Message> QwitTools::parseOutboxMessages(const QByteArray &data, Account *account) {
+	return getInstance()->_parseOutboxMessages(data, account);
+}
+
+Message QwitTools::parseUser(const QByteArray &data, Account *account) {
 	return getInstance()->_parseUser(data, account);
 }
 
@@ -120,8 +124,8 @@ QString QwitTools::_formatDateTime(const QDateTime &time) {
 	return tr("about %n day(s) ago", "", days);
 }
 
-QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *account) {
-	QVector<Status> statuses;
+QVector<Message> QwitTools::_parseMessages(const QByteArray &data, Account *account) {
+	QVector<Message> messages;
 	
 	QDomDocument document;
 	document.setContent(data);
@@ -129,29 +133,29 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *accou
 	QDomElement root = document.documentElement();
 	
 	if (root.tagName() != "statuses") {
-		return statuses;
+		return messages;
 	}
 	
 	QDomNode node = root.firstChild();
 	while (!node.isNull()) {
 		if (node.toElement().tagName() != "status") {
-			return statuses;
+			return messages;
 		}
 		QDomNode node2 = node.firstChild();
-		QString message = "", timeStr = "", user = "", image = "", source = "";
+		QString text = "", timeStr = "", user = "", image = "", source = "";
 		uint id = 0;
-		uint inReplyToStatusId = 0;
+		uint inReplyToMessageId = 0;
 		QString inReplyToUsername = "";
 		bool favorited = false;
 		while (!node2.isNull()) {
 			if (node2.toElement().tagName() == "created_at") {
 				timeStr = node2.toElement().text();
 			} else if (node2.toElement().tagName() == "text") {
-				message = node2.toElement().text();
+				text = node2.toElement().text();
 			} else if (node2.toElement().tagName() == "id") {
 				id = node2.toElement().text().toUInt();
 			} else if (node2.toElement().tagName() == "in_reply_to_status_id") {
-				inReplyToStatusId = node2.toElement().text().toUInt();
+				inReplyToMessageId = node2.toElement().text().toUInt();
 			} else if (node2.toElement().tagName() == "in_reply_to_screen_name") {
 				inReplyToUsername = node2.toElement().text();
 			} else if (node2.toElement().tagName() == "favorited") {
@@ -196,15 +200,15 @@ QVector<Status> QwitTools::_parseStatuses(const QByteArray &data, Account *accou
 			}
 			imageFileName = Configuration::CacheDirectory + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
-			statuses.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToStatusId, inReplyToUsername));
+			messages.push_back(Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToMessageId, inReplyToUsername));
 		}
 		node = node.nextSibling();
 	}
-	return statuses;
+	return messages;
 }
 
-QVector<Status> QwitTools::_parseInboxMessages(const QByteArray &data, Account *account) {
-	QVector<Status> messages;
+QVector<Message> QwitTools::_parseInboxMessages(const QByteArray &data, Account *account) {
+	QVector<Message> messages;
 	
 	QDomDocument document;
 	document.setContent(data);
@@ -221,13 +225,13 @@ QVector<Status> QwitTools::_parseInboxMessages(const QByteArray &data, Account *
 			return messages;
 		}
 		QDomNode node2 = node.firstChild();
-		QString message = "", timeStr = "", user = "", image = "", source = "";
+		QString text = "", timeStr = "", user = "", image = "", source = "";
 		uint id = 0;
 		while (!node2.isNull()) {
 			if (node2.toElement().tagName() == "created_at") {
 				timeStr = node2.toElement().text();
 			} else if (node2.toElement().tagName() == "text") {
-				message = node2.toElement().text();
+				text = node2.toElement().text();
 			} else if (node2.toElement().tagName() == "id") {
 				id = node2.toElement().text().toUInt();
 			} else if (node2.toElement().tagName() == "sender") {
@@ -268,15 +272,87 @@ QVector<Status> QwitTools::_parseInboxMessages(const QByteArray &data, Account *
 			}
 			imageFileName = Configuration::CacheDirectory + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
-			messages.push_back(Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), false, account, source, 0, ""));
+			messages.push_back(Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), false, account, source, 0, "", true));
 		}
 		node = node.nextSibling();
 	}
 	return messages;
 }
 
-Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
-	Status status;
+QVector<Message> QwitTools::_parseOutboxMessages(const QByteArray &data, Account *account) {
+	QVector<Message> messages;
+	
+	QDomDocument document;
+	document.setContent(data);
+
+	QDomElement root = document.documentElement();
+	
+	if (root.tagName() != "direct-messages") {
+		return messages;
+	}
+	
+	QDomNode node = root.firstChild();
+	while (!node.isNull()) {
+		if (node.toElement().tagName() != "direct_message") {
+			return messages;
+		}
+		QDomNode node2 = node.firstChild();
+		QString text = "", timeStr = "", user = "", image = "", source = "";
+		uint id = 0;
+		while (!node2.isNull()) {
+			if (node2.toElement().tagName() == "created_at") {
+				timeStr = node2.toElement().text();
+			} else if (node2.toElement().tagName() == "text") {
+				text = node2.toElement().text();
+			} else if (node2.toElement().tagName() == "id") {
+				id = node2.toElement().text().toUInt();
+			} else if (node2.toElement().tagName() == "recipient") {
+				QDomNode node3 = node2.firstChild();
+				while (!node3.isNull()) {
+					if (node3.toElement().tagName() == "screen_name") {
+						user = node3.toElement().text();
+					} else if (node3.toElement().tagName() == "profile_image_url") {
+						image = node3.toElement().text();
+					}
+					node3 = node3.nextSibling();
+				}
+			}
+			node2 = node2.nextSibling();
+		}
+		if (id) {
+			QDateTime time = QwitTools::dateFromString(timeStr);
+			time = QDateTime(time.date(), time.time(), Qt::UTC);
+			QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+			QString imageFileName = "";
+			for (int i = 0; i < hash.size(); ++i) {
+				unsigned char c = hash[i];
+				c >>= 4;
+				if (c < 10) {
+					c += '0';
+				} else {
+					c += 'A' - 10;
+				}
+				imageFileName += (char)c;
+				c = hash[i];
+				c &= 15;
+				if (c < 10) {
+					c += '0';
+				} else {
+					c += 'A' - 10;
+				}
+				imageFileName += (char)c;
+			}
+			imageFileName = Configuration::CacheDirectory + imageFileName;
+			UserpicsDownloader::getInstance()->download(image, imageFileName);
+			messages.push_back(Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), false, account, source, 0, "", true));
+		}
+		node = node.nextSibling();
+	}
+	return messages;
+}
+
+Message QwitTools::_parseUser(const QByteArray &data, Account *account) {
+	Message message;
 	
 	QDomDocument document;
 	document.setContent(data);
@@ -284,27 +360,27 @@ Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
 	QDomElement root = document.documentElement();
 	
 	if (root.tagName() != "user") {
-		return status;
+		return message;
 	}
 	
 	QDomNode node = root.firstChild();
 	while (!node.isNull()) {
 		if (node.toElement().tagName() == "status") {
 			QDomNode node2 = node.firstChild();
-			QString message = "", timeStr = "", user = "", image = "", source = "";
+			QString text = "", timeStr = "", user = "", image = "", source = "";
 			uint id = 0;
-			int inReplyToStatusId = 0;
+			int inReplyToMessageId = 0;
 			QString inReplyToUsername = "";
 			bool favorited = false;
 			while (!node2.isNull()) {
 				if (node2.toElement().tagName() == "created_at") {
 					timeStr = node2.toElement().text();
 				} else if (node2.toElement().tagName() == "text") {
-					message = node2.toElement().text();
+					text = node2.toElement().text();
 				} else if (node2.toElement().tagName() == "id") {
 					id = node2.toElement().text().toUInt();
 				} else if (node2.toElement().tagName() == "in_reply_to_status_id") {
-					inReplyToStatusId = node2.toElement().text().toUInt();
+					inReplyToMessageId = node2.toElement().text().toUInt();
 				} else if (node2.toElement().tagName() == "in_reply_to_screen_name") {
 					inReplyToUsername = node2.toElement().text();
 				} else if (node2.toElement().tagName() == "screen_name") {
@@ -343,21 +419,21 @@ Status QwitTools::_parseUser(const QByteArray &data, Account *account) {
 				}
 				imageFileName = Configuration::CacheDirectory + imageFileName;
 				UserpicsDownloader::getInstance()->download(image, imageFileName);
-				status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToStatusId, inReplyToUsername);
+				message = Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToMessageId, inReplyToUsername);
 			}
 		} else {
 		}
 		node = node.nextSibling();
 	}
-	return status;
+	return message;
 }
 
-Status QwitTools::parseStatus(const QByteArray &data, Account *account) {
-	return getInstance()->_parseStatus(data, account);
+Message QwitTools::parseMessage(const QByteArray &data, Account *account) {
+	return getInstance()->_parseMessage(data, account);
 }
 
-Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
-	Status status;
+Message QwitTools::_parseMessage(const QByteArray &data, Account *account) {
+	Message message;
 	
 	QDomDocument document;
 	document.setContent(data);
@@ -365,24 +441,24 @@ Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
 	QDomElement root = document.documentElement();
 	
 	if (root.tagName() != "status") {
-		return status;
+		return message;
 	}
 	
 	QDomNode node = root.firstChild();
-	QString message = "", timeStr = "", user = "", image = "", source = "";
+	QString text = "", timeStr = "", user = "", image = "", source = "";
 	uint id = 0;
-	int inReplyToStatusId = 0;
+	int inReplyToMessageId = 0;
 	QString inReplyToUsername = "";
 	bool favorited = false;
 	while (!node.isNull()) {
 		if (node.toElement().tagName() == "created_at") {
 			timeStr = node.toElement().text();
 		} else if (node.toElement().tagName() == "text") {
-			message = node.toElement().text();
+			text = node.toElement().text();
 		} else if (node.toElement().tagName() == "id") {
 			id = node.toElement().text().toUInt();
 		} else if (node.toElement().tagName() == "in_reply_to_status_id") {
-			inReplyToStatusId = node.toElement().text().toUInt();
+			inReplyToMessageId = node.toElement().text().toUInt();
 		} else if (node.toElement().tagName() == "in_reply_to_screen_name") {
 			inReplyToUsername = node.toElement().text();
 		} else if (node.toElement().tagName() == "favorited") {
@@ -417,16 +493,86 @@ Status QwitTools::_parseStatus(const QByteArray &data, Account *account) {
 		}
 		imageFileName = Configuration::CacheDirectory + imageFileName;
 		UserpicsDownloader::getInstance()->download(image, imageFileName);
-		status = Status(id, message.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToStatusId, inReplyToUsername);
+		message = Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToMessageId, inReplyToUsername);
 	}
-	return status;
+	return message;
 }
 
-void QwitTools::makeStatusesUnique(QVector<Status> &v) {
-	getInstance()->_makeStatusesUnique(v);
+Message QwitTools::parseDirectMessage(const QByteArray &data, Account *account) {
+	return getInstance()->_parseDirectMessage(data, account);
 }
 
-void QwitTools::_makeStatusesUnique(QVector<Status> &v) {
+Message QwitTools::_parseDirectMessage(const QByteArray &data, Account *account) {
+	Message message;
+	
+	QDomDocument document;
+	document.setContent(data);
+
+	QDomElement root = document.documentElement();
+	
+	if (root.tagName() != "direct_message") {
+		return message;
+	}
+	
+	QDomNode node = root.firstChild();
+
+	QString text = "", timeStr = "", user = "", image = "", source = "";
+	uint id = 0;
+	while (!node.isNull()) {
+		if (node.toElement().tagName() == "created_at") {
+			timeStr = node.toElement().text();
+		} else if (node.toElement().tagName() == "text") {
+			text = node.toElement().text();
+		} else if (node.toElement().tagName() == "id") {
+			id = node.toElement().text().toUInt();
+		} else if (node.toElement().tagName() == "sender") {
+			QDomNode node2 = node.firstChild();
+			while (!node2.isNull()) {
+				if (node2.toElement().tagName() == "screen_name") {
+					user = node2.toElement().text();
+				} else if (node2.toElement().tagName() == "profile_image_url") {
+					image = node2.toElement().text();
+				}
+				node2 = node2.nextSibling();
+			}
+		}
+		node = node.nextSibling();
+	}
+	if (id) {
+		QDateTime time = QwitTools::dateFromString(timeStr);
+		time = QDateTime(time.date(), time.time(), Qt::UTC);
+		QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+		QString imageFileName = "";
+		for (int i = 0; i < hash.size(); ++i) {
+			unsigned char c = hash[i];
+			c >>= 4;
+			if (c < 10) {
+				c += '0';
+			} else {
+				c += 'A' - 10;
+			}
+			imageFileName += (char)c;
+			c = hash[i];
+			c &= 15;
+			if (c < 10) {
+				c += '0';
+			} else {
+				c += 'A' - 10;
+			}
+			imageFileName += (char)c;
+		}
+		imageFileName = Configuration::CacheDirectory + imageFileName;
+		UserpicsDownloader::getInstance()->download(image, imageFileName);
+		message = Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), false, account, source, 0, "", true);
+	}
+	return message;
+}
+
+void QwitTools::makeMessagesUnique(QVector<Message> &v) {
+	getInstance()->_makeMessagesUnique(v);
+}
+
+void QwitTools::_makeMessagesUnique(QVector<Message> &v) {
 	int n = 0;
 	for (int i = 0; i < v.size(); ++i) {
 		if (!n || (v[i] != v[n - 1])) {
@@ -436,7 +582,7 @@ void QwitTools::_makeStatusesUnique(QVector<Status> &v) {
 	v.resize(n);
 }
 
-QString QwitTools::_prepareStatus(const QString &text, Account *account) {
+QString QwitTools::_prepareMessage(const QString &text, Account *account) {
 	QString s = text;
 // Process URLs
 	{
@@ -497,8 +643,8 @@ QString QwitTools::_prepareStatus(const QString &text, Account *account) {
 	return s;
 }
 
-QString QwitTools::prepareStatus(const QString &text, Account *account) {
-	return getInstance()->_prepareStatus(text, account);
+QString QwitTools::prepareMessage(const QString &text, Account *account) {
+	return getInstance()->_prepareMessage(text, account);
 }
 
 void handleMessage(QtMsgType type, const char *msg) {
@@ -518,30 +664,26 @@ void handleMessage(QtMsgType type, const char *msg) {
 	}
 }
 
-QVector<Status> QwitTools::_mergeStatuses(QVector<Status> &statuses, QVector<Status> &receivedStatuses) {
-	QVector<Status> newStatuses;
-	cerr << statuses.size() << endl;
-	cerr << receivedStatuses.size() << endl;
-	for (int i = 0; i < receivedStatuses.size(); ++i) {
-		QVector<Status>::iterator j = qBinaryFind(statuses.begin(), statuses.end(), receivedStatuses[i]);
-		if (j == statuses.end()) {
-			newStatuses.push_back(receivedStatuses[i]);
+QVector<Message> QwitTools::_mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages) {
+	QVector<Message> newMessages;
+	for (int i = 0; i < receivedMessages.size(); ++i) {
+		QVector<Message>::iterator j = qBinaryFind(messages.begin(), messages.end(), receivedMessages[i]);
+		if (j == messages.end()) {
+			newMessages.push_back(receivedMessages[i]);
 		} else {
-			*j = receivedStatuses[i];
+			*j = receivedMessages[i];
 		}
 	}
-	for (int i = 0; i < newStatuses.size(); ++i) {
-		statuses.push_back(newStatuses[i]);
+	for (int i = 0; i < newMessages.size(); ++i) {
+		messages.push_back(newMessages[i]);
 	}
-	qSort(statuses.begin(), statuses.end());
-	makeStatusesUnique(statuses);
-	cerr << statuses.size() << endl;
-	cerr << newStatuses.size() << endl;
-	return newStatuses;
+	qSort(messages.begin(), messages.end());
+	makeMessagesUnique(messages);
+	return newMessages;
 }
 
-QVector<Status> QwitTools::mergeStatuses(QVector<Status> &statuses, QVector<Status> &receivedStatuses) {
-	return getInstance()->_mergeStatuses(statuses, receivedStatuses);
+QVector<Message> QwitTools::mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages) {
+	return getInstance()->_mergeMessages(messages, receivedMessages);
 }
 
 QString QwitTools::parseError(const QByteArray &data) {
@@ -549,7 +691,7 @@ QString QwitTools::parseError(const QByteArray &data) {
 }
 
 QString QwitTools::_parseError(const QByteArray &data) {
-	Status status;
+	Message message;
 	
 	QDomDocument document;
 	document.setContent(data);

@@ -23,48 +23,28 @@
  *
  *  @section DESCRIPTION
  *
- *  StatusTextEdit class declaration
+ *  OutboxPage class declaration
  */
 
-#ifndef StatusTextEdit_h
-#define StatusTextEdit_h
+#ifndef OutboxPage_h
+#define OutboxPage_h
 
 #include "QwitHeaders.h"
 
-#include "Status.h"
+#include "AbstractPage.h"
 
-class StatusTextEdit: public QTextEdit {
+class OutboxPage: public AbstractPage {
 	Q_OBJECT
-
-private:
-	int inReplyToStatusId;
 	
 public:
-	static const int MaxStatusCharacters = 140;
-	static const int StandardHeight = 45;
-
-	StatusTextEdit(QWidget *parent = 0);
-
-	void focusInEvent(QFocusEvent *event);
-	void focusOutEvent(QFocusEvent *event);
-	int getMaxStatusCharactersNumber();
-
-protected:
-
-	void keyPressEvent(QKeyEvent *e);
-	void contextMenuEvent(QContextMenuEvent *event);
-	
-signals:
-
-	void statusEntered(const QString &, int);
-	void leftCharsNumberChanged(int);
-
-public slots:
-
-	void textChangedToCharsNumberChanged();
+	OutboxPage(QWidget* parent = 0);
 	void updateSize();
-	void retweet(const Status &status);
-	void reply(const Status &status);
+	QString title();
+	void update();
+	
+public slots:
+	void updatePrevious();
+	void removePrevious();
 };
 
 #endif

@@ -21,7 +21,7 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="statusHorizontalLayout">
+      <layout class="QHBoxLayout" name="messageHorizontalLayout">
        <item>
         <layout class="QVBoxLayout" name="toolbuttonsVerticalLayout">
          <item>
@@ -52,7 +52,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="lastStatusLabel">
+      <widget class="QLabel" name="lastMessageLabel">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>

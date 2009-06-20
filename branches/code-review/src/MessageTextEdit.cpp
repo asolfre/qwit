@@ -23,45 +23,45 @@
  *  
  *  @section DESCRIPTION
  *  
- *  StatusTextEdit class implementation
+ *  MessageTextEdit class implementation
  */
 
-#ifndef StatusTextEdit_cpp
-#define StatusTextEdit_cpp
+#ifndef MessageTextEdit_cpp
+#define MessageTextEdit_cpp
 
 #include "QwitHeaders.h"
 
-#include "StatusTextEdit.h"
+#include "MessageTextEdit.h"
 #include "Configuration.h"
 
-const int StatusTextEdit::MaxStatusCharacters;
-const int StatusTextEdit::StandardHeight;
+const int MessageTextEdit::MaxMessageCharacters;
+const int MessageTextEdit::StandardHeight;
 
-StatusTextEdit::StatusTextEdit(QWidget *parent): QTextEdit(parent) {
+MessageTextEdit::MessageTextEdit(QWidget *parent): QTextEdit(parent) {
 	setFixedHeight(StandardHeight);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setAcceptRichText(false);
 	setTabChangesFocus(true);
-	inReplyToStatusId = 0;
-	emit leftCharsNumberChanged(MaxStatusCharacters);
+	inReplyToMessageId = 0;
+	emit leftCharsNumberChanged(MaxMessageCharacters);
 	connect(this, SIGNAL(textChanged()), this, SLOT(textChangedToCharsNumberChanged()));
 }
 
-int StatusTextEdit::getMaxStatusCharactersNumber() {
-	return MaxStatusCharacters;
+int MessageTextEdit::getMaxMessageCharactersNumber() {
+	return MaxMessageCharacters;
 }
 
-void StatusTextEdit::focusInEvent(QFocusEvent *event) {
+void MessageTextEdit::focusInEvent(QFocusEvent *event) {
 	QTextEdit::focusInEvent(event);
 }
 
-void StatusTextEdit::focusOutEvent(QFocusEvent *event) {
+void MessageTextEdit::focusOutEvent(QFocusEvent *event) {
 	QTextEdit::focusOutEvent(event);
 }
 
-void StatusTextEdit::keyPressEvent(QKeyEvent *e) {
+void MessageTextEdit::keyPressEvent(QKeyEvent *e) {
 	if ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)) {
-		emit statusEntered(toPlainText(), inReplyToStatusId);
+		emit messageEntered(toPlainText(), inReplyToMessageId);
 		clear();
 		if (height() != StandardHeight) {
 			setFixedHeight(StandardHeight);
@@ -72,18 +72,18 @@ void StatusTextEdit::keyPressEvent(QKeyEvent *e) {
 	QTextEdit::keyPressEvent(e);
 }
 
-void StatusTextEdit::textChangedToCharsNumberChanged() {
-	emit leftCharsNumberChanged(MaxStatusCharacters - toPlainText().length());
+void MessageTextEdit::textChangedToCharsNumberChanged() {
+	emit leftCharsNumberChanged(MaxMessageCharacters - toPlainText().length());
 	updateSize();
 }
 
-void StatusTextEdit::updateSize() {
+void MessageTextEdit::updateSize() {
 	if (verticalScrollBar()->maximum() - verticalScrollBar()->minimum()) {
 		setFixedHeight(height() + verticalScrollBar()->maximum() - verticalScrollBar()->minimum());
 	}
 }
 
-void StatusTextEdit::contextMenuEvent(QContextMenuEvent *event) {
+void MessageTextEdit::contextMenuEvent(QContextMenuEvent *event) {
 // custom context menu example
 	QMenu *menu = createStandardContextMenu();
 	menu->addAction(tr("My Menu Item"));
@@ -91,16 +91,16 @@ void StatusTextEdit::contextMenuEvent(QContextMenuEvent *event) {
 	delete menu;
 }
 
-void StatusTextEdit::retweet(const Status &status) {
+void MessageTextEdit::retweet(const Message &message) {
 	Configuration *config = Configuration::getInstance();
 	QString retweetTag = config->retweetTag;
 	int i = retweetTag.indexOf("@");
 	if (i != -1) {
 		QString firsthalf = retweetTag.left(i + 1);
 		QString secondhalf = retweetTag.right(retweetTag.size() - (i + 1));
-		retweetTag = firsthalf + status.username + secondhalf;
+		retweetTag = firsthalf + message.username + secondhalf;
 	}
-	QString text = status.status;
+	QString text = message.text;
 	if (config->retweetTagAfterText) {
 		setText(text + " " + retweetTag);
 	} else {
@@ -111,13 +111,13 @@ void StatusTextEdit::retweet(const Status &status) {
 	moveCursor(QTextCursor::End);
 }
 
-void StatusTextEdit::reply(const Status &status) {
+void MessageTextEdit::reply(const Message &message) {
 	Configuration *config = Configuration::getInstance();
 
 	QString text = toPlainText().simplified();
-	setText("@" + status.username + " " + text);
+	setText("@" + message.username + " " + text);
 
-	inReplyToStatusId = status.id;
+	inReplyToMessageId = message.id;
 	
 	setFocus(Qt::OtherFocusReason);
 	moveCursor(QTextCursor::NextWord);

@@ -516,7 +516,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="showLastStatusCheckBox">
+                     <widget class="QCheckBox" name="showLastMessageCheckBox">
                       <property name="text">
                        <string>Show last status</string>
                       </property>

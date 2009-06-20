@@ -69,7 +69,7 @@ public:
 	bool showMessagesInTray;
 	bool placeControlsVertically;
 	bool placeTabsVertically;
-	bool showLastStatus;
+	bool showLastMessage;
 	bool showHomeTab;
 	bool updateHomeTabAlways;
 	bool showPublicTab;

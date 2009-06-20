@@ -41,64 +41,73 @@ class Twitter: public QObject {
 	QBuffer buffer;
 	QHttp *http;
 	Account *account;
-	QMap<int, QString> sendStatusRequests;
-	QMap<int, QString> receiveFriendsStatusesRequests;
+	QMap<int, QString> sendMessageRequests;
+	QMap<int, QString> receiveFriendsMessagesRequests;
 	QMap<int, QString> receiveRepliesRequests;
-	QMap<int, QString> receivePublicStatusesRequests;
+	QMap<int, QString> receivePublicMessagesRequests;
 	QMap<int, QString> receiveFavoritesRequests;
 	QMap<int, QString> receiveInboxMessagesRequests;
-	QMap<int, QString> receiveLastStatusRequests;
-	QMap<int, QString> receivePreviousFriendsStatusesRequests;
+	QMap<int, QString> receiveOutboxMessagesRequests;
+	QMap<int, QString> receiveLastMessageRequests;
+	QMap<int, QString> receivePreviousFriendsMessagesRequests;
 	QMap<int, QString> receivePreviousRepliesRequests;
-	QMap<int, QString> receivePreviousPublicStatusesRequests;
+	QMap<int, QString> receivePreviousPublicMessagesRequests;
 	QMap<int, QString> receivePreviousFavoritesRequests;
 	QMap<int, QString> receivePreviousInboxMessagesRequests;
+	QMap<int, QString> receivePreviousOutboxMessagesRequests;
 	QMap<int, QString> sendDirectMessageRequests;
-	QMap<int, QString> favorStatusRequests;
-	QMap<int, QString> unfavorStatusRequests;
-	QMap<int, QString> destroyStatusRequests;
+	QMap<int, QString> favorMessageRequests;
+	QMap<int, QString> unfavorMessageRequests;
+	QMap<int, QString> destroyMessageRequests;
+	QMap<int, QString> destroyDirectMessageRequests;
 	void setupProxy();
 
 public:
 
 	Twitter(Account *account);
-	void receiveFriendsStatuses(uint lastStatusId, int count);
-	void receiveReplies(uint lastStatusId, int count);
-	void receivePublicStatuses(uint lastStatusId, int count);
-	void receiveInboxMessages(uint lastStatusId, int count);
+	void receiveFriendsMessages(uint lastMessageId, int count);
+	void receiveReplies(uint lastMessageId, int count);
+	void receivePublicMessages(uint lastMessageId, int count);
+	void receiveInboxMessages(uint lastMessageId, int count);
+	void receiveOutboxMessages(uint lastMessageId, int count);
 	void receiveFavorites();
-	void receiveLastStatus();
-	void receivePreviousFriendsStatuses(uint lastStatusId, int count);
-	void receivePreviousReplies(uint lastStatusId, int count);
-	void receivePreviousPublicStatuses(uint lastStatusId, int count);
-	void receivePreviousInboxMessages(uint lastStatusId, int count);
+	void receiveLastMessage();
+	void receivePreviousFriendsMessages(uint lastMessageId, int count);
+	void receivePreviousReplies(uint lastMessageId, int count);
+	void receivePreviousPublicMessages(uint lastMessageId, int count);
+	void receivePreviousInboxMessages(uint lastMessageId, int count);
+	void receivePreviousOutboxMessages(uint lastMessageId, int count);
 	void receivePreviousFavorites(int page);
-	void sendStatus(const QString &status, uint inReplyToStatusId);
+	void sendMessage(const QString &message, uint inReplyToMessageId);
 	void sendDirectMessage(const QString &username, const QString &message);
-	void favorStatus(uint statusId);
-	void unfavorStatus(uint statusId);
-	void destroyStatus(uint statusId);
+	void favorMessage(uint messageId);
+	void unfavorMessage(uint messageId);
+	void destroyMessage(uint messageId);
+	void destroyDirectMessage(uint messageId);
 	void abort();
 
 signals:
 
-	void statusSent();
-	void friendsStatusesReceived(const QByteArray &);
+	void messageSent();
+	void friendsMessagesReceived(const QByteArray &);
 	void repliesReceived(const QByteArray &);
-	void publicStatusesReceived(const QByteArray &);
-	void lastStatusReceived(const QByteArray &);
+	void publicMessagesReceived(const QByteArray &);
+	void lastMessageReceived(const QByteArray &);
 	void favoritesReceived(const QByteArray &);
 	void inboxMessagesReceived(const QByteArray &);
-	void statusSent(const QByteArray &);
+	void outboxMessagesReceived(const QByteArray &);
+	void messageSent(const QByteArray &);
 	void directMessageSent(const QByteArray &);
-	void statusFavored(const QByteArray &);
-	void statusUnfavored(const QByteArray &);
-	void statusDestroyed(const QByteArray &);
-	void previousFriendsStatusesReceived(const QByteArray &);
+	void messageFavored(const QByteArray &);
+	void messageUnfavored(const QByteArray &);
+	void messageDestroyed(const QByteArray &);
+	void directMessageDestroyed(const QByteArray &);
+	void previousFriendsMessagesReceived(const QByteArray &);
 	void previousRepliesReceived(const QByteArray &);
-	void previousPublicStatusesReceived(const QByteArray &);
+	void previousPublicMessagesReceived(const QByteArray &);
 	void previousFavoritesReceived(const QByteArray &);
 	void previousInboxMessagesReceived(const QByteArray &);
+	void previousOutboxMessagesReceived(const QByteArray &);
 	
 public slots:
 

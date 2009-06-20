@@ -32,10 +32,10 @@
 #include "QwitHeaders.h"
 
 #include "Twitter.h"
-#include "Status.h"
+#include "Message.h"
 
 class Twitter;
-class Status;
+class Message;
 
 class Account: public QObject {
 	Q_OBJECT
@@ -44,22 +44,23 @@ private:
 	QString _serviceBaseUrl;
 	QString _serviceApiUrl;
 	QString _searchBaseUrl;
-	QString _singleStatusUrl;
+	QString _singleMessageUrl;
 	
 public:
 	int id;
 	QString type;
 	QString username;
 	QString password;
-	Status lastStatus;
+	Message lastMessage;
 	Twitter *twitter;
 	int remainingRequests;
 	
-	QVector<Status> friendsStatuses;
-	QVector<Status> replies;
-	QVector<Status> publicStatuses;
-	QVector<Status> favorites;
-	QVector<Status> inboxMessages;
+	QVector<Message> friendsMessages;
+	QVector<Message> replies;
+	QVector<Message> publicMessages;
+	QVector<Message> favorites;
+	QVector<Message> inboxMessages;
+	QVector<Message> outboxMessages;
 	
 	Account();
 	Account(const QString &type, const QString &username, const QString &password);
@@ -68,56 +69,63 @@ public:
 	QString serviceApiUrl();
 	QString serviceBaseUrl();
 	QString searchBaseUrl();
-	QString singleStatusUrl();
+	QString singleMessageUrl();
 	void setRemainingRequests(int remainingRequests);
 
 public slots:
-	void addFriendsStatuses(const QByteArray &data);
+	void addFriendsMessages(const QByteArray &data);
 	void addReplies(const QByteArray &data);
-	void addPublicStatuses(const QByteArray &data);
+	void addPublicMessages(const QByteArray &data);
 	void addFavorites(const QByteArray &data);
 	void addPreviousFavorites(const QByteArray &data);
 	void addInboxMessages(const QByteArray &data);
-	void updateLastStatus(const QByteArray &data);
-	void updateLastStatus();
-	void sendStatus(const QString &status, int inReplyToStatusId);
-	void statusSent(const QByteArray &data);
+	void addOutboxMessages(const QByteArray &data);
+	void updateLastMessage(const QByteArray &data);
+	void updateLastMessage();
+	void sendMessage(const QString &message, int inReplyToMessageId);
+	void messageSent(const QByteArray &data);
 	void directMessageSent(const QByteArray &data);
-	void statusFavorChanged(const QByteArray &data);
-	void statusDestroyed(const QByteArray &data);
-	void receivePublicStatuses(int count);
-	void receiveFriendsStatuses(int count);
+	void messageFavorChanged(const QByteArray &data);
+	void messageDestroyed(const QByteArray &data);
+	void directMessageDestroyed(const QByteArray &data);
+	void receivePublicMessages(int count);
+	void receiveFriendsMessages(int count);
 	void receiveReplies(int count);
 	void receiveFavorites();
 	void receiveInboxMessages(int count);
-	void receivePreviousPublicStatuses(int count);
-	void receivePreviousFriendsStatuses(int count);
+	void receiveOutboxMessages(int count);
+	void receivePreviousPublicMessages(int count);
+	void receivePreviousFriendsMessages(int count);
 	void receivePreviousReplies(int count);
 	void receivePreviousFavorites();
 	void receivePreviousInboxMessages(int count);
-	void removePreviousFriendsStatuses(int count);
+	void receivePreviousOutboxMessages(int count);
+	void removePreviousFriendsMessages(int count);
 	void removePreviousReplies(int count);
 	void removePreviousFavorites();
 	void removePreviousInboxMessages(int count);
+	void removePreviousOutboxMessages(int count);
 	void sendDirectMessage(const QString &username, const QString &message);
-	void favorStatus(const Status &status);
-	void unfavorStatus(const Status &status);
-	void destroyStatus(const Status &status);
+	void favorMessage(const Message &message);
+	void unfavorMessage(const Message &message);
+	void destroyMessage(const Message &message);
 	
 signals:
-	void friendsStatusesUpdated(const QVector<Status> &, Account *);
-	void repliesUpdated(const QVector<Status> &, Account *);
-	void publicStatusesUpdated(const QVector<Status> &, Account *);
-	void favoritesUpdated(const QVector<Status> &, Account *);
-	void lastStatusReceived(const QString &, Account *);
-	void newStatusesReceived(const QVector<Status> &, Account *);
-	void inboxMessagesUpdated(const QVector<Status> &, Account *);
+	void friendsMessagesUpdated(const QVector<Message> &, Account *);
+	void repliesUpdated(const QVector<Message> &, Account *);
+	void publicMessagesUpdated(const QVector<Message> &, Account *);
+	void favoritesUpdated(const QVector<Message> &, Account *);
+	void lastMessageReceived(const QString &, Account *);
+	void newMessagesReceived(const QVector<Message> &, Account *);
+	void inboxMessagesUpdated(const QVector<Message> &, Account *);
+	void outboxMessagesUpdated(const QVector<Message> &, Account *);
 	void remainingRequestsUpdated(int, Account *);
-	void previousFriendsStatusesReceived();
+	void previousFriendsMessagesReceived();
 	void previousRepliesReceived();
-	void previousPublicStatusesReceived();
+	void previousPublicMessagesReceived();
 	void previousFavoritesReceived();
 	void previousInboxMessagesReceived();
+	void previousOutboxMessagesReceived();
 };
 
 #endif

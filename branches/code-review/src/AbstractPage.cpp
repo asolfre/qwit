@@ -41,17 +41,17 @@ AbstractPage::AbstractPage(QWidget *parent): QWidget(parent) {
 	qDebug() << ("AbstractPage::AbstractPage()");
 	twitterWidget = new TwitterWidget(this);
 	twitterWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
-	connect(twitterWidget, SIGNAL(retweet(const Status &)), MainWindow::getInstance(), SIGNAL(retweet(const Status &)));
-	connect(twitterWidget, SIGNAL(reply(const Status &)), MainWindow::getInstance(), SIGNAL(reply(const Status &)));
-	connect(twitterWidget, SIGNAL(directMessage(const Status &)), MainWindow::getInstance(), SLOT(directMessage(const Status &)));
-	connect(twitterWidget, SIGNAL(favor(const Status &)), MainWindow::getInstance(), SLOT(favor(const Status &)));
-	connect(twitterWidget, SIGNAL(unfavor(const Status &)), MainWindow::getInstance(), SLOT(unfavor(const Status &)));
-	connect(twitterWidget, SIGNAL(destroy(const Status &)), MainWindow::getInstance(), SLOT(destroy(const Status &)));
+	connect(twitterWidget, SIGNAL(retweet(const Message &)), MainWindow::getInstance(), SIGNAL(retweet(const Message &)));
+	connect(twitterWidget, SIGNAL(reply(const Message &)), MainWindow::getInstance(), SIGNAL(reply(const Message &)));
+	connect(twitterWidget, SIGNAL(directMessage(const Message &)), MainWindow::getInstance(), SLOT(directMessage(const Message &)));
+	connect(twitterWidget, SIGNAL(favor(const Message &)), MainWindow::getInstance(), SLOT(favor(const Message &)));
+	connect(twitterWidget, SIGNAL(unfavor(const Message &)), MainWindow::getInstance(), SLOT(unfavor(const Message &)));
+	connect(twitterWidget, SIGNAL(destroy(const Message &)), MainWindow::getInstance(), SLOT(destroy(const Message &)));
 }
 
-void AbstractPage::addItem(const Status &status) {
+void AbstractPage::addItem(const Message &message) {
 //	qDebug() << ("AbstractPage::addItem()");
-	twitterWidget->addItem(status);
+	twitterWidget->addItem(message);
 }
 
 void AbstractPage::clear() {
@@ -64,7 +64,7 @@ void AbstractPage::reloadUserpics() {
 	twitterWidget->reloadUserpics();
 }
 
-void AbstractPage::updateItems(const QVector<Status> &items, Account *account) {
+void AbstractPage::updateItems(const QVector<Message> &items, Account *account) {
 	qDebug() << ("AbstractPage::updateItems()");
 	int scrollPosition = scrollArea->verticalScrollBar()->value();
 	clear();

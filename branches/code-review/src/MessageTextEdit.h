@@ -23,35 +23,48 @@
  *
  *  @section DESCRIPTION
  *
- *  Status class declaration
+ *  MessageTextEdit class declaration
  */
 
-#ifndef Status_h
-#define Status_h
+#ifndef MessageTextEdit_h
+#define MessageTextEdit_h
 
 #include "QwitHeaders.h"
 
-class Account;
+#include "Message.h"
 
-class Status {
+class MessageTextEdit: public QTextEdit {
+	Q_OBJECT
+
+private:
+	int inReplyToMessageId;
+	
 public:
-	uint id;
-	QString status;
-	QString username;
-	QString userpicFilename;
-	QDateTime time;
-	Account *account;
-	bool favorited;
-	QString source;
-	uint inReplyToStatusId;
-	QString inReplyToUsername;
-	Status() {}
-	Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, uint inReplyToStatusId, const QString &inReplyToUsername);
-	bool operator<(const Status &x) const;
-	bool operator==(const Status &x) const;
-	bool operator!=(const Status &x) const;
-	void save(QSettings &messagesCache);
-	static Status load(QSettings &messagesCache, Account *account);
+	static const int MaxMessageCharacters = 140;
+	static const int StandardHeight = 45;
+
+	MessageTextEdit(QWidget *parent = 0);
+
+	void focusInEvent(QFocusEvent *event);
+	void focusOutEvent(QFocusEvent *event);
+	int getMaxMessageCharactersNumber();
+
+protected:
+
+	void keyPressEvent(QKeyEvent *e);
+	void contextMenuEvent(QContextMenuEvent *event);
+	
+signals:
+
+	void messageEntered(const QString &, int);
+	void leftCharsNumberChanged(int);
+
+public slots:
+
+	void textChangedToCharsNumberChanged();
+	void updateSize();
+	void retweet(const Message &message);
+	void reply(const Message &message);
 };
 
 #endif

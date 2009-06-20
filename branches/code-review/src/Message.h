@@ -23,39 +23,36 @@
  *
  *  @section DESCRIPTION
  *
- *  AbstractPage class declaration
+ *  Message class declaration
  */
 
-#ifndef AbstractPage_h
-#define AbstractPage_h
+#ifndef Message_h
+#define Message_h
 
 #include "QwitHeaders.h"
 
-#include "TwitterWidget.h"
-#include "Configuration.h"
+class Account;
 
-class AbstractPage: public QWidget {
-	Q_OBJECT
-	
+class Message {
 public:
-	QScrollArea *scrollArea;
-	TwitterWidget *twitterWidget;
-	bool visible;
-	
-	AbstractPage(QWidget *parent = 0);
-	
-	virtual void update() = 0;
-	virtual void redraw();
-	virtual void addItem(const Message &message);
-	virtual void updateSize() = 0;
-	virtual QString title() = 0;
-	virtual void reloadUserpics();
-	void clear();
-	
-public slots:
-	virtual void updateItems(const QVector<Message> &items, Account *account);
-	virtual void updatePrevious();
-	virtual void removePrevious();
+	uint id;
+	QString text;
+	QString username;
+	QString userpicFilename;
+	QDateTime time;
+	Account *account;
+	bool favorited;
+	QString source;
+	uint inReplyToMessageId;
+	QString inReplyToUsername;
+	bool directMessage;
+	Message() {}
+	Message(uint id, const QString &text, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, uint inReplyToMessageId, const QString &inReplyToUsername, bool directMessage = false);
+	bool operator<(const Message &x) const;
+	bool operator==(const Message &x) const;
+	bool operator!=(const Message &x) const;
+	void save(QSettings &messagesCache);
+	static Message load(QSettings &messagesCache, Account *account);
 };
 
 #endif

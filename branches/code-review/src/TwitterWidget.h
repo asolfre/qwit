@@ -31,11 +31,11 @@
 
 #include "QwitHeaders.h"
 
-#include "Status.h"
+#include "Message.h"
 
 class TwitterWidgetItem {
 public:
-	QTextBrowser *statusTextBrowser;
+	QTextBrowser *messageTextBrowser;
 	QLabel *userpicLabel;
 	QLabel *signLabel;
 	QToolButton *replyButton;
@@ -47,7 +47,7 @@ public:
 	
 	int top;
 	int height;
-	Status status;
+	Message message;
 	QColor color;
 
 	void loadUserpic();
@@ -78,13 +78,15 @@ public:
 	
 	TwitterWidget(QWidget *parent);
 	void clear();
-	void addItem(const Status &status);
+	void addItem(const Message &message);
 	void updateItems();
 	void reloadUserpics();
 	void addMoreButton();
 	void addLessButton();
 	void removeMoreButton();
 	void removeLessButton();
+	int arrangeMessage(TwitterWidgetItem *item, int index, int height);
+	int arrangeDirectMessage(TwitterWidgetItem *item, int index, int height);
 	
 protected:
 
@@ -107,12 +109,12 @@ signals:
 	
 	void moreButtonClicked();
 	void lessButtonClicked();
-	void retweet(const Status &status);
-	void reply(const Status &status);
-	void directMessage(const Status &status);
-	void favor(const Status &status);
-	void unfavor(const Status &status);
-	void destroy(const Status &status);
+	void retweet(const Message &message);
+	void reply(const Message &message);
+	void directMessage(const Message &message);
+	void favor(const Message &message);
+	void unfavor(const Message &message);
+	void destroy(const Message &message);
 };
 
 #endif

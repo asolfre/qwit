@@ -90,7 +90,7 @@ void Configuration::load() {
 	showMessagesInTray = settings.value("showMessagesInTray", true).toBool();
 	placeControlsVertically = settings.value("placeControlsVertically", true).toBool();
 	placeTabsVertically = settings.value("placeTabsVertically", true).toBool();
-	showLastStatus = settings.value("showLastStatus", true).toBool();
+	showLastMessage = settings.value("showLastMessage", true).toBool();
 	settings.endGroup();
 	
 	settings.beginGroup("Tabs");
@@ -164,7 +164,7 @@ void Configuration::save() {
 	settings.setValue("showMessagesInTray", showMessagesInTray);
 	settings.setValue("placeControlsVertically", placeControlsVertically);
 	settings.setValue("placeTabsVertically", placeTabsVertically);
-	settings.setValue("showLastStatus", showLastStatus);
+	settings.setValue("showLastMessage", showLastMessage);
 	settings.endGroup();
 
 	settings.beginGroup("Tabs");
@@ -215,7 +215,7 @@ void Configuration::save() {
 int Configuration::addAccount(Account *account) {
 	accounts.push_back(account);
 	account->id = accounts.size() - 1;
-	QObject::connect(account, SIGNAL(newStatusesReceived(const QVector<Status>&, Account *)), MainWindow::getInstance(), SLOT(showNewStatuses(const QVector<Status>&, Account *)));
+	QObject::connect(account, SIGNAL(newMessagesReceived(const QVector<Message>&, Account *)), MainWindow::getInstance(), SLOT(showNewMessages(const QVector<Message>&, Account *)));
 	if (currentAccountId == -1) {
 		currentAccountId = account->id;
 	}

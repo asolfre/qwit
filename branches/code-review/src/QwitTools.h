@@ -31,7 +31,7 @@
 
 #include "QwitHeaders.h"
 
-#include "Status.h"
+#include "Message.h"
 
 class QwitTools: public QObject {
 	Q_OBJECT
@@ -47,27 +47,31 @@ private:
 	QIcon _getToolButtonIcon(const QString &iconFileName, bool active);
 	QString _formatDateTime(const QDateTime &time);
 	QDateTime _dateFromString(QString date);
-	QVector<Status> _parseStatuses(const QByteArray &data, Account *account);
-	QVector<Status> _parseInboxMessages(const QByteArray &data, Account *account);
-	Status _parseUser(const QByteArray &data, Account *account);
-	Status _parseStatus(const QByteArray &data, Account *account);
+	QVector<Message> _parseMessages(const QByteArray &data, Account *account);
+	QVector<Message> _parseInboxMessages(const QByteArray &data, Account *account);
+	QVector<Message> _parseOutboxMessages(const QByteArray &data, Account *account);
+	Message _parseUser(const QByteArray &data, Account *account);
+	Message _parseMessage(const QByteArray &data, Account *account);
+	Message _parseDirectMessage(const QByteArray &data, Account *account);
 	QString _parseError(const QByteArray &data);
-	void _makeStatusesUnique(QVector<Status> &v);
-	QString _prepareStatus(const QString &text, Account *account);
-	QVector<Status> _mergeStatuses(QVector<Status> &statuses, QVector<Status> &receivedStatuses);
+	void _makeMessagesUnique(QVector<Message> &v);
+	QString _prepareMessage(const QString &text, Account *account);
+	QVector<Message> _mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages);
 	
 public:
 	static QDateTime dateFromString(QString date);
 	static QIcon getToolButtonIcon(const QString &iconFileName, bool active = false);
 	static QString formatDateTime(const QDateTime &time);
-	static QVector<Status> parseStatuses(const QByteArray &data, Account *account);
-	static QVector<Status> parseInboxMessages(const QByteArray &data, Account *account);
-	static Status parseUser(const QByteArray &data, Account *account);
-	static Status parseStatus(const QByteArray &data, Account *account);
+	static QVector<Message> parseMessages(const QByteArray &data, Account *account);
+	static QVector<Message> parseInboxMessages(const QByteArray &data, Account *account);
+	static QVector<Message> parseOutboxMessages(const QByteArray &data, Account *account);
+	static Message parseUser(const QByteArray &data, Account *account);
+	static Message parseMessage(const QByteArray &data, Account *account);
+	static Message parseDirectMessage(const QByteArray &data, Account *account);
 	static QString parseError(const QByteArray &data);
-	static void makeStatusesUnique(QVector<Status> &statuses);
-	static QString prepareStatus(const QString &text, Account *account);
-	static QVector<Status> mergeStatuses(QVector<Status> &statuses, QVector<Status> &receivedStatuses);
+	static void makeMessagesUnique(QVector<Message> &messages);
+	static QString prepareMessage(const QString &text, Account *account);
+	static QVector<Message> mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages);
 };
 
 void handleMessage(QtMsgType type, const char *msg);

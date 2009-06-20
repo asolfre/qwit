@@ -66,7 +66,7 @@ QString PublicPage::title() {
 void PublicPage::update() {
 	qDebug() << ("PublicPage::update()");
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->receivePublicStatuses(config->messagesPerPage);
+	config->currentAccount()->receivePublicMessages(config->messagesPerPage);
 }
 
 #endif

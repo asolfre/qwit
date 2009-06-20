@@ -34,7 +34,7 @@
 #include "QwitHeaders.h"
 
 #include "AbstractPage.h"
-#include "StatusTextEdit.h"
+#include "MessageTextEdit.h"
 #include "OptionsDialog.h"
 #include "AboutDialog.h"
 #include "DirectMessageDialog.h"
@@ -43,7 +43,8 @@
 #include "PublicPage.h"
 #include "FavoritesPage.h"
 #include "InboxPage.h"
-#include "Status.h"
+#include "OutboxPage.h"
+#include "Message.h"
 
 class MainWindow: public QDialog, public Ui::MainWindow {
 	Q_OBJECT
@@ -66,9 +67,10 @@ private:
 	PublicPage *publicPage;
 	FavoritesPage *favoritesPage;
 	InboxPage *inboxPage;
+	OutboxPage *outboxPage;
 	QTimer *redrawTimer;
 	QTimer *updateTimer;
-	StatusTextEdit *statusTextEdit;
+	MessageTextEdit *messageTextEdit;
 	QLabel *greetingMessageLabel;
 	QLabel *leftCharactersNumberLabel;
 
@@ -103,22 +105,22 @@ public slots:
 	void refresh();
 	void tabChanged(int tabIndex);
 	void reloadUserpics();
-	void updateLastStatus(const QString &status, Account *account);
-	void showNewStatuses(const QVector<Status> &statuses, Account *account);
+	void updateLastMessage(const QString &message, Account *account);
+	void showNewMessages(const QVector<Message> &messagees, Account *account);
 	void redrawPages();
 	void updatePages();
 	void updateRemainingRequests(int remainingRequests, Account *account);
-	void directMessage(const Status &status);
-	void favor(const Status &status);
-	void unfavor(const Status &status);
-	void destroy(const Status &status);
+	void directMessage(const Message &message);
+	void favor(const Message &message);
+	void unfavor(const Message &message);
+	void destroy(const Message &message);
 	void sendDirectMessage();
 	void postTwitPic();
 	
 signals:
 
-	void retweet(const Status &);
-	void reply(const Status &);
+	void retweet(const Message &);
+	void reply(const Message &);
 	
 protected:
 

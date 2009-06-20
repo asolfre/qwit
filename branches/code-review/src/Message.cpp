@@ -23,65 +23,68 @@
  *  
  *  @section DESCRIPTION
  *  
- *  Status class implementation
+ *  Message class implementation
  */
 
-#ifndef Status_cpp
-#define Status_cpp
+#ifndef Message_cpp
+#define Message_cpp
 
 #include "QwitHeaders.h"
 
-#include "Status.h"
+#include "Message.h"
 
-Status::Status(uint id, const QString &status, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, uint inReplyToStatusId, const QString &inReplyToUsername) {
+Message::Message(uint id, const QString &text, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, uint inReplyToMessageId, const QString &inReplyToUsername, bool directMessage) {
 	this->id = id;
-	this->status = status;
+	this->text = text;
 	this->username = username;
 	this->userpicFilename = userpicFilename;
 	this->time = time;
 	this->account = account;
 	this->favorited = favorited;
 	this->source = source;
-	this->inReplyToStatusId = inReplyToStatusId;
+	this->inReplyToMessageId = inReplyToMessageId;
 	this->inReplyToUsername = inReplyToUsername;
+	this->directMessage = directMessage;
 }
 
-bool Status::operator<(const Status &x) const {
+bool Message::operator<(const Message &x) const {
 	return id > x.id;
 }
 
-bool Status::operator==(const Status &x) const {
+bool Message::operator==(const Message &x) const {
 	return id == x.id;
 }
 
-bool Status::operator!=(const Status &x) const {
+bool Message::operator!=(const Message &x) const {
 	return id != x.id;
 }
 
-void Status::save(QSettings &messagesCache) {
+void Message::save(QSettings &messagesCache) {
 	messagesCache.setValue("id", id);
-	messagesCache.setValue("status", status);
+	messagesCache.setValue("text", text);
 	messagesCache.setValue("username", username);
 	messagesCache.setValue("userpicFilename", userpicFilename);
 	messagesCache.setValue("time", time);
 	messagesCache.setValue("favorited", favorited);
 	messagesCache.setValue("source", source);
-	messagesCache.setValue("inReplyToStatusId", inReplyToStatusId);
+	messagesCache.setValue("inReplyToMessageId", inReplyToMessageId);
 	messagesCache.setValue("inReplyToUsername", inReplyToUsername);
+	messagesCache.setValue("directMessage", directMessage);
 }
 
-Status Status::load(QSettings &messagesCache, Account *account) {
-	return Status(
+Message Message::load(QSettings &messagesCache, Account *account) {
+	return Message(
 		messagesCache.value("id").toInt(),
-		messagesCache.value("status").toString(),
+		messagesCache.value("text").toString(),
 		messagesCache.value("username").toString(),
 		messagesCache.value("userpicFilename").toString(),
 		messagesCache.value("time").toDateTime(),
 		messagesCache.value("favorited").toBool(),
 		account,
 		messagesCache.value("source").toString(),
-		messagesCache.value("inReplyToStatusId").toUInt(),
-		messagesCache.value("inReplyToUsername").toString()
+		messagesCache.value("inReplyToMessageId").toUInt(),
+		messagesCache.value("inReplyToUsername").toString(),
+		messagesCache.value("directMessage").toBool()
 	);
 }
 
