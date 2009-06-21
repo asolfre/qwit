@@ -62,10 +62,14 @@ QString FavoritesPage::title() {
 	return tr("Favorites");
 }
 
-void FavoritesPage::update() {
+void FavoritesPage::update(Account *account) {
 	qDebug() << ("FavoritesPage::update()");
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->receiveFavorites();
+	if (account) {
+		account->receiveFavorites();
+	} else {
+		config->currentAccount()->receiveFavorites();
+	}
 }
 
 void FavoritesPage::updatePrevious() {
@@ -81,6 +85,11 @@ void FavoritesPage::removePrevious() {
 	Configuration *config = Configuration::getInstance();
 	config->currentAccount()->removePreviousFavorites();
 	twitterWidget->enableLessButton();
+}
+
+bool FavoritesPage::updateAutomatically() {
+	Configuration *config = Configuration::getInstance();
+	return config->updateFavoritesTabAlways;
 }
 
 #endif

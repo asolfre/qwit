@@ -62,10 +62,14 @@ QString OutboxPage::title() {
 	return tr("Outbox");
 }
 
-void OutboxPage::update() {
+void OutboxPage::update(Account *account) {
 	qDebug() << ("OutboxPage::update()");
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->receiveOutboxMessages(config->messagesPerPage);
+	if (account) {
+		account->receiveOutboxMessages(config->messagesPerPage);
+	} else {
+		config->currentAccount()->receiveOutboxMessages(config->messagesPerPage);
+	}
 }
 
 void OutboxPage::updatePrevious() {
@@ -81,6 +85,11 @@ void OutboxPage::removePrevious() {
 	Configuration *config = Configuration::getInstance();
 	config->currentAccount()->removePreviousOutboxMessages(config->messagesPerPage);
 	twitterWidget->enableLessButton();
+}
+
+bool OutboxPage::updateAutomatically() {
+	Configuration *config = Configuration::getInstance();
+	return config->updateOutboxTabAlways;
 }
 
 #endif

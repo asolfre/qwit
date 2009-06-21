@@ -48,6 +48,7 @@ public:
 	void focusInEvent(QFocusEvent *event);
 	void focusOutEvent(QFocusEvent *event);
 	int getMaxMessageCharactersNumber();
+	void insertFromMimeData(const QMimeData *source);
 
 protected:
 
@@ -65,6 +66,7 @@ public slots:
 	void updateSize();
 	void retweet(const Message &message);
 	void reply(const Message &message);
+	void insertUrl(const QString &url);
 };
 
 #endif

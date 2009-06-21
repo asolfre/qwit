@@ -40,11 +40,12 @@ public:
 	FavoritesPage(QWidget* parent = 0);
 	void updateSize();
 	QString title();
-	void update();
+	void update(Account *account = 0);
 	
 public slots:
 	void updatePrevious();
 	void removePrevious();
+	bool updateAutomatically();
 };
 
 #endif

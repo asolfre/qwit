@@ -595,13 +595,21 @@ QString QwitTools::_prepareMessage(const QString &text, Account *account) {
 			QStringList list = urlRegExp.capturedTexts();
 			QStringList::iterator it = list.begin();
 			QString url = *it;
-			t += s.mid(lastPos, pos - lastPos);
-			QString href = url;
-			if (list[1] == "") {
-				href = "http://" + href;
+			while (url.at(url.length() - 1).isPunct() && (url[url.length() - 1] != '/')) {
+				url = url.mid(0, url.length() - 1);
 			}
-			t += "<a href=\"" + href + "\" style=\"font-weight:bold;text-decoration:none\">" + url + "</a>";
-			lastPos = pos + url.length();
+			if (pos && ((s.at(pos - 1) == '@') || (s.at(pos - 1).isLetterOrNumber()))) {
+				t += s.mid(lastPos, pos - lastPos);
+				lastPos = pos + url.length();
+			} else {
+				t += s.mid(lastPos, pos - lastPos);
+				QString href = url;
+				if (list[1] == "") {
+					href = "http://" + href;
+				}
+				t += "<a href=\"" + href + "\" style=\"font-weight:bold;text-decoration:none\">" + url + "</a>";
+				lastPos = pos + url.length();
+			}
 		}
 		t += s.mid(lastPos);
 		s = t;
@@ -711,6 +719,14 @@ QString QwitTools::_parseError(const QByteArray &data) {
 		node = node.nextSibling();
 	}
 	return request;
+}
+
+bool QwitTools::isUrl(const QString &s) {
+	return getInstance()->_isUrl(s);
+}
+
+bool QwitTools::_isUrl(const QString &s) {
+	return urlRegExp.exactMatch(s);
 }
 
 

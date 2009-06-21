@@ -108,7 +108,8 @@ public slots:
 	void updateLastMessage(const QString &message, Account *account);
 	void showNewMessages(const QVector<Message> &messagees, Account *account);
 	void redrawPages();
-	void updatePages();
+	void updateAccount(Account *account);
+	void updateAll();
 	void updateRemainingRequests(int remainingRequests, Account *account);
 	void directMessage(const Message &message);
 	void favor(const Message &message);

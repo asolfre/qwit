@@ -43,7 +43,10 @@ HEADERS += \
 		src/Message.h \
 		src/QwitTools.h \
 		src/UserpicsDownloader.h \
-		src/QwitHeaders.h
+		src/QwitHeaders.h \
+		src/UrlShortener.h \
+		src/TrImUrlShortener.h \
+		src/UrlShortenerFabric.h
 FORMS += \
 		src/MainWindow.ui \
 		src/OptionsDialog.ui \
@@ -73,7 +76,10 @@ SOURCES += \
 		src/Twitter.cpp \
 		src/Message.cpp \
 		src/QwitTools.cpp \
-		src/UserpicsDownloader.cpp
+		src/UserpicsDownloader.cpp \
+		src/UrlShortener.cpp \
+		src/TrImUrlShortener.cpp \
+		src/UrlShortenerFabric.cpp
 TRANSLATIONS += \
 		translations/qwit_en_US.ts \
 		translations/qwit_es_ES.ts \

@@ -63,10 +63,19 @@ QString PublicPage::title() {
 	return tr("Public");
 }
 
-void PublicPage::update() {
+void PublicPage::update(Account *account) {
 	qDebug() << ("PublicPage::update()");
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->receivePublicMessages(config->messagesPerPage);
+	if (account) {
+		account->receivePublicMessages(config->messagesPerPage);
+	} else {
+		config->currentAccount()->receivePublicMessages(config->messagesPerPage);
+	}
+}
+
+bool PublicPage::updateAutomatically() {
+	Configuration *config = Configuration::getInstance();
+	return config->updatePublicTabAlways;
 }
 
 #endif

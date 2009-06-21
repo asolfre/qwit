@@ -57,6 +57,7 @@ private:
 	void _makeMessagesUnique(QVector<Message> &v);
 	QString _prepareMessage(const QString &text, Account *account);
 	QVector<Message> _mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages);
+	bool _isUrl(const QString &s);
 	
 public:
 	static QDateTime dateFromString(QString date);
@@ -72,6 +73,7 @@ public:
 	static void makeMessagesUnique(QVector<Message> &messages);
 	static QString prepareMessage(const QString &text, Account *account);
 	static QVector<Message> mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages);
+	static bool isUrl(const QString &s);
 };
 
 void handleMessage(QtMsgType type, const char *msg);

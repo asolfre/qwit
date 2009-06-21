@@ -62,10 +62,14 @@ QString HomePage::title() {
 	return tr("Home");
 }
 
-void HomePage::update() {
+void HomePage::update(Account *account) {
 	qDebug() << ("HomePage::update()");
 	Configuration *config = Configuration::getInstance();
-	config->currentAccount()->receiveFriendsMessages(config->messagesPerPage);
+	if (account) {
+		account->receiveFriendsMessages(config->messagesPerPage);
+	} else {
+		config->currentAccount()->receiveFriendsMessages(config->messagesPerPage);
+	}
 }
 
 void HomePage::updatePrevious() {
@@ -81,6 +85,11 @@ void HomePage::removePrevious() {
 	Configuration *config = Configuration::getInstance();
 	config->currentAccount()->removePreviousFriendsMessages(config->messagesPerPage);
 	twitterWidget->enableLessButton();
+}
+
+bool HomePage::updateAutomatically() {
+	Configuration *config = Configuration::getInstance();
+	return config->updateHomeTabAlways;
 }
 
 #endif

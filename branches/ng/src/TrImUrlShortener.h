@@ -23,25 +23,32 @@
  *
  *  @section DESCRIPTION
  *
- *  PublicPage class declaration
+ *  TrImUrlShortener class declaration
  */
 
-#ifndef PublicPage_h
-#define PublicPage_h
+#ifndef TrImUrlShortener_h
+#define TrImUrlShortener_h
 
 #include "QwitHeaders.h"
 
-#include "AbstractPage.h"
+#include "UrlShortener.h"
 
-class PublicPage: public AbstractPage {
+class TrImUrlShortener: public UrlShortener {
 	Q_OBJECT
+
+	QHttp *http;
+	QString currentUrl;
+	QBuffer buffer;
+	int requestId;
 	
 public:
-	PublicPage(QWidget* parent = 0);
-	void updateSize();
-	QString title();
-	void update(Account *account = 0);
-	bool updateAutomatically();
+	TrImUrlShortener();
+	
+public slots:
+
+	void shorten(const QString &url);
+	void requestFinished(int id, bool error);
+	
 };
 
 #endif

@@ -23,25 +23,22 @@
  *
  *  @section DESCRIPTION
  *
- *  PublicPage class declaration
+ *  UrlShortener class declaration
  */
 
-#ifndef PublicPage_h
-#define PublicPage_h
+#ifndef UrlShortener_h
+#define UrlShortener_h
 
 #include "QwitHeaders.h"
 
-#include "AbstractPage.h"
-
-class PublicPage: public AbstractPage {
+class UrlShortener: public QObject {
 	Q_OBJECT
 	
-public:
-	PublicPage(QWidget* parent = 0);
-	void updateSize();
-	QString title();
-	void update(Account *account = 0);
-	bool updateAutomatically();
+public slots:
+	virtual void shorten(const QString &url);
+
+signals:
+	void urlShortened(const QString &shortenedUrl);
 };
 
 #endif

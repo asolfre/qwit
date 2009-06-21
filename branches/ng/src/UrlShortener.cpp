@@ -1,4 +1,4 @@
-/*! 
+/*!
  *  @file
  *  @author Artem Iglikov <artem.iglikov@gmail.com>
  *  
@@ -20,28 +20,19 @@
  *  
  *  You should have received a copy of the GNU General Public License
  *  along with Qwit.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  
  *  @section DESCRIPTION
- *
- *  PublicPage class declaration
+ *  
+ *  UrlShortener class implementation
  */
 
-#ifndef PublicPage_h
-#define PublicPage_h
+#ifndef UrlShortener_cpp
+#define UrlShortener_cpp
 
-#include "QwitHeaders.h"
+#include "UrlShortener.h"
 
-#include "AbstractPage.h"
-
-class PublicPage: public AbstractPage {
-	Q_OBJECT
-	
-public:
-	PublicPage(QWidget* parent = 0);
-	void updateSize();
-	QString title();
-	void update(Account *account = 0);
-	bool updateAutomatically();
-};
+void UrlShortener::shorten(const QString &url) {
+	emit urlShortened(url);
+}
 
 #endif

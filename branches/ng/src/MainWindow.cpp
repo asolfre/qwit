@@ -36,6 +36,7 @@
 #include "UserpicsDownloader.h"
 #include "Configuration.h"
 #include "TwitPicDialog.h"
+#include "UrlShortenerFabric.h"
 
 MainWindow* MainWindow::instance = 0;
 
@@ -91,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	redrawTimer->start(10000);
 	
 	updateTimer = new QTimer(this);
-	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updatePages()));
+	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateAll()));
 
 	setupTrayIcon();
 	loadState();
@@ -103,8 +104,10 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	acceptClose = false;
 	
 	connect(UserpicsDownloader::getInstance(), SIGNAL(userpicDownloaded()), this, SLOT(reloadUserpics()));
+	
+	connect(UrlShortenerFabric::getShortener(), SIGNAL(urlShortened(const QString &)), messageTextEdit, SLOT(insertUrl(const QString &)));
 
-	updatePages();
+	updateAll();
 
 }
 
@@ -618,25 +621,19 @@ void MainWindow::redrawPages() {
 	}
 }
 
-void MainWindow::updatePages() {
+void MainWindow::updateAccount(Account *account) {
+	for (int i = 0; i < pages.size(); ++i) {
+		if (pages[i]->updateAutomatically()) {
+			pages[i]->update(account);
+		}
+	}
+	account->updateLastMessage();
+}
+
+void MainWindow::updateAll() {
 	Configuration *config = Configuration::getInstance();
 	for (int i = 0; i < config->accounts.size(); ++i) {
-		if (config->updateHomeTabAlways) {
-			config->accounts[i]->receiveFriendsMessages(config->messagesPerPage);
-		}
-		if (config->updateRepliesTabAlways) {
-			config->accounts[i]->receiveReplies(config->messagesPerPage);
-		}
-		if (config->updateFavoritesTabAlways) {
-			config->accounts[i]->receiveFavorites();
-		}
-		if (config->updateInboxTabAlways) {
-			config->accounts[i]->receiveInboxMessages(config->messagesPerPage);
-		}
-		if (config->updateOutboxTabAlways) {
-			config->accounts[i]->receiveOutboxMessages(config->messagesPerPage);
-		}
-		config->accounts[i]->updateLastMessage();
+		updateAccount(config->accounts[i]);
 	}
 }
 

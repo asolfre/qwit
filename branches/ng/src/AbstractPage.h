@@ -44,7 +44,7 @@ public:
 	
 	AbstractPage(QWidget *parent = 0);
 	
-	virtual void update() = 0;
+	virtual void update(Account *account = 0) = 0;
 	virtual void redraw();
 	virtual void addItem(const Message &message);
 	virtual void updateSize() = 0;
@@ -56,6 +56,7 @@ public slots:
 	virtual void updateItems(const QVector<Message> &items, Account *account);
 	virtual void updatePrevious();
 	virtual void removePrevious();
+	virtual bool updateAutomatically() = 0;
 };
 
 #endif

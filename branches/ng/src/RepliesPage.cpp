@@ -63,10 +63,14 @@ QString RepliesPage::title() {
 	return tr("Replies");
 }
 
-void RepliesPage::update() {
+void RepliesPage::update(Account *account) {
 	qDebug() << ("RepliesPage::update()");
-
-	Configuration::getInstance()->currentAccount()->receiveReplies(20);
+	Configuration* config = Configuration::getInstance();
+	if (account) {
+		account->receiveReplies(20);
+	} else {
+		config->currentAccount()->receiveReplies(20);
+	}
 }
 
 void RepliesPage::updatePrevious() {
@@ -82,6 +86,11 @@ void RepliesPage::removePrevious() {
 	Configuration *config = Configuration::getInstance();
 	config->currentAccount()->removePreviousReplies(config->messagesPerPage);
 	twitterWidget->enableLessButton();
+}
+
+bool RepliesPage::updateAutomatically() {
+	Configuration *config = Configuration::getInstance();
+	return config->updateRepliesTabAlways;
 }
 
 #endif
