@@ -106,7 +106,7 @@ public slots:
 	void tabChanged(int tabIndex);
 	void reloadUserpics();
 	void updateLastMessage(const QString &message, Account *account);
-	void showNewMessages(const QVector<Message> &messagees, Account *account);
+	void showNewMessages(const QVector<Message> &messages, Account *account);
 	void redrawPages();
 	void updateAccount(Account *account);
 	void updateAll();

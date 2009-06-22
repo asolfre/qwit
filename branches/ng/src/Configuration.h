@@ -32,6 +32,8 @@
 #include "QwitHeaders.h"
 
 #include "Account.h"
+#include "UrlShortener.h"
+#include "TrImUrlShortener.h"
 
 class Configuration {
 	Configuration();
@@ -46,6 +48,7 @@ public:
 	static const QString ApplicationName;
 	static const QString CacheDirectory;
 	static const QString MessagesCacheFileName;
+	static UrlShortener* urlShortener;
 
 
 	static QMap<QString, QString> ServicesNames;
@@ -105,6 +108,8 @@ public:
 	Account* currentAccount();
 	void saveMessages();
 	void loadMessages();
+	
+	UrlShortener* getUrlShortener();
 	
 public:
 	static Configuration* getInstance();

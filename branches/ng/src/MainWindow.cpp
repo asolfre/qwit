@@ -36,7 +36,6 @@
 #include "UserpicsDownloader.h"
 #include "Configuration.h"
 #include "TwitPicDialog.h"
-#include "UrlShortenerFabric.h"
 
 MainWindow* MainWindow::instance = 0;
 
@@ -105,7 +104,8 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	
 	connect(UserpicsDownloader::getInstance(), SIGNAL(userpicDownloaded()), this, SLOT(reloadUserpics()));
 	
-	connect(UrlShortenerFabric::getShortener(), SIGNAL(urlShortened(const QString &)), messageTextEdit, SLOT(insertUrl(const QString &)));
+	Configuration *config = Configuration::getInstance();
+	connect(config->getUrlShortener(), SIGNAL(urlShortened(const QString &)), messageTextEdit, SLOT(insertUrl(const QString &)));
 
 	updateAll();
 
@@ -600,18 +600,18 @@ void MainWindow::updateLastMessage(const QString &message, Account *account) {
 	lastMessageLabel->setText(message);
 }
 
-void MainWindow::showNewMessages(const QVector<Message> &messagees, Account *account) {
+void MainWindow::showNewMessages(const QVector<Message> &messages, Account *account) {
 	qDebug() << ("MainWindow::showNewMessages()");
 	Configuration *config = Configuration::getInstance();
 	QString trayMessage = "";
-	for (int i = 0; i < min(messagees.size(), config->messagesInPopup); ++i) {
+	for (int i = 0; i < min(messages.size(), config->messagesInPopup); ++i) {
 		if (trayMessage.length()) {
 			trayMessage += "----------------------------\n";
 		}
-		trayMessage += messagees[i].username + ": " + messagees[i].text + " /" + QwitTools::formatDateTime(messagees[i].time.toLocalTime()) + "\n";
+		trayMessage += messages[i].username + ": " + messages[i].text + " /" + QwitTools::formatDateTime(messages[i].time.toLocalTime()) + "\n";
 	}
 	if ((trayMessage != "") && config->showMessagesInTray) {
-		trayIcon->showMessage(tr("Qwit: new messagees receieved"), trayMessage);
+		trayIcon->showMessage(tr("Qwit: new messages receieved"), trayMessage);
 	}
 }
 

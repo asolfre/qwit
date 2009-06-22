@@ -34,7 +34,6 @@
 #include "MessageTextEdit.h"
 #include "Configuration.h"
 #include "QwitTools.h"
-#include "UrlShortenerFabric.h"
 
 const int MessageTextEdit::MaxMessageCharacters;
 const int MessageTextEdit::StandardHeight;
@@ -129,7 +128,8 @@ void MessageTextEdit::insertFromMimeData(const QMimeData *source) {
 	QString text = source->text();
 	if (QwitTools::isUrl(text) && (text.length() > 20)) {
 		setEnabled(false);
-		UrlShortenerFabric::getShortener()->shorten(text);
+		Configuration *config = Configuration::getInstance();
+		config->getUrlShortener()->shorten(text);
 	} else {
 		QTextEdit::insertFromMimeData(source);
 	}

@@ -47,6 +47,8 @@ QMap<QString, QString> Configuration::ServicesNames;
 QMap<QString, int> Configuration::ServicesIds;
 QVector<QString> Configuration::Services;
 
+UrlShortener* Configuration::urlShortener = 0;
+
 Configuration::Configuration() {
 	ServicesNames["twitter"] = "Twitter";
 	ServicesNames["identica"] = "Identica";
@@ -256,6 +258,13 @@ void Configuration::loadMessages() {
 		accounts[i]->loadMessages(messagesCache);
 	}
 	messagesCache.endArray();
+}
+
+UrlShortener* Configuration::getUrlShortener() {
+	if (!urlShortener) {
+		urlShortener = (UrlShortener*) new TrImUrlShortener();
+	}
+	return urlShortener;
 }
 
 #endif
