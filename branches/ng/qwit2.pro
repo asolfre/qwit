@@ -37,6 +37,7 @@ HEADERS += \
 		src/FavoritesPage.h \
 		src/InboxPage.h \
 		src/OutboxPage.h \
+		src/SearchPage.h \
 		src/TwitterWidget.h \
 		src/Twitter.h \
 		src/Services.h \
@@ -70,6 +71,7 @@ SOURCES += \
 		src/FavoritesPage.cpp \
 		src/InboxPage.cpp \
 		src/OutboxPage.cpp \
+		src/SearchPage.cpp \
 		src/TwitterWidget.cpp \
 		src/Services.cpp \
 		src/Twitter.cpp \

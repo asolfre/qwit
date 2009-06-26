@@ -38,5 +38,33 @@ const int AccountConfigurationDialog::ActionEdit;
 
 AccountConfigurationDialog::AccountConfigurationDialog(QWidget *parent): QDialog(parent) {
 	setupUi(this);
+	connect(useHttpsCheckBox, SIGNAL(stateChanged(int)), this, SLOT(useHttpsCheckBoxChanged(int)));
 }
+
+void AccountConfigurationDialog::useHttpsCheckBoxChanged(int state) {
+	if (state == Qt::Checked) {
+		QString serviceBaseUrl = serviceBaseUrlLineEdit->text();
+		if (serviceBaseUrl.startsWith("http://")) {
+			serviceBaseUrl = "https://" + serviceBaseUrl.mid(7);
+		}
+		serviceBaseUrlLineEdit->setText(serviceBaseUrl);
+		QString serviceApiUrl = serviceApiUrlLineEdit->text();
+		if (serviceApiUrl.startsWith("http://")) {
+			serviceApiUrl = "https://" + serviceApiUrl.mid(7);
+		}
+		serviceApiUrlLineEdit->setText(serviceApiUrl);
+	} else {
+		QString serviceBaseUrl = serviceBaseUrlLineEdit->text();
+		if (serviceBaseUrl.startsWith("https://")) {
+			serviceBaseUrl = "http://" + serviceBaseUrl.mid(8);
+		}
+		serviceBaseUrlLineEdit->setText(serviceBaseUrl);
+		QString serviceApiUrl = serviceApiUrlLineEdit->text();
+		if (serviceApiUrl.startsWith("https://")) {
+			serviceApiUrl = "http://" + serviceApiUrl.mid(8);
+		}
+		serviceApiUrlLineEdit->setText(serviceApiUrl);
+	}
+}
+
 #endif

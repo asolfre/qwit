@@ -44,6 +44,7 @@
 #include "FavoritesPage.h"
 #include "InboxPage.h"
 #include "OutboxPage.h"
+#include "SearchPage.h"
 #include "Message.h"
 
 class MainWindow: public QDialog, public Ui::MainWindow {
@@ -68,6 +69,7 @@ private:
 	FavoritesPage *favoritesPage;
 	InboxPage *inboxPage;
 	OutboxPage *outboxPage;
+	SearchPage *searchPage;
 	QTimer *redrawTimer;
 	QTimer *updateTimer;
 	MessageTextEdit *messageTextEdit;

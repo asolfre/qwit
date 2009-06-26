@@ -111,9 +111,9 @@ void TwitterWidget::addItem(const Message &message) {
 	item->messageTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	item->messageTextBrowser->setFrameShape(QFrame::NoFrame);
 	item->messageTextBrowser->setOpenExternalLinks(true);
-	QFont font = item->messageTextBrowser->document()->defaultFont();
-	font.setFamily("Verdana");
-	item->messageTextBrowser->document()->setDefaultFont(font);
+//	QFont font = item->messageTextBrowser->document()->defaultFont();
+//	font.setFamily("Verdana");
+//	item->messageTextBrowser->document()->setDefaultFont(font);
 
 	item->userpicLabel = new QLabel(this);
 	item->loadUserpic();

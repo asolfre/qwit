@@ -125,7 +125,8 @@ void Configuration::load() {
 		QString username = settings.value("username", "").toString();
 		QString password = settings.value("password", "").toString();
 		QString type = settings.value("type", "").toString();
-		Account *account = new Account(type, username, password);
+		bool useHttps = settings.value("useHttps", false).toBool();
+		Account *account = new Account(type, username, password, useHttps);
 		addAccount(account);
 	}
 	settings.endArray();
@@ -198,6 +199,7 @@ void Configuration::save() {
 		settings.setValue("username", accounts[i]->username);
 		settings.setValue("password", accounts[i]->password);
 		settings.setValue("type", accounts[i]->type);
+		settings.setValue("useHttps", accounts[i]->useHttps);
 	}
 	settings.endArray();
 	settings.endGroup();

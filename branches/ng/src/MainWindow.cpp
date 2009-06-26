@@ -240,6 +240,7 @@ void MainWindow::updateState() {
 	favoritesPage = 0;
 	inboxPage = 0;
 	outboxPage = 0;
+	searchPage = 0;
 	
 	if (config->showHomeTab) {
 		pages.push_back(homePage = new HomePage());
@@ -258,6 +259,9 @@ void MainWindow::updateState() {
 	}
 	if (config->showOutboxTab) {
 		pages.push_back(outboxPage = new OutboxPage());
+	}
+	if (config->showSearchTab) {
+		pages.push_back(searchPage = new SearchPage());
 	}
 
 	for (int i = 0; i < pages.size(); ++i) {
@@ -457,6 +461,13 @@ void MainWindow::updateCurrentAccount(int id) {
 		outboxPage->updateItems(config->currentAccount()->outboxMessages, config->currentAccount());
 		disconnect(config->accounts[oldAccountId], SIGNAL(previousOutboxMessagesReceived()), 0, 0);
 		connect(config->currentAccount(), SIGNAL(previousOutboxMessagesReceived()), outboxPage->twitterWidget, SLOT(enableMoreButton()));
+	}
+	if (searchPage) {
+//		disconnect(config->accounts[oldAccountId], SIGNAL(inboxMessagesUpdated(const QVector<Message> &, Account *)), 0, 0);
+//		connect(config->currentAccount(), SIGNAL(inboxMessagesUpdated(const QVector<Message> &, Account *)), inboxPage, SLOT(updateItems(const QVector<Message> &, Account *)));
+//		inboxPage->updateItems(config->currentAccount()->inboxMessages, config->currentAccount());
+//		disconnect(config->accounts[oldAccountId], SIGNAL(previousInboxMessagesReceived()), 0, 0);
+//		connect(config->currentAccount(), SIGNAL(previousInboxMessagesReceived()), inboxPage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	disconnect(config->accounts[oldAccountId], SIGNAL(lastMessageReceived(const QString &, Account *)), 0, 0);
 	connect(config->currentAccount(), SIGNAL(lastMessageReceived(const QString &, Account *)), this, SLOT(updateLastMessage(const QString &, Account *)));

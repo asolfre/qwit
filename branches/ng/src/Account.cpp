@@ -67,13 +67,14 @@ Account::Account() {
 	connect(twitter, SIGNAL(previousOutboxMessagesReceived(const QByteArray&)), this, SIGNAL(previousOutboxMessagesReceived()));
 }
 
-Account::Account(const QString &type, const QString &username, const QString &password) {
+Account::Account(const QString &type, const QString &username, const QString &password, bool useHttps) {
 	qDebug() << ("Account::Account()");
 	remainingRequests = -1;
 	twitter = new Twitter(this);
 	this->type = type;
 	this->username = username;
 	this->password = password;
+	this->useHttps = useHttps;
 	connect(twitter, SIGNAL(friendsMessagesReceived(const QByteArray&)), this, SLOT(addFriendsMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(repliesReceived(const QByteArray&)), this, SLOT(addReplies(const QByteArray&)));
 	connect(twitter, SIGNAL(publicMessagesReceived(const QByteArray&)), this, SLOT(addPublicMessages(const QByteArray&)));
@@ -383,19 +384,43 @@ void Account::loadMessages(QSettings &messagesCache) {
 }
 
 QString Account::serviceApiUrl() {
-	return _serviceApiUrl == "" ? Services::options[type]["apiurl"] : _serviceApiUrl;
+	QString url = (_serviceApiUrl == "" ? Services::options[type]["apiurl"] : _serviceApiUrl);
+	if (useHttps) {
+		if (url.startsWith("http://")) {
+			url = "https://" + url.mid(7);
+		}
+	}
+	return url;
 }
 
 QString Account::serviceBaseUrl() {
-	return _serviceBaseUrl == "" ? Services::options[type]["baseurl"] : _serviceBaseUrl;
+	QString url = (_serviceBaseUrl == "" ? Services::options[type]["baseurl"] : _serviceBaseUrl);
+	if (useHttps) {
+		if (url.startsWith("http://")) {
+			url = "https://" + url.mid(7);
+		}
+	}
+	return url;
 }
 
 QString Account::searchBaseUrl() {
-	return _searchBaseUrl == "" ? Services::options[type]["searchbaseurl"] : _searchBaseUrl;
+	QString url = (_searchBaseUrl == "" ? Services::options[type]["searchbaseurl"] : _searchBaseUrl);
+	if (useHttps) {
+		if (url.startsWith("http://")) {
+			url = "https://" + url.mid(7);
+		}
+	}
+	return url;
 }
 
 QString Account::singleMessageUrl() {
-	return _singleMessageUrl == "" ? Services::options[type]["singlemessageurl"] : _singleMessageUrl;
+	QString url = (_singleMessageUrl == "" ? Services::options[type]["singlemessageurl"] : _singleMessageUrl);
+	if (useHttps) {
+		if (url.startsWith("http://")) {
+			url = "https://" + url.mid(7);
+		}
+	}
+	return url;
 }
 
 void Account::setRemainingRequests(int remainingRequests) {

@@ -23,31 +23,29 @@
  *
  *  @section DESCRIPTION
  *
- *  AccountConfigurationDialog class declaration
+ *  SearchPage class declaration
  */
 
-#ifndef AccountConfigurationDialog_h
-#define AccountConfigurationDialog_h
-
-#include "ui_AccountConfigurationDialog.h"
+#ifndef SearchPage_h
+#define SearchPage_h
 
 #include "QwitHeaders.h"
 
-class AccountConfigurationDialog: public QDialog, public Ui::AccountConfigurationDialog {
+#include "AbstractPage.h"
+
+class SearchPage: public AbstractPage {
 	Q_OBJECT
 	
 public:
-	static const int ActionAdd = 0;
-	static const int ActionEdit = 1;
-
-	int action;
-	int accountId;
-	int accountType;
-	
-	AccountConfigurationDialog(QWidget *parent);
+	SearchPage(QWidget* parent = 0);
+	void updateSize();
+	QString title();
+	void update(Account *account = 0);
 	
 public slots:
-	void useHttpsCheckBoxChanged(int state);
+	void updatePrevious();
+	void removePrevious();
+	bool updateAutomatically();
 };
 
 #endif

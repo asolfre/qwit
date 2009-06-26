@@ -1,10 +1,11 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>AccountConfigurationDialog</class>
- <widget class="QDialog" name="AccountConfigurationDialog" >
-  <property name="windowModality" >
+ <widget class="QDialog" name="AccountConfigurationDialog">
+  <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
-  <property name="geometry" >
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -12,72 +13,79 @@
     <height>322</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Configure account...</string>
   </property>
-  <property name="modal" >
+  <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="0" column="0" >
-    <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="label_18" >
-       <property name="text" >
+      <widget class="QLabel" name="label_18">
+       <property name="text">
         <string>Username:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="accountUsernameLineEdit" />
+      <widget class="QLineEdit" name="accountUsernameLineEdit"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_19" >
-       <property name="text" >
+      <widget class="QLabel" name="label_19">
+       <property name="text">
         <string>Password:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="accountPasswordLineEdit" >
-       <property name="echoMode" >
+      <widget class="QLineEdit" name="accountPasswordLineEdit">
+       <property name="echoMode">
         <enum>QLineEdit::Password</enum>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="savePasswordCheckBox_3" >
-       <property name="text" >
+      <widget class="QCheckBox" name="savePasswordCheckBox_3">
+       <property name="text">
         <string>save password</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_22" >
-       <property name="text" >
+      <widget class="QCheckBox" name="useHttpsCheckBox">
+       <property name="text">
+        <string>use https instead of http</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_22">
+       <property name="text">
         <string>Service base URL:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="serviceBaseURLLineEdit" />
+      <widget class="QLineEdit" name="serviceBaseUrlLineEdit"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_23" >
-       <property name="text" >
+      <widget class="QLabel" name="label_23">
+       <property name="text">
         <string>Service API URL:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="serviceAPIURLLineEdit" />
+      <widget class="QLineEdit" name="serviceApiUrlLineEdit"/>
      </item>
      <item>
-      <spacer name="verticalSpacer" >
-       <property name="orientation" >
+      <spacer name="verticalSpacer">
+       <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
          <height>40</height>
@@ -86,11 +94,11 @@
       </spacer>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox" >
-       <property name="orientation" >
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="standardButtons" >
+       <property name="standardButtons">
         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
        </property>
       </widget>
@@ -107,11 +115,11 @@
    <receiver>AccountConfigurationDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -123,11 +131,11 @@
    <receiver>AccountConfigurationDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>

@@ -54,6 +54,7 @@ public:
 	Message lastMessage;
 	Twitter *twitter;
 	int remainingRequests;
+	bool useHttps;
 	
 	QVector<Message> friendsMessages;
 	QVector<Message> replies;
@@ -63,7 +64,7 @@ public:
 	QVector<Message> outboxMessages;
 	
 	Account();
-	Account(const QString &type, const QString &username, const QString &password);
+	Account(const QString &type, const QString &username, const QString &password, bool useHttps = false);
 	void saveMessages(QSettings &messagesCache);
 	void loadMessages(QSettings &messagesCache);
 	QString serviceApiUrl();

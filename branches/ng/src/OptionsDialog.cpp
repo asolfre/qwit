@@ -35,6 +35,7 @@
 #include "OptionsDialog.h"
 #include "Configuration.h"
 #include "Account.h"
+#include "Services.h"
 
 OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	setupUi(this);
@@ -69,20 +70,30 @@ void OptionsDialog::addAccount() {
 	accountConfigurationDialog->accountUsernameLineEdit->setText("");
 	accountConfigurationDialog->accountPasswordLineEdit->setText("");
 	accountConfigurationDialog->accountUsernameLineEdit->setFocus();
+	accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Unchecked);
 	switch (servicesComboBox->currentIndex()) {
 		case Configuration::AccountTwitter: {
-				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
-				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceBaseUrlLineEdit->setText(Services::options["twitter"]["baseurl"]);
+				accountConfigurationDialog->serviceApiUrlLineEdit->setText(Services::options["twitter"]["apiurl"]);
+				accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
+				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
 			}
 			break;
 		case Configuration::AccountIdentica: {
-				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
-				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceBaseUrlLineEdit->setText(Services::options["identica"]["baseurl"]);
+				accountConfigurationDialog->serviceApiUrlLineEdit->setText(Services::options["identica"]["apiurl"]);
+				accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
+				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
 			}
 			break;
 		case Configuration::AccountCustom: {
-				accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(true);
-				accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(true);
+				accountConfigurationDialog->serviceBaseUrlLineEdit->setText("");
+				accountConfigurationDialog->serviceApiUrlLineEdit->setText("");
+				accountConfigurationDialog->useHttpsCheckBox->setEnabled(false);
+				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(true);
+				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(true);
 			}
 			break;
 	}
@@ -111,22 +122,36 @@ void OptionsDialog::editAccount() {
 	Configuration *config = Configuration::getInstance();
 	accountConfigurationDialog->action = AccountConfigurationDialog::ActionEdit;
 	accountConfigurationDialog->accountId = accountId;
-	accountConfigurationDialog->accountUsernameLineEdit->setText((config->accounts[accountId])->username);
-	accountConfigurationDialog->accountPasswordLineEdit->setText((config->accounts[accountId])->password);
+	accountConfigurationDialog->accountUsernameLineEdit->setText(config->accounts[accountId]->username);
+	accountConfigurationDialog->accountPasswordLineEdit->setText(config->accounts[accountId]->password);
+	accountConfigurationDialog->serviceBaseUrlLineEdit->setText(config->accounts[accountId]->serviceBaseUrl());
+	accountConfigurationDialog->serviceApiUrlLineEdit->setText(config->accounts[accountId]->serviceApiUrl());
+	if (config->accounts[accountId]->serviceBaseUrl().startsWith("https://")) {
+		accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Checked);
+	} else {
+		accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Unchecked);
+	}
 	accountConfigurationDialog->accountUsernameLineEdit->setFocus();
 	switch (Configuration::ServicesIds[config->accounts[accountId]->type]) {
 		case Configuration::AccountTwitter: {
-			accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
-			accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
-		}
+				accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
+				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
+			}
+			break;
 		case Configuration::AccountIdentica: {
-			accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(false);
-			accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(false);
-		}
+				accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
+				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
+				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
+			}
+			break;
 		case Configuration::AccountCustom: {
-			accountConfigurationDialog->serviceBaseURLLineEdit->setEnabled(true);
-			accountConfigurationDialog->serviceAPIURLLineEdit->setEnabled(true);
-		}
+				accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Unchecked);
+				accountConfigurationDialog->useHttpsCheckBox->setEnabled(false);
+				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(true);
+				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(true);
+			}
+			break;
 	}
 	accountConfigurationDialog->showNormal();
 }
@@ -136,7 +161,7 @@ void OptionsDialog::commitAccount() {
 	MainWindow *mainWindow = MainWindow::getInstance();
 	switch (accountConfigurationDialog->action) {
 		case AccountConfigurationDialog::ActionAdd: {
-				Account *account = new Account(Configuration::Services[accountConfigurationDialog->accountType], accountConfigurationDialog->accountUsernameLineEdit->text(), accountConfigurationDialog->accountPasswordLineEdit->text());
+				Account *account = new Account(Configuration::Services[accountConfigurationDialog->accountType], accountConfigurationDialog->accountUsernameLineEdit->text(), accountConfigurationDialog->accountPasswordLineEdit->text(), accountConfigurationDialog->useHttpsCheckBox->checkState() == Qt::Checked);
 				config->addAccount(account);
 				accountsListWidget->addItem(Configuration::ServicesNames[account->type] + ": " + account->username);
 				accountsListWidget->setCurrentRow(account->id);
@@ -147,6 +172,7 @@ void OptionsDialog::commitAccount() {
 				Account *account = config->accounts[accountConfigurationDialog->accountId];
 				account->username = accountConfigurationDialog->accountUsernameLineEdit->text();
 				account->password = accountConfigurationDialog->accountPasswordLineEdit->text();
+				account->useHttps = (accountConfigurationDialog->useHttpsCheckBox->checkState() == Qt::Checked);
 				accountsListWidget->takeItem(account->id);
 				accountsListWidget->insertItem(account->id, Configuration::ServicesNames[account->type] + ": " + account->username);
 				accountsListWidget->setCurrentRow(account->id);

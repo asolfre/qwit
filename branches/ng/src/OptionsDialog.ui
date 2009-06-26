@@ -89,7 +89,7 @@
           <number>-4</number>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="connectionPage">
           <layout class="QGridLayout" name="gridLayout_2">
@@ -668,17 +668,12 @@
                  <widget class="QComboBox" name="urlShortenerComboBox">
                   <item>
                    <property name="text">
-                    <string>tinyurl.com</string>
+                    <string>tr.im</string>
                    </property>
                   </item>
                   <item>
                    <property name="text">
                     <string>murl.kz</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>clck.by</string>
                    </property>
                   </item>
                  </widget>
