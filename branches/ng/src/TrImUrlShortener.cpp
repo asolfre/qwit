@@ -44,19 +44,19 @@ void TrImUrlShortener::shorten(const QString &url) {
 
 	QUrl trImUrl("http://api.tr.im/api/trim_url.xml");
 
-	if(trImUrl.toString().indexOf("https") == 0) {
-	    http->setHost(trImUrl.host(), QHttp::ConnectionModeHttps, trImUrl.port(443));
-    } else {
-        http->setHost(trImUrl.host(), QHttp::ConnectionModeHttp, trImUrl.port(80));
-    }
-/*
 	Configuration *config = Configuration::getInstance();
 	if (config->useProxy) {
 		http->setProxy(config->proxyAddress, config->proxyPort, config->proxyUsername, config->proxyPassword);
 	} else {
 		http->setProxy(QNetworkProxy(QNetworkProxy::NoProxy));
 	}
-	*/
+
+	if(trImUrl.toString().indexOf("https") == 0) {
+	    http->setHost(trImUrl.host(), QHttp::ConnectionModeHttps, trImUrl.port(443));
+    } else {
+        http->setHost(trImUrl.host(), QHttp::ConnectionModeHttp, trImUrl.port(80));
+    }
+
 	buffer.open(QIODevice::WriteOnly);
 	
 	requestId = http->get(trImUrl.path() + "?url=" + QUrl::toPercentEncoding(url), &buffer);

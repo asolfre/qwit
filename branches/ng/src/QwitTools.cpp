@@ -598,8 +598,9 @@ QString QwitTools::_prepareMessage(const QString &text, Account *account) {
 			while (url.at(url.length() - 1).isPunct() && (url[url.length() - 1] != '/')) {
 				url = url.mid(0, url.length() - 1);
 			}
-			if (pos && ((s.at(pos - 1) == '@') || (s.at(pos - 1).isLetterOrNumber()))) {
+			if (pos && ((s.at(pos - 1) == '@') || s.at(pos - 1).isLetterOrNumber() || ((pos + url.length() < s.length()) && (s.at(pos + url.length()).isLetterOrNumber())))) {
 				t += s.mid(lastPos, pos - lastPos);
+				t += url;
 				lastPos = pos + url.length();
 			} else {
 				t += s.mid(lastPos, pos - lastPos);
@@ -728,6 +729,5 @@ bool QwitTools::isUrl(const QString &s) {
 bool QwitTools::_isUrl(const QString &s) {
 	return urlRegExp.exactMatch(s);
 }
-
 
 #endif

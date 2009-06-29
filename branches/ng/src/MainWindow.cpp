@@ -63,6 +63,9 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	connect(this, SIGNAL(retweet(const Message &)), messageTextEdit, SLOT(retweet(const Message &)));
 	connect(this, SIGNAL(reply(const Message &)), messageTextEdit, SLOT(reply(const Message &)));
 	
+	lastMessageLabel->setTextFormat(Qt::AutoText);
+	lastMessageLabel->setOpenExternalLinks(true);
+	
 	optionsDialog = new OptionsDialog(this);
 	connect(optionsDialog, SIGNAL(accepted()), this, SLOT(saveOptions()));
 	connect(optionsDialog, SIGNAL(rejected()), this, SLOT(resetOptionsDialog()));
@@ -475,7 +478,7 @@ void MainWindow::updateCurrentAccount(int id) {
 	connect(config->currentAccount(), SIGNAL(remainingRequestsUpdated(int, Account *)), this, SLOT(updateRemainingRequests(int, Account *)));
 	disconnect(messageTextEdit, SIGNAL(messageEntered(const QString &, int)), 0, 0);
 	connect(messageTextEdit, SIGNAL(messageEntered(const QString &, int)), config->currentAccount(), SLOT(sendMessage(const QString &, int)));
-	lastMessageLabel->setText(config->currentAccount()->lastMessage.text);
+	updateLastMessage(config->currentAccount()->lastMessage.text, config->currentAccount());
 	updateRemainingRequests(config->currentAccount()->remainingRequests, config->currentAccount());
 }
 
@@ -608,7 +611,7 @@ void MainWindow::reloadUserpics() {
 void MainWindow::updateLastMessage(const QString &message, Account *account) {
 	qDebug() << ("MainWindow::updateLastMessage()");
 
-	lastMessageLabel->setText(message);
+	lastMessageLabel->setText(QwitTools::prepareMessage(message, account));
 }
 
 void MainWindow::showNewMessages(const QVector<Message> &messages, Account *account) {
