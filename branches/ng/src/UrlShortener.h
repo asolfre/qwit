@@ -34,8 +34,19 @@
 class UrlShortener: public QObject {
 	Q_OBJECT
 	
+	QHttp *http;
+	QString currentUrl;
+	QBuffer buffer;
+	int requestId;
+	static UrlShortener *instance;
+	UrlShortener();
+	
+public:
+	static UrlShortener *getInstance();
+	
 public slots:
-	virtual void shorten(const QString &url);
+	void shorten(const QString &url);
+	void requestFinished(int id, bool error);
 
 signals:
 	void urlShortened(const QString &shortenedUrl);

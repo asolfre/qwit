@@ -55,6 +55,8 @@ public:
 	Twitter *twitter;
 	int remainingRequests;
 	bool useHttps;
+	bool sendingMessage;
+	QString messageBeingSent;
 	
 	QVector<Message> friendsMessages;
 	QVector<Message> replies;
@@ -86,7 +88,9 @@ public slots:
 	void sendMessage(const QString &message, int inReplyToMessageId);
 	void messageSent(const QByteArray &data);
 	void directMessageSent(const QByteArray &data);
-	void messageFavorChanged(const QByteArray &data);
+	void messageFavored(const QByteArray &data);
+	void messageUnfavored(const QByteArray &data);
+//	void messageFavorChanged(const QByteArray &data);
 	void messageDestroyed(const QByteArray &data);
 	void directMessageDestroyed(const QByteArray &data);
 	void receivePublicMessages(int count);
@@ -117,6 +121,7 @@ signals:
 	void publicMessagesUpdated(const QVector<Message> &, Account *);
 	void favoritesUpdated(const QVector<Message> &, Account *);
 	void lastMessageReceived(const QString &, Account *);
+	void messageSent(const QString &, Account *);
 	void newMessagesReceived(const QVector<Message> &, Account *);
 	void inboxMessagesUpdated(const QVector<Message> &, Account *);
 	void outboxMessagesUpdated(const QVector<Message> &, Account *);

@@ -665,18 +665,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="urlShortenerComboBox">
-                  <item>
-                   <property name="text">
-                    <string>tr.im</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>murl.kz</string>
-                   </property>
-                  </item>
-                 </widget>
+                 <widget class="QComboBox" name="urlShortenersComboBox"/>
                 </item>
                 <item>
                  <spacer name="verticalSpacer_7">

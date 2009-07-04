@@ -34,13 +34,11 @@
 class UserpicsDownloader: public QObject {
 	Q_OBJECT
 	
-	QQueue<QPair<QString, QString> > queue;
 	QFile file;
-	QHttp http;
-	QString proxyAddress;
-	int proxyPort;
-	QString proxyUsername;
-	QString proxyPassword;
+	QString url;
+	QHttp *http;
+	int requestId;
+	QQueue<QPair<QString, QString> > queue;
 	static UserpicsDownloader* instance;
 	UserpicsDownloader();
 	
@@ -49,16 +47,16 @@ public:
 	static UserpicsDownloader* getInstance();
 	void startDownload();
 	void download(const QString &url, const QString &filename);
-	void useProxy(const QString &address, int port, const QString &username, const QString &password);
-	void dontUseProxy();
 
 public slots:
 
+	void requestStarted(int id);
+//	void requestFinished(int id, bool error);
 	void httpDone(bool error);
 	
 signals:
 	
-	void stateChanged(const QString &);
+//	void stateChanged(const QString &);
 	void userpicDownloaded();
 };
 

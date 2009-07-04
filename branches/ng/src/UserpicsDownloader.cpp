@@ -31,6 +31,7 @@
 
 #include "QwitHeaders.h"
 
+#include "Configuration.h"
 #include "UserpicsDownloader.h"
 
 UserpicsDownloader* UserpicsDownloader::instance = 0;
@@ -43,57 +44,67 @@ UserpicsDownloader* UserpicsDownloader::getInstance() {
 }
 
 UserpicsDownloader::UserpicsDownloader() {
-	connect(&http, SIGNAL(done(bool)), this, SLOT(httpDone(bool)));
+	http = new QHttp(this);
+	connect(http, SIGNAL(requestStarted(int)), this, SLOT(requestStarted(int)));
+//	connect(http, SIGNAL(requestFinished(int, bool)), this, SLOT(requestFinished(int, bool)));
+	connect(http, SIGNAL(done(bool)), this, SLOT(httpDone(bool)));
+	requestId = -1;
 }
-	
+
 void UserpicsDownloader::startDownload() {
-	QPair<QString, QString> item = queue.front();
-	file.setFileName(item.second);
-	if (!file.open(QIODevice::WriteOnly)) {
-		return;
-	}
-	QUrl url(item.first);
-	if (proxyAddress != "") {
-		http.setProxy(proxyAddress, proxyPort, proxyUsername, proxyPassword);
+	if ((queue.size() == 0) || (requestId != -1)) return;
+	Configuration *config = Configuration::getInstance();
+	if (config->useProxy) {
+		http->setProxy(config->proxyAddress, config->proxyPort, config->proxyUsername, config->proxyPassword);
 	} else {
-		http.setProxy("", 0);
+		http->setProxy(QNetworkProxy(QNetworkProxy::NoProxy));
 	}
-	http.setHost(url.host(), url.port(80));
-	http.get(QUrl::toPercentEncoding(url.path(), "/"), &file);
-	emit stateChanged(tr("Downloading: %1").arg(item.first));
+	while (queue.size() > 0) {
+		QPair<QString, QString> item = queue.dequeue();
+		QFileInfo fi = QFileInfo(item.second);
+		if (fi.exists() && (fi.size() > 0)) {
+			qDebug() << "UserpicsDownloader::startDownload() already downloaded " << item.second;
+			continue;
+		}
+		file.setFileName(item.second);
+		if (!file.open(QIODevice::WriteOnly)) {
+			qDebug() << "UserpicsDownloader::startDownload() error opening file " << item.second;
+			continue;
+		}
+		qDebug() << "UserpicsDownloader::startDownload() " << item.first << " -> " << item.second;
+		QUrl url(item.first);
+		http->setHost(url.host(), url.port(80));
+		requestId = http->get(QUrl::toPercentEncoding(url.path(), "/"), &file);
+		this->url = item.first;
+		break;
+	}
 }
-	
-void UserpicsDownloader::download(const QString &url, const QString &filename) {
+
+void UserpicsDownloader::download(const QString &imageUrl, const QString &filename) {
 	QFileInfo fi = QFileInfo(filename);
-	if (fi.exists() && (fi.size() > 0)) return;
-	queue.enqueue(qMakePair(url, filename));
-	if (queue.size() == 1) {
-		startDownload();
+	if (!fi.exists() || (fi.size() == 0)) {
+		qDebug() << "UserpicsDownloader::download() " << imageUrl << " " << filename;
+		queue.enqueue(qMakePair(imageUrl, filename));
 	}
+	startDownload();
 }
 
 void UserpicsDownloader::httpDone(bool error) {
-	if (error) {
-		emit stateChanged(tr("Error while downloading userpic: %1").arg(http.errorString()));
-	}
-	QPair<QString, QString> item = queue.dequeue();
 	file.close();
-	emit userpicDownloaded();
-	emit stateChanged(tr("Downloaded: %1").arg(item.first));
-	if (queue.size()) {
-		startDownload();
+	if (error) {
+		qDebug() << "UserpicsDownloader::httpDone() error " + url + " -> " + file.fileName();
+	} else {
+		qDebug() << "UserpicsDownloader::httpDone() " + url + " -> " + file.fileName();
+		emit userpicDownloaded();
 	}
+	requestId = -1;
+	startDownload();
 }
 
-void UserpicsDownloader::useProxy(const QString &address, int port, const QString &username, const QString &password) {
-	proxyAddress = address;
-	proxyPort = port;
-	proxyUsername = username;
-	proxyPassword = password;
-}
-
-void UserpicsDownloader::dontUseProxy() {
-	proxyAddress = "";
+void UserpicsDownloader::requestStarted(int id) {
+	if (id == requestId) {
+		qDebug() << "UserpicsDownloader::requestStarted() " + QString::number(id) + " " + url + " -> " + file.fileName();
+	}
 }
 
 #endif

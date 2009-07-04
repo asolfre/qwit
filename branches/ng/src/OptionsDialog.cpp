@@ -49,6 +49,11 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	connect(editAccountPushButton, SIGNAL(pressed()), this, SLOT(editAccount()));
 	connect(accountConfigurationDialog, SIGNAL(accepted()), this, SLOT(commitAccount()));
 	
+	Configuration *config = Configuration::getInstance();
+	for (int i = 0; i < config->UrlShorteners.size(); ++i) {
+		urlShortenersComboBox->addItem(config->UrlShortenersNames[config->UrlShorteners[i]]);
+	}
+	
 	optionsStackedWidget->setCurrentWidget(accountsPage);
 }
 

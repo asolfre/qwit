@@ -33,6 +33,7 @@
 
 #include "MainWindow.h"
 #include "Configuration.h"
+#include "Services.h"
 
 const QString Configuration::CompanyName = "arti";
 const QString Configuration::ApplicationName = "qwit2";
@@ -46,22 +47,24 @@ QSettings Configuration::messagesCache(Configuration::MessagesCacheFileName, QSe
 QMap<QString, QString> Configuration::ServicesNames;
 QMap<QString, int> Configuration::ServicesIds;
 QVector<QString> Configuration::Services;
-
-UrlShortener* Configuration::urlShortener = 0;
+QMap<QString, QString> Configuration::UrlShortenersNames;
+QMap<QString, int> Configuration::UrlShortenersIds;
+QVector<QString> Configuration::UrlShorteners;
 
 Configuration::Configuration() {
-	ServicesNames["twitter"] = "Twitter";
-	ServicesNames["identica"] = "Identica";
-	ServicesNames["custom"] = "Custom";
-	ServicesIds["twitter"] = 0;
-	ServicesIds["identica"] = 1;
-	ServicesIds["custom"] = 2;
-	Services.push_back("twitter");
-	Services.push_back("identica");
-	Services.push_back("custom");
+	for (QMap<QString, QMap<QString, QString> >::iterator it = Services::options.begin(); it != Services::options.end(); ++it) {
+		ServicesNames[it.key()] = it.value()["title"];
+		Services.push_back(it.key());
+		ServicesIds[it.key()] = UrlShorteners.size() - 1;
+	}
 	QFile file(settings.fileName());
 	currentAccountId = -1;
 	file.setPermissions(QFile::ReadUser | QFile::WriteUser);
+	for (QMap<QString, QMap<QString, QString> >::iterator it = Services::urlShorteners.begin(); it != Services::urlShorteners.end(); ++it) {
+		UrlShortenersNames[it.key()] = it.value()["title"];
+		UrlShorteners.push_back(it.key());
+		UrlShortenersIds[it.key()] = UrlShorteners.size() - 1;
+	}
 }
 
 Configuration* Configuration::getInstance() {
@@ -141,6 +144,11 @@ void Configuration::load() {
 	proxyPassword = settings.value("proxyPassword", "").toString();
 	settings.endGroup();
 
+// UrlShortener
+	settings.beginGroup("UrlShortener");
+	urlShortener = settings.value("urlShortener", "trim").toString();
+	settings.endGroup();
+
 	loadMessages();
 }
 
@@ -212,6 +220,11 @@ void Configuration::save() {
 	settings.setValue("proxyUsername", proxyUsername);
 	settings.setValue("proxyPassword", proxyPassword);
 	settings.endGroup();
+	
+// UrlShortener
+	settings.beginGroup("UrlShortener");
+	settings.setValue("urlShortener", urlShortener);
+	settings.endGroup();
 
 	saveMessages();
 }
@@ -260,13 +273,6 @@ void Configuration::loadMessages() {
 		accounts[i]->loadMessages(messagesCache);
 	}
 	messagesCache.endArray();
-}
-
-UrlShortener* Configuration::getUrlShortener() {
-	if (!urlShortener) {
-		urlShortener = (UrlShortener*) new TrImUrlShortener();
-	}
-	return urlShortener;
 }
 
 #endif

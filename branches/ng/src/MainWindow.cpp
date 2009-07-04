@@ -107,8 +107,7 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	
 	connect(UserpicsDownloader::getInstance(), SIGNAL(userpicDownloaded()), this, SLOT(reloadUserpics()));
 	
-	Configuration *config = Configuration::getInstance();
-	connect(config->getUrlShortener(), SIGNAL(urlShortened(const QString &)), messageTextEdit, SLOT(insertUrl(const QString &)));
+	connect(UrlShortener::getInstance(), SIGNAL(urlShortened(const QString &)), messageTextEdit, SLOT(insertUrl(const QString &)));
 
 	updateAll();
 
@@ -186,6 +185,8 @@ void MainWindow::saveOptions() {
 	config->proxyUsername = optionsDialog->proxyUsernameLineEdit->text();
 	config->proxyPassword = optionsDialog->proxyPasswordLineEdit->text();
 	
+	config->urlShortener = Configuration::UrlShorteners[optionsDialog->urlShortenersComboBox->currentIndex()];
+
 	saveState();
 	updateState();
 }
@@ -330,6 +331,10 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->proxyPortLineEdit->setText(QString::number(config->proxyPort));
 	optionsDialog->proxyUsernameLineEdit->setText(config->proxyUsername);
 	optionsDialog->proxyPasswordLineEdit->setText(config->proxyPassword);
+
+// UrlShortener
+	optionsDialog->urlShortenersComboBox->setCurrentIndex(Configuration::UrlShortenersIds[config->urlShortener]);
+
 }
 
 void MainWindow::addAccountButton(Account *account) {
@@ -478,6 +483,8 @@ void MainWindow::updateCurrentAccount(int id) {
 	connect(config->currentAccount(), SIGNAL(remainingRequestsUpdated(int, Account *)), this, SLOT(updateRemainingRequests(int, Account *)));
 	disconnect(messageTextEdit, SIGNAL(messageEntered(const QString &, int)), 0, 0);
 	connect(messageTextEdit, SIGNAL(messageEntered(const QString &, int)), config->currentAccount(), SLOT(sendMessage(const QString &, int)));
+	messageTextEdit->setEnabled(!config->currentAccount()->sendingMessage);
+	connect(config->currentAccount(), SIGNAL(messageSent(const QString &, Account *)), this, SLOT(messageSent(const QString &, Account *)));
 	updateLastMessage(config->currentAccount()->lastMessage.text, config->currentAccount());
 	updateRemainingRequests(config->currentAccount()->remainingRequests, config->currentAccount());
 }
@@ -610,8 +617,14 @@ void MainWindow::reloadUserpics() {
 
 void MainWindow::updateLastMessage(const QString &message, Account *account) {
 	qDebug() << ("MainWindow::updateLastMessage()");
-
 	lastMessageLabel->setText(QwitTools::prepareMessage(message, account));
+}
+
+void MainWindow::messageSent(const QString &message, Account *account) {
+	qDebug() << ("MainWindow::messageSent()");
+	messageTextEdit->setEnabled(true);
+	messageTextEdit->clear();
+	updateLastMessage(message, account);
 }
 
 void MainWindow::showNewMessages(const QVector<Message> &messages, Account *account) {

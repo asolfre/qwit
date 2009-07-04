@@ -60,13 +60,17 @@ void MessageTextEdit::focusOutEvent(QFocusEvent *event) {
 	QTextEdit::focusOutEvent(event);
 }
 
+void MessageTextEdit::clear() {
+	QTextEdit::clear();
+	if (height() != StandardHeight) {
+		setFixedHeight(StandardHeight);
+	}
+}
+
 void MessageTextEdit::keyPressEvent(QKeyEvent *e) {
 	if ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)) {
+		setEnabled(false);
 		emit messageEntered(toPlainText(), inReplyToMessageId);
-		clear();
-		if (height() != StandardHeight) {
-			setFixedHeight(StandardHeight);
-		}
 		e->accept();
 		return;
 	}
@@ -128,8 +132,7 @@ void MessageTextEdit::insertFromMimeData(const QMimeData *source) {
 	QString text = source->text();
 	if (QwitTools::isUrl(text) && (text.length() > 20)) {
 		setEnabled(false);
-		Configuration *config = Configuration::getInstance();
-		config->getUrlShortener()->shorten(text);
+		UrlShortener::getInstance()->shorten(text);
 	} else {
 		QTextEdit::insertFromMimeData(source);
 	}

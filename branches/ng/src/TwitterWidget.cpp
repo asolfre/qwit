@@ -250,9 +250,9 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 	item->signLabel->move(signX, signY);
 	
 	if (index & 1) {
-		item->color = QColor(230, 230, 230);
+		item->color.setRgb(230, 230, 230);
 	} else {
-		item->color = QColor(180, 180, 180);
+		item->color.setRgb(180, 180, 180);
 	}
 
 	int itemHeight = messageItemHeight + item->signLabel->height() + MARGIN;
@@ -309,9 +309,9 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	item->signLabel->move(signX, signY);
 	
 	if (index & 1) {
-		item->color = QColor(230, 230, 230);
+		item->color.setRgb(230, 230, 230);
 	} else {
-		item->color = QColor(180, 180, 180);
+		item->color.setRgb(180, 180, 180);
 	}
 
 	int itemHeight = messageItemHeight + item->signLabel->height() + MARGIN;

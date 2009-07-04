@@ -45,8 +45,7 @@ HEADERS += \
 		src/QwitTools.h \
 		src/UserpicsDownloader.h \
 		src/QwitHeaders.h \
-		src/UrlShortener.h \
-		src/TrImUrlShortener.h
+		src/UrlShortener.h
 FORMS += \
 		src/MainWindow.ui \
 		src/OptionsDialog.ui \
@@ -78,8 +77,7 @@ SOURCES += \
 		src/Message.cpp \
 		src/QwitTools.cpp \
 		src/UserpicsDownloader.cpp \
-		src/UrlShortener.cpp \
-		src/TrImUrlShortener.cpp
+		src/UrlShortener.cpp
 TRANSLATIONS += \
 		translations/qwit_en_US.ts \
 		translations/qwit_es_ES.ts \

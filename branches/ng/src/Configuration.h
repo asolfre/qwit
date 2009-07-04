@@ -33,7 +33,6 @@
 
 #include "Account.h"
 #include "UrlShortener.h"
-#include "TrImUrlShortener.h"
 
 class Configuration {
 	Configuration();
@@ -48,12 +47,14 @@ public:
 	static const QString ApplicationName;
 	static const QString CacheDirectory;
 	static const QString MessagesCacheFileName;
-	static UrlShortener* urlShortener;
 
 
 	static QMap<QString, QString> ServicesNames;
 	static QMap<QString, int> ServicesIds;
 	static QVector<QString> Services;
+	static QVector<QString> UrlShorteners;
+	static QMap<QString, int> UrlShortenersIds;
+	static QMap<QString, QString> UrlShortenersNames;
 	
 // State
 	QPoint position;
@@ -108,8 +109,10 @@ public:
 	Account* currentAccount();
 	void saveMessages();
 	void loadMessages();
-	
-	UrlShortener* getUrlShortener();
+
+// UrlShortener
+	QString urlShortener;
+	//UrlShortener* getUrlShortener();
 	
 public:
 	static Configuration* getInstance();

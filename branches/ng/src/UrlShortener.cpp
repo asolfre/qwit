@@ -30,9 +30,65 @@
 #define UrlShortener_cpp
 
 #include "UrlShortener.h"
+#include "Configuration.h"
+#include "Services.h"
+
+UrlShortener* UrlShortener::instance = 0;
+
+UrlShortener::UrlShortener() {
+	http = new QHttp(this);
+	connect(http, SIGNAL(requestFinished(int, bool)), this, SLOT(requestFinished(int, bool)));
+}
+
+UrlShortener* UrlShortener::getInstance() {
+	if (!instance) {
+		instance = new UrlShortener();
+	}
+	return instance;
+}
 
 void UrlShortener::shorten(const QString &url) {
-	emit urlShortened(url);
+	currentUrl = url;
+	
+	Configuration *config = Configuration::getInstance();
+	
+	QUrl shortenerUrl(Services::urlShorteners[config->urlShortener]["apiurl"]);
+
+	if (config->useProxy) {
+		http->setProxy(config->proxyAddress, config->proxyPort, config->proxyUsername, config->proxyPassword);
+	} else {
+		http->setProxy(QNetworkProxy(QNetworkProxy::NoProxy));
+	}
+
+	if(shortenerUrl.toString().indexOf("https") == 0) {
+	    http->setHost(shortenerUrl.host(), QHttp::ConnectionModeHttps, shortenerUrl.port(443));
+    } else {
+        http->setHost(shortenerUrl.host(), QHttp::ConnectionModeHttp, shortenerUrl.port(80));
+    }
+
+	buffer.open(QIODevice::WriteOnly);
+	QString request = Services::urlShorteners[config->urlShortener]["requesttemplate"].replace("%url", QUrl::toPercentEncoding(url));
+	requestId = http->get(shortenerUrl.path() + request, &buffer);
+}
+
+void UrlShortener::requestFinished(int id, bool error) {
+	if (id == requestId) {
+		QString shortenedUrl = currentUrl;
+		if (!error && (http->lastResponse().statusCode() == 200)) {
+			qDebug() << ("UrlShortener::requestFinished() " + QString::number(id) + " " + currentUrl);
+			Configuration *config = Configuration::getInstance();
+			QString response = buffer.data();
+			QRegExp responseRegexp(Services::urlShorteners[config->urlShortener]["responseregexp"]);
+			if (responseRegexp.indexIn(response, 0) == -1) {
+				qDebug() << ("UrlShortener::requestFinished() error parsing request");
+			} else {
+				shortenedUrl = responseRegexp.cap(0);
+			}
+		} else {
+			qDebug() << ("UrlShortener::requestFinished() " + QString::number(id) + " error " + QString::number(http->lastResponse().statusCode()) + " " + http->lastResponse().reasonPhrase());
+		}
+		emit urlShortened(shortenedUrl);
+	}
 }
 
 #endif

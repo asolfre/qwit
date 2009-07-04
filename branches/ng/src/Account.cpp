@@ -49,8 +49,8 @@ Account::Account() {
 	connect(twitter, SIGNAL(outboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(messageSent(const QByteArray&)), this, SLOT(messageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
-	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavorChanged(const QByteArray&)));
-	connect(twitter, SIGNAL(messageUnfavored(const QByteArray&)), this, SLOT(messageFavorChanged(const QByteArray&)));
+	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavored(const QByteArray&)));
+	connect(twitter, SIGNAL(messageUnfavored(const QByteArray&)), this, SLOT(messageUnfavored(const QByteArray&)));
 	connect(twitter, SIGNAL(messageDestroyed(const QByteArray&)), this, SLOT(messageDestroyed(const QByteArray&)));
 	connect(twitter, SIGNAL(directMessageDestroyed(const QByteArray&)), this, SLOT(directMessageDestroyed(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsMessagesReceived(const QByteArray&)), this, SLOT(addFriendsMessages(const QByteArray&)));
@@ -65,6 +65,7 @@ Account::Account() {
 	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SIGNAL(previousFavoritesReceived()));
 	connect(twitter, SIGNAL(previousInboxMessagesReceived(const QByteArray&)), this, SIGNAL(previousInboxMessagesReceived()));
 	connect(twitter, SIGNAL(previousOutboxMessagesReceived(const QByteArray&)), this, SIGNAL(previousOutboxMessagesReceived()));
+	sendingMessage = false;
 }
 
 Account::Account(const QString &type, const QString &username, const QString &password, bool useHttps) {
@@ -84,8 +85,8 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(outboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(messageSent(const QByteArray&)), this, SLOT(messageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
-	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavorChanged(const QByteArray&)));
-	connect(twitter, SIGNAL(messageUnfavored(const QByteArray&)), this, SLOT(messageFavorChanged(const QByteArray&)));
+	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavored(const QByteArray&)));
+	connect(twitter, SIGNAL(messageUnfavored(const QByteArray&)), this, SLOT(messageUnfavored(const QByteArray&)));
 	connect(twitter, SIGNAL(messageDestroyed(const QByteArray&)), this, SLOT(messageDestroyed(const QByteArray&)));
 	connect(twitter, SIGNAL(directMessageDestroyed(const QByteArray&)), this, SLOT(directMessageDestroyed(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsMessagesReceived(const QByteArray&)), this, SLOT(addFriendsMessages(const QByteArray&)));
@@ -100,6 +101,7 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SIGNAL(previousFavoritesReceived()));
 	connect(twitter, SIGNAL(previousInboxMessagesReceived(const QByteArray&)), this, SIGNAL(previousInboxMessagesReceived()));
 	connect(twitter, SIGNAL(previousOutboxMessagesReceived(const QByteArray&)), this, SIGNAL(previousOutboxMessagesReceived()));
+	sendingMessage = false;
 }
 
 void Account::addFriendsMessages(const QByteArray &data) {
@@ -194,13 +196,17 @@ void Account::updateLastMessage() {
 
 void Account::sendMessage(const QString &message, int inReplyToMessageId) {
 	qDebug() << ("Account::sendMessage()");
+	sendingMessage = true;
+	messageBeingSent = message;
 	twitter->sendMessage(message, inReplyToMessageId);
 }
 
 void Account::messageSent(const QByteArray &data) {
 	qDebug() << ("Account::messageSent()");
+	sendingMessage = false;
 	lastMessage = QwitTools::parseMessage(data, this);
 	emit lastMessageReceived(lastMessage.text, this);
+	emit messageSent(lastMessage.text, this);
 }
 
 void Account::receivePublicMessages(int count) {
@@ -504,69 +510,79 @@ void Account::destroyMessage(const Message &message) {
 void Account::directMessageSent(const QByteArray &data) {
 }
 
-void Account::messageFavorChanged(const QByteArray &data) {
-	qDebug() << ("Account::messageFavorChanged()");
+void Account::messageFavored(const QByteArray &data) {
+	qDebug() << ("Account::messageFavored()");
 	QString errorRequest = QwitTools::parseError(data);
-	uint messageId = 0;
-	bool favorited = false;
-	if (errorRequest == "") {
-		Message message = QwitTools::parseMessage(data, this);
-		messageId = message.id;
-		favorited = message.favorited;
-	} else {
-		messageId = errorRequest.mid(errorRequest.lastIndexOf("/") + 1, errorRequest.lastIndexOf(".") - errorRequest.lastIndexOf("/") - 1).toUInt();
-		for (int i = 0; i < friendsMessages.size(); ++i) {
-			if (friendsMessages[i].id == messageId) {
-				favorited = friendsMessages[i].favorited;
-			}
-		}
-		for (int i = 0; i < replies.size(); ++i) {
-			if (replies[i].id == messageId) {
-				favorited = replies[i].favorited;
-			}
-		}
-		for (int i = 0; i < publicMessages.size(); ++i) {
-			if (publicMessages[i].id == messageId) {
-				favorited = publicMessages[i].favorited;
-			}
-		}
-		for (int i = 0; i < favorites.size(); ++i) {
-			if (favorites[i].id == messageId) {
-				favorited = favorites[i].favorited;
-			}
-		}
-		favorited = !favorited;
+	if (errorRequest != "") {
+		qDebug() << "Error favoring message: " << errorRequest;
 	}
-	Message message;
+	Message message = QwitTools::parseMessage(data, this);
+	message.favorited = true;
+	uint messageId = message.id;
 	for (int i = 0; i < friendsMessages.size(); ++i) {
 		if (friendsMessages[i].id == messageId) {
-			friendsMessages[i].favorited = favorited;
-			message = friendsMessages[i];
+			friendsMessages[i].favorited = true;
 		}
 	}
 	for (int i = 0; i < replies.size(); ++i) {
 		if (replies[i].id == messageId) {
-			replies[i].favorited = favorited;
-			message = replies[i];
+			replies[i].favorited = true;
 		}
 	}
 	for (int i = 0; i < publicMessages.size(); ++i) {
 		if (publicMessages[i].id == messageId) {
-			publicMessages[i].favorited = favorited;
-			message = publicMessages[i];
+			publicMessages[i].favorited = true;
 		}
 	}
 	int index = -1;
 	for (int i = 0; i < favorites.size(); ++i) {
 		if (favorites[i].id == messageId) {
-			favorites[i].favorited = favorited;
+			favorites[i].favorited = true;
 			index = i;
 		}
 	}
-	if (!favorited && (index != -1)) {
-		favorites.erase(favorites.begin() + index);
-	} else if (favorited) {
+	if (index == -1) {
 		favorites.push_front(message);
+	}
+	emit friendsMessagesUpdated(friendsMessages, this);
+	emit repliesUpdated(replies, this);
+	emit publicMessagesUpdated(publicMessages, this);
+	emit favoritesUpdated(favorites, this);
+}
+
+void Account::messageUnfavored(const QByteArray &data) {
+	qDebug() << ("Account::messageUnfavored()");
+	QString errorRequest = QwitTools::parseError(data);
+	if (errorRequest != "") {
+		qDebug() << "Error unfavoring message: " << errorRequest;
+	}
+	Message message = QwitTools::parseMessage(data, this);
+	uint messageId = message.id;
+	message.favorited = false;
+	for (int i = 0; i < friendsMessages.size(); ++i) {
+		if (friendsMessages[i].id == messageId) {
+			friendsMessages[i].favorited = false;
+		}
+	}
+	for (int i = 0; i < replies.size(); ++i) {
+		if (replies[i].id == messageId) {
+			replies[i].favorited = false;
+		}
+	}
+	for (int i = 0; i < publicMessages.size(); ++i) {
+		if (publicMessages[i].id == messageId) {
+			publicMessages[i].favorited = false;
+		}
+	}
+	int index = -1;
+	for (int i = 0; i < favorites.size(); ++i) {
+		if (favorites[i].id == messageId) {
+			favorites[i].favorited = false;
+			index = i;
+		}
+	}
+	if (index != -1) {
+		favorites.erase(favorites.begin() + index);
 	}
 	emit friendsMessagesUpdated(friendsMessages, this);
 	emit repliesUpdated(replies, this);

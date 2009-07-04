@@ -49,6 +49,7 @@ public:
 	void focusOutEvent(QFocusEvent *event);
 	int getMaxMessageCharactersNumber();
 	void insertFromMimeData(const QMimeData *source);
+	void clear();
 
 protected:
 
