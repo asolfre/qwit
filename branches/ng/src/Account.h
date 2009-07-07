@@ -45,7 +45,8 @@ private:
 	QString _serviceApiUrl;
 	QString _searchBaseUrl;
 	QString _singleMessageUrl;
-	
+	QStringList usernamesCache;
+
 public:
 	int id;
 	QString type;
@@ -57,6 +58,7 @@ public:
 	bool useHttps;
 	bool sendingMessage;
 	QString messageBeingSent;
+	QStringListModel usernamesCacheModel;
 	
 	QVector<Message> friendsMessages;
 	QVector<Message> replies;
@@ -74,6 +76,7 @@ public:
 	QString searchBaseUrl();
 	QString singleMessageUrl();
 	void setRemainingRequests(int remainingRequests);
+	void addUsernamesToCache(const QStringList &usernames);
 
 public slots:
 	void addFriendsMessages(const QByteArray &data);
@@ -87,7 +90,7 @@ public slots:
 	void updateLastMessage();
 	void sendMessage(const QString &message, int inReplyToMessageId);
 	void messageSent(const QByteArray &data);
-	void directMessageSent(const QByteArray &data);
+//	void directMessageSent(const QByteArray &data);
 	void messageFavored(const QByteArray &data);
 	void messageUnfavored(const QByteArray &data);
 //	void messageFavorChanged(const QByteArray &data);

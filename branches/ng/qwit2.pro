@@ -101,5 +101,5 @@ desktop.files += qwit.desktop
 icon.path = $${PREFIX}/share/icons
 icon.files += images/qwit.png
 INSTALLS = target desktop icon
-CONFIG += debug x86 ppc x86_64 ppc64
+CONFIG += debug x86 ppc x86_64 ppc64 console
 OTHER_FILES += qwit-win.rc

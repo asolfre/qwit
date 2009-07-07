@@ -48,7 +48,7 @@ Account::Account() {
 	connect(twitter, SIGNAL(inboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(outboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(messageSent(const QByteArray&)), this, SLOT(messageSent(const QByteArray&)));
-	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
+//	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavored(const QByteArray&)));
 	connect(twitter, SIGNAL(messageUnfavored(const QByteArray&)), this, SLOT(messageUnfavored(const QByteArray&)));
 	connect(twitter, SIGNAL(messageDestroyed(const QByteArray&)), this, SLOT(messageDestroyed(const QByteArray&)));
@@ -84,7 +84,7 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(inboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(outboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(messageSent(const QByteArray&)), this, SLOT(messageSent(const QByteArray&)));
-	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
+//	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavored(const QByteArray&)));
 	connect(twitter, SIGNAL(messageUnfavored(const QByteArray&)), this, SLOT(messageUnfavored(const QByteArray&)));
 	connect(twitter, SIGNAL(messageDestroyed(const QByteArray&)), this, SLOT(messageDestroyed(const QByteArray&)));
@@ -110,7 +110,7 @@ void Account::addFriendsMessages(const QByteArray &data) {
 	if (messages.size()) {
 		Configuration *config = Configuration::getInstance();
 		int size = max(config->messagesPerPage, friendsMessages.size());
-		uint maxId = (friendsMessages.size() ? friendsMessages[0].id : 0);
+		quint64 maxId = (friendsMessages.size() ? friendsMessages[0].id : 0);
 		messages = QwitTools::mergeMessages(friendsMessages, messages);
 		if ((friendsMessages[0].id > maxId) && (friendsMessages.size() > size)) {
 			friendsMessages.resize(size);
@@ -126,7 +126,7 @@ void Account::addReplies(const QByteArray &data) {
 	if (messages.size()) {
 		Configuration *config = Configuration::getInstance();
 		int size = max(config->messagesPerPage, replies.size());
-		uint maxId = (replies.size() ? replies[0].id : 0);
+		quint64 maxId = (replies.size() ? replies[0].id : 0);
 		messages = QwitTools::mergeMessages(replies, messages);
 		if ((replies[0].id > maxId) && (replies.size() > size)) {
 			replies.resize(size);
@@ -142,7 +142,7 @@ void Account::addPublicMessages(const QByteArray &data) {
 	if (messages.size()) {
 		Configuration *config = Configuration::getInstance();
 		int size = max(config->messagesPerPage, publicMessages.size());
-		uint maxId = (publicMessages.size() ? publicMessages[0].id : 0);
+		quint64 maxId = (publicMessages.size() ? publicMessages[0].id : 0);
 		messages = QwitTools::mergeMessages(publicMessages, messages);
 		if ((publicMessages[0].id > maxId) && (publicMessages.size() > size)) {
 			publicMessages.resize(size);
@@ -158,7 +158,7 @@ void Account::addInboxMessages(const QByteArray &data) {
 	if (messages.size()) {
 		Configuration *config = Configuration::getInstance();
 		int size = max(config->messagesPerPage, inboxMessages.size());
-		uint maxId = (inboxMessages.size() ? inboxMessages[0].id : 0);
+		quint64 maxId = (inboxMessages.size() ? inboxMessages[0].id : 0);
 		messages = QwitTools::mergeMessages(inboxMessages, messages);
 		if ((inboxMessages[0].id > maxId) && (inboxMessages.size() > size)) {
 			inboxMessages.resize(size);
@@ -174,7 +174,7 @@ void Account::addOutboxMessages(const QByteArray &data) {
 	if (messages.size()) {
 		Configuration *config = Configuration::getInstance();
 		int size = max(config->messagesPerPage, outboxMessages.size());
-		uint maxId = (outboxMessages.size() ? outboxMessages[0].id : 0);
+		quint64 maxId = (outboxMessages.size() ? outboxMessages[0].id : 0);
 		messages = QwitTools::mergeMessages(outboxMessages, messages);
 		if ((outboxMessages[0].id > maxId) && (outboxMessages.size() > size)) {
 			outboxMessages.resize(size);
@@ -335,6 +335,7 @@ void Account::saveMessages(QSettings &messagesCache) {
 }
 
 void Account::loadMessages(QSettings &messagesCache) {
+	QStringList usernames;
 	messagesCache.beginGroup("Message");
 	lastMessage = Message::load(messagesCache, this);
 	messagesCache.endGroup();
@@ -342,44 +343,57 @@ void Account::loadMessages(QSettings &messagesCache) {
 	friendsMessages.clear();
 	for (int i = 0; i < n; ++i) {
 		messagesCache.setArrayIndex(i);
-		friendsMessages.push_back(Message::load(messagesCache, this));
+		Message message = Message::load(messagesCache, this);
+		usernames << message.username;
+		friendsMessages.push_back(message);
 	}
 	messagesCache.endArray();
 	n = messagesCache.beginReadArray("Replies");
 	replies.clear();
 	for (int i = 0; i < n; ++i) {
 		messagesCache.setArrayIndex(i);
-		replies.push_back(Message::load(messagesCache, this));
+		Message message = Message::load(messagesCache, this);
+		usernames << message.username;
+		replies.push_back(message);
 	}
 	messagesCache.endArray();
 	n = messagesCache.beginReadArray("Public");
 	publicMessages.clear();
 	for (int i = 0; i < n; ++i) {
 		messagesCache.setArrayIndex(i);
-		publicMessages.push_back(Message::load(messagesCache, this));
+		Message message = Message::load(messagesCache, this);
+		usernames << message.username;
+		publicMessages.push_back(message);
 	}
 	messagesCache.endArray();
 	n = messagesCache.beginReadArray("Favorites");
 	favorites.clear();
 	for (int i = 0; i < n; ++i) {
 		messagesCache.setArrayIndex(i);
-		favorites.push_back(Message::load(messagesCache, this));
+		Message message = Message::load(messagesCache, this);
+		usernames << message.username;
+		favorites.push_back(message);
 	}
 	messagesCache.endArray();
 	n = messagesCache.beginReadArray("Inbox");
 	inboxMessages.clear();
 	for (int i = 0; i < n; ++i) {
 		messagesCache.setArrayIndex(i);
-		inboxMessages.push_back(Message::load(messagesCache, this));
+		Message message = Message::load(messagesCache, this);
+		usernames << message.username;
+		inboxMessages.push_back(message);
 	}
 	messagesCache.endArray();
 	n = messagesCache.beginReadArray("Outbox");
 	outboxMessages.clear();
 	for (int i = 0; i < n; ++i) {
 		messagesCache.setArrayIndex(i);
-		outboxMessages.push_back(Message::load(messagesCache, this));
+		Message message = Message::load(messagesCache, this);
+		usernames << message.username;
+		outboxMessages.push_back(message);
 	}
 	messagesCache.endArray();
+	addUsernamesToCache(usernames);
 	emit friendsMessagesUpdated(friendsMessages, this);
 	emit repliesUpdated(replies, this);
 	emit publicMessagesUpdated(publicMessages, this);
@@ -457,7 +471,7 @@ void Account::addFavorites(const QByteArray &data) {
 	QVector<Message> messages = QwitTools::parseMessages(data, this);
 	Configuration *config = Configuration::getInstance();
 	int size = max(config->messagesPerPage, favorites.size());
-	uint maxId = (favorites.size() ? favorites[0].id : 0);
+	quint64 maxId = (favorites.size() ? favorites[0].id : 0);
 	QVector<Message> newMessages = QwitTools::mergeMessages(favorites, messages);
 	favorites = messages;
 	if ((favorites.size() > size) && (favorites[0].id > maxId)) {
@@ -473,7 +487,7 @@ void Account::addPreviousFavorites(const QByteArray &data) {
 	if (messages.size()) {
 		Configuration *config = Configuration::getInstance();
 		int size = max(config->messagesPerPage, favorites.size());
-		uint maxId = (favorites.size() ? favorites[0].id : 0);
+		quint64 maxId = (favorites.size() ? favorites[0].id : 0);
 		messages = QwitTools::mergeMessages(favorites, messages);
 		if ((favorites[0].id > maxId) && (favorites.size() > size)) {
 			favorites.resize(size);
@@ -507,8 +521,8 @@ void Account::destroyMessage(const Message &message) {
 	}
 }
 
-void Account::directMessageSent(const QByteArray &data) {
-}
+// void Account::directMessageSent(const QByteArray &data) {
+// }
 
 void Account::messageFavored(const QByteArray &data) {
 	qDebug() << ("Account::messageFavored()");
@@ -518,7 +532,7 @@ void Account::messageFavored(const QByteArray &data) {
 	}
 	Message message = QwitTools::parseMessage(data, this);
 	message.favorited = true;
-	uint messageId = message.id;
+	quint64 messageId = message.id;
 	for (int i = 0; i < friendsMessages.size(); ++i) {
 		if (friendsMessages[i].id == messageId) {
 			friendsMessages[i].favorited = true;
@@ -557,7 +571,7 @@ void Account::messageUnfavored(const QByteArray &data) {
 		qDebug() << "Error unfavoring message: " << errorRequest;
 	}
 	Message message = QwitTools::parseMessage(data, this);
-	uint messageId = message.id;
+	quint64 messageId = message.id;
 	message.favorited = false;
 	for (int i = 0; i < friendsMessages.size(); ++i) {
 		if (friendsMessages[i].id == messageId) {
@@ -593,7 +607,7 @@ void Account::messageUnfavored(const QByteArray &data) {
 void Account::messageDestroyed(const QByteArray &data) {
 	qDebug() << ("Account::messageDestroyed()");
 	QString errorRequest = QwitTools::parseError(data);
-	uint messageId = 0;
+	quint64 messageId = 0;
 	if (errorRequest == "") {
 		Message message = QwitTools::parseMessage(data, this);
 		messageId = message.id;
@@ -615,7 +629,6 @@ void Account::messageDestroyed(const QByteArray &data) {
 			publicMessages.erase(publicMessages.begin() + i);
 		}
 	}
-	int index = -1;
 	for (int i = 0; i < favorites.size(); ++i) {
 		if (favorites[i].id == messageId) {
 			favorites.erase(favorites.begin() + i);
@@ -630,7 +643,7 @@ void Account::messageDestroyed(const QByteArray &data) {
 void Account::directMessageDestroyed(const QByteArray &data) {
 	qDebug() << ("Account::directMessageDestroyed()");
 	QString errorRequest = QwitTools::parseError(data);
-	uint messageId = 0;
+	quint64 messageId = 0;
 	if (errorRequest == "") {
 		Message message = QwitTools::parseDirectMessage(data, this);
 		messageId = message.id;
@@ -649,6 +662,14 @@ void Account::directMessageDestroyed(const QByteArray &data) {
 	}
 	emit inboxMessagesUpdated(inboxMessages, this);
 	emit outboxMessagesUpdated(outboxMessages, this);
+}
+
+void Account::addUsernamesToCache(const QStringList &usernames) {
+	for (QStringList::const_iterator it = usernames.begin(); it != usernames.end(); ++it) {
+		usernamesCache << "@" + *it;
+	}
+	usernamesCache.removeDuplicates();
+	usernamesCacheModel.setStringList(usernamesCache);
 }
 
 #endif

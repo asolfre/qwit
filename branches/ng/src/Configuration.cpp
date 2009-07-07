@@ -268,7 +268,7 @@ void Configuration::saveMessages() {
 
 void Configuration::loadMessages() {
 	int n = messagesCache.beginReadArray("Accounts");
-	for (int i = 0; i < accounts.size(); ++i) {
+	for (int i = 0; i < min(n, accounts.size()); ++i) {
 		messagesCache.setArrayIndex(i);
 		accounts[i]->loadMessages(messagesCache);
 	}

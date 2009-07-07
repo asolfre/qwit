@@ -139,6 +139,10 @@ void TwitPicDialog::updateProgressBar(int sent, int total) {
 }
 
 void TwitPicDialog::requestStarted(int id) {
+	if (id != postRequestId) {
+		return;
+	}
+	qDebug() << "TwitPicDialog::requestStarted() " << QString::number(id);
 }
 
 void TwitPicDialog::requestFinished(int id, bool error) {
@@ -146,6 +150,12 @@ void TwitPicDialog::requestFinished(int id, bool error) {
 		return;
 	}
 	buffer.close();
+	if (error) {
+		qDebug() << "TwitPicDialog::requestFinished() " << QString::number(id);
+	} else {
+		qDebug() << "TwitPicDialog::requestFinished() " << QString::number(id) << " error";
+		return;
+	}
 	// The xml module is too heavy for this (and a pain to use). Managing with QRegExp for now.
 	QString xmlReply = buffer.data();
 	xmlReply.replace("\r\n", "");

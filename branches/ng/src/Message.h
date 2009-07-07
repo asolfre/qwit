@@ -35,7 +35,7 @@ class Account;
 
 class Message {
 public:
-	uint id;
+	quint64 id;
 	QString text;
 	QString username;
 	QString userpicFilename;
@@ -43,11 +43,12 @@ public:
 	Account *account;
 	bool favorited;
 	QString source;
-	uint inReplyToMessageId;
+	quint64 inReplyToMessageId;
 	QString inReplyToUsername;
 	bool directMessage;
+        bool following;
 	Message() {}
-	Message(uint id, const QString &text, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, uint inReplyToMessageId, const QString &inReplyToUsername, bool directMessage = false);
+        Message(quint64 id, const QString &text, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, quint64 inReplyToMessageId, const QString &inReplyToUsername, bool following, bool directMessage);
 	bool operator<(const Message &x) const;
 	bool operator==(const Message &x) const;
 	bool operator!=(const Message &x) const;

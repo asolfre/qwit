@@ -41,8 +41,9 @@ public:
 	QToolButton *replyButton;
 	QToolButton *favorButton;
 	QToolButton *retweetButton;
-	QToolButton *unfollowButton;
-	QToolButton *directMessageButton;
+        QToolButton *followButton;
+        QToolButton *unfollowButton;
+        QToolButton *directMessageButton;
 	QToolButton *destroyButton;
 	
 	int top;
@@ -68,7 +69,9 @@ private:
 	QButtonGroup directMessageButtonGroup;
 	QButtonGroup favorButtonGroup;
 	QButtonGroup destroyButtonGroup;
-	int instanceId;
+        QButtonGroup followButtonGroup;
+        QButtonGroup unfollowButtonGroup;
+        int instanceId;
 	static int instances;
 
 public:
@@ -100,7 +103,9 @@ public slots:
 	void directMessageButtonClicked(int id);
 	void favorButtonClicked(int id);
 	void destroyButtonClicked(int id);
-	void disableMoreButton();
+        void followButtonClicked(int id);
+        void unfollowButtonClicked(int id);
+        void disableMoreButton();
 	void disableLessButton();
 	void enableMoreButton();
 	void enableLessButton();

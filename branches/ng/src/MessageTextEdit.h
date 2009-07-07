@@ -37,11 +37,14 @@ class MessageTextEdit: public QTextEdit {
 	Q_OBJECT
 
 private:
-	int inReplyToMessageId;
-	
+	quint64 inReplyToMessageId;
+	QCompleter *_completer;
+	QString textUnderCursor() const;
+
 public:
 	static const int MaxMessageCharacters = 140;
 	static const int StandardHeight = 45;
+	QCompleter *completer;
 
 	MessageTextEdit(QWidget *parent = 0);
 
@@ -60,6 +63,10 @@ signals:
 
 	void messageEntered(const QString &, int);
 	void leftCharsNumberChanged(int);
+
+private slots:
+
+	void insertCompletion(const QString &completion);
 
 public slots:
 

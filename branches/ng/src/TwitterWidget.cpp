@@ -55,6 +55,7 @@ TwitterWidgetItem::TwitterWidgetItem() {
 	destroyButton = 0;
 	retweetButton = 0;
 	unfollowButton = 0;
+	followButton = 0;
 	directMessageButton = 0;
 }
 
@@ -65,6 +66,7 @@ TwitterWidgetItem::~TwitterWidgetItem() {
 	delete replyButton;
 	delete favorButton;
 	delete unfollowButton;
+	delete followButton;
 	delete directMessageButton;
 	if (retweetButton) {
 		delete retweetButton;
@@ -85,6 +87,8 @@ TwitterWidget::TwitterWidget(QWidget *parent): QWidget(parent) {
 	connect(&directMessageButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(directMessageButtonClicked(int)));
 	connect(&favorButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(favorButtonClicked(int)));
 	connect(&destroyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(destroyButtonClicked(int)));
+	connect(&followButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(followButtonClicked(int)));
+	connect(&unfollowButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(unfollowButtonClicked(int)));
 }
 
 void TwitterWidget::clear() {
@@ -98,8 +102,6 @@ void TwitterWidget::clear() {
 }
 
 void TwitterWidget::addItem(const Message &message) {
-//	qDebug() << ("TwitterWidget::addItem()");
-
 	TwitterWidgetItem *item = new TwitterWidgetItem();
 
 	item->message = message;
@@ -111,9 +113,6 @@ void TwitterWidget::addItem(const Message &message) {
 	item->messageTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	item->messageTextBrowser->setFrameShape(QFrame::NoFrame);
 	item->messageTextBrowser->setOpenExternalLinks(true);
-//	QFont font = item->messageTextBrowser->document()->defaultFont();
-//	font.setFamily("Verdana");
-//	item->messageTextBrowser->document()->setDefaultFont(font);
 
 	item->userpicLabel = new QLabel(this);
 	item->loadUserpic();
@@ -130,7 +129,7 @@ void TwitterWidget::addItem(const Message &message) {
 		item->favorButton->setAutoRaise(true);
 		item->favorButton->show();
 	}
-	
+
 	item->replyButton = new QToolButton(this);
 	item->replyButton->setIcon(QwitTools::getToolButtonIcon(":/images/reply.png"));
 	item->replyButton->setText("");
@@ -168,14 +167,24 @@ void TwitterWidget::addItem(const Message &message) {
 		item->retweetButton->setAutoRaise(true);
 		item->retweetButton->show();
 	}
-	
-	item->unfollowButton = new QToolButton(this);
-	item->unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/unfollow.png"));
-	item->unfollowButton->setText("");
-	item->unfollowButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-	item->unfollowButton->setAutoRaise(true);
-	item->unfollowButton->resize(18, 18);
-	item->unfollowButton->show();
+
+	if (message.following) {
+		item->unfollowButton = new QToolButton(this);
+		item->unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/unfollow.png"));
+		item->unfollowButton->setText("");
+		item->unfollowButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		item->unfollowButton->setAutoRaise(true);
+		item->unfollowButton->resize(18, 18);
+		item->unfollowButton->show();
+	} else {
+		item->followButton = new QToolButton(this);
+		item->followButton->setIcon(QwitTools::getToolButtonIcon(":/images/follow.png"));
+		item->followButton->setText("");
+		item->followButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		item->followButton->setAutoRaise(true);
+		item->followButton->resize(18, 18);
+		item->followButton->show();
+	}
 
 	item->directMessageButton = new QToolButton(this);
 	item->directMessageButton->setIcon(QwitTools::getToolButtonIcon(":/images/directMessage.png"));
@@ -184,7 +193,7 @@ void TwitterWidget::addItem(const Message &message) {
 	item->directMessageButton->setAutoRaise(true);
 	item->directMessageButton->resize(18, 18);
 	item->directMessageButton->show();
-	
+
 	items.push_back(item);
 
 	item->messageTextBrowser->show();
@@ -206,7 +215,7 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 	messageItemHeight += item->messageTextBrowser->verticalScrollBar()->maximum() - item->messageTextBrowser->verticalScrollBar()->minimum();
 	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
 	item->userpicLabel->move(MARGIN, height + MARGIN);
-	
+
 	item->favorButton->move(width() - MARGIN - item->favorButton->width(), height);
 	item->favorButton->show();
 	item->replyButton->move(width() - MARGIN - item->replyButton->width(), height + item->favorButton->height());
@@ -221,9 +230,14 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 	}
 	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
 	item->directMessageButton->show();
-	item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
-	item->unfollowButton->show();
-	
+	if (item->unfollowButton) {
+		item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
+		item->unfollowButton->show();
+	} else {
+		item->followButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
+		item->followButton->show();
+	}
+
 	QString messageUrl = item->message.account->singleMessageUrl().replace("%username", item->message.username).replace("%messageid", QString::number(item->message.id));
 	QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" + item->message.account->serviceBaseUrl() + "/" + item->message.username + "\" style=\"font-weight:bold\">" + item->message.username + "</a> - <a href=\"" + messageUrl + "\">" + QwitTools::formatDateTime(item->message.time) + "</a>";
 	if (item->message.source != "") {
@@ -244,11 +258,17 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 	}
 	signY = max(signY, item->messageTextBrowser->pos().y() + item->messageTextBrowser->height() + MARGIN);
 	int signX = width() - item->signLabel->width() - MARGIN - item->favorButton->width();
-	if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
-		signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
+	if (item->unfollowButton) {
+		if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
+			signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
+		}
+	} else {
+		if (signX < item->followButton->pos().x() + item->followButton->width() + MARGIN) {
+			signY = max(signY, item->followButton->pos().y() + item->followButton->height());
+		}
 	}
 	item->signLabel->move(signX, signY);
-	
+
 	if (index & 1) {
 		item->color.setRgb(230, 230, 230);
 	} else {
@@ -256,7 +276,11 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 	}
 
 	int itemHeight = messageItemHeight + item->signLabel->height() + MARGIN;
-	itemHeight = max(item->unfollowButton->y() + item->unfollowButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
+	if (item->unfollowButton) {
+		itemHeight = max(item->unfollowButton->y() + item->unfollowButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
+	} else {
+		itemHeight = max(item->followButton->y() + item->followButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
+	}
 	item->top = height;
 	item->height = itemHeight;
 	return itemHeight;
@@ -274,7 +298,7 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	messageItemHeight += item->messageTextBrowser->verticalScrollBar()->maximum() - item->messageTextBrowser->verticalScrollBar()->minimum();
 	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
 	item->userpicLabel->move(MARGIN, height + MARGIN);
-	
+
 	item->replyButton->move(width() - MARGIN - item->replyButton->width(), height);
 	item->replyButton->show();
 	item->retweetButton->move(width() - MARGIN - item->retweetButton->width(), height + item->replyButton->height());
@@ -283,9 +307,14 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	item->destroyButton->show();
 	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
 	item->directMessageButton->show();
-	item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
-	item->unfollowButton->show();
-	
+	if (item->unfollowButton) {
+		item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
+		item->unfollowButton->show();
+	} else {
+		item->followButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
+		item->followButton->show();
+	}
+
 	QString messageUrl = item->message.account->singleMessageUrl().replace("%username", item->message.username).replace("%messageid", QString::number(item->message.id));
 	QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" + item->message.account->serviceBaseUrl() + "/" + item->message.username + "\" style=\"font-weight:bold\">" + item->message.username + "</a> - <a href=\"" + messageUrl + "\">" + QwitTools::formatDateTime(item->message.time) + "</a>";
 	if (item->message.source != "") {
@@ -303,11 +332,17 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	signY = item->destroyButton->pos().y() + item->destroyButton->height() - item->signLabel->height();
 	signY = max(signY, item->messageTextBrowser->pos().y() + item->messageTextBrowser->height() + MARGIN);
 	int signX = width() - item->signLabel->width() - MARGIN - item->replyButton->width();
-	if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
-		signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
+	if (item->unfollowButton) {
+		if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
+			signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
+		}
+	} else {
+		if (signX < item->followButton->pos().x() + item->followButton->width() + MARGIN) {
+			signY = max(signY, item->followButton->pos().y() + item->followButton->height());
+		}
 	}
 	item->signLabel->move(signX, signY);
-	
+
 	if (index & 1) {
 		item->color.setRgb(230, 230, 230);
 	} else {
@@ -315,20 +350,26 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	}
 
 	int itemHeight = messageItemHeight + item->signLabel->height() + MARGIN;
-	itemHeight = max(item->unfollowButton->y() + item->unfollowButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
+	if (item->unfollowButton) {
+		itemHeight = max(item->unfollowButton->y() + item->unfollowButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
+	} else {
+		itemHeight = max(item->followButton->y() + item->followButton->height(), item->signLabel->y() + item->signLabel->height()) + MARGIN - height;
+	}
 	item->top = height;
 	item->height = itemHeight;
 	return itemHeight;
 }
 
 void TwitterWidget::updateItems() {
-	qDebug() << ("TwitterWidget::updateItems()");
+//	qDebug() << ("TwitterWidget::updateItems()");
 
 	retweetButtonGroup.buttons().clear();
 	replyButtonGroup.buttons().clear();
 	directMessageButtonGroup.buttons().clear();
 	favorButtonGroup.buttons().clear();
 	destroyButtonGroup.buttons().clear();
+	followButtonGroup.buttons().clear();
+	unfollowButtonGroup.buttons().clear();
 	int height = 0;
 	for (int i = 0; i < items.size(); ++i) {
 		TwitterWidgetItem *item = items[i];
@@ -371,7 +412,7 @@ void TwitterWidget::updateItems() {
 		height += moreToolButton->height() + 2 * MARGIN;
 	}
 	resize(width(), height);
-	qDebug() << ("TwitterWidget::updateItems() finished");
+//	qDebug() << ("TwitterWidget::updateItems() finished");
 }
 
 void TwitterWidget::resizeEvent(QResizeEvent *event) {
@@ -466,6 +507,14 @@ void TwitterWidget::favorButtonClicked(int id) {
 	} else {
 		emit favor(items[id]->message);
 	}
+}
+
+void TwitterWidget::followButtonClicked(int id) {
+	//emit directMessage(items[id]->message);
+}
+
+void TwitterWidget::unfollowButtonClicked(int id) {
+	//emit directMessage(items[id]->message);
 }
 
 void TwitterWidget::enableMoreButton() {

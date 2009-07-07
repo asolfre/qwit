@@ -43,6 +43,7 @@ Twitter::Twitter(Account *account) {
 	http = new QHttp(this);
 	connect(http, SIGNAL(requestStarted(int)), this, SLOT(requestStarted(int)));
 	connect(http, SIGNAL(requestFinished(int, bool)), this, SLOT(requestFinished(int, bool)));
+	connect(http, SIGNAL(sslErrors(const QList<QSslError> &)), this, SLOT(sslErrors(const QList<QSslError> &)));
 }
 
 void Twitter::setupProxy() {
@@ -54,7 +55,7 @@ void Twitter::setupProxy() {
 	}
 }
 
-void Twitter::sendMessage(const QString &message, uint inReplyToMessageId) {
+void Twitter::sendMessage(const QString &message, quint64 inReplyToMessageId) {
 	qDebug() << ("Twitter::sendMessage()");
 	
 	setupProxy();
@@ -88,7 +89,7 @@ void Twitter::sendMessage(const QString &message, uint inReplyToMessageId) {
 	sendMessageRequests[id] = tr("Sending message: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receiveFriendsMessages(uint lastMessageId, int count) {
+void Twitter::receiveFriendsMessages(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receiveFriendsMessages()");
 	
 	setupProxy();
@@ -109,7 +110,7 @@ void Twitter::receiveFriendsMessages(uint lastMessageId, int count) {
 	receiveFriendsMessagesRequests[id] = tr("Updating friends messages: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receiveReplies(uint lastMessageId, int count) {
+void Twitter::receiveReplies(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receiveReplies()");
 	
 	setupProxy();
@@ -130,7 +131,7 @@ void Twitter::receiveReplies(uint lastMessageId, int count) {
 	receiveRepliesRequests[id] = tr("Updating replies: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePublicMessages(uint lastMessageId, int count) {
+void Twitter::receivePublicMessages(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receivePublicMessages()");
 	
 	setupProxy();
@@ -172,7 +173,7 @@ void Twitter::receiveLastMessage() {
 	receiveLastMessageRequests[id] = tr("Updating last message: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePreviousFriendsMessages(uint lastMessageId, int count) {
+void Twitter::receivePreviousFriendsMessages(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receiveFriendsMessages()");
 	
 	setupProxy();
@@ -193,7 +194,7 @@ void Twitter::receivePreviousFriendsMessages(uint lastMessageId, int count) {
 	receivePreviousFriendsMessagesRequests[id] = tr("Updating friends messages: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePreviousReplies(uint lastMessageId, int count) {
+void Twitter::receivePreviousReplies(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receiveReplies()");
 	
 	setupProxy();
@@ -214,7 +215,7 @@ void Twitter::receivePreviousReplies(uint lastMessageId, int count) {
 	receivePreviousRepliesRequests[id] = tr("Updating replies: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePreviousPublicMessages(uint lastMessageId, int count) {
+void Twitter::receivePreviousPublicMessages(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receivePublicMessages()");
 	
 	setupProxy();
@@ -277,7 +278,7 @@ void Twitter::receivePreviousFavorites(int page) {
 	receivePreviousFavoritesRequests[id] = tr("Updating favorites: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receiveInboxMessages(uint lastMessageId, int count) {
+void Twitter::receiveInboxMessages(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receiveInboxMessages()");
 	
 	setupProxy();
@@ -298,7 +299,7 @@ void Twitter::receiveInboxMessages(uint lastMessageId, int count) {
 	receiveInboxMessagesRequests[id] = tr("Updating inbox messages: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePreviousInboxMessages(uint lastMessageId, int count) {
+void Twitter::receivePreviousInboxMessages(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receivePreviousInboxMessages()");
 	
 	setupProxy();
@@ -319,7 +320,7 @@ void Twitter::receivePreviousInboxMessages(uint lastMessageId, int count) {
 	receivePreviousInboxMessagesRequests[id] = tr("Updating inbox messages: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receiveOutboxMessages(uint lastMessageId, int count) {
+void Twitter::receiveOutboxMessages(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receiveOutboxMessages()");
 	
 	setupProxy();
@@ -340,7 +341,7 @@ void Twitter::receiveOutboxMessages(uint lastMessageId, int count) {
 	receiveOutboxMessagesRequests[id] = tr("Updating outbox messages: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receivePreviousOutboxMessages(uint lastMessageId, int count) {
+void Twitter::receivePreviousOutboxMessages(quint64 lastMessageId, int count) {
 	qDebug() << ("Twitter::receivePreviousOutboxMessages()");
 	
 	setupProxy();
@@ -390,7 +391,7 @@ void Twitter::sendDirectMessage(const QString &username, const QString &message)
 	sendDirectMessageRequests[id] = tr("Sending direct message: %1").arg(url.host() + url.path());
 }
 
-void Twitter::favorMessage(uint messageId) {
+void Twitter::favorMessage(quint64 messageId) {
 	qDebug() << ("Twitter::favorMessage()");
 	
 	setupProxy();
@@ -419,7 +420,7 @@ void Twitter::favorMessage(uint messageId) {
 	favorMessageRequests[id] = tr("Favoring message: %1").arg(url.host() + url.path());
 }
 
-void Twitter::unfavorMessage(uint messageId) {
+void Twitter::unfavorMessage(quint64 messageId) {
 	qDebug() << ("Twitter::unfavorMessage()");
 	
 	setupProxy();
@@ -448,7 +449,7 @@ void Twitter::unfavorMessage(uint messageId) {
 	unfavorMessageRequests[id] = tr("Unfavoring message: %1").arg(url.host() + url.path());
 }
 
-void Twitter::destroyMessage(uint messageId) {
+void Twitter::destroyMessage(quint64 messageId) {
 	qDebug() << ("Twitter::destroyMessage()");
 	
 	setupProxy();
@@ -477,7 +478,7 @@ void Twitter::destroyMessage(uint messageId) {
 	destroyMessageRequests[id] = tr("Destroying message: %1").arg(url.host() + url.path());
 }
 
-void Twitter::destroyDirectMessage(uint messageId) {
+void Twitter::destroyDirectMessage(quint64 messageId) {
 	qDebug() << ("Twitter::destroyDirectMessage()");
 	
 	setupProxy();
@@ -688,9 +689,18 @@ void Twitter::requestFinished(int id, bool error) {
 			destroyDirectMessageRequests.remove(id);
 		}
 	} else if (error) {
-		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error");
+		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->error()) + " " + http->errorString());
 	} else if (http->lastResponse().isValid()) {
 		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->lastResponse().statusCode()) + " " + http->lastResponse().reasonPhrase());
+	} else {
+		qDebug() << ("Twitter::requestFinished() " + QString::number(id));
+	}
+}
+
+void Twitter::sslErrors(const QList<QSslError> &errors) {
+	qDebug() << "Twitter::sslErrors()" << endl;
+	for (QList<QSslError>::const_iterator it = errors.constBegin(); it != errors.constEnd(); ++it) {
+		qDebug() << "SSL error " << *it << endl;
 	}
 }
 

@@ -31,11 +31,12 @@
 
 #include "QwitHeaders.h"
 
-#include "TwitterWidget.cpp"
+#include "TwitterWidget.h"
 #include "MainWindow.h"
 #include "UserpicsDownloader.h"
 #include "Configuration.h"
 #include "TwitPicDialog.h"
+#include "QwitTools.h"
 
 MainWindow* MainWindow::instance = 0;
 
@@ -487,6 +488,7 @@ void MainWindow::updateCurrentAccount(int id) {
 	connect(config->currentAccount(), SIGNAL(messageSent(const QString &, Account *)), this, SLOT(messageSent(const QString &, Account *)));
 	updateLastMessage(config->currentAccount()->lastMessage.text, config->currentAccount());
 	updateRemainingRequests(config->currentAccount()->remainingRequests, config->currentAccount());
+	messageTextEdit->completer->setModel(&config->currentAccount()->usernamesCacheModel);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
@@ -495,6 +497,7 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 	for (int i = 0; i < pages.size(); ++i) {
 		pages[i]->updateSize();
 	}
+	event->ignore();
 }
 
 void MainWindow::showEvent(QShowEvent *event) {
@@ -638,7 +641,7 @@ void MainWindow::showNewMessages(const QVector<Message> &messages, Account *acco
 		trayMessage += messages[i].username + ": " + messages[i].text + " /" + QwitTools::formatDateTime(messages[i].time.toLocalTime()) + "\n";
 	}
 	if ((trayMessage != "") && config->showMessagesInTray) {
-		trayIcon->showMessage(tr("Qwit: new messages receieved"), trayMessage);
+		trayIcon->showMessage(tr("Qwit: new messages receieved for %1@%2").arg(account->username).arg(account->type), trayMessage);
 	}
 }
 

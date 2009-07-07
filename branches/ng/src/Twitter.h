@@ -65,25 +65,25 @@ class Twitter: public QObject {
 public:
 
 	Twitter(Account *account);
-	void receiveFriendsMessages(uint lastMessageId, int count);
-	void receiveReplies(uint lastMessageId, int count);
-	void receivePublicMessages(uint lastMessageId, int count);
-	void receiveInboxMessages(uint lastMessageId, int count);
-	void receiveOutboxMessages(uint lastMessageId, int count);
+	void receiveFriendsMessages(quint64 lastMessageId, int count);
+	void receiveReplies(quint64 lastMessageId, int count);
+	void receivePublicMessages(quint64 lastMessageId, int count);
+	void receiveInboxMessages(quint64 lastMessageId, int count);
+	void receiveOutboxMessages(quint64 lastMessageId, int count);
 	void receiveFavorites();
 	void receiveLastMessage();
-	void receivePreviousFriendsMessages(uint lastMessageId, int count);
-	void receivePreviousReplies(uint lastMessageId, int count);
-	void receivePreviousPublicMessages(uint lastMessageId, int count);
-	void receivePreviousInboxMessages(uint lastMessageId, int count);
-	void receivePreviousOutboxMessages(uint lastMessageId, int count);
+	void receivePreviousFriendsMessages(quint64 lastMessageId, int count);
+	void receivePreviousReplies(quint64 lastMessageId, int count);
+	void receivePreviousPublicMessages(quint64 lastMessageId, int count);
+	void receivePreviousInboxMessages(quint64 lastMessageId, int count);
+	void receivePreviousOutboxMessages(quint64 lastMessageId, int count);
 	void receivePreviousFavorites(int page);
-	void sendMessage(const QString &message, uint inReplyToMessageId);
+	void sendMessage(const QString &message, quint64 inReplyToMessageId);
 	void sendDirectMessage(const QString &username, const QString &message);
-	void favorMessage(uint messageId);
-	void unfavorMessage(uint messageId);
-	void destroyMessage(uint messageId);
-	void destroyDirectMessage(uint messageId);
+	void favorMessage(quint64 messageId);
+	void unfavorMessage(quint64 messageId);
+	void destroyMessage(quint64 messageId);
+	void destroyDirectMessage(quint64 messageId);
 	void abort();
 
 signals:
@@ -113,6 +113,7 @@ public slots:
 
 	void requestStarted(int id);
 	void requestFinished(int id, bool error);
+	void sslErrors(const QList<QSslError> &errors);
 	
 };
 

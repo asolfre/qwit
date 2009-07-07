@@ -46,6 +46,12 @@ MessageTextEdit::MessageTextEdit(QWidget *parent): QTextEdit(parent) {
 	inReplyToMessageId = 0;
 	emit leftCharsNumberChanged(MaxMessageCharacters);
 	connect(this, SIGNAL(textChanged()), this, SLOT(textChangedToCharsNumberChanged()));
+	completer = new QCompleter(this);
+	completer->setModel(new QStringListModel(QStringList(), completer));
+	completer->setWidget(this);
+	completer->setCompletionMode(QCompleter::PopupCompletion);
+	completer->setCaseSensitivity(Qt::CaseInsensitive);
+	QObject::connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
 }
 
 int MessageTextEdit::getMaxMessageCharactersNumber() {
@@ -53,6 +59,9 @@ int MessageTextEdit::getMaxMessageCharactersNumber() {
 }
 
 void MessageTextEdit::focusInEvent(QFocusEvent *event) {
+	if (completer) {
+		completer->setWidget(this);
+	}
 	QTextEdit::focusInEvent(event);
 }
 
@@ -68,13 +77,55 @@ void MessageTextEdit::clear() {
 }
 
 void MessageTextEdit::keyPressEvent(QKeyEvent *e) {
+	if (completer && completer->popup()->isVisible()) {
+	 // The following keys are forwarded by the completer to the widget
+		switch (e->key()) {
+			case Qt::Key_Enter:
+			case Qt::Key_Return:
+			case Qt::Key_Escape:
+			case Qt::Key_Tab:
+			case Qt::Key_Backtab:
+				e->ignore();
+				return; // let the completer do default behavior
+			default:
+				break;
+		}
+	}
 	if ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)) {
 		setEnabled(false);
 		emit messageEntered(toPlainText(), inReplyToMessageId);
 		e->accept();
 		return;
 	}
-	QTextEdit::keyPressEvent(e);
+
+	bool isShortcut = ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_E); // CTRL+E
+	if (!completer || !isShortcut) {
+		// dont process the shortcut when we have a completer
+		QTextEdit::keyPressEvent(e);
+	}
+
+	const bool ctrlOrShift = e->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
+	if (!completer || (ctrlOrShift && e->text().isEmpty())) {
+		return;
+	}
+
+	static QString eow("~!#@$%^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
+	bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
+	QString completionPrefix = textUnderCursor();
+
+	if (!isShortcut && (hasModifier || e->text().isEmpty() || (completionPrefix.length() < 2) || eow.contains(e->text().right(1)))) {
+		completer->popup()->hide();
+		return;
+	}
+
+	if (completionPrefix != completer->completionPrefix()) {
+		completer->setCompletionPrefix(completionPrefix);
+		completer->popup()->setCurrentIndex(completer->completionModel()->index(0, 0));
+	}
+	QRect cr = cursorRect();
+	cr.setWidth(completer->popup()->sizeHintForColumn(0) + completer->popup()->verticalScrollBar()->sizeHint().width());
+	completer->complete(cr); // popup it up!
+//QTextEdit::keyPressEvent(e);
 }
 
 void MessageTextEdit::textChangedToCharsNumberChanged() {
@@ -117,8 +168,6 @@ void MessageTextEdit::retweet(const Message &message) {
 }
 
 void MessageTextEdit::reply(const Message &message) {
-	Configuration *config = Configuration::getInstance();
-
 	QString text = toPlainText().simplified();
 	setText("@" + message.username + " " + text);
 
@@ -141,6 +190,41 @@ void MessageTextEdit::insertFromMimeData(const QMimeData *source) {
 void MessageTextEdit::insertUrl(const QString &url) {
 	insertPlainText(url);
 	setEnabled(true);
+}
+/*
+void MessageTextEdit::setCompleter(QCompleter *completer) {
+	if (this->completer) {
+		QObject::disconnect(completer, 0, this, 0);
+	}
+
+	this->completer = completer;
+
+	if (!completer) {
+		return;
+	}
+
+	completer->setWidget(this);
+	completer->setCompletionMode(QCompleter::PopupCompletion);
+	completer->setCaseSensitivity(Qt::CaseInsensitive);
+	QObject::connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
+}
+*/
+void MessageTextEdit::insertCompletion(const QString& completion) {
+	if (completer->widget() != this) {
+		return;
+	}
+	QTextCursor tc = textCursor();
+	int extra = completion.length() - completer->completionPrefix().length();
+	tc.movePosition(QTextCursor::Left);
+	tc.movePosition(QTextCursor::EndOfWord);
+	tc.insertText(completion.right(extra));
+	setTextCursor(tc);
+}
+
+QString MessageTextEdit::textUnderCursor() const {
+	QTextCursor tc = textCursor();
+	tc.select(QTextCursor::WordUnderCursor);
+	return tc.selectedText();
 }
 
 #endif

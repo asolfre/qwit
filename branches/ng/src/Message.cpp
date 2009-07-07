@@ -33,7 +33,7 @@
 
 #include "Message.h"
 
-Message::Message(uint id, const QString &text, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, uint inReplyToMessageId, const QString &inReplyToUsername, bool directMessage) {
+Message::Message(quint64 id, const QString &text, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, quint64 inReplyToMessageId, const QString &inReplyToUsername, bool following, bool directMessage) {
 	this->id = id;
 	this->text = text;
 	this->username = username;
@@ -42,6 +42,7 @@ Message::Message(uint id, const QString &text, const QString &username, const QS
 	this->account = account;
 	this->favorited = favorited;
 	this->source = source;
+        this->following = following;
 	this->inReplyToMessageId = inReplyToMessageId;
 	this->inReplyToUsername = inReplyToUsername;
 	this->directMessage = directMessage;
@@ -67,14 +68,15 @@ void Message::save(QSettings &messagesCache) {
 	messagesCache.setValue("time", time);
 	messagesCache.setValue("favorited", favorited);
 	messagesCache.setValue("source", source);
-	messagesCache.setValue("inReplyToMessageId", inReplyToMessageId);
+        messagesCache.setValue("following", following);
+        messagesCache.setValue("inReplyToMessageId", inReplyToMessageId);
 	messagesCache.setValue("inReplyToUsername", inReplyToUsername);
 	messagesCache.setValue("directMessage", directMessage);
 }
 
 Message Message::load(QSettings &messagesCache, Account *account) {
 	return Message(
-		messagesCache.value("id").toInt(),
+		messagesCache.value("id").toULongLong(),
 		messagesCache.value("text").toString(),
 		messagesCache.value("username").toString(),
 		messagesCache.value("userpicFilename").toString(),
@@ -82,9 +84,10 @@ Message Message::load(QSettings &messagesCache, Account *account) {
 		messagesCache.value("favorited").toBool(),
 		account,
 		messagesCache.value("source").toString(),
-		messagesCache.value("inReplyToMessageId").toUInt(),
+		messagesCache.value("inReplyToMessageId").toULongLong(),
 		messagesCache.value("inReplyToUsername").toString(),
-		messagesCache.value("directMessage").toBool()
+                messagesCache.value("following").toBool(),
+                messagesCache.value("directMessage").toBool()
 	);
 }
 
