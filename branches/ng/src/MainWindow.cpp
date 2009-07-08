@@ -628,6 +628,7 @@ void MainWindow::messageSent(const QString &message, Account *account) {
 	messageTextEdit->setEnabled(true);
 	messageTextEdit->clear();
 	updateLastMessage(message, account);
+	updateAccount(account);
 }
 
 void MainWindow::showNewMessages(const QVector<Message> &messages, Account *account) {

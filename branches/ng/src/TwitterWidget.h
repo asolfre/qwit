@@ -30,33 +30,8 @@
 #define TwitterWidget_h
 
 #include "QwitHeaders.h"
+#include "TwitterWidgetItem.h"
 
-#include "Message.h"
-
-class TwitterWidgetItem {
-public:
-	QTextBrowser *messageTextBrowser;
-	QLabel *userpicLabel;
-	QLabel *signLabel;
-	QToolButton *replyButton;
-	QToolButton *favorButton;
-	QToolButton *retweetButton;
-        QToolButton *followButton;
-        QToolButton *unfollowButton;
-        QToolButton *directMessageButton;
-	QToolButton *destroyButton;
-	
-	int top;
-	int height;
-	Message message;
-	QColor color;
-
-	void loadUserpic();
-	TwitterWidgetItem();
-	~TwitterWidgetItem();
-};
-
-const int ICON_SIZE = 48;
 const int MARGIN = 5;
 
 class TwitterWidget: public QWidget {
@@ -69,8 +44,8 @@ private:
 	QButtonGroup directMessageButtonGroup;
 	QButtonGroup favorButtonGroup;
 	QButtonGroup destroyButtonGroup;
-        QButtonGroup followButtonGroup;
-        QButtonGroup unfollowButtonGroup;
+//        QButtonGroup followButtonGroup;
+//        QButtonGroup unfollowButtonGroup;
         int instanceId;
 	static int instances;
 
@@ -90,7 +65,7 @@ public:
 	void removeLessButton();
 	int arrangeMessage(TwitterWidgetItem *item, int index, int height);
 	int arrangeDirectMessage(TwitterWidgetItem *item, int index, int height);
-	
+
 protected:
 
 	void resizeEvent(QResizeEvent *event);
@@ -103,8 +78,8 @@ public slots:
 	void directMessageButtonClicked(int id);
 	void favorButtonClicked(int id);
 	void destroyButtonClicked(int id);
-        void followButtonClicked(int id);
-        void unfollowButtonClicked(int id);
+//        void followButtonClicked(int id);
+//        void unfollowButtonClicked(int id);
         void disableMoreButton();
 	void disableLessButton();
 	void enableMoreButton();
