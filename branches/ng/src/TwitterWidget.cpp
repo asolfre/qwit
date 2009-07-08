@@ -168,23 +168,21 @@ void TwitterWidget::addItem(const Message &message) {
 		item->retweetButton->show();
 	}
 
-	if (message.following) {
-		item->unfollowButton = new QToolButton(this);
-		item->unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/unfollow.png"));
-		item->unfollowButton->setText("");
-		item->unfollowButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-		item->unfollowButton->setAutoRaise(true);
-		item->unfollowButton->resize(18, 18);
-		item->unfollowButton->show();
-	} else {
-		item->followButton = new QToolButton(this);
-		item->followButton->setIcon(QwitTools::getToolButtonIcon(":/images/follow.png"));
-		item->followButton->setText("");
-		item->followButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-		item->followButton->setAutoRaise(true);
-		item->followButton->resize(18, 18);
-		item->followButton->show();
-	}
+	item->unfollowButton = new QToolButton(this);
+	item->unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/unfollow.png"));
+	item->unfollowButton->setText("");
+	item->unfollowButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+	item->unfollowButton->setAutoRaise(true);
+	item->unfollowButton->resize(18, 18);
+	item->unfollowButton->show();
+
+	item->followButton = new QToolButton(this);
+	item->followButton->setIcon(QwitTools::getToolButtonIcon(":/images/follow.png"));
+	item->followButton->setText("");
+	item->followButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+	item->followButton->setAutoRaise(true);
+	item->followButton->resize(18, 18);
+	item->followButton->show();
 
 	item->directMessageButton = new QToolButton(this);
 	item->directMessageButton->setIcon(QwitTools::getToolButtonIcon(":/images/directMessage.png"));
@@ -228,16 +226,20 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 		item->destroyButton->move(width() - MARGIN - item->destroyButton->width(), height + item->favorButton->height() + item->replyButton->height());
 		item->destroyButton->show();
 	}
-	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
-	item->directMessageButton->show();
-	if (item->unfollowButton) {
-		item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
-		item->unfollowButton->show();
-	} else {
-		item->followButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
-		item->followButton->show();
-	}
 
+	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - item->directMessageButton->width() / 2, height + ICON_SIZE + 2 * MARGIN);
+	item->directMessageButton->show();
+	item->unfollowButton->move(item->userpicLabel->x() + item->userpicLabel->width() - item->unfollowButton->width(), item->userpicLabel->y());
+	item->unfollowButton->show();
+	item->followButton->move(item->unfollowButton->x() - MARGIN - item->unfollowButton->width(), item->userpicLabel->y());
+	item->followButton->show();
+/*	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
+	item->directMessageButton->show();
+	item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
+	item->unfollowButton->show();
+	item->followButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
+	item->followButton->show();
+*/
 	QString messageUrl = item->message.account->singleMessageUrl().replace("%username", item->message.username).replace("%messageid", QString::number(item->message.id));
 	QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" + item->message.account->serviceBaseUrl() + "/" + item->message.username + "\" style=\"font-weight:bold\">" + item->message.username + "</a> - <a href=\"" + messageUrl + "\">" + QwitTools::formatDateTime(item->message.time) + "</a>";
 	if (item->message.source != "") {
@@ -258,14 +260,8 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 	}
 	signY = max(signY, item->messageTextBrowser->pos().y() + item->messageTextBrowser->height() + MARGIN);
 	int signX = width() - item->signLabel->width() - MARGIN - item->favorButton->width();
-	if (item->unfollowButton) {
-		if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
-			signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
-		}
-	} else {
-		if (signX < item->followButton->pos().x() + item->followButton->width() + MARGIN) {
-			signY = max(signY, item->followButton->pos().y() + item->followButton->height());
-		}
+	if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
+		signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
 	}
 	item->signLabel->move(signX, signY);
 
@@ -305,7 +301,16 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	item->retweetButton->show();
 	item->destroyButton->move(width() - MARGIN - item->destroyButton->width(), height + item->replyButton->height() + item->retweetButton->height());
 	item->destroyButton->show();
-	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
+
+	int space = (ICON_SIZE - item->directMessageButton->width() - item->followButton->width() - item->unfollowButton->width()) / 4;
+
+	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - item->directMessageButton->width() / 2, height + ICON_SIZE + 2 * MARGIN);
+	item->directMessageButton->show();
+	item->unfollowButton->move(item->userpicLabel->x() + item->userpicLabel->width() - item->unfollowButton->width(), item->userpicLabel->y());
+	item->unfollowButton->show();
+	item->followButton->move(item->unfollowButton->x() - MARGIN - item->unfollowButton->width(), item->userpicLabel->y());
+	item->followButton->show();
+/*	item->directMessageButton->move(MARGIN + ICON_SIZE / 2 - MARGIN / 2 - item->directMessageButton->width(), height + ICON_SIZE + 2 * MARGIN);
 	item->directMessageButton->show();
 	if (item->unfollowButton) {
 		item->unfollowButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
@@ -313,7 +318,7 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	} else {
 		item->followButton->move(MARGIN + ICON_SIZE / 2 + MARGIN / 2, height + ICON_SIZE + 2 * MARGIN);
 		item->followButton->show();
-	}
+	}*/
 
 	QString messageUrl = item->message.account->singleMessageUrl().replace("%username", item->message.username).replace("%messageid", QString::number(item->message.id));
 	QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" + item->message.account->serviceBaseUrl() + "/" + item->message.username + "\" style=\"font-weight:bold\">" + item->message.username + "</a> - <a href=\"" + messageUrl + "\">" + QwitTools::formatDateTime(item->message.time) + "</a>";
@@ -332,14 +337,8 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	signY = item->destroyButton->pos().y() + item->destroyButton->height() - item->signLabel->height();
 	signY = max(signY, item->messageTextBrowser->pos().y() + item->messageTextBrowser->height() + MARGIN);
 	int signX = width() - item->signLabel->width() - MARGIN - item->replyButton->width();
-	if (item->unfollowButton) {
-		if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
-			signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
-		}
-	} else {
-		if (signX < item->followButton->pos().x() + item->followButton->width() + MARGIN) {
-			signY = max(signY, item->followButton->pos().y() + item->followButton->height());
-		}
+	if (signX < item->unfollowButton->pos().x() + item->unfollowButton->width() + MARGIN) {
+		signY = max(signY, item->unfollowButton->pos().y() + item->unfollowButton->height());
 	}
 	item->signLabel->move(signX, signY);
 
