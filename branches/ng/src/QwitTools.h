@@ -47,9 +47,11 @@ private:
 	QIcon _getToolButtonIcon(const QString &iconFileName, bool active);
 	QString _formatDateTime(const QDateTime &time);
 	QDateTime _dateFromString(QString date);
+	QDateTime _dateFromAtomString(QString date);
 	QVector<Message> _parseMessages(const QByteArray &data, Account *account);
 	QVector<Message> _parseInboxMessages(const QByteArray &data, Account *account);
 	QVector<Message> _parseOutboxMessages(const QByteArray &data, Account *account);
+	QVector<Message> _parseSearchMessages(const QByteArray &data, Account *account);
 	Message _parseUser(const QByteArray &data, Account *account);
 	Message _parseMessage(const QByteArray &data, Account *account);
 	Message _parseDirectMessage(const QByteArray &data, Account *account);
@@ -61,11 +63,13 @@ private:
 	
 public:
 	static QDateTime dateFromString(QString date);
+	static QDateTime dateFromAtomString(QString date);
 	static QIcon getToolButtonIcon(const QString &iconFileName, bool active = false);
 	static QString formatDateTime(const QDateTime &time);
 	static QVector<Message> parseMessages(const QByteArray &data, Account *account);
 	static QVector<Message> parseInboxMessages(const QByteArray &data, Account *account);
 	static QVector<Message> parseOutboxMessages(const QByteArray &data, Account *account);
+	static QVector<Message> parseSearchMessages(const QByteArray &data, Account *account);
 	static Message parseUser(const QByteArray &data, Account *account);
 	static Message parseMessage(const QByteArray &data, Account *account);
 	static Message parseDirectMessage(const QByteArray &data, Account *account);

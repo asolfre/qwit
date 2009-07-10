@@ -46,7 +46,7 @@ SearchPage::SearchPage(QWidget* parent): AbstractPage(parent) {
 
 	QHBoxLayout *hBoxLayout = new QHBoxLayout();
 	hBoxLayout->addWidget(new QLabel(tr("Find:")));
-	QLineEdit *lineEdit = new QLineEdit(this);
+	lineEdit = new QLineEdit(this);
 	hBoxLayout->addWidget(lineEdit);
 	
 	scrollArea = new QScrollArea(this);
@@ -57,6 +57,7 @@ SearchPage::SearchPage(QWidget* parent): AbstractPage(parent) {
 	
 	vBoxLayout->addLayout(hBoxLayout);
 	vBoxLayout->addWidget(scrollArea);
+	connect(lineEdit, SIGNAL(returnPressed()), this, SLOT(update()));
 }
 
 void SearchPage::updateSize() {
@@ -71,10 +72,11 @@ QString SearchPage::title() {
 void SearchPage::update(Account *account) {
 	qDebug() << ("SearchPage::update()");
 	Configuration *config = Configuration::getInstance();
+	config->searchQuery = lineEdit->text();
 	if (account) {
-		account->receiveSearchMessages(config->messagesPerPage);
+		account->receiveSearchMessages(config->messagesPerPage, lineEdit->text());
 	} else {
-		config->currentAccount()->receiveSearchMessages(config->messagesPerPage);
+		config->currentAccount()->receiveSearchMessages(config->messagesPerPage, lineEdit->text());
 	}
 }
 
@@ -82,14 +84,14 @@ void SearchPage::updatePrevious() {
 	qDebug() << ("SearchPage::updatePrevious()");
 	twitterWidget->disableMoreButton();
 	Configuration *config = Configuration::getInstance();
-	//config->currentAccount()->receivePreviousFriendsMessages(config->messagesPerPage);
+	config->currentAccount()->receivePreviousSearchMessages(config->messagesPerPage, lineEdit->text());
 }
 
 void SearchPage::removePrevious() {
 	qDebug() << ("SearchPage::removePrevious()");
 	twitterWidget->disableLessButton();
 	Configuration *config = Configuration::getInstance();
-	//config->currentAccount()->removePreviousFriendsMessages(config->messagesPerPage);
+	config->currentAccount()->removePreviousSearchMessages(config->messagesPerPage);
 	twitterWidget->enableLessButton();
 }
 

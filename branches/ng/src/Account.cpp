@@ -47,6 +47,7 @@ Account::Account() {
 	connect(twitter, SIGNAL(lastMessageReceived(const QByteArray&)), this, SLOT(updateLastMessage(const QByteArray&)));
 	connect(twitter, SIGNAL(inboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(outboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
+	connect(twitter, SIGNAL(searchMessagesReceived(const QByteArray&)), this, SLOT(addSearchMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(messageSent(const QByteArray&)), this, SLOT(messageSent(const QByteArray&)));
 //	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavored(const QByteArray&)));
@@ -59,12 +60,14 @@ Account::Account() {
 	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SLOT(addPreviousFavorites(const QByteArray&)));
 	connect(twitter, SIGNAL(previousInboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(previousOutboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
+	connect(twitter, SIGNAL(previousSearchMessagesReceived(const QByteArray&)), this, SLOT(addSearchMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsMessagesReceived(const QByteArray&)), this, SIGNAL(previousFriendsMessagesReceived()));
 	connect(twitter, SIGNAL(previousRepliesReceived(const QByteArray&)), this, SIGNAL(previousRepliesReceived()));
 	connect(twitter, SIGNAL(previousPublicMessagesReceived(const QByteArray&)), this, SIGNAL(previousPublicMessagesReceived()));
 	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SIGNAL(previousFavoritesReceived()));
 	connect(twitter, SIGNAL(previousInboxMessagesReceived(const QByteArray&)), this, SIGNAL(previousInboxMessagesReceived()));
 	connect(twitter, SIGNAL(previousOutboxMessagesReceived(const QByteArray&)), this, SIGNAL(previousOutboxMessagesReceived()));
+	connect(twitter, SIGNAL(previousSearchMessagesReceived(const QByteArray&)), this, SIGNAL(previousSearchMessagesReceived()));
 	sendingMessage = false;
 }
 
@@ -83,6 +86,7 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(lastMessageReceived(const QByteArray&)), this, SLOT(updateLastMessage(const QByteArray&)));
 	connect(twitter, SIGNAL(inboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(outboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
+	connect(twitter, SIGNAL(searchMessagesReceived(const QByteArray&)), this, SLOT(addSearchMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(messageSent(const QByteArray&)), this, SLOT(messageSent(const QByteArray&)));
 //	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavored(const QByteArray&)));
@@ -95,12 +99,14 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SLOT(addPreviousFavorites(const QByteArray&)));
 	connect(twitter, SIGNAL(previousInboxMessagesReceived(const QByteArray&)), this, SLOT(addInboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(previousOutboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
+	connect(twitter, SIGNAL(previousSearchMessagesReceived(const QByteArray&)), this, SLOT(addSearchMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(previousFriendsMessagesReceived(const QByteArray&)), this, SIGNAL(previousFriendsMessagesReceived()));
 	connect(twitter, SIGNAL(previousRepliesReceived(const QByteArray&)), this, SIGNAL(previousRepliesReceived()));
 	connect(twitter, SIGNAL(previousPublicMessagesReceived(const QByteArray&)), this, SIGNAL(previousPublicMessagesReceived()));
 	connect(twitter, SIGNAL(previousFavoritesReceived(const QByteArray&)), this, SIGNAL(previousFavoritesReceived()));
 	connect(twitter, SIGNAL(previousInboxMessagesReceived(const QByteArray&)), this, SIGNAL(previousInboxMessagesReceived()));
 	connect(twitter, SIGNAL(previousOutboxMessagesReceived(const QByteArray&)), this, SIGNAL(previousOutboxMessagesReceived()));
+	connect(twitter, SIGNAL(previousSearchMessagesReceived(const QByteArray&)), this, SIGNAL(previousSearchMessagesReceived()));
 	sendingMessage = false;
 }
 
@@ -332,6 +338,12 @@ void Account::saveMessages(QSettings &messagesCache) {
 		outboxMessages[i].save(messagesCache);
 	}
 	messagesCache.endArray();
+	messagesCache.beginWriteArray("Search");
+	for (int i = 0; i < min(searchMessages.size(), config->messagesPerPage); ++i) {
+		messagesCache.setArrayIndex(i);
+		searchMessages[i].save(messagesCache);
+	}
+	messagesCache.endArray();
 }
 
 void Account::loadMessages(QSettings &messagesCache) {
@@ -393,6 +405,15 @@ void Account::loadMessages(QSettings &messagesCache) {
 		outboxMessages.push_back(message);
 	}
 	messagesCache.endArray();
+	n = messagesCache.beginReadArray("Search");
+	searchMessages.clear();
+	for (int i = 0; i < n; ++i) {
+		messagesCache.setArrayIndex(i);
+		Message message = Message::load(messagesCache, this);
+		usernames << message.username;
+		searchMessages.push_back(message);
+	}
+	messagesCache.endArray();
 	addUsernamesToCache(usernames);
 	emit friendsMessagesUpdated(friendsMessages, this);
 	emit repliesUpdated(replies, this);
@@ -425,11 +446,21 @@ QString Account::serviceBaseUrl() {
 
 QString Account::searchBaseUrl() {
 	QString url = (_searchBaseUrl == "" ? Services::options[type]["searchbaseurl"] : _searchBaseUrl);
-	if (useHttps) {
+/*	if (useHttps) {
 		if (url.startsWith("http://")) {
 			url = "https://" + url.mid(7);
 		}
-	}
+	}*/
+	return url;
+}
+
+QString Account::searchApiUrl() {
+	QString url = (_searchApiUrl == "" ? Services::options[type]["searchapiurl"] : _searchApiUrl);
+/*	if (useHttps) {
+		if (url.startsWith("http://")) {
+			url = "https://" + url.mid(7);
+		}
+	}*/
 	return url;
 }
 
@@ -681,9 +712,38 @@ void Account::addUsernamesToCache(const QStringList &usernames) {
 	usernamesCacheModel.setStringList(usernamesCache);
 }
 
-void Account::receiveSearchMessages(int count) {
+void Account::receiveSearchMessages(int count, const QString &query) {
 	qDebug() << ("Account::receiveSearchMessages()");
-	twitter->receiveSearchMessages((searchMessages.size() != 0 ? searchMessages[0].id : 0), count);
+	twitter->receiveSearchMessages(count, query);
+}
+
+void Account::receivePreviousSearchMessages(int count, const QString &query) {
+	qDebug() << ("Account::receivePreviousSearchMessages()");
+	twitter->receivePreviousSearchMessages(searchMessages.size() / count + 1, count, query);
+}
+
+void Account::addSearchMessages(const QByteArray &data) {
+	qDebug() << ("Account::addSearchMessages()");
+	QVector<Message> messages = QwitTools::parseSearchMessages(data, this);
+	if (messages.size()) {
+		Configuration *config = Configuration::getInstance();
+		int size = max(config->messagesPerPage, searchMessages.size());
+		quint64 maxId = (searchMessages.size() ? searchMessages[0].id : 0);
+		messages = QwitTools::mergeMessages(searchMessages, messages);
+		if ((searchMessages[0].id > maxId) && (searchMessages.size() > size)) {
+			searchMessages.resize(size);
+		}
+		emit searchMessagesUpdated(searchMessages, this);
+//		emit newMessagesReceived(messages, this);
+	}
+}
+
+void Account::removePreviousSearchMessages(int count) {
+	qDebug() << ("Account::removePreviousSearchMessages()");
+	int oldItemsCount = searchMessages.size();
+	int newItemsCount = (oldItemsCount - 1) - (oldItemsCount - 1) % count;
+	searchMessages.resize(newItemsCount);
+	emit searchMessagesUpdated(searchMessages, this);
 }
 
 #endif

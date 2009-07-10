@@ -72,7 +72,7 @@ public:
 	void receivePublicMessages(quint64 lastMessageId, int count);
 	void receiveInboxMessages(quint64 lastMessageId, int count);
 	void receiveOutboxMessages(quint64 lastMessageId, int count);
-	void receiveSearchMessages(quint64 lastMessageId, int count);
+	void receiveSearchMessages(int count, const QString &query);
 	void receiveFavorites();
 	void receiveLastMessage();
 	void receivePreviousFriendsMessages(quint64 lastMessageId, int count);
@@ -81,7 +81,7 @@ public:
 	void receivePreviousInboxMessages(quint64 lastMessageId, int count);
 	void receivePreviousOutboxMessages(quint64 lastMessageId, int count);
 	void receivePreviousFavorites(int page);
-	void receivePreviousSearchMessages(quint64 lastMessageId, int count);
+	void receivePreviousSearchMessages(int page, int count, const QString &query);
 	void sendMessage(const QString &message, quint64 inReplyToMessageId);
 	void sendDirectMessage(const QString &username, const QString &message);
 	void favorMessage(quint64 messageId);

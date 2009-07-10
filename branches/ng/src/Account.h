@@ -44,6 +44,7 @@ private:
 	QString _serviceBaseUrl;
 	QString _serviceApiUrl;
 	QString _searchBaseUrl;
+	QString _searchApiUrl;
 	QString _singleMessageUrl;
 	QStringList usernamesCache;
 
@@ -75,6 +76,7 @@ public:
 	QString serviceApiUrl();
 	QString serviceBaseUrl();
 	QString searchBaseUrl();
+	QString searchApiUrl();
 	QString singleMessageUrl();
 	void setRemainingRequests(int remainingRequests);
 	void addUsernamesToCache(const QStringList &usernames);
@@ -87,6 +89,7 @@ public slots:
 	void addPreviousFavorites(const QByteArray &data);
 	void addInboxMessages(const QByteArray &data);
 	void addOutboxMessages(const QByteArray &data);
+	void addSearchMessages(const QByteArray &data);
 	void updateLastMessage(const QByteArray &data);
 	void updateLastMessage();
 	void sendMessage(const QString &message, quint64 inReplyToMessageId);
@@ -97,19 +100,21 @@ public slots:
 //	void messageFavorChanged(const QByteArray &data);
 	void messageDestroyed(const QByteArray &data);
 	void directMessageDestroyed(const QByteArray &data);
-	void receiveSearchMessages(int count);
+	void receiveSearchMessages(int count, const QString &query);
 	void receivePublicMessages(int count);
 	void receiveFriendsMessages(int count);
 	void receiveReplies(int count);
 	void receiveFavorites();
 	void receiveInboxMessages(int count);
 	void receiveOutboxMessages(int count);
+	void receivePreviousSearchMessages(int count, const QString &query);
 	void receivePreviousPublicMessages(int count);
 	void receivePreviousFriendsMessages(int count);
 	void receivePreviousReplies(int count);
 	void receivePreviousFavorites();
 	void receivePreviousInboxMessages(int count);
 	void receivePreviousOutboxMessages(int count);
+	void removePreviousSearchMessages(int count);
 	void removePreviousFriendsMessages(int count);
 	void removePreviousReplies(int count);
 	void removePreviousFavorites();
@@ -133,6 +138,7 @@ signals:
 	void outboxMessagesUpdated(const QVector<Message> &, Account *);
 	void remainingRequestsUpdated(int, Account *);
 	void previousFriendsMessagesReceived();
+	void previousSearchMessagesReceived();
 	void previousRepliesReceived();
 	void previousPublicMessagesReceived();
 	void previousFavoritesReceived();

@@ -78,6 +78,7 @@ void Configuration::load() {
 	position = settings.value("position", QPoint(100, 100)).toPoint();
 	size = settings.value("size", QSize(300, 600)).toSize();
 	currentAccountId = settings.value("currentAccountId", -1).toInt();
+	searchQuery = settings.value("searchQuery", "").toString();
 	settings.endGroup();
 	
 // User interface
@@ -158,6 +159,7 @@ void Configuration::save() {
 	settings.setValue("position", position);
 	settings.setValue("size", size);
 	settings.setValue("currentAccountId", currentAccountId);
+	settings.setValue("searchQuery", searchQuery);
 	settings.endGroup();
 
 // User interface

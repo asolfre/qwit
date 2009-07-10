@@ -111,7 +111,6 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	connect(UrlShortener::getInstance(), SIGNAL(urlShortened(const QString &)), messageTextEdit, SLOT(insertUrl(const QString &)));
 
 	updateAll();
-
 }
 
 void MainWindow::leftCharsNumberChanged(int count) {
@@ -267,6 +266,7 @@ void MainWindow::updateState() {
 	}
 	if (config->showSearchTab) {
 		pages.push_back(searchPage = new SearchPage());
+		searchPage->lineEdit->setText(config->searchQuery);
 	}
 
 	for (int i = 0; i < pages.size(); ++i) {
@@ -472,11 +472,11 @@ void MainWindow::updateCurrentAccount(int id) {
 		connect(config->currentAccount(), SIGNAL(previousOutboxMessagesReceived()), outboxPage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	if (searchPage) {
-//		disconnect(config->accounts[oldAccountId], SIGNAL(inboxMessagesUpdated(const QVector<Message> &, Account *)), 0, 0);
-//		connect(config->currentAccount(), SIGNAL(inboxMessagesUpdated(const QVector<Message> &, Account *)), inboxPage, SLOT(updateItems(const QVector<Message> &, Account *)));
-//		inboxPage->updateItems(config->currentAccount()->inboxMessages, config->currentAccount());
-//		disconnect(config->accounts[oldAccountId], SIGNAL(previousInboxMessagesReceived()), 0, 0);
-//		connect(config->currentAccount(), SIGNAL(previousInboxMessagesReceived()), inboxPage->twitterWidget, SLOT(enableMoreButton()));
+		disconnect(config->accounts[oldAccountId], SIGNAL(searchMessagesUpdated(const QVector<Message> &, Account *)), 0, 0);
+		connect(config->currentAccount(), SIGNAL(searchMessagesUpdated(const QVector<Message> &, Account *)), searchPage, SLOT(updateItems(const QVector<Message> &, Account *)));
+		searchPage->updateItems(config->currentAccount()->searchMessages, config->currentAccount());
+		disconnect(config->accounts[oldAccountId], SIGNAL(previousSearchMessagesReceived()), 0, 0);
+		connect(config->currentAccount(), SIGNAL(previousSearchMessagesReceived()), searchPage->twitterWidget, SLOT(enableMoreButton()));
 	}
 	disconnect(config->accounts[oldAccountId], SIGNAL(lastMessageReceived(const QString &, Account *)), 0, 0);
 	connect(config->currentAccount(), SIGNAL(lastMessageReceived(const QString &, Account *)), this, SLOT(updateLastMessage(const QString &, Account *)));

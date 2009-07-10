@@ -68,10 +68,10 @@ void Twitter::sendMessage(const QString &message, quint64 inReplyToMessageId) {
 	header.setContentType("application/x-www-form-urlencoded");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -98,9 +98,9 @@ void Twitter::receiveFriendsMessages(quint64 lastMessageId, int count) {
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -118,10 +118,10 @@ void Twitter::receiveReplies(quint64 lastMessageId, int count) {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["replies"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -139,10 +139,10 @@ void Twitter::receivePublicMessages(quint64 lastMessageId, int count) {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["public"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -152,12 +152,12 @@ void Twitter::receivePublicMessages(quint64 lastMessageId, int count) {
 	receivePublicMessagesRequests[id] = tr("Updating public messages: %1").arg(url.host() + url.path());
 }
 
-void Twitter::receiveSearchMessages(quint64 lastMessageId, int count) {
+void Twitter::receiveSearchMessages(int count, const QString &query) {
 	qDebug() << ("Twitter::receiveSearchMessages()");
 
 	setupProxy();
 
-	QUrl url(account->serviceApiUrl() + Services::options[account->type]["friends"] + ".xml");
+	QUrl url(account->searchApiUrl() + Services::options[account->type]["search"] + ".atom");
 
 	if(url.toString().indexOf("https") == 0) {
 		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -165,20 +165,18 @@ void Twitter::receiveSearchMessages(quint64 lastMessageId, int count) {
 		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
 	}
 
-	http->setUser(account->username, account->password);
-
 	buffer.open(QIODevice::WriteOnly);
 
-	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastMessageId ? "&since_id=" + QString::number(lastMessageId) : ""), &buffer);
-	receiveSearchMessagesRequests[id] = tr("Updating search messages: %1").arg(url.host() + url.path());
+	int id = http->get(url.path() + "?q=" + query + "&rpp=" + QString::number(count), &buffer);
+	receiveSearchMessagesRequests[id] = tr("Updating search messages: %1").arg(url.host() + url.path() + "?q=" + query + "&rpp=" + QString::number(count));
 }
 
-void Twitter::receivePreviousSearchMessages(quint64 lastMessageId, int count) {
+void Twitter::receivePreviousSearchMessages(int page, int count, const QString &query) {
 	qDebug() << ("Twitter::receivePreviousSearchMessages()");
 
 	setupProxy();
 
-	QUrl url(account->serviceApiUrl() + Services::options[account->type]["friends"] + ".xml");
+	QUrl url(account->searchApiUrl() + Services::options[account->type]["search"] + ".atom");
 
 	if(url.toString().indexOf("https") == 0) {
 		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
@@ -190,8 +188,8 @@ void Twitter::receivePreviousSearchMessages(quint64 lastMessageId, int count) {
 
 	buffer.open(QIODevice::WriteOnly);
 
-	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastMessageId ? "&since_id=" + QString::number(lastMessageId) : ""), &buffer);
-	receiveSearchMessagesRequests[id] = tr("Updating previous search messages: %1").arg(url.host() + url.path());
+	int id = http->get(url.path() + "?q=" + query + "&rpp=" + QString::number(count) + "&page=" + QString::number(page), &buffer);
+	receivePreviousSearchMessagesRequests[id] = tr("Updating previous search messages: %1").arg(url.host() + url.path());
 }
 
 void Twitter::receiveLastMessage() {
@@ -203,9 +201,9 @@ void Twitter::receiveLastMessage() {
 
 	if(url.toString().indexOf("https") == 0) {
 	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -223,10 +221,10 @@ void Twitter::receivePreviousFriendsMessages(quint64 lastMessageId, int count) {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["friends"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -244,10 +242,10 @@ void Twitter::receivePreviousReplies(quint64 lastMessageId, int count) {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["replies"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -258,17 +256,17 @@ void Twitter::receivePreviousReplies(quint64 lastMessageId, int count) {
 }
 
 void Twitter::receivePreviousPublicMessages(quint64 lastMessageId, int count) {
-	qDebug() << ("Twitter::receivePublicMessages()");
+	qDebug() << ("Twitter::receivePreviousPublicMessages()");
 	
 	setupProxy();
 
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["public"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -286,10 +284,10 @@ void Twitter::receiveFavorites() {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["favorites"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -307,10 +305,10 @@ void Twitter::receivePreviousFavorites(int page) {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["favorites"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -328,10 +326,10 @@ void Twitter::receiveInboxMessages(quint64 lastMessageId, int count) {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["inbox"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -349,10 +347,10 @@ void Twitter::receivePreviousInboxMessages(quint64 lastMessageId, int count) {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["inbox"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -370,10 +368,10 @@ void Twitter::receiveOutboxMessages(quint64 lastMessageId, int count) {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["outbox"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -391,10 +389,10 @@ void Twitter::receivePreviousOutboxMessages(quint64 lastMessageId, int count) {
 	QUrl url(account->serviceApiUrl() + Services::options[account->type]["outbox"] + ".xml");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -417,10 +415,10 @@ void Twitter::sendDirectMessage(const QString &username, const QString &message)
 	header.setContentType("application/x-www-form-urlencoded");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -446,10 +444,10 @@ void Twitter::favorMessage(quint64 messageId) {
 	header.setContentType("application/x-www-form-urlencoded");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -475,10 +473,10 @@ void Twitter::unfavorMessage(quint64 messageId) {
 	header.setContentType("application/x-www-form-urlencoded");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -504,10 +502,10 @@ void Twitter::destroyMessage(quint64 messageId) {
 	header.setContentType("application/x-www-form-urlencoded");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -533,10 +531,10 @@ void Twitter::destroyDirectMessage(quint64 messageId) {
 	header.setContentType("application/x-www-form-urlencoded");
 
 	if(url.toString().indexOf("https") == 0) {
-	    http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	http->setUser(account->username, account->password);
 
@@ -551,7 +549,6 @@ void Twitter::destroyDirectMessage(quint64 messageId) {
 
 void Twitter::abort() {
 	qDebug() << ("Twitter::abort()");
-
 }
 
 void Twitter::requestStarted(int id) {
@@ -595,6 +592,10 @@ void Twitter::requestStarted(int id) {
 		qDebug() << ("Request started: " + destroyMessageRequests[id]);
 	} else if (destroyDirectMessageRequests.find(id) != destroyDirectMessageRequests.end()) {
 		qDebug() << ("Request started: " + destroyDirectMessageRequests[id]);
+	} else if (receiveSearchMessagesRequests.find(id) != receiveSearchMessagesRequests.end()) {
+		qDebug() << ("Request started: " + receiveSearchMessagesRequests[id]);
+	} else if (receivePreviousSearchMessagesRequests.find(id) != receivePreviousSearchMessagesRequests.end()) {
+		qDebug() << ("Request started: " + receivePreviousSearchMessagesRequests[id]);
 	}
 }
 
@@ -729,6 +730,22 @@ void Twitter::requestFinished(int id, bool error) {
 			buffer.close();
 			emit directMessageDestroyed(buffer.data());
 			destroyDirectMessageRequests.remove(id);
+		} else if (receiveSearchMessagesRequests.find(id) != receiveSearchMessagesRequests.end()) {
+			qDebug() << ("Request finished: " + receiveSearchMessagesRequests[id]);
+			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			emit searchMessagesReceived(buffer.data());
+			receiveSearchMessagesRequests.remove(id);
+		} else if (receivePreviousSearchMessagesRequests.find(id) != receivePreviousSearchMessagesRequests.end()) {
+			qDebug() << ("Request finished: " + receivePreviousSearchMessagesRequests[id]);
+			buffer.close();
+			QHttpResponseHeader response = http->lastResponse();
+			QString remainingRequests = response.value("X-RateLimit-Remaining");
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			emit previousSearchMessagesReceived(buffer.data());
+			receivePreviousSearchMessagesRequests.remove(id);
 		}
 	} else if (error) {
 		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->error()) + " " + http->errorString());

@@ -66,6 +66,10 @@ QDateTime QwitTools::dateFromString(QString date) {
 	return getInstance()->_dateFromString(date);
 }
 
+QDateTime QwitTools::dateFromAtomString(QString date) {
+	return getInstance()->_dateFromAtomString(date);
+}
+
 QIcon QwitTools::getToolButtonIcon(const QString &iconFileName, bool active) {
 	return getInstance()->_getToolButtonIcon(iconFileName, active);
 }
@@ -76,6 +80,10 @@ QString QwitTools::formatDateTime(const QDateTime &time) {
 
 QVector<Message> QwitTools::parseMessages(const QByteArray &data, Account *account) {
 	return getInstance()->_parseMessages(data, account);
+}
+
+QVector<Message> QwitTools::parseSearchMessages(const QByteArray &data, Account *account) {
+	return getInstance()->_parseSearchMessages(data, account);
 }
 
 QVector<Message> QwitTools::parseInboxMessages(const QByteArray &data, Account *account) {
@@ -95,6 +103,13 @@ QDateTime QwitTools::_dateFromString(QString date) {
 	int year, day, hours, minutes, seconds;
 	sscanf(qPrintable(date), "%*s %s %d %d:%d:%d %*s %d", s, &day, &hours, &minutes, &seconds, &year);
 	int month = monthes[s];
+	return QDateTime(QDate(year, month, day), QTime(hours, minutes, seconds));
+}
+
+QDateTime QwitTools::_dateFromAtomString(QString date) {
+	char s[10];
+	int year, month, day, hours, minutes, seconds;
+	sscanf(qPrintable(date), "%d-%d-%dT%d:%d:%dZ", &year, &month, &day, &hours, &minutes, &seconds);
 	return QDateTime(QDate(year, month, day), QTime(hours, minutes, seconds));
 }
 
@@ -204,6 +219,87 @@ QVector<Message> QwitTools::_parseMessages(const QByteArray &data, Account *acco
 			imageFileName = Configuration::CacheDirectory + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
                         messages.push_back(Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToMessageId, inReplyToUsername, following, false));
+		}
+		node = node.nextSibling();
+	}
+	return messages;
+}
+
+QVector<Message> QwitTools::_parseSearchMessages(const QByteArray &data, Account *account) {
+	QVector<Message> messages;
+
+	QDomDocument document;
+	document.setContent(data);
+	QDomElement root = document.documentElement();
+
+	if (root.tagName() != "feed") {
+		return messages;
+	}
+
+	QDomNode node = root.firstChild();
+	while (!node.isNull()) {
+		if (node.toElement().tagName() == "entry") {
+			QDomNode node2 = node.firstChild();
+			QString text = "", timeStr = "", user = "", image = "", source = "";
+			quint64 id = 0;
+			quint64 inReplyToMessageId = 0;
+			QString inReplyToUsername = "";
+			bool following = false;
+			bool favorited = false;
+			while (!node2.isNull()) {
+				if (node2.toElement().tagName() == "published") {
+					timeStr = node2.toElement().text();
+				} else if (node2.toElement().tagName() == "title") {
+					text = node2.toElement().text();
+				} else if (node2.toElement().tagName() == "id") {
+					QString s = node2.toElement().text();
+					s = s.mid(s.lastIndexOf(':') + 1);
+					id = s.toULongLong();
+				} else if (node2.toElement().tagName() == "twitter:source") {
+					source = node2.toElement().text();
+				} else if (node2.toElement().tagName() == "author") {
+					QDomNode node3 = node2.firstChild();
+					while (!node3.isNull()) {
+						if (node3.toElement().tagName() == "name") {
+							user = node3.toElement().text();
+							user = user.mid(0, user.indexOf(' '));
+						}
+						node3 = node3.nextSibling();
+					}
+				} else if (node2.toElement().tagName() == "link") {
+					if (node2.toElement().attribute("rel") == "image") {
+						image = node2.toElement().attribute("href");
+					}
+				}
+				node2 = node2.nextSibling();
+			}
+			if (id) {
+				QDateTime time = QwitTools::dateFromAtomString(timeStr);
+				time = QDateTime(time.date(), time.time(), Qt::UTC);
+				QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+				QString imageFileName = "";
+				for (int i = 0; i < hash.size(); ++i) {
+					unsigned char c = hash[i];
+					c >>= 4;
+					if (c < 10) {
+						c += '0';
+					} else {
+						c += 'A' - 10;
+					}
+					imageFileName += (char)c;
+					c = hash[i];
+					c &= 15;
+					if (c < 10) {
+						c += '0';
+					} else {
+						c += 'A' - 10;
+					}
+					imageFileName += (char)c;
+				}
+				imageFileName = Configuration::CacheDirectory + imageFileName;
+				UserpicsDownloader::getInstance()->download(image, imageFileName);
+				messages.push_back(Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToMessageId, inReplyToUsername, following, false));
+			}
 		}
 		node = node.nextSibling();
 	}

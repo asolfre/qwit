@@ -81,6 +81,7 @@ void UserpicsDownloader::startDownload() {
 }
 
 void UserpicsDownloader::download(const QString &imageUrl, const QString &filename) {
+	if (imageUrl == "") return;
 	QFileInfo fi = QFileInfo(filename);
 	if (!fi.exists() || (fi.size() == 0)) {
 		qDebug() << "UserpicsDownloader::download() " << imageUrl << " " << filename;

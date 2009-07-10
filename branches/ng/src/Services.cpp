@@ -57,6 +57,8 @@ void Services::initialize() {
 	twitterOptions["outbox"] = "/direct_messages/sent";
 	twitterOptions["send"] = "/direct_messages/new";
 	twitterOptions["destroydirectmessage"] = "/direct_messages/destroy/";
+	twitterOptions["searchapiurl"] = "http://search.twitter.com";
+	twitterOptions["search"] = "/search";
 	options["twitter"] = twitterOptions;
 
 	QMap<QString, QString> identicaOptions;

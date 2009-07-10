@@ -37,12 +37,13 @@ class SearchPage: public AbstractPage {
 	Q_OBJECT
 	
 public:
+	QLineEdit *lineEdit;
 	SearchPage(QWidget* parent = 0);
 	void updateSize();
 	QString title();
-	void update(Account *account = 0);
 	
 public slots:
+	void update(Account *account = 0);
 	void updatePrevious();
 	void removePrevious();
 	bool updateAutomatically();

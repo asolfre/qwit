@@ -60,6 +60,7 @@ public:
 	QPoint position;
 	QSize size;
 	int currentAccountId;
+	QString searchQuery;
 	
 // User interface options
 	bool showGreetingMessage;
