@@ -89,7 +89,7 @@ public slots:
 	void addOutboxMessages(const QByteArray &data);
 	void updateLastMessage(const QByteArray &data);
 	void updateLastMessage();
-	void sendMessage(const QString &message, int inReplyToMessageId);
+	void sendMessage(const QString &message, quint64 inReplyToMessageId);
 	void messageSent(const QByteArray &data);
 //	void directMessageSent(const QByteArray &data);
 	void messageFavored(const QByteArray &data);

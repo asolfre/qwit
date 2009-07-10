@@ -194,7 +194,7 @@ void Account::updateLastMessage() {
 	twitter->receiveLastMessage();
 }
 
-void Account::sendMessage(const QString &message, int inReplyToMessageId) {
+void Account::sendMessage(const QString &message, quint64 inReplyToMessageId) {
 	qDebug() << ("Account::sendMessage()");
 	sendingMessage = true;
 	messageBeingSent = message;

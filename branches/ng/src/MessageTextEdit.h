@@ -61,7 +61,7 @@ protected:
 	
 signals:
 
-	void messageEntered(const QString &, int);
+	void messageEntered(const QString &, quint64);
 	void leftCharsNumberChanged(int);
 
 private slots:
