@@ -72,9 +72,9 @@ void SearchPage::update(Account *account) {
 	qDebug() << ("SearchPage::update()");
 	Configuration *config = Configuration::getInstance();
 	if (account) {
-		//account->findMessages(config->messagesPerPage);
+		account->receiveSearchMessages(config->messagesPerPage);
 	} else {
-		//config->currentAccount()->findMessages(config->messagesPerPage);
+		config->currentAccount()->receiveSearchMessages(config->messagesPerPage);
 	}
 }
 

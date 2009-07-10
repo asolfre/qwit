@@ -668,8 +668,18 @@ QString QwitTools::_prepareMessage(const QString &text, Account *account) {
 			QStringList::iterator it = list.begin();
 			pos = hashtagRegExp.pos(2);
 			QString hashtag = hashtagRegExp.cap(2);
+			bool isHashtag = false;
+			for (int i = 0; i < hashtag.length(); ++i) {
+				if (!hashtag[i].isDigit()) {
+					isHashtag = true;
+				}
+			}
 			t += s.mid(lastPos, pos - lastPos);
-			t += "<a href=\"" + account->searchBaseUrl() + hashtag + "\" style=\"font-weight:bold;text-decoration:none\">" + hashtag + "</a>";
+			if (isHashtag) {
+				t += "<a href=\"" + account->searchBaseUrl() + hashtag + "\" style=\"font-weight:bold;text-decoration:none\">" + hashtag + "</a>";
+			} else {
+				t += hashtag;
+			}
 			lastPos = pos + hashtag.length();
 		}
 		t += s.mid(lastPos);

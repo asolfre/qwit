@@ -668,8 +668,22 @@ void Account::addUsernamesToCache(const QStringList &usernames) {
 	for (QStringList::const_iterator it = usernames.begin(); it != usernames.end(); ++it) {
 		usernamesCache << "@" + *it;
 	}
-	usernamesCache.removeDuplicates();
+	usernamesCache.sort();
+// Unfortunately this function was introduced only in Qt4.5
+//	usernamesCache.removeDuplicates();
+	QStringList tmpList;
+	for (QStringList::const_iterator it = usernamesCache.begin(); it != usernamesCache.end(); ++it) {
+		if (!tmpList.size() || (*it != tmpList.last())) {
+			tmpList << *it;
+		}
+	}
+	usernamesCache = tmpList;
 	usernamesCacheModel.setStringList(usernamesCache);
+}
+
+void Account::receiveSearchMessages(int count) {
+	qDebug() << ("Account::receiveSearchMessages()");
+	twitter->receiveSearchMessages((searchMessages.size() != 0 ? searchMessages[0].id : 0), count);
 }
 
 #endif

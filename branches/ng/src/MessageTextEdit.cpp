@@ -190,6 +190,7 @@ void MessageTextEdit::insertFromMimeData(const QMimeData *source) {
 void MessageTextEdit::insertUrl(const QString &url) {
 	insertPlainText(url);
 	setEnabled(true);
+	setFocus();
 }
 /*
 void MessageTextEdit::setCompleter(QCompleter *completer) {

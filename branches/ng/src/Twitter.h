@@ -48,6 +48,7 @@ class Twitter: public QObject {
 	QMap<int, QString> receiveFavoritesRequests;
 	QMap<int, QString> receiveInboxMessagesRequests;
 	QMap<int, QString> receiveOutboxMessagesRequests;
+	QMap<int, QString> receiveSearchMessagesRequests;
 	QMap<int, QString> receiveLastMessageRequests;
 	QMap<int, QString> receivePreviousFriendsMessagesRequests;
 	QMap<int, QString> receivePreviousRepliesRequests;
@@ -55,6 +56,7 @@ class Twitter: public QObject {
 	QMap<int, QString> receivePreviousFavoritesRequests;
 	QMap<int, QString> receivePreviousInboxMessagesRequests;
 	QMap<int, QString> receivePreviousOutboxMessagesRequests;
+	QMap<int, QString> receivePreviousSearchMessagesRequests;
 	QMap<int, QString> sendDirectMessageRequests;
 	QMap<int, QString> favorMessageRequests;
 	QMap<int, QString> unfavorMessageRequests;
@@ -70,6 +72,7 @@ public:
 	void receivePublicMessages(quint64 lastMessageId, int count);
 	void receiveInboxMessages(quint64 lastMessageId, int count);
 	void receiveOutboxMessages(quint64 lastMessageId, int count);
+	void receiveSearchMessages(quint64 lastMessageId, int count);
 	void receiveFavorites();
 	void receiveLastMessage();
 	void receivePreviousFriendsMessages(quint64 lastMessageId, int count);
@@ -78,6 +81,7 @@ public:
 	void receivePreviousInboxMessages(quint64 lastMessageId, int count);
 	void receivePreviousOutboxMessages(quint64 lastMessageId, int count);
 	void receivePreviousFavorites(int page);
+	void receivePreviousSearchMessages(quint64 lastMessageId, int count);
 	void sendMessage(const QString &message, quint64 inReplyToMessageId);
 	void sendDirectMessage(const QString &username, const QString &message);
 	void favorMessage(quint64 messageId);
@@ -96,6 +100,7 @@ signals:
 	void favoritesReceived(const QByteArray &);
 	void inboxMessagesReceived(const QByteArray &);
 	void outboxMessagesReceived(const QByteArray &);
+	void searchMessagesReceived(const QByteArray &);
 	void messageSent(const QByteArray &);
 	void directMessageSent(const QByteArray &);
 	void messageFavored(const QByteArray &);
@@ -108,7 +113,8 @@ signals:
 	void previousFavoritesReceived(const QByteArray &);
 	void previousInboxMessagesReceived(const QByteArray &);
 	void previousOutboxMessagesReceived(const QByteArray &);
-	
+	void previousSearchMessagesReceived(const QByteArray &);
+
 public slots:
 
 	void requestStarted(int id);

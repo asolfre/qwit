@@ -66,7 +66,8 @@ public:
 	QVector<Message> favorites;
 	QVector<Message> inboxMessages;
 	QVector<Message> outboxMessages;
-	
+	QVector<Message> searchMessages;
+
 	Account();
 	Account(const QString &type, const QString &username, const QString &password, bool useHttps = false);
 	void saveMessages(QSettings &messagesCache);
@@ -96,6 +97,7 @@ public slots:
 //	void messageFavorChanged(const QByteArray &data);
 	void messageDestroyed(const QByteArray &data);
 	void directMessageDestroyed(const QByteArray &data);
+	void receiveSearchMessages(int count);
 	void receivePublicMessages(int count);
 	void receiveFriendsMessages(int count);
 	void receiveReplies(int count);
@@ -123,6 +125,7 @@ signals:
 	void repliesUpdated(const QVector<Message> &, Account *);
 	void publicMessagesUpdated(const QVector<Message> &, Account *);
 	void favoritesUpdated(const QVector<Message> &, Account *);
+	void searchMessagesUpdated(const QVector<Message> &, Account *);
 	void lastMessageReceived(const QString &, Account *);
 	void messageSent(const QString &, Account *);
 	void newMessagesReceived(const QVector<Message> &, Account *);

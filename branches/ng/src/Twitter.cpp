@@ -152,6 +152,48 @@ void Twitter::receivePublicMessages(quint64 lastMessageId, int count) {
 	receivePublicMessagesRequests[id] = tr("Updating public messages: %1").arg(url.host() + url.path());
 }
 
+void Twitter::receiveSearchMessages(quint64 lastMessageId, int count) {
+	qDebug() << ("Twitter::receiveSearchMessages()");
+
+	setupProxy();
+
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["friends"] + ".xml");
+
+	if(url.toString().indexOf("https") == 0) {
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
+
+	http->setUser(account->username, account->password);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastMessageId ? "&since_id=" + QString::number(lastMessageId) : ""), &buffer);
+	receiveSearchMessagesRequests[id] = tr("Updating search messages: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receivePreviousSearchMessages(quint64 lastMessageId, int count) {
+	qDebug() << ("Twitter::receivePreviousSearchMessages()");
+
+	setupProxy();
+
+	QUrl url(account->serviceApiUrl() + Services::options[account->type]["friends"] + ".xml");
+
+	if(url.toString().indexOf("https") == 0) {
+		http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
+
+	http->setUser(account->username, account->password);
+
+	buffer.open(QIODevice::WriteOnly);
+
+	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastMessageId ? "&since_id=" + QString::number(lastMessageId) : ""), &buffer);
+	receiveSearchMessagesRequests[id] = tr("Updating previous search messages: %1").arg(url.host() + url.path());
+}
+
 void Twitter::receiveLastMessage() {
 	qDebug() << ("Twitter::receiveLastMessage()");
 	
