@@ -36,8 +36,33 @@
 
 #include "AboutDialog.h"
 
+#ifndef VERSION
+#define VERSION "UNKNOWN"
+#endif
+
+#ifndef REVISION
+#define REVISION "UNKNOWN"
+#endif
+
 AboutDialog::AboutDialog(QWidget *parent): QDialog(parent) {
 	setupUi(this);
+	QString version = VERSION;
+	QString revision = REVISION;
+	QString currentNumber = "", lastNumber = "";
+	for (int i = 0; i < revision.length(); ++i) {
+		if (!revision[i].isDigit()) {
+			if (currentNumber != "") {
+				lastNumber = currentNumber;
+				currentNumber = "";
+			}
+		} else {
+			currentNumber += revision[i];
+		}
+	}
+	if (lastNumber != "") {
+		revision = lastNumber;
+	}
+	applicationTitleLabel->setText("Qwit - " + version + " (revision " + revision + ")");
 }
 
 #endif

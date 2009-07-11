@@ -11,8 +11,12 @@ MOC_DIR = var
 UI_SOURCES_DIR = var
 UI_HEADERS_DIR = var
 RCC_DIR = var
-unix:# Prefix: base instalation directory
-isEmpty( PREFIX ):PREFIX = /usr/local
+unix {
+# Prefix: base instalation directory
+    isEmpty( PREFIX ):PREFIX = /usr/local
+    DEFINES += '\'REVISION=\"$(shell svnversion -n .)\"\''
+}
+DEFINES += \'VERSION=\"ng\"\'
 
 # Input
 HEADERS += src/Configuration.h \
