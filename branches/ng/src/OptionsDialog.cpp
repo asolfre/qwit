@@ -1,4 +1,6 @@
 /*!
+ *  $Id$
+ *
  *  @file
  *  @author Artem Iglikov <artem.iglikov@gmail.com>
  *  

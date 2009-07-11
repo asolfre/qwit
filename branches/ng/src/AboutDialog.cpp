@@ -1,4 +1,6 @@
 /*!
+ *  $Id$
+ *
  *  @file
  *  @author Artem Iglikov <artem.iglikov@gmail.com>
  *  
@@ -24,6 +26,7 @@
  *  @section DESCRIPTION
  *  
  *  AboutDialog class implementation
+ *
  */
 
 #ifndef AboutDialog_cpp

@@ -1,4 +1,6 @@
 /*!
+ *  $Id$
+ *
  *  @file
  *  @author Artem Iglikov <artem.iglikov@gmail.com>
  *  
@@ -167,8 +169,8 @@ void Twitter::receiveSearchMessages(int count, const QString &query) {
 
 	buffer.open(QIODevice::WriteOnly);
 
-	int id = http->get(url.path() + "?q=" + query + "&rpp=" + QString::number(count), &buffer);
-	receiveSearchMessagesRequests[id] = tr("Updating search messages: %1").arg(url.host() + url.path() + "?q=" + query + "&rpp=" + QString::number(count));
+	int id = http->get(url.path() + "?q=" + QUrl::toPercentEncoding(query) + "&rpp=" + QString::number(count), &buffer);
+	receiveSearchMessagesRequests[id] = tr("Updating search messages: %1").arg(url.host() + url.path() + "?q=" + QUrl::toPercentEncoding(query) + "&rpp=" + QString::number(count));
 }
 
 void Twitter::receivePreviousSearchMessages(int page, int count, const QString &query) {
