@@ -59,6 +59,9 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent) {
 			currentNumber += revision[i];
 		}
 	}
+	if (currentNumber != "") {
+		lastNumber = currentNumber;
+	}
 	if (lastNumber != "") {
 		revision = lastNumber;
 	}
