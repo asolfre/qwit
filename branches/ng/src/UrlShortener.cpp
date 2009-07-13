@@ -50,6 +50,8 @@ UrlShortener* UrlShortener::getInstance() {
 }
 
 void UrlShortener::shorten(const QString &url) {
+	qDebug() << "UrlShortener::shorten() " + url;
+
 	currentUrl = url;
 	
 	Configuration *config = Configuration::getInstance();
@@ -63,13 +65,14 @@ void UrlShortener::shorten(const QString &url) {
 	}
 
 	if(shortenerUrl.toString().indexOf("https") == 0) {
-	    http->setHost(shortenerUrl.host(), QHttp::ConnectionModeHttps, shortenerUrl.port(443));
-    } else {
-        http->setHost(shortenerUrl.host(), QHttp::ConnectionModeHttp, shortenerUrl.port(80));
-    }
+		http->setHost(shortenerUrl.host(), QHttp::ConnectionModeHttps, shortenerUrl.port(443));
+	} else {
+		http->setHost(shortenerUrl.host(), QHttp::ConnectionModeHttp, shortenerUrl.port(80));
+	}
 
 	buffer.open(QIODevice::WriteOnly);
-	QString request = Services::urlShorteners[config->urlShortener]["requesttemplate"].replace("%url", QUrl::toPercentEncoding(url));
+	QString request = Services::urlShorteners[config->urlShortener]["requesttemplate"];
+	request.replace("%url", QUrl::toPercentEncoding(url));
 	requestId = http->get(shortenerUrl.path() + request, &buffer);
 }
 

@@ -119,10 +119,10 @@ void TwitPicDialog::accept() {
 	header.setContentType("multipart/form-data; boundary=" + boundary);
 
 	if(url.toString().indexOf("https") == 0) {
-	    http.setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
-    } else {
-        http.setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
-    }
+		http.setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+	} else {
+		http.setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+	}
 
 	QByteArray ba;
 	ba.append("--" + boundary + "\r\n");
