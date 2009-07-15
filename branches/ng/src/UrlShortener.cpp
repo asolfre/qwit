@@ -52,10 +52,15 @@ UrlShortener* UrlShortener::getInstance() {
 void UrlShortener::shorten(const QString &url) {
 	qDebug() << "UrlShortener::shorten() " + url;
 
-	currentUrl = url;
-	
 	Configuration *config = Configuration::getInstance();
-	
+
+	if (config->urlShortener == "0") {
+		emit urlShortened(url);
+		return;
+	}
+
+	currentUrl = url;
+
 	QUrl shortenerUrl(Services::urlShorteners[config->urlShortener]["apiurl"]);
 
 	if (config->useProxy) {

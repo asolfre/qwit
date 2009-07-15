@@ -89,6 +89,13 @@ void Services::initialize() {
 	customOptions["title"] = "Custom";
 	options["custom"] = customOptions;
 
+	QMap<QString, QString> fakeShortenerOptions;
+	fakeShortenerOptions["title"] = "Do not shorten urls";
+	fakeShortenerOptions["apiurl"] = "";
+	fakeShortenerOptions["requesttemplate"] = "";
+	fakeShortenerOptions["responseregexp"] = "";
+	urlShorteners["0"] = fakeShortenerOptions;
+
 	QMap<QString, QString> trimOptions;
 	trimOptions["title"] = "tr.im";
 	trimOptions["apiurl"] = "http://api.tr.im/api/trim_url.xml";
