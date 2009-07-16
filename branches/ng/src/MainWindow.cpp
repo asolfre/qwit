@@ -711,7 +711,7 @@ void MainWindow::destroy(const Message &message) {
 }
 
 void MainWindow::postTwitPic() {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Pick an image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.jpeg *.bmp)"));
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Pick an image"), QDir::homePath(), tr("Image Files (*.png *.jpg *.jpeg *.bmp *.PNG *.JPG *.JPEG *.BMP)"));
 	if (fileName.isEmpty()) {
 		return;
 	}

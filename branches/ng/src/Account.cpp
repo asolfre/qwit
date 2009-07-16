@@ -716,6 +716,7 @@ void Account::addUsernamesToCache(const QStringList &usernames) {
 
 void Account::receiveSearchMessages(int count, const QString &query) {
 	qDebug() << ("Account::receiveSearchMessages()");
+	searchMessages.clear();
 	twitter->receiveSearchMessages(count, query);
 }
 
@@ -738,6 +739,7 @@ void Account::addSearchMessages(const QByteArray &data) {
 		emit searchMessagesUpdated(searchMessages, this);
 //		emit newMessagesReceived(messages, this);
 	}
+	emit searchMessagesUpdated(messages, this);
 }
 
 void Account::removePreviousSearchMessages(int count) {
