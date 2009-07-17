@@ -92,7 +92,7 @@ void RepliesPage::removePrevious() {
 
 bool RepliesPage::updateAutomatically() {
 	Configuration *config = Configuration::getInstance();
-	return config->updateRepliesTabAlways;
+	return config->autoUpdateRepliesTab;
 }
 
 #endif

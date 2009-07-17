@@ -103,21 +103,22 @@ void Configuration::load() {
 	
 	settings.beginGroup("Tabs");
 	showHomeTab = settings.value("showHomeTab", true).toBool();
-	updateHomeTabAlways = settings.value("updateHomeTabAlways", true).toBool();
+	autoUpdateHomeTab = settings.value("autoUpdateHomeTab", true).toBool();
 	showPublicTab = settings.value("showPublicTab", true).toBool();
-	updatePublicTabAlways = settings.value("updatePublicTabAlways", false).toBool();
+	autoUpdatePublicTab = settings.value("autoUpdatePublicTab", false).toBool();
 	showRepliesTab = settings.value("showRepliesTab", true).toBool();
-	updateRepliesTabAlways = settings.value("updateRepliesTabAlways", true).toBool();
+	autoUpdateRepliesTab = settings.value("autoUpdateRepliesTab", true).toBool();
 	showCustomTab = settings.value("showCustomTab", true).toBool();
-	updateCustomTabAlways = settings.value("updateCustomTabAlways", false).toBool();
+	autoUpdateCustomTab = settings.value("autoUpdateCustomTab", false).toBool();
 	showInboxTab = settings.value("showInboxTab", true).toBool();
-	updateInboxTabAlways = settings.value("updateInboxTabAlways", true).toBool();
+	autoUpdateInboxTab = settings.value("autoUpdateInboxTab", true).toBool();
 	showOutboxTab = settings.value("showOutboxTab", true).toBool();
-	updateOutboxTabAlways = settings.value("updateOutboxTabAlways", false).toBool();
+	autoUpdateOutboxTab = settings.value("autoUpdateOutboxTab", false).toBool();
 	showSearchTab = settings.value("showSearchTab", true).toBool();
-	updateSearchTabAlways = settings.value("updateSearchTabAlways", false).toBool();
+	autoUpdateSearchTab = settings.value("autoUpdateSearchTab", false).toBool();
 	showFavoritesTab = settings.value("showFavoritesTab", true).toBool();
-	updateFavoritesTabAlways = settings.value("updateFavoritesTabAlways", false).toBool();
+	autoUpdateFavoritesTab = settings.value("autoUpdateFavoritesTab", false).toBool();
+	updateInterval = settings.value("updateInterval", 300).toInt();
 	settings.endGroup();
 	
 	settings.endGroup();
@@ -184,21 +185,22 @@ void Configuration::save() {
 
 	settings.beginGroup("Tabs");
 	settings.setValue("showHomeTab", showHomeTab);
-	settings.setValue("updateHomeTabAlways", updateHomeTabAlways);
+	settings.setValue("autoUpdateHomeTab", autoUpdateHomeTab);
 	settings.setValue("showPublicTab", showPublicTab);
-	settings.setValue("updatePublicTabAlways", updatePublicTabAlways);
+	settings.setValue("autoUpdatePublicTab", autoUpdatePublicTab);
 	settings.setValue("showRepliesTab", showRepliesTab);
-	settings.setValue("updateRepliesTabAlways", updateRepliesTabAlways);
+	settings.setValue("autoUpdateRepliesTab", autoUpdateRepliesTab);
 	settings.setValue("showCustomTab", showCustomTab);
-	settings.setValue("updateCustomTabAlways", updateCustomTabAlways);
+	settings.setValue("autoUpdateCustomTab", autoUpdateCustomTab);
 	settings.setValue("showInboxTab", showInboxTab);
-	settings.setValue("updateInboxTabAlways", updateInboxTabAlways);
+	settings.setValue("autoUpdateInboxTab", autoUpdateInboxTab);
 	settings.setValue("showOutboxTab", showOutboxTab);
-	settings.setValue("updateOutboxTabAlways", updateOutboxTabAlways);
+	settings.setValue("autoUpdateOutboxTab", autoUpdateOutboxTab);
 	settings.setValue("showSearchTab", showSearchTab);
-	settings.setValue("updateSearchTabAlways", updateSearchTabAlways);
+	settings.setValue("autoUpdateSearchTab", autoUpdateSearchTab);
 	settings.setValue("showFavoritesTab", showFavoritesTab);
-	settings.setValue("updateFavoritesTabAlways", updateFavoritesTabAlways);
+	settings.setValue("autoUpdateFavoritesTab", autoUpdateFavoritesTab);
+	settings.setValue("updateInterval", updateInterval);
 	settings.endGroup();
 
 	settings.endGroup();

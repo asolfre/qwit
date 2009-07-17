@@ -77,7 +77,7 @@ void PublicPage::update(Account *account) {
 
 bool PublicPage::updateAutomatically() {
 	Configuration *config = Configuration::getInstance();
-	return config->updatePublicTabAlways;
+	return config->autoUpdatePublicTab;
 }
 
 #endif

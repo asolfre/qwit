@@ -91,7 +91,7 @@ void InboxPage::removePrevious() {
 
 bool InboxPage::updateAutomatically() {
 	Configuration *config = Configuration::getInstance();
-	return config->updateInboxTabAlways;
+	return config->autoUpdateInboxTab;
 }
 
 #endif

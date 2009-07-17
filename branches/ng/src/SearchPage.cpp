@@ -99,7 +99,7 @@ void SearchPage::removePrevious() {
 
 bool SearchPage::updateAutomatically() {
 	Configuration *config = Configuration::getInstance();
-	return config->updateSearchTabAlways;
+	return config->autoUpdateSearchTab;
 }
 
 #endif

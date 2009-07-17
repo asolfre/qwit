@@ -91,7 +91,7 @@ void HomePage::removePrevious() {
 
 bool HomePage::updateAutomatically() {
 	Configuration *config = Configuration::getInstance();
-	return config->updateHomeTabAlways;
+	return config->autoUpdateHomeTab;
 }
 
 #endif

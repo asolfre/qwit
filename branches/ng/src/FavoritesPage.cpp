@@ -91,7 +91,7 @@ void FavoritesPage::removePrevious() {
 
 bool FavoritesPage::updateAutomatically() {
 	Configuration *config = Configuration::getInstance();
-	return config->updateFavoritesTabAlways;
+	return config->autoUpdateFavoritesTab;
 }
 
 #endif

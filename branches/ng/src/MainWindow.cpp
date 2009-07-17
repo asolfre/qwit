@@ -165,21 +165,22 @@ void MainWindow::saveOptions() {
 	config->placeUsernameUnderAvatar = (optionsDialog->placeUsernameUnderAvatarCheckBox->checkState() == Qt::Checked);
 	
 	config->showHomeTab = (optionsDialog->homeTabCheckBox->checkState() == Qt::Checked);
-	config->updateHomeTabAlways = (optionsDialog->homeTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->autoUpdateHomeTab = (optionsDialog->homeTabAutoUpdateCheckBox->checkState() == Qt::Checked);
 	config->showPublicTab = (optionsDialog->publicTabCheckBox->checkState() == Qt::Checked);
-	config->updatePublicTabAlways = (optionsDialog->publicTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->autoUpdatePublicTab = (optionsDialog->publicTabAutoUpdateCheckBox->checkState() == Qt::Checked);
 	config->showRepliesTab = (optionsDialog->repliesTabCheckBox->checkState() == Qt::Checked);
-	config->updateRepliesTabAlways = (optionsDialog->repliesTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->autoUpdateRepliesTab = (optionsDialog->repliesTabAutoUpdateCheckBox->checkState() == Qt::Checked);
 	config->showCustomTab = (optionsDialog->customTabCheckBox->checkState() == Qt::Checked);
-	config->updateCustomTabAlways = (optionsDialog->customTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->autoUpdateCustomTab = (optionsDialog->customTabAutoUpdateCheckBox->checkState() == Qt::Checked);
 	config->showInboxTab = (optionsDialog->inboxTabCheckBox->checkState() == Qt::Checked);
-	config->updateInboxTabAlways = (optionsDialog->inboxTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->autoUpdateInboxTab = (optionsDialog->inboxTabAutoUpdateCheckBox->checkState() == Qt::Checked);
 	config->showOutboxTab = (optionsDialog->outboxTabCheckBox->checkState() == Qt::Checked);
-	config->updateOutboxTabAlways = (optionsDialog->outboxTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->autoUpdateOutboxTab = (optionsDialog->outboxTabAutoUpdateCheckBox->checkState() == Qt::Checked);
 	config->showSearchTab = (optionsDialog->searchTabCheckBox->checkState() == Qt::Checked);
-	config->updateSearchTabAlways = (optionsDialog->searchTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->autoUpdateSearchTab = (optionsDialog->searchTabAutoUpdateCheckBox->checkState() == Qt::Checked);
 	config->showFavoritesTab = (optionsDialog->favoritesTabCheckBox->checkState() == Qt::Checked);
-	config->updateFavoritesTabAlways = (optionsDialog->favoritesTabUpdateAlwaysCheckBox->checkState() == Qt::Checked);
+	config->autoUpdateFavoritesTab = (optionsDialog->favoritesTabAutoUpdateCheckBox->checkState() == Qt::Checked);
+	config->updateInterval = optionsDialog->updateIntervalSpinBox->value();
 
 	config->useProxy = (optionsDialog->useProxyCheckBox->checkState() == Qt::Checked);
 	config->proxyAddress = optionsDialog->proxyAddressLineEdit->text();
@@ -283,7 +284,7 @@ void MainWindow::updateState() {
 		pages[i]->updateSize();
 	}
 
-	updateTimer->start(300000);
+	updateTimer->start(config->updateInterval * 1000);
 }
 
 void MainWindow::resetOptionsDialog() {
@@ -306,22 +307,23 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->placeUsernameUnderAvatarCheckBox->setCheckState(config->placeUsernameUnderAvatar ? Qt::Checked : Qt::Unchecked);
 	
 	optionsDialog->homeTabCheckBox->setCheckState(config->showHomeTab ? Qt::Checked : Qt::Unchecked);
-	optionsDialog->homeTabUpdateAlwaysCheckBox->setCheckState(config->updateHomeTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->homeTabAutoUpdateCheckBox->setCheckState(config->autoUpdateHomeTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->publicTabCheckBox->setCheckState(config->showPublicTab ? Qt::Checked : Qt::Unchecked);
-	optionsDialog->publicTabUpdateAlwaysCheckBox->setCheckState(config->updatePublicTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->publicTabAutoUpdateCheckBox->setCheckState(config->autoUpdatePublicTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->repliesTabCheckBox->setCheckState(config->showRepliesTab ? Qt::Checked : Qt::Unchecked);
-	optionsDialog->repliesTabUpdateAlwaysCheckBox->setCheckState(config->updateRepliesTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->repliesTabAutoUpdateCheckBox->setCheckState(config->autoUpdateRepliesTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->customTabCheckBox->setCheckState(config->showCustomTab ? Qt::Checked : Qt::Unchecked);
-	optionsDialog->customTabUpdateAlwaysCheckBox->setCheckState(config->updateCustomTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->customTabAutoUpdateCheckBox->setCheckState(config->autoUpdateCustomTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->inboxTabCheckBox->setCheckState(config->showInboxTab ? Qt::Checked : Qt::Unchecked);
-	optionsDialog->inboxTabUpdateAlwaysCheckBox->setCheckState(config->updateInboxTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->inboxTabAutoUpdateCheckBox->setCheckState(config->autoUpdateInboxTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->outboxTabCheckBox->setCheckState(config->showOutboxTab ? Qt::Checked : Qt::Unchecked);
-	optionsDialog->outboxTabUpdateAlwaysCheckBox->setCheckState(config->updateOutboxTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->outboxTabAutoUpdateCheckBox->setCheckState(config->autoUpdateOutboxTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->searchTabCheckBox->setCheckState(config->showSearchTab ? Qt::Checked : Qt::Unchecked);
-	optionsDialog->searchTabUpdateAlwaysCheckBox->setCheckState(config->updateSearchTabAlways ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->searchTabAutoUpdateCheckBox->setCheckState(config->autoUpdateSearchTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->favoritesTabCheckBox->setCheckState(config->showFavoritesTab ? Qt::Checked : Qt::Unchecked);
-	optionsDialog->favoritesTabUpdateAlwaysCheckBox->setCheckState(config->updateFavoritesTabAlways ? Qt::Checked : Qt::Unchecked);
-	
+	optionsDialog->favoritesTabAutoUpdateCheckBox->setCheckState(config->autoUpdateFavoritesTab ? Qt::Checked : Qt::Unchecked);
+	optionsDialog->updateIntervalSpinBox->setValue(config->updateInterval);
+
 // Accounts
 	optionsDialog->accountsListWidget->clear();
 	for (int i = 0; i < config->accounts.size(); ++i) {

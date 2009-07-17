@@ -78,21 +78,22 @@ public:
 	bool placeTabsVertically;
 	bool showLastMessage;
 	bool showHomeTab;
-	bool updateHomeTabAlways;
+	bool autoUpdateHomeTab;
 	bool showPublicTab;
-	bool updatePublicTabAlways;
+	bool autoUpdatePublicTab;
 	bool showRepliesTab;
-	bool updateRepliesTabAlways;
+	bool autoUpdateRepliesTab;
 	bool showCustomTab;
-	bool updateCustomTabAlways;
+	bool autoUpdateCustomTab;
 	bool showInboxTab;
-	bool updateInboxTabAlways;
+	bool autoUpdateInboxTab;
 	bool showOutboxTab;
-	bool updateOutboxTabAlways;
+	bool autoUpdateOutboxTab;
 	bool showSearchTab;
-	bool updateSearchTabAlways;
+	bool autoUpdateSearchTab;
 	bool showFavoritesTab;
-	bool updateFavoritesTabAlways;
+	bool autoUpdateFavoritesTab;
+	int updateInterval;
 
 // Connection
 	bool useProxy;

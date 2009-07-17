@@ -91,7 +91,7 @@ void OutboxPage::removePrevious() {
 
 bool OutboxPage::updateAutomatically() {
 	Configuration *config = Configuration::getInstance();
-	return config->updateOutboxTabAlways;
+	return config->autoUpdateOutboxTab;
 }
 
 #endif
