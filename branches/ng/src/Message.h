@@ -49,6 +49,7 @@ public:
 	QString inReplyToUsername;
 	bool directMessage;
         bool following;
+	bool mention;
 	Message() {}
         Message(quint64 id, const QString &text, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, quint64 inReplyToMessageId, const QString &inReplyToUsername, bool following, bool directMessage);
 	bool operator<(const Message &x) const;

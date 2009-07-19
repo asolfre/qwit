@@ -42,27 +42,9 @@ private:
 	static QRegExp urlRegExp;
 	static QRegExp usernameRegExp;
 	static QRegExp hashtagRegExp;
-	QMap<QString, int> monthes;
-	static QwitTools *instance;
-	QwitTools();
-	static QwitTools* getInstance();
-	QIcon _getToolButtonIcon(const QString &iconFileName, bool active);
-	QString _formatDateTime(const QDateTime &time);
-	QDateTime _dateFromString(QString date);
-	QDateTime _dateFromAtomString(QString date);
-	QVector<Message> _parseMessages(const QByteArray &data, Account *account);
-	QVector<Message> _parseInboxMessages(const QByteArray &data, Account *account);
-	QVector<Message> _parseOutboxMessages(const QByteArray &data, Account *account);
-	QVector<Message> _parseSearchMessages(const QByteArray &data, Account *account);
-	Message _parseUser(const QByteArray &data, Account *account);
-	Message _parseMessage(const QByteArray &data, Account *account);
-	Message _parseDirectMessage(const QByteArray &data, Account *account);
-	QString _parseError(const QByteArray &data);
-	void _makeMessagesUnique(QVector<Message> &v);
-	QString _prepareMessage(const QString &text, Account *account);
-	QVector<Message> _mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages);
-	bool _isUrl(const QString &s);
-	
+	static QRegExp ipAddressRegExp;
+	static QMap<QString, int> monthes;
+
 public:
 	static QDateTime dateFromString(QString date);
 	static QDateTime dateFromAtomString(QString date);
@@ -80,6 +62,7 @@ public:
 	static QString prepareMessage(const QString &text, Account *account);
 	static QVector<Message> mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages);
 	static bool isUrl(const QString &s);
+	static bool isMention(const Message &message);
 };
 
 void handleMessage(QtMsgType type, const char *msg);

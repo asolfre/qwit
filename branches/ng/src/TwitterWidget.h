@@ -46,17 +46,16 @@ private:
 	QButtonGroup directMessageButtonGroup;
 	QButtonGroup favorButtonGroup;
 	QButtonGroup destroyButtonGroup;
-//        QButtonGroup followButtonGroup;
-//        QButtonGroup unfollowButtonGroup;
         int instanceId;
 	static int instances;
+	bool paintMentions;
 
 public:
 	
 	QToolButton *moreToolButton;
 	QToolButton *lessToolButton;
 	
-	TwitterWidget(QWidget *parent);
+	TwitterWidget(QWidget *parent, bool paintMentions = true);
 	void clear();
 	void addItem(const Message &message);
 	void updateItems();
@@ -80,8 +79,6 @@ public slots:
 	void directMessageButtonClicked(int id);
 	void favorButtonClicked(int id);
 	void destroyButtonClicked(int id);
-//        void followButtonClicked(int id);
-//        void unfollowButtonClicked(int id);
         void disableMoreButton();
 	void disableLessButton();
 	void enableMoreButton();

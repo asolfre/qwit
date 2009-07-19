@@ -37,70 +37,27 @@
 #include "UserpicsDownloader.h"
 #include "Configuration.h"
 
-QwitTools* QwitTools::instance = 0;
+QMap<QString, int> QwitTools::monthes;
 QRegExp QwitTools::urlRegExp("((ht|f)tp(s?)\\:\\/\\/|~/|/)?(\\w+:\\w+@)?((([-\\w]+\\.)+(com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))|(([\\d]{1,3}\\.){3}[\\d]{1,3}))(:[\\d]{1,5})?(((/([-\\w~!$+|.=]|%[a-f\\d]{2})+)+|/)+|\\?|#)?((\\?([-\\w]|%[a-f\\d{2}])+=([-\\w~!$+|*:=]|%[a-f\\d]{2})*)(&([-\\w~!$+|.,*:]|%[a-f\\d{2}])+=([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?");
+QRegExp QwitTools::ipAddressRegExp("([\\d]{1,3}\\.){3}[\\d]{1,3}");
 QRegExp QwitTools::usernameRegExp("(^|\\W+)@(\\w+)($|\\W+)");
 QRegExp QwitTools::hashtagRegExp("(^|\\W+)#([-._\\w]+)($|\\W+)");
 
-QwitTools::QwitTools() {
-	monthes["Jan"] = 1;
-	monthes["Feb"] = 2;
-	monthes["Mar"] = 3;
-	monthes["Apr"] = 4;
-	monthes["May"] = 5;
-	monthes["Jun"] = 6;
-	monthes["Jul"] = 7;
-	monthes["Aug"] = 8;
-	monthes["Sep"] = 9;
-	monthes["Oct"] = 10;
-	monthes["Nov"] = 11;
-	monthes["Dec"] = 12;
-}
-
-QwitTools* QwitTools::getInstance() {
-	if (!instance) {
-		instance = new QwitTools();
-	}
-	return instance;
-}
-
 QDateTime QwitTools::dateFromString(QString date) {
-	return getInstance()->_dateFromString(date);
-}
-
-QDateTime QwitTools::dateFromAtomString(QString date) {
-	return getInstance()->_dateFromAtomString(date);
-}
-
-QIcon QwitTools::getToolButtonIcon(const QString &iconFileName, bool active) {
-	return getInstance()->_getToolButtonIcon(iconFileName, active);
-}
-
-QString QwitTools::formatDateTime(const QDateTime &time) {
-	return getInstance()->_formatDateTime(time);
-}
-
-QVector<Message> QwitTools::parseMessages(const QByteArray &data, Account *account) {
-	return getInstance()->_parseMessages(data, account);
-}
-
-QVector<Message> QwitTools::parseSearchMessages(const QByteArray &data, Account *account) {
-	return getInstance()->_parseSearchMessages(data, account);
-}
-
-QVector<Message> QwitTools::parseInboxMessages(const QByteArray &data, Account *account) {
-	return getInstance()->_parseInboxMessages(data, account);
-}
-
-QVector<Message> QwitTools::parseOutboxMessages(const QByteArray &data, Account *account) {
-	return getInstance()->_parseOutboxMessages(data, account);
-}
-
-Message QwitTools::parseUser(const QByteArray &data, Account *account) {
-	return getInstance()->_parseUser(data, account);
-}
-
-QDateTime QwitTools::_dateFromString(QString date) {
+	if (!monthes.size()) {
+		monthes["Jan"] = 1;
+		monthes["Feb"] = 2;
+		monthes["Mar"] = 3;
+		monthes["Apr"] = 4;
+		monthes["May"] = 5;
+		monthes["Jun"] = 6;
+		monthes["Jul"] = 7;
+		monthes["Aug"] = 8;
+		monthes["Sep"] = 9;
+		monthes["Oct"] = 10;
+		monthes["Nov"] = 11;
+		monthes["Dec"] = 12;
+	}
 	char s[10];
 	int year, day, hours, minutes, seconds;
 	sscanf(qPrintable(date), "%*s %s %d %d:%d:%d %*s %d", s, &day, &hours, &minutes, &seconds, &year);
@@ -108,14 +65,13 @@ QDateTime QwitTools::_dateFromString(QString date) {
 	return QDateTime(QDate(year, month, day), QTime(hours, minutes, seconds));
 }
 
-QDateTime QwitTools::_dateFromAtomString(QString date) {
-	char s[10];
+QDateTime QwitTools::dateFromAtomString(QString date) {
 	int year, month, day, hours, minutes, seconds;
 	sscanf(qPrintable(date), "%d-%d-%dT%d:%d:%dZ", &year, &month, &day, &hours, &minutes, &seconds);
 	return QDateTime(QDate(year, month, day), QTime(hours, minutes, seconds));
 }
 
-QIcon QwitTools::_getToolButtonIcon(const QString &iconFileName, bool active) {
+QIcon QwitTools::getToolButtonIcon(const QString &iconFileName, bool active) {
 	QIcon icon(iconFileName);
 	if (!active) {
 		QPixmap normalPixmap = icon.pixmap(16, 16, QIcon::Disabled, QIcon::Off);
@@ -129,7 +85,7 @@ QIcon QwitTools::_getToolButtonIcon(const QString &iconFileName, bool active) {
 	return icon;
 }
 
-QString QwitTools::_formatDateTime(const QDateTime &time) {
+QString QwitTools::formatDateTime(const QDateTime &time) {
 	int seconds = time.secsTo(QDateTime::currentDateTime());
 	if (seconds <= 15) return tr("Just now");
 	if (seconds <= 45) return tr("about %n second(s) ago", "", seconds);
@@ -141,7 +97,7 @@ QString QwitTools::_formatDateTime(const QDateTime &time) {
 	return tr("about %n day(s) ago", "", days);
 }
 
-QVector<Message> QwitTools::_parseMessages(const QByteArray &data, Account *account) {
+QVector<Message> QwitTools::parseMessages(const QByteArray &data, Account *account) {
 	QVector<Message> messages;
 	
 	QDomDocument document;
@@ -227,7 +183,7 @@ QVector<Message> QwitTools::_parseMessages(const QByteArray &data, Account *acco
 	return messages;
 }
 
-QVector<Message> QwitTools::_parseSearchMessages(const QByteArray &data, Account *account) {
+QVector<Message> QwitTools::parseSearchMessages(const QByteArray &data, Account *account) {
 	QVector<Message> messages;
 
 	QDomDocument document;
@@ -308,7 +264,7 @@ QVector<Message> QwitTools::_parseSearchMessages(const QByteArray &data, Account
 	return messages;
 }
 
-QVector<Message> QwitTools::_parseInboxMessages(const QByteArray &data, Account *account) {
+QVector<Message> QwitTools::parseInboxMessages(const QByteArray &data, Account *account) {
 	QVector<Message> messages;
 	
 	QDomDocument document;
@@ -383,7 +339,7 @@ QVector<Message> QwitTools::_parseInboxMessages(const QByteArray &data, Account 
 	return messages;
 }
 
-QVector<Message> QwitTools::_parseOutboxMessages(const QByteArray &data, Account *account) {
+QVector<Message> QwitTools::parseOutboxMessages(const QByteArray &data, Account *account) {
 	QVector<Message> messages;
 	
 	QDomDocument document;
@@ -458,7 +414,7 @@ QVector<Message> QwitTools::_parseOutboxMessages(const QByteArray &data, Account
 	return messages;
 }
 
-Message QwitTools::_parseUser(const QByteArray &data, Account *account) {
+Message QwitTools::parseUser(const QByteArray &data, Account *account) {
 	Message message;
 	
 	QDomDocument document;
@@ -539,10 +495,6 @@ Message QwitTools::_parseUser(const QByteArray &data, Account *account) {
 }
 
 Message QwitTools::parseMessage(const QByteArray &data, Account *account) {
-	return getInstance()->_parseMessage(data, account);
-}
-
-Message QwitTools::_parseMessage(const QByteArray &data, Account *account) {
 	Message message;
 	
 	QDomDocument document;
@@ -620,10 +572,6 @@ Message QwitTools::_parseMessage(const QByteArray &data, Account *account) {
 }
 
 Message QwitTools::parseDirectMessage(const QByteArray &data, Account *account) {
-	return getInstance()->_parseDirectMessage(data, account);
-}
-
-Message QwitTools::_parseDirectMessage(const QByteArray &data, Account *account) {
 	Message message;
 	
 	QDomDocument document;
@@ -693,10 +641,6 @@ Message QwitTools::_parseDirectMessage(const QByteArray &data, Account *account)
 }
 
 void QwitTools::makeMessagesUnique(QVector<Message> &v) {
-	getInstance()->_makeMessagesUnique(v);
-}
-
-void QwitTools::_makeMessagesUnique(QVector<Message> &v) {
 	int n = 0;
 	for (int i = 0; i < v.size(); ++i) {
 		if (!n || (v[i] != v[n - 1])) {
@@ -706,7 +650,7 @@ void QwitTools::_makeMessagesUnique(QVector<Message> &v) {
 	v.resize(n);
 }
 
-QString QwitTools::_prepareMessage(const QString &text, Account *account) {
+QString QwitTools::prepareMessage(const QString &text, Account *account) {
 	QString s = text;
 // Process URLs
 	{
@@ -722,7 +666,7 @@ QString QwitTools::_prepareMessage(const QString &text, Account *account) {
 			while (url.at(url.length() - 1).isPunct() && (url[url.length() - 1] != '/')) {
 				url = url.mid(0, url.length() - 1);
 			}
-			if (pos && ((s.at(pos - 1) == '@') || s.at(pos - 1).isLetterOrNumber() || ((pos + url.length() < s.length()) && (s.at(pos + url.length()).isLetterOrNumber())))) {
+			if ((pos && ((s.at(pos - 1) == '@') || s.at(pos - 1).isLetterOrNumber() || ((pos + url.length() < s.length()) && (s.at(pos + url.length()).isLetterOrNumber())))) || ipAddressRegExp.exactMatch(url)) {
 				t += s.mid(lastPos, pos - lastPos);
 				t += url;
 				lastPos = pos + url.length();
@@ -786,10 +730,6 @@ QString QwitTools::_prepareMessage(const QString &text, Account *account) {
 	return s;
 }
 
-QString QwitTools::prepareMessage(const QString &text, Account *account) {
-	return getInstance()->_prepareMessage(text, account);
-}
-
 void handleMessage(QtMsgType type, const char *msg) {
 	switch (type) {
 		case QtDebugMsg:
@@ -807,7 +747,7 @@ void handleMessage(QtMsgType type, const char *msg) {
 	}
 }
 
-QVector<Message> QwitTools::_mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages) {
+QVector<Message> QwitTools::mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages) {
 	QVector<Message> newMessages;
 	QStringList usernames;
 	if (!receivedMessages.size()) {
@@ -831,15 +771,7 @@ QVector<Message> QwitTools::_mergeMessages(QVector<Message> &messages, QVector<M
 	return newMessages;
 }
 
-QVector<Message> QwitTools::mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages) {
-	return getInstance()->_mergeMessages(messages, receivedMessages);
-}
-
 QString QwitTools::parseError(const QByteArray &data) {
-	return getInstance()->_parseError(data);
-}
-
-QString QwitTools::_parseError(const QByteArray &data) {
 	Message message;
 	
 	QDomDocument document;
@@ -863,11 +795,12 @@ QString QwitTools::_parseError(const QByteArray &data) {
 }
 
 bool QwitTools::isUrl(const QString &s) {
-	return getInstance()->_isUrl(s);
+	return urlRegExp.exactMatch(s);
 }
 
-bool QwitTools::_isUrl(const QString &s) {
-	return urlRegExp.exactMatch(s);
+bool QwitTools::isMention(const Message &message) {
+	QRegExp re("(^|\\W+)@" + message.account->username + "($|\\W+)");
+	return (re.indexIn(message.text) != -1);
 }
 
 #endif

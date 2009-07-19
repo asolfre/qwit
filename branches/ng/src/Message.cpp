@@ -32,6 +32,7 @@
 #define Message_cpp
 
 #include "QwitHeaders.h"
+#include "QwitTools.h"
 
 #include "Message.h"
 
@@ -48,6 +49,7 @@ Message::Message(quint64 id, const QString &text, const QString &username, const
 	this->inReplyToMessageId = inReplyToMessageId;
 	this->inReplyToUsername = inReplyToUsername;
 	this->directMessage = directMessage;
+	mention = QwitTools::isMention(*this);
 }
 
 bool Message::operator<(const Message &x) const {
