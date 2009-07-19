@@ -44,7 +44,7 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	
 	accountConfigurationDialog = new AccountConfigurationDialog(this);
 	
-	connect(optionsGroupTreeWidget, SIGNAL(itemActivated(QTreeWidgetItem*, int)), this, SLOT(changeOptionsGroup(QTreeWidgetItem*)));
+	connect(optionsGroupListWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(changeOptionsGroup(QListWidgetItem*)));
 	optionsStackedWidget->setCurrentWidget(accountsPage);
 	connect(addAccountPushButton, SIGNAL(pressed()), this, SLOT(addAccount()));
 	connect(deleteAccountPushButton, SIGNAL(pressed()), this, SLOT(deleteAccount()));
@@ -59,14 +59,14 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	optionsStackedWidget->setCurrentWidget(accountsPage);
 }
 
-void OptionsDialog::changeOptionsGroup(QTreeWidgetItem *item) {
-	if (item->text(0) == tr("Accounts")) {
+void OptionsDialog::changeOptionsGroup(QListWidgetItem *item) {
+	if (item->text() == tr("Accounts")) {
 		optionsStackedWidget->setCurrentWidget(accountsPage);
-	} else if (item->text(0) == tr("URL shortener")) {
+	} else if (item->text() == tr("URL shortener")) {
 		optionsStackedWidget->setCurrentWidget(urlShortenerPage);
-	} else if (item->text(0) == tr("Connection")) {
+	} else if (item->text() == tr("Connection")) {
 		optionsStackedWidget->setCurrentWidget(connectionPage);
-	} else if (item->text(0) == tr("User interface")) {
+	} else if (item->text() == tr("User interface")) {
 		optionsStackedWidget->setCurrentWidget(userInterfacePage);
 	}
 }

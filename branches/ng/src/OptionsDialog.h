@@ -48,7 +48,7 @@ public:
 	
 public slots:
 
-	void changeOptionsGroup(QTreeWidgetItem *item);
+	void changeOptionsGroup(QListWidgetItem *item);
 	void addAccount();
 	void deleteAccount();
 	void editAccount();
