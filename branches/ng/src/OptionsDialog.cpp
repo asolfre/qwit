@@ -55,7 +55,10 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	for (int i = 0; i < config->UrlShorteners.size(); ++i) {
 		urlShortenersComboBox->addItem(config->UrlShortenersNames[config->UrlShorteners[i]]);
 	}
-	
+	for (int i = 0; i < config->Services.size(); ++i) {
+		servicesComboBox->addItem(config->ServicesNames[config->Services[i]]);
+	}
+
 	optionsStackedWidget->setCurrentWidget(accountsPage);
 }
 
@@ -78,31 +81,20 @@ void OptionsDialog::addAccount() {
 	accountConfigurationDialog->accountPasswordLineEdit->setText("");
 	accountConfigurationDialog->accountUsernameLineEdit->setFocus();
 	accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Unchecked);
-	switch (servicesComboBox->currentIndex()) {
-		case Configuration::AccountTwitter: {
-				accountConfigurationDialog->serviceBaseUrlLineEdit->setText(Services::options["twitter"]["baseurl"]);
-				accountConfigurationDialog->serviceApiUrlLineEdit->setText(Services::options["twitter"]["apiurl"]);
-				accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
-				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
-				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
-			}
-			break;
-		case Configuration::AccountIdentica: {
-				accountConfigurationDialog->serviceBaseUrlLineEdit->setText(Services::options["identica"]["baseurl"]);
-				accountConfigurationDialog->serviceApiUrlLineEdit->setText(Services::options["identica"]["apiurl"]);
-				accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
-				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
-				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
-			}
-			break;
-		case Configuration::AccountCustom: {
-				accountConfigurationDialog->serviceBaseUrlLineEdit->setText("");
-				accountConfigurationDialog->serviceApiUrlLineEdit->setText("");
-				accountConfigurationDialog->useHttpsCheckBox->setEnabled(false);
-				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(true);
-				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(true);
-			}
-			break;
+	Configuration *config = Configuration::getInstance();
+	int serviceId = servicesComboBox->currentIndex();
+	if (serviceId == Configuration::ServicesIds["custom"]) {
+		accountConfigurationDialog->serviceBaseUrlLineEdit->setText("");
+		accountConfigurationDialog->serviceApiUrlLineEdit->setText("");
+		accountConfigurationDialog->useHttpsCheckBox->setEnabled(false);
+		accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(true);
+		accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(true);
+	} else {
+		accountConfigurationDialog->serviceBaseUrlLineEdit->setText(Services::options[Configuration::Services[serviceId]]["baseurl"]);
+		accountConfigurationDialog->serviceApiUrlLineEdit->setText(Services::options[Configuration::Services[serviceId]]["apiurl"]);
+		accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
+		accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
+		accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
 	}
 	accountConfigurationDialog->showNormal();
 }
@@ -139,26 +131,15 @@ void OptionsDialog::editAccount() {
 		accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Unchecked);
 	}
 	accountConfigurationDialog->accountUsernameLineEdit->setFocus();
-	switch (Configuration::ServicesIds[config->accounts[accountId]->type]) {
-		case Configuration::AccountTwitter: {
-				accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
-				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
-				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
-			}
-			break;
-		case Configuration::AccountIdentica: {
-				accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
-				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
-				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
-			}
-			break;
-		case Configuration::AccountCustom: {
-				accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Unchecked);
-				accountConfigurationDialog->useHttpsCheckBox->setEnabled(false);
-				accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(true);
-				accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(true);
-			}
-			break;
+	if (config->accounts[accountId]->type == "custom") {
+		accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Unchecked);
+		accountConfigurationDialog->useHttpsCheckBox->setEnabled(false);
+		accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(true);
+		accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(true);
+	} else {
+		accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
+		accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
+		accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
 	}
 	accountConfigurationDialog->showNormal();
 }

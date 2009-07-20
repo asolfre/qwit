@@ -57,7 +57,7 @@ Configuration::Configuration() {
 	for (QMap<QString, QMap<QString, QString> >::iterator it = Services::options.begin(); it != Services::options.end(); ++it) {
 		ServicesNames[it.key()] = it.value()["title"];
 		Services.push_back(it.key());
-		ServicesIds[it.key()] = UrlShorteners.size() - 1;
+		ServicesIds[it.key()] = Services.size() - 1;
 	}
 	QFile file(settings.fileName());
 	currentAccountId = -1;
