@@ -63,7 +63,7 @@
           <number>-4</number>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="connectionPage">
           <layout class="QGridLayout" name="gridLayout_2">
@@ -589,23 +589,7 @@
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_2">
                   <item>
-                   <widget class="QComboBox" name="servicesComboBox">
-                    <item>
-                     <property name="text">
-                      <string>Twitter</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Identi.ca</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>custom</string>
-                     </property>
-                    </item>
-                   </widget>
+                   <widget class="QComboBox" name="servicesComboBox"/>
                   </item>
                   <item>
                    <widget class="QPushButton" name="addAccountPushButton">
