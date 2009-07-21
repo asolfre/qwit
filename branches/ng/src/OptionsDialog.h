@@ -53,6 +53,10 @@ public slots:
 	void deleteAccount();
 	void editAccount();
 	void commitAccount();
+	void chooseCommonMessagesEvenColor();
+	void chooseCommonMessagesOddColor();
+	void chooseMentionsEvenColor();
+	void chooseMentionsOddColor();
 };
 
 #endif

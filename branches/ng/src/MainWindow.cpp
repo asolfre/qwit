@@ -182,6 +182,11 @@ void MainWindow::saveOptions() {
 	config->autoUpdateFavoritesTab = (optionsDialog->favoritesTabAutoUpdateCheckBox->checkState() == Qt::Checked);
 	config->updateInterval = optionsDialog->updateIntervalSpinBox->value();
 
+	config->commonMessagesEvenColor = optionsDialog->commonMessagesEvenColorPushButton->palette().color(QPalette::Button);
+	config->commonMessagesOddColor = optionsDialog->commonMessagesOddColorPushButton->palette().color(QPalette::Button);
+	config->mentionsEvenColor = optionsDialog->mentionsEvenColorPushButton->palette().color(QPalette::Button);
+	config->mentionsOddColor = optionsDialog->mentionsOddColorPushButton->palette().color(QPalette::Button);
+
 	config->useProxy = (optionsDialog->useProxyCheckBox->checkState() == Qt::Checked);
 	config->proxyAddress = optionsDialog->proxyAddressLineEdit->text();
 	config->proxyPort = optionsDialog->proxyPortLineEdit->text().toInt();
@@ -323,6 +328,22 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->favoritesTabCheckBox->setCheckState(config->showFavoritesTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->favoritesTabAutoUpdateCheckBox->setCheckState(config->autoUpdateFavoritesTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->updateIntervalSpinBox->setValue(config->updateInterval);
+
+	QPalette palette = optionsDialog->commonMessagesEvenColorPushButton->palette();
+	palette.setColor(QPalette::Button, config->commonMessagesEvenColor);
+	optionsDialog->commonMessagesEvenColorPushButton->setPalette(palette);
+
+	palette = optionsDialog->commonMessagesOddColorPushButton->palette();
+	palette.setColor(QPalette::Button, config->commonMessagesOddColor);
+	optionsDialog->commonMessagesOddColorPushButton->setPalette(palette);
+
+	palette = optionsDialog->mentionsEvenColorPushButton->palette();
+	palette.setColor(QPalette::Button, config->mentionsEvenColor);
+	optionsDialog->mentionsEvenColorPushButton->setPalette(palette);
+
+	palette = optionsDialog->mentionsOddColorPushButton->palette();
+	palette.setColor(QPalette::Button, config->mentionsOddColor);
+	optionsDialog->mentionsOddColorPushButton->setPalette(palette);
 
 // Accounts
 	optionsDialog->accountsListWidget->clear();

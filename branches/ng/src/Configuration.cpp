@@ -121,6 +121,17 @@ void Configuration::load() {
 	updateInterval = settings.value("updateInterval", 300).toInt();
 	settings.endGroup();
 	
+	settings.beginGroup("Colors");
+	int color = settings.value("commonMessagesOddColor", (((180 << 8) + 180) << 8) + 180).toInt();
+	commonMessagesOddColor.setRgb(color >> 16, (color >> 8) & 255, color & 255);
+	color = settings.value("commonMessagesEvenColor", (((230 << 8) + 230) << 8) + 230).toInt();
+	commonMessagesEvenColor.setRgb(color >> 16, (color >> 8) & 255, color & 255);
+	color = settings.value("mentionsOddColor", (((128 << 8) + 255) << 8) + 128).toInt();
+	mentionsOddColor.setRgb(color >> 16, (color >> 8) & 255, color & 255);
+	color = settings.value("mentionsEvenColor", (((200 << 8) + 255) << 8) + 200).toInt();
+	mentionsEvenColor.setRgb(color >> 16, (color >> 8) & 255, color & 255);
+	settings.endGroup();
+
 	settings.endGroup();
 
 // Accounts
@@ -201,6 +212,13 @@ void Configuration::save() {
 	settings.setValue("showFavoritesTab", showFavoritesTab);
 	settings.setValue("autoUpdateFavoritesTab", autoUpdateFavoritesTab);
 	settings.setValue("updateInterval", updateInterval);
+	settings.endGroup();
+
+	settings.beginGroup("Colors");
+	settings.setValue("commonMessagesOddColor", (((commonMessagesOddColor.red() << 8) + commonMessagesOddColor.green()) << 8) + commonMessagesOddColor.blue());
+	settings.setValue("commonMessagesEvenColor", (((commonMessagesEvenColor.red() << 8) + commonMessagesEvenColor.green()) << 8) + commonMessagesEvenColor.blue());
+	settings.setValue("mentionsOddColor", (((mentionsOddColor.red() << 8) + mentionsOddColor.green()) << 8) + mentionsOddColor.blue());
+	settings.setValue("mentionsEvenColor", (((mentionsEvenColor.red() << 8) + mentionsEvenColor.green()) << 8) + mentionsEvenColor.blue());
 	settings.endGroup();
 
 	settings.endGroup();

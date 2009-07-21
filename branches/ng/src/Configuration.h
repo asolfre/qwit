@@ -91,6 +91,10 @@ public:
 	bool showFavoritesTab;
 	bool autoUpdateFavoritesTab;
 	int updateInterval;
+	QColor commonMessagesOddColor;
+	QColor commonMessagesEvenColor;
+	QColor mentionsOddColor;
+	QColor mentionsEvenColor;
 
 // Connection
 	bool useProxy;

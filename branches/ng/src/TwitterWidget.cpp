@@ -202,17 +202,18 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 	}
 	item->signLabel->move(signX, signY);
 
+	Configuration *config = Configuration::getInstance();
 	if (paintMentions && item->message.mention) {
 		if (index & 1) {
-			item->color.setRgb(200, 255, 200);
+			item->color = config->mentionsEvenColor;
 		} else {
-			item->color.setRgb(128, 255, 128);
+			item->color = config->mentionsOddColor;
 		}
 	} else {
 		if (index & 1) {
-			item->color.setRgb(230, 230, 230);
+			item->color = config->commonMessagesEvenColor;
 		} else {
-			item->color.setRgb(180, 180, 180);
+			item->color = config->commonMessagesOddColor;
 		}
 	}
 
@@ -269,17 +270,18 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	}
 	item->signLabel->move(signX, signY);
 
+	Configuration *config = Configuration::getInstance();
 	if (paintMentions && item->message.mention) {
 		if (index & 1) {
-			item->color.setRgb(200, 255, 200);
+			item->color = config->mentionsEvenColor;
 		} else {
-			item->color.setRgb(128, 255, 128);
+			item->color = config->mentionsOddColor;
 		}
 	} else {
 		if (index & 1) {
-			item->color.setRgb(230, 230, 230);
+			item->color = config->commonMessagesEvenColor;
 		} else {
-			item->color.setRgb(180, 180, 180);
+			item->color = config->commonMessagesOddColor;
 		}
 	}
 

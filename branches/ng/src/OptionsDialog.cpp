@@ -60,6 +60,11 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	}
 
 	optionsStackedWidget->setCurrentWidget(accountsPage);
+
+	connect(commonMessagesEvenColorPushButton, SIGNAL(pressed()), this, SLOT(chooseCommonMessagesEvenColor()));
+	connect(commonMessagesOddColorPushButton, SIGNAL(pressed()), this, SLOT(chooseCommonMessagesOddColor()));
+	connect(mentionsEvenColorPushButton, SIGNAL(pressed()), this, SLOT(chooseMentionsEvenColor()));
+	connect(mentionsOddColorPushButton, SIGNAL(pressed()), this, SLOT(chooseMentionsOddColor()));
 }
 
 void OptionsDialog::changeOptionsGroup(QListWidgetItem *item) {
@@ -167,6 +172,42 @@ void OptionsDialog::commitAccount() {
 				mainWindow->updateAccountButton(account);
 			}
 			break;
+	}
+}
+
+void OptionsDialog::chooseCommonMessagesEvenColor() {
+	QPalette palette = commonMessagesEvenColorPushButton->palette();
+	QColor color = QColorDialog::getColor(commonMessagesEvenColorPushButton->palette().color(QPalette::Button), this);
+	if (color.isValid()) {
+		palette.setColor(QPalette::Button, color);
+		commonMessagesEvenColorPushButton->setPalette(palette);
+	}
+}
+
+void OptionsDialog::chooseCommonMessagesOddColor() {
+	QPalette palette = commonMessagesOddColorPushButton->palette();
+	QColor color = QColorDialog::getColor(commonMessagesOddColorPushButton->palette().color(QPalette::Button), this);
+	if (color.isValid()) {
+		palette.setColor(QPalette::Button, color);
+		commonMessagesOddColorPushButton->setPalette(palette);
+	}
+}
+
+void OptionsDialog::chooseMentionsEvenColor() {
+	QPalette palette = mentionsEvenColorPushButton->palette();
+	QColor color = QColorDialog::getColor(mentionsEvenColorPushButton->palette().color(QPalette::Button), this);
+	if (color.isValid()) {
+		palette.setColor(QPalette::Button, color);
+		mentionsEvenColorPushButton->setPalette(palette);
+	}
+}
+
+void OptionsDialog::chooseMentionsOddColor() {
+	QPalette palette = mentionsOddColorPushButton->palette();
+	QColor color = QColorDialog::getColor(mentionsOddColorPushButton->palette().color(QPalette::Button), this);
+	if (color.isValid()) {
+		palette.setColor(QPalette::Button, color);
+		mentionsOddColorPushButton->setPalette(palette);
 	}
 }
 
