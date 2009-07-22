@@ -27,13 +27,11 @@ HEADERS += src/LogsDialog.h \
     src/FriendsMgmtWidgetItem.h \
     src/FriendsMgmtWidget.h \
     src/FriendsMgmtTab.h \
-    src/FriendsMGMTDialog.h \
-    src/FriendsManagementDialog.h
+    src/FriendsMgmtDialog.h
 FORMS += src/LogsDialog.ui \
     src/MainWindow.ui \
     src/OptionsDialog.ui \
-    src/FriendsMGMTDialog.ui \
-    src/FriendsManagementDialog.ui
+    src/FriendsMgmtDialog.ui
 SOURCES += src/LogsDialog.cpp \
     src/MainWindow.cpp \
     src/OptionsDialog.cpp \
@@ -47,8 +45,7 @@ SOURCES += src/LogsDialog.cpp \
     src/FriendsMgmtWidgetItem.cpp \
     src/FriendsMgmtWidget.cpp \
     src/FriendsMgmtTab.cpp \
-    src/FriendsMGMTDialog.cpp \
-    src/FriendsManagementDialog.cpp
+    src/FriendsMgmtDialog.cpp
 TRANSLATIONS += translations/qwit_en_US.ts \
     translations/qwit_es_ES.ts \
     translations/qwit_it_IT.ts \

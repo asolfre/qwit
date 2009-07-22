@@ -15,14 +15,14 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef FriendsMANAGEMENTDIALOG_H
-#define FriendsMANAGEMENTDIALOG_H
+#ifndef FriendsMgmtDialog_H
+#define FriendsMgmtDialog_H
 
 const int MGMT_TABS = 2;
 const int FRIENDS_MGMT_TAB = 0;
 const int FOLLOWERS_MGMT_TAB = 1;
 
-#include "ui_FriendsManagementDialog.h"
+#include "ui_FriendsMgmtDialog.h"
 #include "FriendsMgmtTab.h"
 #include "UserpicsDownloader.h"
 #include "Twitter.h"
@@ -30,7 +30,7 @@ const int FOLLOWERS_MGMT_TAB = 1;
 /**
 	@author tosate <tosate@googlemail.com>
 */
-class FriendsManagementDialog : public QDialog, public Ui::FriendsManagementDialog
+class FriendsMgmtDialog : public QDialog, public Ui::FriendsMgmtDialog
 {
         Q_OBJECT
 
@@ -41,7 +41,7 @@ private:
 
 public:
 
-        FriendsManagementDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader);
+        FriendsMgmtDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader);
         void addTestUser(QString name);
 
 public slots:

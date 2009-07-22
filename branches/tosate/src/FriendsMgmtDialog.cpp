@@ -15,20 +15,20 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef FriendsManagementDialog_cpp
-#define FriendsManagementDialog_cpp
+#ifndef FriendsMgmtDialog_cpp
+#define FriendsMgmtDialog_cpp
 
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QtXml/QDomDocument>
 #include <iostream>
-#include<QDir>
+#include <QDir>
 
-#include "FriendsManagementDialog.h"
+#include "FriendsMgmtDialog.h"
 
 using namespace std;
 
-FriendsManagementDialog::FriendsManagementDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader) : QDialog(parent)
+FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader) : QDialog(parent)
 {
         setupUi(this);
         this->twitter = twitter;
@@ -81,19 +81,19 @@ FriendsManagementDialog::FriendsManagementDialog(QWidget *parent, Twitter *twitt
 
 
 /*!
-    \fn FriendsManagementDialog::closeFriendsManagement()
+    \fn FriendsMgmtDialog::closeFriendsManagement()
  */
-void FriendsManagementDialog::closeFriendsManagement()
+void FriendsMgmtDialog::closeFriendsManagement()
 {
 	hide();
 }
 
-void FriendsManagementDialog::addTestUser(QString name)
+void FriendsMgmtDialog::addTestUser(QString name)
 {
     friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(name, "", "test");
 }
 
-void FriendsManagementDialog::resizeEvent(QResizeEvent *event)
+void FriendsMgmtDialog::resizeEvent(QResizeEvent *event)
 {
     for(int i=0; i<MGMT_TABS; ++i)
         friendsMgmtTabs[i].getFriendsMgmtWidget()->resize(friendsMgmtTabs[i].getScrollArea()->width() - friendsMgmtTabs[i].getScrollArea()->verticalScrollBar()->width() -5, 500);
@@ -101,22 +101,22 @@ void FriendsManagementDialog::resizeEvent(QResizeEvent *event)
     event->accept();
 }
 
-void FriendsManagementDialog::showEvent(QShowEvent *event)
+void FriendsMgmtDialog::showEvent(QShowEvent *event)
 {
     event->accept();
 }
 
-void FriendsManagementDialog::unfollow(const QString &url)
+void FriendsMgmtDialog::unfollow(const QString &url)
 {
     cerr << url.toStdString() << endl;
 }
 
-void FriendsManagementDialog::block(const QString &url)
+void FriendsMgmtDialog::block(const QString &url)
 {
     cerr << url.toStdString() << endl;
 }
 
-void FriendsManagementDialog::friendsUpdated(const QByteArray &buffer, int type)
+void FriendsMgmtDialog::friendsUpdated(const QByteArray &buffer, int type)
 {
     QDomDocument document;
 
@@ -248,7 +248,7 @@ void FriendsManagementDialog::friendsUpdated(const QByteArray &buffer, int type)
     }
 }
 
-void FriendsManagementDialog::saveState()
+void FriendsMgmtDialog::saveState()
 {
     for(int i=0; i<MGMT_TABS; ++i)
         friendsMgmtTabs[i].getFriendsMgmtWidget()->resize(friendsMgmtTabs[i].getScrollArea()->width() - friendsMgmtTabs[i].getScrollArea()->verticalScrollBar()->width() -5, 500);
