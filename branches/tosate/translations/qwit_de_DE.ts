@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de_DE">
-<defaultcodec></defaultcodec>
+<context>
+    <name>FriendsMgmtDialog</name>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="14"/>
+        <source>Friends Management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="28"/>
+        <source>Friends</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="38"/>
+        <source>add friend:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="53"/>
+        <source>Followers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="76"/>
+        <source>Close Friends Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>LogsDialog</name>
     <message>
@@ -12,287 +39,307 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="240"/>
+        <location filename="../src/MainWindow.cpp" line="245"/>
         <source>Pick an image</source>
         <translation>Wähle Avatar-Bild</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="240"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp)</source>
-        <translation>Bilddateien (*.png *.jpg *.jpeg *.bmp)</translation>
+        <translation type="obsolete">Bilddateien (*.png *.jpg *.jpeg *.bmp)</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="251"/>
+        <location filename="../src/MainWindow.cpp" line="256"/>
         <source>&amp;Show / Hide</source>
         <translation>&amp;Anzeigen / Verbergen</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="253"/>
+        <location filename="../src/MainWindow.cpp" line="258"/>
         <source>&amp;Quit</source>
         <translation>&amp;Beenden</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="814"/>
+        <location filename="../src/MainWindow.cpp" line="833"/>
         <source>Qwit updates</source>
         <translation>Qwit Updates</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="13"/>
+        <location filename="../src/MainWindow.ui" line="14"/>
         <source>Qwit</source>
         <translation>Qwit</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="39"/>
+        <location filename="../src/MainWindow.ui" line="40"/>
         <source>What are you doing?</source>
         <translation>Was tust Du gerade?</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="205"/>
+        <location filename="../src/MainWindow.ui" line="206"/>
         <source>Left characters count - please, do not exceed this number</source>
         <translation>Verbleibende Zeichen - bitte diese Anzahl nicht überschreiten</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="214"/>
+        <location filename="../src/MainWindow.ui" line="215"/>
         <source>140</source>
         <translation>140</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="257"/>
+        <location filename="../src/MainWindow.ui" line="258"/>
         <source>Home</source>
         <translation>Home</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="260"/>
+        <location filename="../src/MainWindow.ui" line="261"/>
         <source>Your and your friends&apos; timeline</source>
         <translation>Zeitleiste für eigene und abonnierte Tweets</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="265"/>
+        <location filename="../src/MainWindow.ui" line="266"/>
         <source>Public</source>
         <translation>Öffentlich</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="268"/>
+        <location filename="../src/MainWindow.ui" line="269"/>
         <source>Public timeline</source>
         <translation>Zeitleiste für öffentliche Tweets</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="273"/>
+        <location filename="../src/MainWindow.ui" line="274"/>
         <source>Replies</source>
         <translation>Antworten</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="276"/>
+        <location filename="../src/MainWindow.ui" line="277"/>
         <source>Replies to you</source>
         <translation>Antworten an Dich</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="281"/>
+        <location filename="../src/MainWindow.ui" line="282"/>
         <source>Custom</source>
         <translation>Privat</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="284"/>
+        <location filename="../src/MainWindow.ui" line="285"/>
         <source>Custom user timeline</source>
         <translation>Zeitleiste für private Tweets</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="294"/>
+        <location filename="../src/MainWindow.ui" line="295"/>
         <source>Username:</source>
         <translation>Benutzername:</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="309"/>
+        <location filename="../src/MainWindow.ui" line="310"/>
         <source>Inbox</source>
         <translation>Eingang</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="312"/>
+        <location filename="../src/MainWindow.ui" line="313"/>
         <source>Direct messages inbox</source>
         <translation>Posteingang für Direktnachrichten</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="317"/>
+        <location filename="../src/MainWindow.ui" line="318"/>
         <source>Outbox</source>
         <translation>Ausgang</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="320"/>
+        <location filename="../src/MainWindow.ui" line="321"/>
         <source>Direct messages outbox</source>
         <translation>Postausgang für Direktnachrichten</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="325"/>
+        <location filename="../src/MainWindow.ui" line="326"/>
         <source>Search</source>
         <translation>Suche</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="328"/>
+        <location filename="../src/MainWindow.ui" line="329"/>
         <source>Search for messages</source>
         <translation>Nachrichtensuche</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="338"/>
+        <location filename="../src/MainWindow.ui" line="339"/>
         <source>Search:</source>
         <translation>Suche:</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="395"/>
+        <location filename="../src/MainWindow.ui" line="425"/>
         <source>Refresh</source>
         <translation>Aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="405"/>
+        <location filename="../src/MainWindow.ui" line="435"/>
         <source>Ctrl+R</source>
         <translation>Strg+R</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="430"/>
+        <location filename="../src/MainWindow.ui" line="460"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="485"/>
+        <location filename="../src/MainWindow.ui" line="515"/>
         <source>Quit</source>
         <translation>Beenden</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="245"/>
+        <source>Image Files (*.png *.jpg *.jpeg *.bmp *.JPG *.JPEG *.PNG *.GIF *.BMP)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.ui" line="396"/>
+        <source>Friends Management</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="13"/>
+        <location filename="../src/OptionsDialog.ui" line="14"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="25"/>
+        <location filename="../src/OptionsDialog.ui" line="26"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="36"/>
+        <location filename="../src/OptionsDialog.ui" line="37"/>
         <source>Greeting message:</source>
         <translation>Grußnachricht:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="46"/>
+        <location filename="../src/OptionsDialog.ui" line="47"/>
         <source>Service base URL:</source>
         <translation>Service Basis-URL:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="56"/>
+        <location filename="../src/OptionsDialog.ui" line="57"/>
         <source>Service API URL:</source>
         <translation>Service API-URL:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="66"/>
+        <location filename="../src/OptionsDialog.ui" line="67"/>
         <source>Update interval:</source>
         <translation>Aktualisierungsinterval:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="79"/>
+        <location filename="../src/OptionsDialog.ui" line="80"/>
         <source>Number of messages per page:</source>
         <translation>Anzahl Nachrichten pro Seite:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="92"/>
+        <location filename="../src/OptionsDialog.ui" line="93"/>
         <source>Number of messages per tray:</source>
         <translation>Anzahl Nachrichten im Tray Bereich:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="105"/>
+        <location filename="../src/OptionsDialog.ui" line="106"/>
         <source>Retweeting tag:</source>
         <translation>Retweeting Tag:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="115"/>
+        <location filename="../src/OptionsDialog.ui" line="116"/>
         <source>Display retweet tag after text instead of in front</source>
         <translation>Retweeting Tag nicht vor sondern nach Text anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="138"/>
+        <location filename="../src/OptionsDialog.ui" line="139"/>
         <source>Username under avatar</source>
         <translation>Benutzername unter Avatar</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="148"/>
+        <location filename="../src/OptionsDialog.ui" line="149"/>
         <source>Notify about updates</source>
         <translation>Benachrichtigung bei Updates</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="158"/>
+        <location filename="../src/OptionsDialog.ui" line="159"/>
         <source>Place controls vertically</source>
         <translation>Bedienelemente vertikal anordnen</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="168"/>
+        <location filename="../src/OptionsDialog.ui" line="169"/>
         <source>Place tabs vertically</source>
         <translation>Reiter vertikal anordnen</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="191"/>
+        <location filename="../src/OptionsDialog.ui" line="209"/>
         <source>Connection</source>
         <translation>Verbindung</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="199"/>
+        <location filename="../src/OptionsDialog.ui" line="217"/>
         <source>use proxy</source>
         <translation>Proxy verwenden</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="206"/>
+        <location filename="../src/OptionsDialog.ui" line="224"/>
         <source>Proxy address:</source>
         <translation>Proxy Adresse:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="219"/>
+        <location filename="../src/OptionsDialog.ui" line="237"/>
         <source>Proxy port:</source>
         <translation>Proxy Port:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="232"/>
+        <location filename="../src/OptionsDialog.ui" line="250"/>
         <source>Proxy username:</source>
         <translation>Proxy Benutzername:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="245"/>
+        <location filename="../src/OptionsDialog.ui" line="263"/>
         <source>Proxy password:</source>
         <translation>Proxy Passwort:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="262"/>
+        <location filename="../src/OptionsDialog.ui" line="280"/>
         <source>save proxy password</source>
         <translation>Proxy Passwort speichern</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="285"/>
+        <location filename="../src/OptionsDialog.ui" line="303"/>
         <source>Authentication</source>
         <translation>Anmeldedaten</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="293"/>
+        <location filename="../src/OptionsDialog.ui" line="311"/>
         <source>Username or email:</source>
         <translation>Benutzername oder eMail:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="306"/>
+        <location filename="../src/OptionsDialog.ui" line="324"/>
         <source>Password:</source>
         <translation>Passwort:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="323"/>
+        <location filename="../src/OptionsDialog.ui" line="341"/>
         <source>save password</source>
         <translation>Passwort speichern</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="368"/>
+        <location filename="../src/OptionsDialog.ui" line="386"/>
         <source>Save options</source>
         <translation>Optionen speichern</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="375"/>
+        <location filename="../src/OptionsDialog.ui" line="393"/>
         <source>Reset options</source>
         <translation>Optionen zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="176"/>
+        <source>Open user profile in browser on username click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="186"/>
+        <source>Keep focus on the text field after status update</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -336,12 +383,12 @@
 <context>
     <name>TwitterWidget</name>
     <message>
-        <location filename="../src/TwitterWidget.cpp" line="315"/>
+        <location filename="../src/TwitterWidget.cpp" line="148"/>
         <source>Just now</source>
         <translation>Jetzt gerade</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/TwitterWidget.cpp" line="316"/>
+        <location filename="../src/TwitterWidget.cpp" line="149"/>
         <source>about %n second(s) ago</source>
         <translation>
             <numerusform>vor einer Sekunde</numerusform>
@@ -349,7 +396,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/TwitterWidget.cpp" line="318"/>
+        <location filename="../src/TwitterWidget.cpp" line="151"/>
         <source>about %n minute(s) ago</source>
         <translation>
             <numerusform>vor einer Minute</numerusform>
@@ -357,7 +404,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/TwitterWidget.cpp" line="320"/>
+        <location filename="../src/TwitterWidget.cpp" line="153"/>
         <source>about %n hour(s) ago</source>
         <translation>
             <numerusform>vor einer Stunde</numerusform>
@@ -365,7 +412,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/TwitterWidget.cpp" line="322"/>
+        <location filename="../src/TwitterWidget.cpp" line="155"/>
         <source>about %n day(s) ago</source>
         <translation>
             <numerusform>vor einem Tag</numerusform>
