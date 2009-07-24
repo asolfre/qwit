@@ -25,6 +25,7 @@
 #include <QDir>
 
 #include "FriendsMgmtDialog.h"
+#include "MainWindow.h"
 
 using namespace std;
 
@@ -103,6 +104,8 @@ void FriendsMgmtDialog::resizeEvent(QResizeEvent *event)
 
 void FriendsMgmtDialog::showEvent(QShowEvent *event)
 {
+    MainWindow *mainWindow = MainWindow::getInstance();
+    twitter->getFriends(mainWindow->username, mainWindow->password, 7);
     event->accept();
 }
 
