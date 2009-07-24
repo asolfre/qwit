@@ -604,61 +604,44 @@ void Twitter::requestStarted(int id) {
 void Twitter::requestFinished(int id, bool error) {
 	if (!error && http->lastResponse().isValid() && (http->lastResponse().statusCode() == 200)) {
 		qDebug() << ("Twitter::requestFinished() " + QString::number(id));
+		buffer.close();
+		QHttpResponseHeader response = http->lastResponse();
+		QString remainingRequests = response.value("X-RateLimit-Remaining");
 		if (receiveFriendsMessagesRequests.find(id) != receiveFriendsMessagesRequests.end()) {
 			qDebug() << ("Request finished: " + receiveFriendsMessagesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit friendsMessagesReceived(buffer.data());
 			receiveFriendsMessagesRequests.remove(id);
 		} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
 			qDebug() << ("Request finished: " + receiveRepliesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit repliesReceived(buffer.data());
 			receiveRepliesRequests.remove(id);
 		} else if (receivePublicMessagesRequests.find(id) != receivePublicMessagesRequests.end()) {
 			qDebug() << ("Request finished: " + receivePublicMessagesRequests[id]);
-			buffer.close();
 			emit publicMessagesReceived(buffer.data());
 			receivePublicMessagesRequests.remove(id);
 		} else if (receiveLastMessageRequests.find(id) != receiveLastMessageRequests.end()) {
 			qDebug() << ("Request finished: " + receiveLastMessageRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit lastMessageReceived(buffer.data());
 			receiveLastMessageRequests.remove(id);
 		} else if (sendMessageRequests.find(id) != sendMessageRequests.end()) {
 			qDebug() << ("Request finished: " + sendMessageRequests[id]);
-			buffer.close();
 			emit messageSent(buffer.data());
 			sendMessageRequests.remove(id);
 		} else if (receiveFavoritesRequests.find(id) != receiveFavoritesRequests.end()) {
 			qDebug() << ("Request finished: " + receiveFavoritesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit favoritesReceived(buffer.data());
 			receiveFavoritesRequests.remove(id);
 		} else if (receivePreviousFriendsMessagesRequests.find(id) != receivePreviousFriendsMessagesRequests.end()) {
 			qDebug() << ("Request finished: " + receivePreviousFriendsMessagesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit previousFriendsMessagesReceived(buffer.data());
 			receivePreviousFriendsMessagesRequests.remove(id);
 		} else if (receivePreviousRepliesRequests.find(id) != receivePreviousRepliesRequests.end()) {
 			qDebug() << ("Request finished: " + receivePreviousRepliesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit previousRepliesReceived(buffer.data());
 			receivePreviousRepliesRequests.remove(id);
@@ -669,52 +652,35 @@ void Twitter::requestFinished(int id, bool error) {
 			receivePreviousPublicMessagesRequests.remove(id);
 		} else if (receivePreviousFavoritesRequests.find(id) != receivePreviousFavoritesRequests.end()) {
 			qDebug() << ("Request finished: " + receivePreviousFavoritesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit previousFavoritesReceived(buffer.data());
 			receivePreviousFavoritesRequests.remove(id);
 		} else if (receiveInboxMessagesRequests.find(id) != receiveInboxMessagesRequests.end()) {
 			qDebug() << ("Request finished: " + receiveInboxMessagesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit inboxMessagesReceived(buffer.data());
 			receiveInboxMessagesRequests.remove(id);
 		} else if (receivePreviousInboxMessagesRequests.find(id) != receivePreviousInboxMessagesRequests.end()) {
 			qDebug() << ("Request finished: " + receivePreviousInboxMessagesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit previousInboxMessagesReceived(buffer.data());
 			receivePreviousInboxMessagesRequests.remove(id);
 		} else if (receiveOutboxMessagesRequests.find(id) != receiveOutboxMessagesRequests.end()) {
 			qDebug() << ("Request finished: " + receiveOutboxMessagesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit outboxMessagesReceived(buffer.data());
 			receiveOutboxMessagesRequests.remove(id);
 		} else if (receivePreviousOutboxMessagesRequests.find(id) != receivePreviousOutboxMessagesRequests.end()) {
 			qDebug() << ("Request finished: " + receivePreviousOutboxMessagesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit previousOutboxMessagesReceived(buffer.data());
 			receivePreviousOutboxMessagesRequests.remove(id);
 		} else if (sendDirectMessageRequests.find(id) != sendDirectMessageRequests.end()) {
 			qDebug() << ("Request finished: " + sendDirectMessageRequests[id]);
-			buffer.close();
 			emit directMessageSent(buffer.data());
 			sendDirectMessageRequests.remove(id);
 		} else if (favorMessageRequests.find(id) != favorMessageRequests.end()) {
 			qDebug() << ("Request finished: " + favorMessageRequests[id]);
-			buffer.close();
 			emit messageFavored(buffer.data());
 			favorMessageRequests.remove(id);
 		} else if (unfavorMessageRequests.find(id) != unfavorMessageRequests.end()) {
@@ -724,37 +690,36 @@ void Twitter::requestFinished(int id, bool error) {
 			unfavorMessageRequests.remove(id);
 		} else if (destroyMessageRequests.find(id) != destroyMessageRequests.end()) {
 			qDebug() << ("Request finished: " + destroyMessageRequests[id]);
-			buffer.close();
 			emit messageDestroyed(buffer.data());
 			destroyMessageRequests.remove(id);
 		} else if (destroyDirectMessageRequests.find(id) != destroyDirectMessageRequests.end()) {
 			qDebug() << ("Request finished: " + destroyDirectMessageRequests[id]);
-			buffer.close();
 			emit directMessageDestroyed(buffer.data());
 			destroyDirectMessageRequests.remove(id);
 		} else if (receiveSearchMessagesRequests.find(id) != receiveSearchMessagesRequests.end()) {
 			qDebug() << ("Request finished: " + receiveSearchMessagesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit searchMessagesReceived(buffer.data());
 			receiveSearchMessagesRequests.remove(id);
 		} else if (receivePreviousSearchMessagesRequests.find(id) != receivePreviousSearchMessagesRequests.end()) {
 			qDebug() << ("Request finished: " + receivePreviousSearchMessagesRequests[id]);
-			buffer.close();
-			QHttpResponseHeader response = http->lastResponse();
-			QString remainingRequests = response.value("X-RateLimit-Remaining");
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
 			emit previousSearchMessagesReceived(buffer.data());
 			receivePreviousSearchMessagesRequests.remove(id);
 		}
-	} else if (error) {
-		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->error()) + " " + http->errorString());
-	} else if (http->lastResponse().isValid()) {
-		qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->lastResponse().statusCode()) + " " + http->lastResponse().reasonPhrase());
 	} else {
-		qDebug() << ("Twitter::requestFinished() " + QString::number(id));
+		if (sendMessageRequests.find(id) != sendMessageRequests.end()) {
+			qDebug() << ("Request failed (message not sent): " + sendMessageRequests[id]);
+			emit messageNotSent();
+			sendMessageRequests.remove(id);
+		}
+		if (http->lastResponse().isValid()) {
+			qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->lastResponse().statusCode()) + " " + http->lastResponse().reasonPhrase());
+		} else if (error) {
+			qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->error()) + " " + http->errorString());
+		} else {
+			qDebug() << ("Twitter::requestFinished() " + QString::number(id));
+		}
 	}
 }
 

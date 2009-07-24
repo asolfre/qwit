@@ -96,6 +96,7 @@ public slots:
 	void updateLastMessage();
 	void sendMessage(const QString &message, quint64 inReplyToMessageId);
 	void messageSent(const QByteArray &data);
+	void messageNotSent();
 //	void directMessageSent(const QByteArray &data);
 	void messageFavored(const QByteArray &data);
 	void messageUnfavored(const QByteArray &data);
@@ -135,6 +136,7 @@ signals:
 	void searchMessagesUpdated(const QVector<Message> &, Account *);
 	void lastMessageReceived(const QString &, Account *);
 	void messageSent(const QString &, Account *);
+	void messageNotSent(Account *);
 	void newMessagesReceived(const QVector<Message> &, Account *);
 	void inboxMessagesUpdated(const QVector<Message> &, Account *);
 	void outboxMessagesUpdated(const QVector<Message> &, Account *);

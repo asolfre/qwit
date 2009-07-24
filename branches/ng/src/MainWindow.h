@@ -111,6 +111,7 @@ public slots:
 	void reloadUserpics();
 	void updateLastMessage(const QString &message, Account *account);
 	void messageSent(const QString &message, Account *account);
+	void messageNotSent(Account *account);
 	void showNewMessages(const QVector<Message> &messages, Account *account);
 	void redrawPages();
 	void updateAccount(Account *account);

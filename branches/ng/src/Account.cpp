@@ -51,6 +51,7 @@ Account::Account() {
 	connect(twitter, SIGNAL(outboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(searchMessagesReceived(const QByteArray&)), this, SLOT(addSearchMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(messageSent(const QByteArray&)), this, SLOT(messageSent(const QByteArray&)));
+	connect(twitter, SIGNAL(messageNotSent()), this, SLOT(messageNotSent()));
 //	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavored(const QByteArray&)));
 	connect(twitter, SIGNAL(messageUnfavored(const QByteArray&)), this, SLOT(messageUnfavored(const QByteArray&)));
@@ -90,6 +91,7 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(outboxMessagesReceived(const QByteArray&)), this, SLOT(addOutboxMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(searchMessagesReceived(const QByteArray&)), this, SLOT(addSearchMessages(const QByteArray&)));
 	connect(twitter, SIGNAL(messageSent(const QByteArray&)), this, SLOT(messageSent(const QByteArray&)));
+	connect(twitter, SIGNAL(messageNotSent()), this, SLOT(messageNotSent()));
 //	connect(twitter, SIGNAL(directMessageSent(const QByteArray&)), this, SLOT(directMessageSent(const QByteArray&)));
 	connect(twitter, SIGNAL(messageFavored(const QByteArray&)), this, SLOT(messageFavored(const QByteArray&)));
 	connect(twitter, SIGNAL(messageUnfavored(const QByteArray&)), this, SLOT(messageUnfavored(const QByteArray&)));
@@ -215,6 +217,12 @@ void Account::messageSent(const QByteArray &data) {
 	lastMessage = QwitTools::parseMessage(data, this);
 	emit lastMessageReceived(lastMessage.text, this);
 	emit messageSent(lastMessage.text, this);
+}
+
+void Account::messageNotSent() {
+	qDebug() << ("Account::messageNotSent()");
+	sendingMessage = false;
+	emit messageNotSent(this);
 }
 
 void Account::receivePublicMessages(int count) {

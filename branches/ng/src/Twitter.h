@@ -94,7 +94,6 @@ public:
 
 signals:
 
-	void messageSent();
 	void friendsMessagesReceived(const QByteArray &);
 	void repliesReceived(const QByteArray &);
 	void publicMessagesReceived(const QByteArray &);
@@ -104,6 +103,7 @@ signals:
 	void outboxMessagesReceived(const QByteArray &);
 	void searchMessagesReceived(const QByteArray &);
 	void messageSent(const QByteArray &);
+	void messageNotSent();
 	void directMessageSent(const QByteArray &);
 	void messageFavored(const QByteArray &);
 	void messageUnfavored(const QByteArray &);
