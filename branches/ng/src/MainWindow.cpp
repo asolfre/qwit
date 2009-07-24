@@ -510,9 +510,11 @@ void MainWindow::updateCurrentAccount(int id) {
 	disconnect(messageTextEdit, SIGNAL(messageEntered(const QString &, quint64)), 0, 0);
 	connect(messageTextEdit, SIGNAL(messageEntered(const QString &, quint64)), config->currentAccount(), SLOT(sendMessage(const QString &, quint64)));
 	messageTextEdit->setEnabled(!config->currentAccount()->sendingMessage);
-	disconnect(0, 0, this, SLOT(messageSent(const QString &, Account *)));
+	for (int i = 0; i < config->accounts.size(); ++i) {
+		disconnect(config->accounts[i], 0, this, SLOT(messageSent(const QString &, Account *)));
+		disconnect(config->accounts[i], 0, this, SLOT(messageNotSent(Account *)));
+	}
 	connect(config->currentAccount(), SIGNAL(messageSent(const QString &, Account *)), this, SLOT(messageSent(const QString &, Account *)));
-	disconnect(0, 0, this, SLOT(messageNotSent(Account *)));
 	connect(config->currentAccount(), SIGNAL(messageNotSent(Account *)), this, SLOT(messageNotSent(Account *)));
 	updateLastMessage(config->currentAccount()->lastMessage.text, config->currentAccount());
 	updateRemainingRequests(config->currentAccount()->remainingRequests, config->currentAccount());
