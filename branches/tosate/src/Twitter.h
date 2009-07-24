@@ -31,6 +31,7 @@
 #define INPUT_DIRECT_XML_URL "/direct_messages.xml"
 #define OUTPUT_DIRECT_XML_URL "/direct_messages/sent.xml"
 #define SEARCH_ATOM_URL "/search.atom"
+#define FRIENDS_XML_URL "/statuses/friends.xml"
 //http://search.twitter.com/search.atom?q=twitter
 
 #define STATUS_UPDATE_URL "/statuses/update.xml"
@@ -47,13 +48,15 @@ class Twitter: public QObject {
 
 	QHttp statusHttp;
 	QHttp timelineHttp;
+        QHttp friendsHttp;
 	QBuffer buffer;
+        QBuffer buffer2;
 	QString proxyAddress;
 	int proxyPort;
 	QString proxyUsername;
 	QString proxyPassword;
 	int currentType;
-	QString urls[7];
+        QString urls[8];
 	QString serviceBaseURL;
 	QString serviceAPIURL;
 
@@ -66,6 +69,9 @@ public:
 	void update(QString username, QString password, uint lastStatusId, int type, int count);
 	void setUrl(int index, const QString &url);
 	void abort();
+
+        void getFriends(QString username, QString password, int type);
+
 	QString getServiceBaseURL();
 	QString getServiceAPIURL();
 	void setServiceBaseURL(const QString &url);
@@ -76,12 +82,14 @@ public slots:
 	void statusHttpDone(bool error);
 	void timelineHttpDone(bool error);
 	void httpsError(const QList<QSslError> & errors);
+        void friendsHttpDone(bool error);
 
 signals:
 
 	void updated(const QByteArray &, int);
 	void statusUpdated();
 	void stateChanged(const QString &);
+        void friendsUpdated(const QByteArray &, int);
 };
 
 #endif

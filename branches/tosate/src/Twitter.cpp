@@ -38,11 +38,14 @@ Twitter::Twitter() {
 	urls[4] = INPUT_DIRECT_XML_URL;
 	urls[5] = OUTPUT_DIRECT_XML_URL;
 	urls[6] = SEARCH_ATOM_URL;
+        urls[7] = FRIENDS_XML_URL;
 	proxyAddress = "";
 	connect(&statusHttp, SIGNAL(done(bool)), this, SLOT(statusHttpDone(bool)));
 	connect(&timelineHttp, SIGNAL(done(bool)), this, SLOT(timelineHttpDone(bool)));
 	connect(&timelineHttp, SIGNAL(sslErrors(const QList<QSslError>&)), this, SLOT(httpsError(const QList<QSslError> &)));
 	connect(&statusHttp, SIGNAL(sslErrors(const QList<QSslError>&)), this, SLOT(httpsError(const QList<QSslError> &)));
+
+        connect(&friendsHttp, SIGNAL(done(bool)), this, SLOT(friendsHttpDone(bool)));
 }
 
 void Twitter::setServiceBaseURL(const QString &url) {
@@ -184,6 +187,20 @@ void Twitter::timelineHttpDone(bool error) {
 	emit updated(buffer.data(), currentType);
 }
 
+void Twitter::friendsHttpDone(bool error)
+{
+    if(error)
+    {
+        cerr << friendsHttp.errorString().toStdString() << endl;
+        // FIXME emit statusInformation
+        return;
+    }
+    buffer2.close();
+    friendsHttp.close();
+
+    emit friendsUpdated(buffer2.data(), 7);
+}
+
 void Twitter::httpsError(const QList<QSslError> & errors) {
     /*
      * maybe here should be implemtend some error handling
@@ -197,11 +214,69 @@ void Twitter::httpsError(const QList<QSslError> & errors) {
 void Twitter::abort() {
 	timelineHttp.abort();
 	statusHttp.abort();
+	friendsHttp.abort();
 }
 
 void Twitter::setUrl(int index, const QString &url) {
 	urls[index] = url;
 	emit stateChanged(url);
+}
+
+void Twitter::getFriends(QString username, QString password, int type)
+{
+    if(urls[type] == "")
+    {
+        cerr << "No url defined" << endl;
+        return;
+    }
+
+    if(friendsHttp.state() != QHttp::Unconnected)
+    {
+        friendsHttp.abort();
+    }
+
+    currentType = type;
+    QUrl url;
+    if(type == 7)
+    {
+        url=(serviceAPIURL + urls[type]);
+    }
+    else
+    {
+        cerr << "Unexpected url type: " << type << " received!" << endl;
+        return;
+    }
+
+    if(proxyAddress != "")
+    {
+        friendsHttp.setProxy(proxyAddress, proxyPort, proxyUsername, proxyPassword);
+    }
+    else
+    {
+        friendsHttp.setProxy(QNetworkProxy(QNetworkProxy::NoProxy));
+    }
+    /* FIXME
+     * https (ssl) mode is not working if setProxy is called with ("",0)
+     *  } else {
+     *    friendsHttp.setProxy("", 0);
+     *  }
+     */
+
+    if(url.toString().indexOf("https") == 0)
+    {
+        friendsHttp.setHost(url.host(), QHttp::ConnectionModeHttps, 443);
+    }
+    else
+    {
+        friendsHttp.setHost(url.host(), url.port(80));
+    }
+
+    friendsHttp.setUser(username, password);
+
+    buffer2.open(QIODevice::WriteOnly);
+
+    friendsHttp.get(urls[type], &buffer2);
+    // emit stateChanged
 }
 
 #endif
