@@ -28,7 +28,7 @@ class FriendsMgmtWidgetItem
 private:
     // object that displays all the information about a friend
     QWidget *parent;
-    QTextBrowser *friendInfo;
+    QTextBrowser *status;
     QLabel *icon;
     QLabel *sign;
     QLabel *ctrl;
@@ -37,9 +37,11 @@ private:
     int height;
     QColor color;
     QString username;
+    bool following;
+    uint replyStatusId;
 
 public:
-    FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName);
+    FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName, bool following);
     ~FriendsMgmtWidgetItem();
     void loadIcon();
 //    void setTopPosition(int top);
@@ -47,7 +49,7 @@ public:
     void setHeight(int height);
     int getHeight();
     QColor getColor();
-    QTextBrowser* getFriendInfo();
+    QTextBrowser* getStatus();
 //    void setIcon(QLabel *icon);
 //    void setSignText(QString text);
 //    QLabel* getSign();

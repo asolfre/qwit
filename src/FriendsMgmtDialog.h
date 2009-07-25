@@ -42,15 +42,15 @@ private:
 public:
 
         FriendsMgmtDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader);
-        void addTestUser(QString name);
 
 public slots:
 
         void closeFriendsManagement();
         void unfollow(const QString &url);
         void block(const QString &url);
-        void friendsUpdated(const QByteArray &buffer, int type);
+	void friendsUpdated(const QByteArray &buffer);
         void saveState();
+	void tabChanged(int index);
 
 protected:
 

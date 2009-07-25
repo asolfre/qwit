@@ -38,7 +38,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         // set up friends management tab
         QScrollArea *scrollArea = new QScrollArea(friendsTab);
 
-        FriendsMgmtWidget *friendsMgmtWidget = new FriendsMgmtWidget(scrollArea);
+	FriendsMgmtWidget *friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL());
         friendsMgmtWidget->setObjectName(QString::fromUtf8("friendsMgmtWidget"));
         friendsMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 
@@ -59,7 +59,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 
         scrollArea = new QScrollArea(followersTab);
 
-        friendsMgmtWidget = new FriendsMgmtWidget(scrollArea);
+	friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL());
         friendsMgmtWidget->setObjectName(QString::fromUtf8("followersMgmtWidget"));
         friendsMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 
@@ -77,7 +77,8 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 
         connect(closePushButton, SIGNAL(pressed()), this, SLOT(closeFriendsManagement()));
 
-        connect(twitter, SIGNAL(friendsUpdated(const QByteArray&, int)), this, SLOT(friendsUpdated(const QByteArray&, int)));
+	connect(twitter, SIGNAL(friendsUpdated(const QByteArray&)), this, SLOT(friendsUpdated(const QByteArray&)));
+	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 }
 
 
@@ -87,11 +88,6 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 void FriendsMgmtDialog::closeFriendsManagement()
 {
 	hide();
-}
-
-void FriendsMgmtDialog::addTestUser(QString name)
-{
-    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(name, "", "test");
 }
 
 void FriendsMgmtDialog::resizeEvent(QResizeEvent *event)
@@ -105,7 +101,9 @@ void FriendsMgmtDialog::resizeEvent(QResizeEvent *event)
 void FriendsMgmtDialog::showEvent(QShowEvent *event)
 {
     MainWindow *mainWindow = MainWindow::getInstance();
-    twitter->getFriends(mainWindow->username, mainWindow->password, 7);
+    // update the displayed tab
+    twitter->getFriends(mainWindow->username, mainWindow->password, tabWidget->currentIndex());
+
     event->accept();
 }
 
@@ -119,7 +117,7 @@ void FriendsMgmtDialog::block(const QString &url)
     cerr << url.toStdString() << endl;
 }
 
-void FriendsMgmtDialog::friendsUpdated(const QByteArray &buffer, int type)
+void FriendsMgmtDialog::friendsUpdated(const QByteArray &buffer)
 {
     QDomDocument document;
 
@@ -145,6 +143,7 @@ void FriendsMgmtDialog::friendsUpdated(const QByteArray &buffer, int type)
             bool following;
             QString statusText;
             QString image;
+	    uint replyStatusId = 0;
 
             while(!node2.isNull())
             {
@@ -198,7 +197,10 @@ void FriendsMgmtDialog::friendsUpdated(const QByteArray &buffer, int type)
                         }
 //                        else if(node3.toElement().tagName() == "source"){}
 //                        else if(node3.toElement().tagName() == "truncated"){}
-//                        else if(node3.toElement().tagName() == "in_reply_to_status_id"){}
+			else if(node3.toElement().tagName() == "in_reply_to_status_id")
+			{
+			    replyStatusId = node3.toElement().text().toUInt();
+			}
 //                        else if(node3.toElement().tagName() == "in_reply_to_user_id"){}
 //                        else if(node3.toElement().tagName() == "favorited"){}
 //                        else if(node3.toElement().tagName() == "in_reply_to_screen_name"){}
@@ -239,11 +241,11 @@ void FriendsMgmtDialog::friendsUpdated(const QByteArray &buffer, int type)
 
             if(following)
             {
-                friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, statusText);
+		friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
             }
             else
             {
-                friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, statusText);
+		friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
             }
             node = node.nextSibling();
         }
@@ -253,7 +255,23 @@ void FriendsMgmtDialog::friendsUpdated(const QByteArray &buffer, int type)
 
 void FriendsMgmtDialog::saveState()
 {
-    for(int i=0; i<MGMT_TABS; ++i)
+    for(int i=0; i<MGMT_TABS; i++)
+    {
         friendsMgmtTabs[i].getFriendsMgmtWidget()->resize(friendsMgmtTabs[i].getScrollArea()->width() - friendsMgmtTabs[i].getScrollArea()->verticalScrollBar()->width() -5, 500);
+    }
+}
+
+void FriendsMgmtDialog::tabChanged(int index)
+{
+    if(index < MGMT_TABS)
+    {
+	int height = friendsMgmtTabs[index].getScrollArea()->width() - friendsMgmtTabs[index].getScrollArea()->verticalScrollBar()->width() - 5;
+	if(friendsMgmtTabs[index].getFriendsMgmtWidget()->height() != height)
+	{
+	    friendsMgmtTabs[index].getFriendsMgmtWidget()->resize(height, 500);
+	}
+	MainWindow *mainWindow = MainWindow::getInstance();
+	twitter->getFriends(mainWindow->username, mainWindow->password, index);
+    }
 }
 #endif

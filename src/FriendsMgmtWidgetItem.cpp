@@ -23,18 +23,19 @@ const int MARGIN = 5;
 
 using namespace std;
 
-FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName)
+FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName, bool following)
 {
     this->parent = parent;
-    this->friendInfo = new QTextBrowser(parent);
+    this->status = new QTextBrowser(parent);
     this->username = username;
+    this->following = following;
     this->icon = new QLabel(parent);
 
     this->sign = new QLabel(parent);
     this->sign->setAlignment(Qt::AlignRight);
     this->sign->setOpenExternalLinks(true);
 
-    this->ctrl = new QLabel("<a href=\"unfollow://" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br><a href=\"block://" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>", parent);
+    this->ctrl = new QLabel(parent);
     this->ctrl->setAlignment(Qt::AlignRight);
     this->ctrl->setOpenExternalLinks(true);
 
@@ -46,7 +47,7 @@ FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, QString username, 
 
 FriendsMgmtWidgetItem::~FriendsMgmtWidgetItem()
 {
-    delete friendInfo;
+    delete status;
     delete icon;
     delete sign;
     delete ctrl;
@@ -67,9 +68,9 @@ QColor FriendsMgmtWidgetItem::getColor()
     return this->color;
 }
 
-QTextBrowser* FriendsMgmtWidgetItem::getFriendInfo()
+QTextBrowser* FriendsMgmtWidgetItem::getStatus()
 {
-    return this->friendInfo;
+    return this->status;
 }
 
 //void FriendsMgmtWidgetItem::setIcon(QLabel *icon)
@@ -79,7 +80,7 @@ QTextBrowser* FriendsMgmtWidgetItem::getFriendInfo()
 
 void FriendsMgmtWidgetItem::show()
 {
-    friendInfo->show();
+    status->show();
     icon->show();
     sign->show();
     ctrl->show();
@@ -134,27 +135,35 @@ int FriendsMgmtWidgetItem::update(int height, int itemCount)
     // potitioning of the icon
     icon->move(MARGIN, height + MARGIN);
     
-    // calculate the size of the friendInfo element
-    int friendInfoItemWidth = parent->width() - (ICON_SIZE + 5 * MARGIN);
-    QFontMetrics fontMetrics(friendInfo->font());
-    int friendInfoItemHeight = fontMetrics.boundingRect(0, 0, friendInfoItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, friendInfo->toPlainText()).height() + 5;
+    // calculate the size of the status element
+    int statusItemWidth = parent->width() - (ICON_SIZE + 5 * MARGIN);
+    QFontMetrics fontMetrics(status->font());
+    int statusItemHeight = fontMetrics.boundingRect(0, 0, statusItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, status->toPlainText()).height() + 5;
     
-    if(friendInfoItemHeight < ICON_SIZE)
-    friendInfoItemHeight = ICON_SIZE;
+    if(statusItemHeight < ICON_SIZE)
+    statusItemHeight = ICON_SIZE;
     
-    // positioning and scaling of the friendInfo element
-    friendInfo->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
-    friendInfo->resize(friendInfoItemWidth, friendInfoItemHeight);
+    // positioning and scaling of the status element
+    status->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
+    status->resize(statusItemWidth, statusItemHeight);
     
     QString tablew = "";
-    tablew.setNum(friendInfoItemWidth + 70);
+    tablew.setNum(statusItemWidth + 70);
     sign->setText("<table border=\"0\" width=\"" + tablew + "\" cellpadding=\"0\" cellspacing=\"0\">"
                       + "<tr valign=\"top\"><td width=\"50%\">"
                       + "<a href=\"twitter://user/" + username + "\" style=\"font-weight:bold;text-decoration:none;font-size:small\">" + username + "</a>"
                       + "</td></tr></table>");
     sign->resize(parent->width() + (7 * MARGIN), 16);
-    sign->move(MARGIN, height + friendInfoItemHeight + MARGIN);
+    sign->move(MARGIN, height + statusItemHeight + MARGIN);
 
+    if(following)
+    {
+ctrl->setText("<a href=\"unfollow://" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br><a href=\"block://" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
+    }
+    else
+    {
+ctrl->setText("");
+    }
     // positioning of the ctrl element
     ctrl->adjustSize();
     ctrl->move(parent->width() - ctrl->width() - MARGIN, height + MARGIN);
@@ -169,7 +178,7 @@ int FriendsMgmtWidgetItem::update(int height, int itemCount)
         this->setColor(QColor("white"));
     }
     
-    int itemHeight = friendInfoItemHeight + sign->height() + MARGIN;
+    int itemHeight = statusItemHeight + sign->height() + MARGIN;
     itemHeight = max(ICON_SIZE, sign->y() + sign->height()) + MARGIN - height;
     this->topPos = height;
     this->setHeight(itemHeight);

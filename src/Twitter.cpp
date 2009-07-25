@@ -39,6 +39,7 @@ Twitter::Twitter() {
 	urls[5] = OUTPUT_DIRECT_XML_URL;
 	urls[6] = SEARCH_ATOM_URL;
         urls[7] = FRIENDS_XML_URL;
+	urls[8] = FOLLOWERS_XML_URL;
 	proxyAddress = "";
 	connect(&statusHttp, SIGNAL(done(bool)), this, SLOT(statusHttpDone(bool)));
 	connect(&timelineHttp, SIGNAL(done(bool)), this, SLOT(timelineHttpDone(bool)));
@@ -196,9 +197,8 @@ void Twitter::friendsHttpDone(bool error)
         return;
     }
     buffer2.close();
-    friendsHttp.close();
 
-    emit friendsUpdated(buffer2.data(), 7);
+    emit friendsUpdated(buffer2.data());
 }
 
 void Twitter::httpsError(const QList<QSslError> & errors) {
@@ -224,6 +224,9 @@ void Twitter::setUrl(int index, const QString &url) {
 
 void Twitter::getFriends(QString username, QString password, int type)
 {
+    // infer url typ from the current tab widget index
+    type = type +  7;
+
     if(urls[type] == "")
     {
         cerr << "No url defined" << endl;
@@ -237,7 +240,7 @@ void Twitter::getFriends(QString username, QString password, int type)
 
     currentType = type;
     QUrl url;
-    if(type == 7)
+    if((type == 7) || (type == 8))
     {
         url=(serviceAPIURL + urls[type]);
     }

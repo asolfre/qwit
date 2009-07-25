@@ -34,11 +34,12 @@ private:
     QScrollArea *scrollArea;
     QVector<FriendsMgmtWidgetItem*> items;
     int currItemIndex;
+    QString serviceBaseUrl;
 
 public:
-    FriendsMgmtWidget(QScrollArea *scrollArea);
+    FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL);
     void clear();
-    void addItem(QString username, QString userpic, QString statusText);
+    void addItem(QString username, QString userpic, bool following, QString statusText, uint replyStatusId);
     void updateItems();
     const FriendsMgmtWidgetItem getItem(int index);
     int getItemsCount();
