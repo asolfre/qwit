@@ -32,6 +32,7 @@
 #define OUTPUT_DIRECT_XML_URL "/direct_messages/sent.xml"
 #define SEARCH_ATOM_URL "/search.atom"
 #define FRIENDS_XML_URL "/statuses/friends.xml"
+#define FOLLOWERS_XML_URL "/statuses/followers.xml"
 //http://search.twitter.com/search.atom?q=twitter
 
 #define STATUS_UPDATE_URL "/statuses/update.xml"
@@ -56,7 +57,7 @@ class Twitter: public QObject {
 	QString proxyUsername;
 	QString proxyPassword;
 	int currentType;
-        QString urls[8];
+	QString urls[9];
 	QString serviceBaseURL;
 	QString serviceAPIURL;
 
@@ -89,7 +90,7 @@ signals:
 	void updated(const QByteArray &, int);
 	void statusUpdated();
 	void stateChanged(const QString &);
-        void friendsUpdated(const QByteArray &, int);
+	void friendsUpdated(const QByteArray &);
 };
 
 #endif

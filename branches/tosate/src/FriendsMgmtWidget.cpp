@@ -17,40 +17,44 @@
 
 
 #include <QScrollBar>
+#include <iostream>
 
 #include "FriendsMgmtWidget.h"
+#include "TwitterWidgetItem.h"
 
-FriendsMgmtWidget::FriendsMgmtWidget(QScrollArea *scrollArea) : QWidget()
+using namespace std;
+
+FriendsMgmtWidget::FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL) : QWidget()
 {
+    this->serviceBaseUrl = serviceBaseURL;
     this->scrollArea = scrollArea;
     currItemIndex = 0;
 }
 
 
-void FriendsMgmtWidget::addItem(QString username, QString userpic, QString statusText)
+void FriendsMgmtWidget::addItem(QString username, QString userpic, bool following, QString statusText, uint replyStatusId)
 {
     // FIXME duplicates check?
-    FriendsMgmtWidgetItem *item = new FriendsMgmtWidgetItem(this, username, userpic);
-    QTextBrowser *friendInfo = item->getFriendInfo();
-    friendInfo->setHtml(username);
-    friendInfo->setReadOnly(true);
-    friendInfo->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    friendInfo->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    friendInfo->setFrameShape(QFrame::NoFrame);
-    friendInfo->setOpenExternalLinks(true);
+    FriendsMgmtWidgetItem *item = new FriendsMgmtWidgetItem(this, username, userpic, following);
+    QTextBrowser *status = item->getStatus();
+    status->setHtml(TwitterWidgetItem::prepare(statusText,replyStatusId, serviceBaseUrl));
+    status->setReadOnly(true);
+    status->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    status->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    status->setFrameShape(QFrame::NoFrame);
+    status->setOpenExternalLinks(true);
 
-    QFont font = friendInfo->document()->defaultFont();
+    QFont font = status->document()->defaultFont();
     font.setFamily("Verdana");
-    friendInfo->document()->setDefaultFont(font);
+    status->document()->setDefaultFont(font);
 
     item->loadIcon();
-
-    friendInfo->setText(statusText);
 
     if(currItemIndex > items.size())
     currItemIndex = items.size();
 
     items.insert(currItemIndex++, item);
+    cout << "added item" << endl;
 
     item->show();
 
@@ -94,7 +98,7 @@ void FriendsMgmtWidget::paintEvent(QPaintEvent *event)
          */
         p.setColor(QPalette::Active, QPalette::Base, item->getColor());
         p.setColor(QPalette::Inactive, QPalette::Base, item->getColor());
-        item->getFriendInfo()->setPalette(p);
+	item->getStatus()->setPalette(p);
     }
     event->accept();
 }
