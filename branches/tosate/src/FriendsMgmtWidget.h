@@ -40,6 +40,7 @@ public:
     FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL);
     void clear();
     void addItem(QString username, QString userpic, bool following, QString statusText, uint replyStatusId);
+    void removeItem(QString screenName);
     void updateItems();
     const FriendsMgmtWidgetItem getItem(int index);
     int getItemsCount();
@@ -62,7 +63,7 @@ public slots:
     void blockClicked(const QUrl &url);
 
 signals:
-    void unfollow(const QString &);
+    void unfollow(const QString);
     void block(const QString &);
 };
 

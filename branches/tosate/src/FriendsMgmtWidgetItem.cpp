@@ -158,7 +158,7 @@ int FriendsMgmtWidgetItem::update(int height, int itemCount)
 
     if(following)
     {
-ctrl->setText("<a href=\"unfollow://" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br><a href=\"block://" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
+ctrl->setText("<a href=\"unfollow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br><a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
     }
     else
     {

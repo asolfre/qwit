@@ -46,12 +46,12 @@ public:
         FriendsMgmtDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader);
 
 public slots:
-        void unfollow(const QString &url);
+	void unfollow(const QString screenName);
         void block(const QString &url);
 	void friendshipsUpdated(const QByteArray &friendshipsBuffer);
         void saveState();
 	void tabChanged(int index);
-	void friendsMgmtEvent(const QByteArray &friendsMgmtBuffer);
+	void friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, int type);
 
 protected:
 
@@ -59,7 +59,7 @@ protected:
         void showEvent(QShowEvent *event);
 
 private:
-	void processUserXmlStructure(QDomNode *currentNode);
+	void processUserXmlStructure(QDomNode *currentNode, bool remove);
 
 private slots:
     void on_newFriendLineEdit_textEdited(QString );
