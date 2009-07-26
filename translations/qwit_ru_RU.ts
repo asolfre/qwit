@@ -13,18 +13,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FriendsMgmtDialog.ui" line="38"/>
-        <source>add friend:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/FriendsMgmtDialog.ui" line="53"/>
+        <location filename="../src/FriendsMgmtDialog.ui" line="72"/>
         <source>Followers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FriendsMgmtDialog.ui" line="76"/>
+        <location filename="../src/FriendsMgmtDialog.ui" line="95"/>
         <source>Close Friends Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="44"/>
+        <source>new friend:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="57"/>
+        <source>add</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -345,37 +350,37 @@
 <context>
     <name>Twitter</name>
     <message>
-        <location filename="../src/Twitter.cpp" line="170"/>
+        <location filename="../src/Twitter.cpp" line="139"/>
         <source>Error sending status: %1</source>
         <translation>Ошибка при отправлении статуса: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="173"/>
+        <location filename="../src/Twitter.cpp" line="142"/>
         <source>Status sent: %1</source>
         <translation>Статус отправлен: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="179"/>
+        <location filename="../src/Twitter.cpp" line="148"/>
         <source>Error while updating timeline: %1</source>
         <translation>Ошибка обновления: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="183"/>
+        <location filename="../src/Twitter.cpp" line="152"/>
         <source>Timeline updated: %1</source>
         <translation>Сообщения обновлены: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="193"/>
+        <location filename="../src/Twitter.cpp" line="188"/>
         <source>SSL Error while updating/sending: %1</source>
         <translation>Ошибка SSL: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="164"/>
+        <location filename="../src/Twitter.cpp" line="133"/>
         <source>Updating timeline: %1</source>
         <translation>Обновление сообщения: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="113"/>
+        <location filename="../src/Twitter.cpp" line="101"/>
         <source>Sending status: %1</source>
         <translation>Отправка статуса: %1</translation>
     </message>

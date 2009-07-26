@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de_DE">
+<defaultcodec></defaultcodec>
 <context>
     <name>FriendsMgmtDialog</name>
     <message>
         <location filename="../src/FriendsMgmtDialog.ui" line="14"/>
         <source>Friends Management</source>
-        <translation type="unfinished"></translation>
+        <translation>Freunde verwalten</translation>
     </message>
     <message>
         <location filename="../src/FriendsMgmtDialog.ui" line="28"/>
         <source>Friends</source>
-        <translation type="unfinished"></translation>
+        <translation>Freunde</translation>
     </message>
     <message>
-        <location filename="../src/FriendsMgmtDialog.ui" line="38"/>
-        <source>add friend:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/FriendsMgmtDialog.ui" line="53"/>
+        <location filename="../src/FriendsMgmtDialog.ui" line="72"/>
         <source>Followers</source>
-        <translation type="unfinished"></translation>
+        <translation>Anhänger</translation>
     </message>
     <message>
-        <location filename="../src/FriendsMgmtDialog.ui" line="76"/>
+        <location filename="../src/FriendsMgmtDialog.ui" line="95"/>
         <source>Close Friends Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Freundeverwaltung schließen</translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="44"/>
+        <source>new friend:</source>
+        <translation>neuer Freund:</translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="57"/>
+        <source>add</source>
+        <translation>hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -186,12 +192,12 @@
     <message>
         <location filename="../src/MainWindow.cpp" line="245"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.JPG *.JPEG *.PNG *.GIF *.BMP)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilddateien (*.png *.jpg *.jpeg *.bmp *.JPG *.PNG *.GIF *.BMP)</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.ui" line="396"/>
         <source>Friends Management</source>
-        <translation type="unfinished"></translation>
+        <translation>Freunde verwalten</translation>
     </message>
 </context>
 <context>
@@ -334,48 +340,48 @@
     <message>
         <location filename="../src/OptionsDialog.ui" line="176"/>
         <source>Open user profile in browser on username click</source>
-        <translation type="unfinished"></translation>
+        <translation>Klick auf Benutzername öffnet Profil im Browser</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="186"/>
         <source>Keep focus on the text field after status update</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach Status-Aktualisierung bleibt der Fokus im Textfeld</translation>
     </message>
 </context>
 <context>
     <name>Twitter</name>
     <message>
-        <location filename="../src/Twitter.cpp" line="113"/>
+        <location filename="../src/Twitter.cpp" line="101"/>
         <source>Sending status: %1</source>
         <translation>Sende Status: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="164"/>
+        <location filename="../src/Twitter.cpp" line="133"/>
         <source>Updating timeline: %1</source>
         <translation>Aktualisiere Zeitleiste: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="170"/>
+        <location filename="../src/Twitter.cpp" line="139"/>
         <source>Error sending status: %1</source>
         <translation>Fehler beim senden des Status: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="173"/>
+        <location filename="../src/Twitter.cpp" line="142"/>
         <source>Status sent: %1</source>
         <translation>Status gesendet: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="179"/>
+        <location filename="../src/Twitter.cpp" line="148"/>
         <source>Error while updating timeline: %1</source>
         <translation>Fehler beim Aktualisieren der Zeitleiste: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="183"/>
+        <location filename="../src/Twitter.cpp" line="152"/>
         <source>Timeline updated: %1</source>
         <translation>Zeitleiste aktualisiert: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="193"/>
+        <location filename="../src/Twitter.cpp" line="188"/>
         <source>SSL Error while updating/sending: %1</source>
         <translation>SSL Fehler beim Aktualisieren/Senden: %1</translation>
     </message>
