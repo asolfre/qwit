@@ -33,14 +33,33 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_2">
                <item>
-                <widget class="QLabel" name="addFriendLabel">
+                <widget class="QLabel" name="newFriendLabel">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
-                  <string>add friend:</string>
+                  <string>new friend:</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="addFriendLineEdit"/>
+                <widget class="QLineEdit" name="newFriendLineEdit"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="addFriendPushButton">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>add</string>
+                 </property>
+                 <property name="autoDefault">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -74,6 +93,9 @@
           <widget class="QPushButton" name="closePushButton">
            <property name="text">
             <string>Close Friends Manager</string>
+           </property>
+           <property name="default">
+            <bool>false</bool>
            </property>
           </widget>
          </item>

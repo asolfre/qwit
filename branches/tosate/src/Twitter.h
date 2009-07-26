@@ -33,6 +33,8 @@
 #define SEARCH_ATOM_URL "/search.atom"
 #define FRIENDS_XML_URL "/statuses/friends.xml"
 #define FOLLOWERS_XML_URL "/statuses/followers.xml"
+#define FOLLOW_USER_XML_URL "/friendships/create.xml"
+#define UNFOLLOW_USER_XML_URL "/friendships/destroy.xml"
 //http://search.twitter.com/search.atom?q=twitter
 
 #define STATUS_UPDATE_URL "/statuses/update.xml"
@@ -49,15 +51,17 @@ class Twitter: public QObject {
 
 	QHttp statusHttp;
 	QHttp timelineHttp;
-        QHttp friendsHttp;
+	QHttp friendshipsHttp;
+	QHttp friendsMgmtHttp;
 	QBuffer buffer;
-        QBuffer buffer2;
+	QBuffer friendshipsBuffer;
+	QBuffer friendsMgmtBuffer;
 	QString proxyAddress;
 	int proxyPort;
 	QString proxyUsername;
 	QString proxyPassword;
 	int currentType;
-	QString urls[9];
+	QString urls[11];
 	QString serviceBaseURL;
 	QString serviceAPIURL;
 
@@ -71,7 +75,8 @@ public:
 	void setUrl(int index, const QString &url);
 	void abort();
 
-        void getFriends(QString username, QString password, int type);
+	void getFriendships(QString username, QString password, int type);
+	void createFriendship(QString screenName, QString username, QString password);
 
 	QString getServiceBaseURL();
 	QString getServiceAPIURL();
@@ -83,14 +88,19 @@ public slots:
 	void statusHttpDone(bool error);
 	void timelineHttpDone(bool error);
 	void httpsError(const QList<QSslError> & errors);
-        void friendsHttpDone(bool error);
+	void friendshipsHttpDone(bool error);
+	void friendsMgmtHttpDone(bool error);
 
 signals:
 
 	void updated(const QByteArray &, int);
 	void statusUpdated();
 	void stateChanged(const QString &);
-	void friendsUpdated(const QByteArray &);
+	void friendshipsUpdated(const QByteArray &);
+	void friendsMgmtEvent(const QByteArray &);
+
+private:
+	void setupConnection(QHttp *qHttp, QUrl *url, QString username, QString password);
 };
 
 #endif
