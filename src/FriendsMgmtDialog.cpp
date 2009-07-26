@@ -20,9 +20,9 @@
 
 #include <QScrollArea>
 #include <QScrollBar>
-#include <QtXml/QDomDocument>
 #include <iostream>
 #include <QDir>
+#include <iostream>
 
 #include "FriendsMgmtDialog.h"
 #include "MainWindow.h"
@@ -75,20 +75,11 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         // bring friends tab to the front
         tabWidget->setCurrentIndex(0);
 
-        connect(closePushButton, SIGNAL(pressed()), this, SLOT(closeFriendsManagement()));
-
-	connect(twitter, SIGNAL(friendsUpdated(const QByteArray&)), this, SLOT(friendsUpdated(const QByteArray&)));
+	connect(twitter, SIGNAL(friendshipsUpdated(const QByteArray&)), this, SLOT(friendshipsUpdated(const QByteArray&)));
+	connect(twitter, SIGNAL(friendsMgmtEvent(QByteArray)), this, SLOT(friendsMgmtEvent(QByteArray)));
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 }
 
-
-/*!
-    \fn FriendsMgmtDialog::closeFriendsManagement()
- */
-void FriendsMgmtDialog::closeFriendsManagement()
-{
-	hide();
-}
 
 void FriendsMgmtDialog::resizeEvent(QResizeEvent *event)
 {
@@ -102,7 +93,7 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
 {
     MainWindow *mainWindow = MainWindow::getInstance();
     // update the displayed tab
-    twitter->getFriends(mainWindow->username, mainWindow->password, tabWidget->currentIndex());
+    twitter->getFriendships(mainWindow->username, mainWindow->password, tabWidget->currentIndex());
 
     event->accept();
 }
@@ -117,137 +108,28 @@ void FriendsMgmtDialog::block(const QString &url)
     cerr << url.toStdString() << endl;
 }
 
-void FriendsMgmtDialog::friendsUpdated(const QByteArray &buffer)
+void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer)
 {
-    QDomDocument document;
+    QDomDocument *document = new QDomDocument();
 
-    document.setContent(buffer);
+    document->setContent(friendshipsBuffer);
 
-    QDomElement root = document.documentElement();
+    QDomElement *root = new QDomElement(document->documentElement());
 
-    if(root.tagName() == "users")
+    if(root->tagName() == "users")
     {
-        QDomNode node = root.firstChild();
+	QDomNode *node = new QDomNode(root->firstChild());
 
         friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->clear();
         friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->clear();
 
-        while(!node.isNull())
+	while(!node->isNull())
         {
-            if(node.toElement().tagName() != "user")
-                return;
+	    if(node->toElement().tagName() != "user")
+		return;
 
-            QDomNode node2 = node.firstChild();
-
-            QString screenName;
-            bool following;
-            QString statusText;
-            QString image;
-	    uint replyStatusId = 0;
-
-            while(!node2.isNull())
-            {
-                if(node2.toElement().tagName() == "id"){}
-                else if(node2.toElement().tagName() == "name"){}
-                else if(node2.toElement().tagName() == "screen_name")
-                {
-                    screenName = node2.toElement().text();
-                }
-                else if(node2.toElement().tagName() == "location"){}
-//                else if(node2.toElement().tagName() == "description"){}
-                else if(node2.toElement().tagName() == "profile_image_url")
-                {
-                    image = node2.toElement().text();
-                }
-//                else if(node2.toElement().tagName() == "url"){}
-//                else if(node2.toElement().tagName() == "protected"){}
-//                else if(node2.toElement().tagName() == "followers_count"){}
-//                else if(node2.toElement().tagName() == "profile_background_color"){}
-//                else if(node2.toElement().tagName() == "profile_text_color"){}
-//                else if(node2.toElement().tagName() == "profile_link_color"){}
-//                else if(node2.toElement().tagName() == "profile_sidebar_fill_color"){}
-//                else if(node2.toElement().tagName() == "profile_sidebar_border_color"){}
-//                else if(node2.toElement().tagName() == "friends_count"){}
-//                else if(node2.toElement().tagName() == "created_at"){}
-//                else if(node2.toElement().tagName() == "favourites_count"){}
-//                else if(node2.toElement().tagName() == "utc_offset"){}
-//                else if(node2.toElement().tagName() == "time_zone"){}
-//                else if(node2.toElement().tagName() == "profile_background_image_url"){}
-//                else if(node2.toElement().tagName() == "profile_background_tile"){}
-//                else if(node2.toElement().tagName() == "statuses_count"){}
-//                else if(node2.toElement().tagName() == "notifications"){}
-//                else if(node2.toElement().tagName() == "verified"){}
-                else if(node2.toElement().tagName() == "following")
-                {
-                    if(node2.toElement().text() == "true")
-                        following = true;
-                    else
-                        following = false;
-                }
-                else if(node2.toElement().tagName() == "status")
-                {
-                    QDomNode node3 = node2.firstChild();
-                    while(!node3.isNull())
-                    {
-                        if(node3.toElement().tagName() == "created_at"){}
-//                        else if(node3.toElement().tagName() == "id"){}
-                        else if(node3.toElement().tagName() == "text")
-                        {
-                            statusText = node3.toElement().text();
-                        }
-//                        else if(node3.toElement().tagName() == "source"){}
-//                        else if(node3.toElement().tagName() == "truncated"){}
-			else if(node3.toElement().tagName() == "in_reply_to_status_id")
-			{
-			    replyStatusId = node3.toElement().text().toUInt();
-			}
-//                        else if(node3.toElement().tagName() == "in_reply_to_user_id"){}
-//                        else if(node3.toElement().tagName() == "favorited"){}
-//                        else if(node3.toElement().tagName() == "in_reply_to_screen_name"){}
-                        node3 = node3.nextSibling();
-                    }
-                }
-                node2 = node2.nextSibling();
-            }
-
-            // process user entry
-
-            // start with the image file
-            QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
-            QString imageFileName = "";
-            for (int i = 0; i < hash.size(); ++i){
-                unsigned char c = hash[i];
-                c >>= 4;
-                if (c < 10) {
-                    c += '0';
-                } else {
-                    c += 'A' - 10;
-                }
-                imageFileName += (char)c;
-                c = hash[i];
-                c &= 15;
-                if (c < 10) {
-                    c += '0';
-                } else {
-                    c += 'A' - 10;
-                }
-                imageFileName += (char)c;
-            }
-            //imageFileName += "." + QFileInfo(QUrl(image).path()).suffix();
-            QDir dir(QDir::homePath());
-            dir.mkdir(".qwit");
-            imageFileName = dir.absolutePath() + "/.qwit/" + imageFileName;
-            userpicsDownloader->download(image, imageFileName);
-
-            if(following)
-            {
-		friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
-            }
-            else
-            {
-		friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
-            }
-            node = node.nextSibling();
+	    processUserXmlStructure(new QDomNode(node->firstChild()));
+	    node = new QDomNode(node->nextSibling());
         }
         this->saveState();
     }
@@ -271,7 +153,196 @@ void FriendsMgmtDialog::tabChanged(int index)
 	    friendsMgmtTabs[index].getFriendsMgmtWidget()->resize(height, 500);
 	}
 	MainWindow *mainWindow = MainWindow::getInstance();
-	twitter->getFriends(mainWindow->username, mainWindow->password, index);
+	twitter->getFriendships(mainWindow->username, mainWindow->password, index);
     }
 }
 #endif
+
+
+void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer)
+{
+    QDomDocument *document = new QDomDocument();
+
+    document->setContent(friendsMgmtBuffer);
+
+    QDomElement *root = new QDomElement(document->documentElement());
+
+    if(root->tagName() == "user")
+    {
+	QDomNode *node = new QDomNode(root->firstChild());
+
+	while(!node->isNull())
+	{
+	    if(node->toElement().tagName() != "user")
+		return;
+
+	    processUserXmlStructure(new QDomNode(node->firstChild()));
+	    node = new QDomNode(node->nextSibling());
+	}
+	this->saveState();
+    }
+    else if(root->tagName() == "hash")
+    {
+	QDomNode *node = new QDomNode(root->firstChild());
+
+	while(!node->isNull())
+	{
+	    if(node->toElement().tagName() == "request"){}
+	    else if(node->toElement().tagName() == "error")
+	    {
+		cout << node->toElement().text().toStdString() << endl;
+	    }
+	    node = new QDomNode(node->nextSibling());
+	}
+    }
+}
+
+void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode)
+{
+    QString screenName;
+    bool following;
+    QString statusText;
+    QString image;
+    uint replyStatusId = 0;
+
+    QDomNode *node = currentNode;
+
+    while(!node->isNull())
+    {
+	if(node->toElement().tagName() == "id"){}
+	else if(node->toElement().tagName() == "name"){}
+	else if(node->toElement().tagName() == "screen_name")
+	{
+	    screenName = node->toElement().text();
+	}
+	else if(node->toElement().tagName() == "location"){}
+//      else if(node->toElement().tagName() == "description"){}
+	else if(node->toElement().tagName() == "profile_image_url")
+	{
+	    image = node->toElement().text();
+	}
+//	else if(node->toElement().tagName() == "url"){}
+//	else if(node->toElement().tagName() == "protected"){}
+//	else if(node->toElement().tagName() == "followers_count"){}
+//	else if(node->toElement().tagName() == "profile_background_color"){}
+//	else if(node->toElement().tagName() == "profile_text_color"){}
+//	else if(node->toElement().tagName() == "profile_link_color"){}
+//	else if(node->toElement().tagName() == "profile_sidebar_fill_color"){}
+//	else if(node->toElement().tagName() == "profile_sidebar_border_color"){}
+//	else if(node->toElement().tagName() == "friends_count"){}
+//	else if(node->toElement().tagName() == "created_at"){}
+//	else if(node->toElement().tagName() == "favourites_count"){}
+//	else if(node->toElement().tagName() == "utc_offset"){}
+//	else if(node->toElement().tagName() == "time_zone"){}
+//	else if(node->toElement().tagName() == "profile_background_image_url"){}
+//	else if(node->toElement().tagName() == "profile_background_tile"){}
+//	else if(node->toElement().tagName() == "statuses_count"){}
+//	else if(node->toElement().tagName() == "notifications"){}
+//	else if(node->toElement().tagName() == "verified"){}
+	else if(node->toElement().tagName() == "following")
+	{
+	    if(node->toElement().text() == "true")
+		following = true;
+	    else
+		following = false;
+	}
+	else if(node->toElement().tagName() == "status")
+	{
+	    QDomNode *node2 = new QDomNode(node->firstChild());
+	    while(!node2->isNull())
+	    {
+		if(node2->toElement().tagName() == "created_at"){}
+//              else if(node2->toElement().tagName() == "id"){}
+		else if(node2->toElement().tagName() == "text")
+		{
+		    statusText = node2->toElement().text();
+		}
+//              else if(node2->toElement().tagName() == "source"){}
+//              else if(node2->toElement().tagName() == "truncated"){}
+		else if(node2->toElement().tagName() == "in_reply_to_status_id")
+		{
+		    replyStatusId = node2->toElement().text().toUInt();
+		}
+//		else if(node2->toElement().tagName() == "in_reply_to_user_id"){}
+//		else if(node2->toElement().tagName() == "favorited"){}
+//		else if(node2->toElement().tagName() == "in_reply_to_screen_name"){}
+		node2 = new QDomNode(node2->nextSibling());
+	    }
+	}
+	node = new QDomNode(node->nextSibling());
+    }
+
+    // process user entry
+
+    // start with the image file
+    QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+    QString imageFileName = "";
+    for (int i = 0; i < hash.size(); ++i){
+	unsigned char c = hash[i];
+	c >>= 4;
+	if (c < 10) {
+	    c += '0';
+	} else {
+	    c += 'A' - 10;
+	}
+	imageFileName += (char)c;
+	c = hash[i];
+	c &= 15;
+	if (c < 10) {
+	    c += '0';
+	} else {
+	    c += 'A' - 10;
+	}
+	imageFileName += (char)c;
+    }
+    //imageFileName += "." + QFileInfo(QUrl(image).path()).suffix();
+    QDir dir(QDir::homePath());
+    dir.mkdir(".qwit");
+    imageFileName = dir.absolutePath() + "/.qwit/" + imageFileName;
+    userpicsDownloader->download(image, imageFileName);
+
+    if(following)
+    {
+	friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
+    }
+    else
+    {
+	friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
+    }
+    return;
+}
+
+void FriendsMgmtDialog::on_addFriendPushButton_pressed()
+{
+    QString screenName = newFriendLineEdit->text();
+
+    for(int i=0; i<screenName.length(); i++)
+    {
+	if(!TwitterWidgetItem::isUsernameChar(screenName[i]))
+	{
+	    cout << "Screenname contains illegal character: " << QString(screenName[i]).toStdString() << endl;
+	    return;
+	}
+    }
+
+    MainWindow *mainWindow = MainWindow::getInstance();
+
+    twitter->createFriendship(screenName, mainWindow->username, mainWindow->password);
+}
+
+void FriendsMgmtDialog::on_closePushButton_pressed()
+{
+    hide();
+}
+
+void FriendsMgmtDialog::on_newFriendLineEdit_textEdited(QString )
+{
+    if(newFriendLineEdit->text().length() > 0)
+    {
+    addFriendPushButton->setEnabled(true);
+    }
+    else
+    {
+    addFriendPushButton->setEnabled(false);
+    }
+}

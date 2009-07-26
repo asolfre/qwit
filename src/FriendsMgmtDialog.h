@@ -22,6 +22,8 @@ const int MGMT_TABS = 2;
 const int FRIENDS_MGMT_TAB = 0;
 const int FOLLOWERS_MGMT_TAB = 1;
 
+#include <QtXml/QDomDocument>
+
 #include "ui_FriendsMgmtDialog.h"
 #include "FriendsMgmtTab.h"
 #include "UserpicsDownloader.h"
@@ -44,18 +46,25 @@ public:
         FriendsMgmtDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader);
 
 public slots:
-
-        void closeFriendsManagement();
         void unfollow(const QString &url);
         void block(const QString &url);
-	void friendsUpdated(const QByteArray &buffer);
+	void friendshipsUpdated(const QByteArray &friendshipsBuffer);
         void saveState();
 	void tabChanged(int index);
+	void friendsMgmtEvent(const QByteArray &friendsMgmtBuffer);
 
 protected:
 
         void resizeEvent(QResizeEvent *event);
         void showEvent(QShowEvent *event);
+
+private:
+	void processUserXmlStructure(QDomNode *currentNode);
+
+private slots:
+    void on_newFriendLineEdit_textEdited(QString );
+    void on_closePushButton_pressed();
+    void on_addFriendPushButton_pressed();
 };
 
 #endif
