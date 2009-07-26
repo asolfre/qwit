@@ -116,10 +116,24 @@ void FriendsMgmtWidget::resizeEvent(QResizeEvent *event)
 
 void FriendsMgmtWidget::unfollowClicked(const QUrl &url)
 {
-    emit unfollow("Received: " + url.toString());
+    emit unfollow(url.path().remove(0, 1));
 }
 
 void FriendsMgmtWidget::blockClicked(const QUrl &url)
 {
     emit block("Received: " + url.toString());
+}
+
+void FriendsMgmtWidget::removeItem(QString screenName)
+{
+    for(int i=0; i<items.size(); i++)
+    {
+	if(items[i]->getUsername() == screenName)
+	{
+	    this->items.remove(i);
+	    currItemIndex--;
+	    updateItems();
+	    return;
+	}
+    }
 }

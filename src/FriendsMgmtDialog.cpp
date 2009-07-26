@@ -76,7 +76,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         tabWidget->setCurrentIndex(0);
 
 	connect(twitter, SIGNAL(friendshipsUpdated(const QByteArray&)), this, SLOT(friendshipsUpdated(const QByteArray&)));
-	connect(twitter, SIGNAL(friendsMgmtEvent(QByteArray)), this, SLOT(friendsMgmtEvent(QByteArray)));
+	connect(twitter, SIGNAL(friendsMgmtEvent(QByteArray, int)), this, SLOT(friendsMgmtEvent(QByteArray, int)));
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 }
 
@@ -98,9 +98,13 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
     event->accept();
 }
 
-void FriendsMgmtDialog::unfollow(const QString &url)
+void FriendsMgmtDialog::unfollow(QString screenName)
 {
-    cerr << url.toStdString() << endl;
+    MainWindow *mainWindow = MainWindow::getInstance();
+
+    twitter->destroyFriendship(screenName, mainWindow->username, mainWindow->password);
+
+    cout << "Unfollowing: " << screenName.toStdString() << endl;
 }
 
 void FriendsMgmtDialog::block(const QString &url)
@@ -128,7 +132,7 @@ void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer)
 	    if(node->toElement().tagName() != "user")
 		return;
 
-	    processUserXmlStructure(new QDomNode(node->firstChild()));
+	    processUserXmlStructure(new QDomNode(node->firstChild()), false);
 	    node = new QDomNode(node->nextSibling());
         }
         this->saveState();
@@ -159,7 +163,7 @@ void FriendsMgmtDialog::tabChanged(int index)
 #endif
 
 
-void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer)
+void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, int type)
 {
     QDomDocument *document = new QDomDocument();
 
@@ -176,7 +180,7 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer)
 	    if(node->toElement().tagName() != "user")
 		return;
 
-	    processUserXmlStructure(new QDomNode(node->firstChild()));
+	    processUserXmlStructure(new QDomNode(node->firstChild()), (type==10 ? true : false));
 	    node = new QDomNode(node->nextSibling());
 	}
 	this->saveState();
@@ -197,7 +201,7 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer)
     }
 }
 
-void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode)
+void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, bool remove)
 {
     QString screenName;
     bool following;
@@ -301,13 +305,20 @@ void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode)
     imageFileName = dir.absolutePath() + "/.qwit/" + imageFileName;
     userpicsDownloader->download(image, imageFileName);
 
-    if(following)
+    if(remove)
     {
-	friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
+    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->removeItem(screenName);
     }
     else
     {
-	friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
+	if(following)
+	{
+	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
+	}
+	else
+	{
+	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
+	}
     }
     return;
 }

@@ -77,6 +77,7 @@ public:
 
 	void getFriendships(QString username, QString password, int type);
 	void createFriendship(QString screenName, QString username, QString password);
+	void destroyFriendship(QString screenName, QString username, QString password);
 
 	QString getServiceBaseURL();
 	QString getServiceAPIURL();
@@ -97,7 +98,7 @@ signals:
 	void statusUpdated();
 	void stateChanged(const QString &);
 	void friendshipsUpdated(const QByteArray &);
-	void friendsMgmtEvent(const QByteArray &);
+	void friendsMgmtEvent(const QByteArray &, int);
 
 private:
 	void setupConnection(QHttp *qHttp, QUrl *url, QString username, QString password);

@@ -176,7 +176,7 @@ void Twitter::friendsMgmtHttpDone(bool error)
 
     friendsMgmtBuffer.close();
 
-    emit friendsMgmtEvent(friendsMgmtBuffer.data());
+    emit friendsMgmtEvent(friendsMgmtBuffer.data(), currentType);
 }
 
 void Twitter::httpsError(const QList<QSslError> & errors) {
@@ -249,7 +249,7 @@ void Twitter::createFriendship(QString screenName, QString username, QString pas
 
     QByteArray data = "screen_name=";
     data += screenName;
-    int id = friendsMgmtHttp.post(url.path(), data, &friendsMgmtBuffer);
+    friendsMgmtHttp.post(url.path(), data, &friendsMgmtBuffer);
 }
 
 void Twitter::setupConnection(QHttp *qHttp, QUrl *url, QString username, QString password)
@@ -274,5 +274,21 @@ void Twitter::setupConnection(QHttp *qHttp, QUrl *url, QString username, QString
     }
 
 	qHttp->setUser(username, password);
+}
+
+void Twitter::destroyFriendship(QString screenName, QString username, QString password)
+{
+    int type = 10;
+    currentType = type;
+
+    QUrl url(serviceBaseURL + urls[type]);
+
+    setupConnection(&friendsMgmtHttp, &url, username, password);
+
+    friendsMgmtBuffer.open(QIODevice::WriteOnly);
+
+    QByteArray data = "screen_name=";
+    data += screenName;
+    friendsMgmtHttp.post(url.path(), data, &friendsMgmtBuffer);
 }
 #endif
