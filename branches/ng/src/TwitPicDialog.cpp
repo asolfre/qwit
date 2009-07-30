@@ -163,7 +163,7 @@ void TwitPicDialog::requestFinished(int id, bool error) {
 		return;
 	}
 	buffer.close();
-	if (error) {
+	if (!error) {
 		qDebug() << "TwitPicDialog::requestFinished() " << QString::number(id);
 	} else {
 		qDebug() << "TwitPicDialog::requestFinished() " << QString::number(id) << " error";

@@ -573,7 +573,7 @@ void MainWindow::setupTrayIcon() {
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 	qDebug() << ("MainWindow::iconActivated()");
-
+	trayIcon->setIcon(QIcon(":/images/qwit.png"));
 	if (reason == QSystemTrayIcon::Trigger) {
 		showhide();
 	}
@@ -677,6 +677,7 @@ void MainWindow::showNewMessages(const QVector<Message> &messages, Account *acco
 		trayMessage += messages[i].username + ": " + messages[i].text + " /" + QwitTools::formatDateTime(messages[i].time.toLocalTime()) + "\n";
 	}
 	if ((trayMessage != "") && config->showMessagesInTray) {
+		trayIcon->setIcon(QIcon(":/images/qwitnewmessages.png"));
 		trayIcon->showMessage(tr("Qwit: new messages receieved for %1@%2").arg(account->username).arg(account->type), trayMessage);
 	}
 }
