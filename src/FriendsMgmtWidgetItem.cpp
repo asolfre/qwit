@@ -15,21 +15,24 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-const int ICON_SIZE = 48;
-const int MARGIN = 5;
-
 #include <QDesktopServices>
+#include <QScrollBar>
 #include "FriendsMgmtWidgetItem.h"
+#include "TwitterWidget.h"
+
+#include <iostream>
 
 using namespace std;
 
-FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName, bool following)
+FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName, bool following, uint messageId, const QDateTime &time)
 {
     this->parent = parent;
     this->status = new QTextBrowser(parent);
     this->username = username;
     this->following = following;
     this->icon = new QLabel(parent);
+    this->messageId = messageId;
+    this->time = time;
 
     this->sign = new QLabel(parent);
     this->sign->setAlignment(Qt::AlignRight);
@@ -51,6 +54,7 @@ FriendsMgmtWidgetItem::~FriendsMgmtWidgetItem()
     delete icon;
     delete sign;
     delete ctrl;
+    cout << "item completly destroyed" << endl;
 }
 
 int FriendsMgmtWidgetItem::getTopPosition()
@@ -84,6 +88,14 @@ void FriendsMgmtWidgetItem::show()
     icon->show();
     sign->show();
     ctrl->show();
+}
+
+void FriendsMgmtWidgetItem::hide()
+{
+    status->hide();
+    icon->hide();
+    sign->hide();
+    ctrl->hide();
 }
 
 QLabel* FriendsMgmtWidgetItem::getIcon()
@@ -130,10 +142,8 @@ void FriendsMgmtWidgetItem::loadIcon()
         icon->resize(ICON_SIZE, ICON_SIZE);
 }
 
-int FriendsMgmtWidgetItem::update(int height, int itemCount)
-{    
-    // potitioning of the icon
-    icon->move(MARGIN, height + MARGIN);
+int FriendsMgmtWidgetItem::update(int top, bool odd)
+{
     
     // calculate the size of the status element
     int statusItemWidth = parent->width() - (ICON_SIZE + 5 * MARGIN);
@@ -141,48 +151,78 @@ int FriendsMgmtWidgetItem::update(int height, int itemCount)
     int statusItemHeight = fontMetrics.boundingRect(0, 0, statusItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, status->toPlainText()).height() + 5;
     
     if(statusItemHeight < ICON_SIZE)
+    {
     statusItemHeight = ICON_SIZE;
+    }
     
     // positioning and scaling of the status element
-    status->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
+    this->topPos = top;
+    status->move(ICON_SIZE + 2 * MARGIN, top + MARGIN);
     status->resize(statusItemWidth, statusItemHeight);
+    statusItemHeight += status->verticalScrollBar()->maximum() - status->verticalScrollBar()->minimum();
+    status->resize(statusItemWidth, statusItemHeight);
+    // positioning of the icon
+    icon->move(MARGIN, top + MARGIN);
     
+    QString messageIdText(QString::number(this->messageId));
+
     QString tablew = "";
     tablew.setNum(statusItemWidth + 70);
     sign->setText("<table border=\"0\" width=\"" + tablew + "\" cellpadding=\"0\" cellspacing=\"0\">"
-                      + "<tr valign=\"top\"><td width=\"50%\">"
-                      + "<a href=\"twitter://user/" + username + "\" style=\"font-weight:bold;text-decoration:none;font-size:small\">" + username + "</a>"
-                      + "</td></tr></table>");
+			+ "<tr valign=\"top\"><td width=\"50%\">"
+			+ "<a href=\"twitter://user/" + this->username + "\" style=\"font-weight:bold;text-decoration:none;font-size:small\">" + this->username + "</a>"
+			+ "</td>"
+			+ "<td width=\"50%\">"
+			+ "<p align=\"right\" style=\"margin-right:20px\">"
+			+ "<a href=\"http://twitter.com/" + this->username + "/statuses/"+ messageIdText + "\" style=\"font-size:small;text-decoration:none\">"
+			+ TwitterWidget::formatDateTime(this->time) + " </a>"
+			+ "</p>"
+			+ "</td>"
+			+ "</tr></table>");
+
     sign->resize(parent->width() + (7 * MARGIN), 16);
-    sign->move(MARGIN, height + statusItemHeight + MARGIN);
+    sign->move(MARGIN, top + statusItemHeight + MARGIN);
 
     if(following)
     {
-ctrl->setText("<a href=\"unfollow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br><a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
+	ctrl->setText("<a href=\"unfollow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br>"
+	+ "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
     }
     else
     {
-ctrl->setText("");
+	ctrl->setText("<a href=\"follow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/follow.png\"/></a><br>"
+	+ "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
     }
     // positioning of the ctrl element
     ctrl->adjustSize();
-    ctrl->move(parent->width() - ctrl->width() - MARGIN, height + MARGIN);
+    ctrl->move(parent->width() - ctrl->width() - MARGIN, top + MARGIN);
     
     // set color of the FriendMgmtWidgetItem
-    if(itemCount & 1)
+    if(odd)
     {
-        this->setColor(QColor(230, 230, 230));
+	this->color.setRgb(230, 230, 230);
     }
     else
     {
-        this->setColor(QColor("white"));
+	this->color.setRgb(255, 255, 255);
     }
     
-    int itemHeight = statusItemHeight + sign->height() + MARGIN;
-    itemHeight = max(ICON_SIZE, sign->y() + sign->height()) + MARGIN - height;
-    this->topPos = height;
+    int itemHeight = sign->y() + sign->height();
+    if(ICON_SIZE > itemHeight)
+    {
+    itemHeight = ICON_SIZE;
+    }
+    itemHeight += MARGIN - top;
     this->setHeight(itemHeight);
-    height += itemHeight;
+    height = itemHeight;
 
-    return height;
+    return itemHeight;
+}
+
+void FriendsMgmtWidgetItem::paint(QPainter &painter, QPalette palette, int width)
+{
+    painter.fillRect(0, topPos, width, height, QBrush(color));
+    palette.setColor(QPalette::Active, QPalette::Base, color);
+    palette.setColor(QPalette::Inactive, QPalette::Base, color);
+    status->setPalette(palette);
 }

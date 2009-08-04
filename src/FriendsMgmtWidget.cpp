@@ -28,14 +28,15 @@ FriendsMgmtWidget::FriendsMgmtWidget(QScrollArea *scrollArea, const QString &ser
 {
     this->serviceBaseUrl = serviceBaseURL;
     this->scrollArea = scrollArea;
-    currItemIndex = 0;
+    nextItemIndex = 0;
 }
 
 
-void FriendsMgmtWidget::addItem(QString username, QString userpic, bool following, QString statusText, uint replyStatusId)
+void FriendsMgmtWidget::addItem(QString username, QString userpic, bool following, QString statusText, uint messageId, QDateTime time, uint replyStatusId)
 {
     // FIXME duplicates check?
-    FriendsMgmtWidgetItem *item = new FriendsMgmtWidgetItem(this, username, userpic, following);
+    // FIXME item creation (status)
+    FriendsMgmtWidgetItem *item = new FriendsMgmtWidgetItem(this, username, userpic, following, messageId, time);
     QTextBrowser *status = item->getStatus();
     status->setHtml(TwitterWidgetItem::prepare(statusText,replyStatusId, serviceBaseUrl));
     status->setReadOnly(true);
@@ -50,10 +51,10 @@ void FriendsMgmtWidget::addItem(QString username, QString userpic, bool followin
 
     item->loadIcon();
 
-    if(currItemIndex > items.size())
-    currItemIndex = items.size();
+    if(nextItemIndex > items.size())
+    nextItemIndex = items.size();
 
-    items.insert(currItemIndex++, item);
+    items.insert(nextItemIndex++, item);
     cout << "added item" << endl;
 
     item->show();
@@ -68,15 +69,22 @@ void FriendsMgmtWidget::updateItems()
 
     for (int i = 0; i < items.size(); ++i)
     {
-        height = items[i]->update(height, i);
+	height += items[i]->update(height, (i & 1));
     }
     resize(width(), height);
 }
 
 void FriendsMgmtWidget::clear()
 {
-    currItemIndex = 0;
-    this->items.clear();
+    if(nextItemIndex > 0)
+    {
+	for(int i=nextItemIndex-1; i>=0; i--)
+	{
+	    delete items[i];
+	}
+	nextItemIndex = 0;
+	this->items.clear();
+    }
 }
 
 void FriendsMgmtWidget::paintEvent(QPaintEvent *event)
@@ -86,19 +94,7 @@ void FriendsMgmtWidget::paintEvent(QPaintEvent *event)
 
     for(int i=0; i< items.size(); ++i)
     {
-        FriendsMgmtWidgetItem *item = items[i];
-
-        painter.fillRect(0, item->getTopPosition() ,width() ,item->getHeight(), QBrush(item->getColor()));
-        // get QPalette object from inherited palette() method
-        QPalette p = this->palette();
-        /*
-         * set the brush in the specified color group, used for the given
-         * color role to the specified color
-         * setColor(colorGroup, colorRole, color);
-         */
-        p.setColor(QPalette::Active, QPalette::Base, item->getColor());
-        p.setColor(QPalette::Inactive, QPalette::Base, item->getColor());
-	item->getStatus()->setPalette(p);
+	items[i]->paint(painter, palette(), width());
     }
     event->accept();
 }
@@ -130,8 +126,9 @@ void FriendsMgmtWidget::removeItem(QString screenName)
     {
 	if(items[i]->getUsername() == screenName)
 	{
+	    delete items[i];
 	    this->items.remove(i);
-	    currItemIndex--;
+	    nextItemIndex--;
 	    updateItems();
 	    return;
 	}

@@ -163,7 +163,7 @@ void Twitter::friendshipsHttpDone(bool error)
     }
     friendshipsBuffer.close();
 
-    emit friendshipsUpdated(friendshipsBuffer.data());
+    emit friendshipsUpdated(friendshipsBuffer.data(), currentType);
 }
 
 void Twitter::friendsMgmtHttpDone(bool error)

@@ -48,7 +48,7 @@ public:
 public slots:
 	void unfollow(const QString screenName);
         void block(const QString &url);
-	void friendshipsUpdated(const QByteArray &friendshipsBuffer);
+	void friendshipsUpdated(const QByteArray &friendshipsBuffer, int type);
         void saveState();
 	void tabChanged(int index);
 	void friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, int type);

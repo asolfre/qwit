@@ -22,6 +22,8 @@
 #include <QDateTime>
 #include <QTextBrowser>
 #include <QPushButton>
+#include <QPainter>
+#include <QDateTime>
 
 class FriendsMgmtWidgetItem
 {
@@ -38,10 +40,12 @@ private:
     QColor color;
     QString username;
     bool following;
+    uint messageId;
     uint replyStatusId;
+    QDateTime time;
 
 public:
-    FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName, bool following);
+    FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName, bool following, uint messageId, const QDateTime &time);
     ~FriendsMgmtWidgetItem();
     void loadIcon();
 //    void setTopPosition(int top);
@@ -57,7 +61,9 @@ public:
     QLabel* getIcon();
     QString getUsername();
     void setColor(QColor color);
-    int update(int height, int itemCount);
+    int update(int top, bool odd);
+    void paint(QPainter &painter, QPalette palette, int width);
+    void hide();
 
 };
 

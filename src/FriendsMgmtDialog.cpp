@@ -22,6 +22,7 @@
 #include <QScrollBar>
 #include <iostream>
 #include <QDir>
+#include <QDateTime>
 #include <iostream>
 
 #include "FriendsMgmtDialog.h"
@@ -75,7 +76,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         // bring friends tab to the front
         tabWidget->setCurrentIndex(0);
 
-	connect(twitter, SIGNAL(friendshipsUpdated(const QByteArray&)), this, SLOT(friendshipsUpdated(const QByteArray&)));
+	connect(twitter, SIGNAL(friendshipsUpdated(const QByteArray&, int)), this, SLOT(friendshipsUpdated(const QByteArray&, int)));
 	connect(twitter, SIGNAL(friendsMgmtEvent(QByteArray, int)), this, SLOT(friendsMgmtEvent(QByteArray, int)));
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 }
@@ -112,7 +113,7 @@ void FriendsMgmtDialog::block(const QString &url)
     cerr << url.toStdString() << endl;
 }
 
-void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer)
+void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer, int type)
 {
     QDomDocument *document = new QDomDocument();
 
@@ -124,8 +125,14 @@ void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer)
     {
 	QDomNode *node = new QDomNode(root->firstChild());
 
-        friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->clear();
-        friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->clear();
+	if(type == 7)
+	{
+	friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->clear();
+	}
+	else if(type == 8)
+	{
+	friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->clear();
+	}
 
 	while(!node->isNull())
         {
@@ -173,16 +180,16 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, in
 
     if(root->tagName() == "user")
     {
-	QDomNode *node = new QDomNode(root->firstChild());
+//	QDomNode *node = new QDomNode(root->firstChild());
+//
+//	while(!node->isNull())
+//	{
+//	    if(node->toElement().tagName() != "user")
+//		return;
 
-	while(!node->isNull())
-	{
-	    if(node->toElement().tagName() != "user")
-		return;
-
-	    processUserXmlStructure(new QDomNode(node->firstChild()), (type==10 ? true : false));
-	    node = new QDomNode(node->nextSibling());
-	}
+	    processUserXmlStructure(new QDomNode(root->firstChild()), (type==10 ? true : false));
+//	    node = new QDomNode(node->nextSibling());
+//	}
 	this->saveState();
     }
     else if(root->tagName() == "hash")
@@ -206,6 +213,8 @@ void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, bool remo
     QString screenName;
     bool following;
     QString statusText;
+    uint statusId;
+    QString timeStr;
     QString image;
     uint replyStatusId = 0;
 
@@ -255,8 +264,14 @@ void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, bool remo
 	    QDomNode *node2 = new QDomNode(node->firstChild());
 	    while(!node2->isNull())
 	    {
-		if(node2->toElement().tagName() == "created_at"){}
-//              else if(node2->toElement().tagName() == "id"){}
+		if(node2->toElement().tagName() == "created_at")
+		{
+		    timeStr = node2->toElement().text();
+		}
+		else if(node2->toElement().tagName() == "id")
+		{
+		    statusId = node2->toElement().text().toUInt();
+		}
 		else if(node2->toElement().tagName() == "text")
 		{
 		    statusText = node2->toElement().text();
@@ -307,17 +322,21 @@ void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, bool remo
 
     if(remove)
     {
-    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->removeItem(screenName);
+	friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->removeItem(screenName);
     }
     else
     {
+    MainWindow *mainWindow = MainWindow::getInstance();
+    QDateTime time = mainWindow->dateFromString(timeStr);
+    time = QDateTime(time.date(), time.time(), Qt::UTC);
+
 	if(following)
 	{
-	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
+	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
 	}
 	else
 	{
-	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText, replyStatusId);
+	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
 	}
     }
     return;
@@ -339,6 +358,10 @@ void FriendsMgmtDialog::on_addFriendPushButton_pressed()
     MainWindow *mainWindow = MainWindow::getInstance();
 
     twitter->createFriendship(screenName, mainWindow->username, mainWindow->password);
+
+    newFriendLineEdit->setText("");
+
+    cout << "Following: " << screenName.toStdString() << endl;
 }
 
 void FriendsMgmtDialog::on_closePushButton_pressed()

@@ -33,13 +33,13 @@ class FriendsMgmtWidget : public QWidget
 private:
     QScrollArea *scrollArea;
     QVector<FriendsMgmtWidgetItem*> items;
-    int currItemIndex;
+    int nextItemIndex;
     QString serviceBaseUrl;
 
 public:
     FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL);
     void clear();
-    void addItem(QString username, QString userpic, bool following, QString statusText, uint replyStatusId);
+    void addItem(QString username, QString userpic, bool following, QString statusText, uint messageId, QDateTime time, uint replyStatusId);
     void removeItem(QString screenName);
     void updateItems();
     const FriendsMgmtWidgetItem getItem(int index);
