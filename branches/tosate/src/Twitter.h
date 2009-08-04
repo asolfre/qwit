@@ -97,7 +97,7 @@ signals:
 	void updated(const QByteArray &, int);
 	void statusUpdated();
 	void stateChanged(const QString &);
-	void friendshipsUpdated(const QByteArray &);
+	void friendshipsUpdated(const QByteArray &, int);
 	void friendsMgmtEvent(const QByteArray &, int);
 
 private:
