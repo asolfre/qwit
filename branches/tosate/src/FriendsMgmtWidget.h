@@ -60,10 +60,12 @@ protected:
 
 public slots:
     void unfollowClicked(const QUrl &url);
+    void followClicked(const QUrl &url);
     void blockClicked(const QUrl &url);
 
 signals:
     void unfollow(const QString);
+    void follow(const QString);
     void block(const QString &);
 };
 

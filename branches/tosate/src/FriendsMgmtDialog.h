@@ -41,12 +41,15 @@ private:
     UserpicsDownloader *userpicsDownloader;
     Twitter *twitter;
 
+    void followImpl(QString screenName);
+
 public:
 
         FriendsMgmtDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader);
 
 public slots:
 	void unfollow(const QString screenName);
+	void follow(const QString screenName);
         void block(const QString &url);
 	void friendshipsUpdated(const QByteArray &friendshipsBuffer, int type);
         void saveState();

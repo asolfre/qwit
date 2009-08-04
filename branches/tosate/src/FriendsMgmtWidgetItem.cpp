@@ -45,6 +45,7 @@ FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, QString username, 
     this->iconFileName = iconFileName;
 
     QDesktopServices::setUrlHandler("unfollow", parent, "unfollowClicked");
+    QDesktopServices::setUrlHandler("follow", parent, "followClicked");
     QDesktopServices::setUrlHandler("block", parent, "blockClicked");
 }
 
@@ -54,7 +55,7 @@ FriendsMgmtWidgetItem::~FriendsMgmtWidgetItem()
     delete icon;
     delete sign;
     delete ctrl;
-    cout << "item completly destroyed" << endl;
+    cout << "item destroyed" << endl;
 }
 
 int FriendsMgmtWidgetItem::getTopPosition()

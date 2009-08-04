@@ -71,6 +71,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 
         gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
 
+	connect(friendsMgmtWidget, SIGNAL(follow(QString)), this, SLOT(follow(QString)));
         friendsMgmtTabs[FOLLOWERS_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
 
         // bring friends tab to the front
@@ -106,6 +107,11 @@ void FriendsMgmtDialog::unfollow(QString screenName)
     twitter->destroyFriendship(screenName, mainWindow->username, mainWindow->password);
 
     cout << "Unfollowing: " << screenName.toStdString() << endl;
+}
+
+void FriendsMgmtDialog::follow(QString screenName)
+{
+    followImpl(screenName);
 }
 
 void FriendsMgmtDialog::block(const QString &url)
@@ -346,22 +352,7 @@ void FriendsMgmtDialog::on_addFriendPushButton_pressed()
 {
     QString screenName = newFriendLineEdit->text();
 
-    for(int i=0; i<screenName.length(); i++)
-    {
-	if(!TwitterWidgetItem::isUsernameChar(screenName[i]))
-	{
-	    cout << "Screenname contains illegal character: " << QString(screenName[i]).toStdString() << endl;
-	    return;
-	}
-    }
-
-    MainWindow *mainWindow = MainWindow::getInstance();
-
-    twitter->createFriendship(screenName, mainWindow->username, mainWindow->password);
-
-    newFriendLineEdit->setText("");
-
-    cout << "Following: " << screenName.toStdString() << endl;
+    followImpl(screenName);
 }
 
 void FriendsMgmtDialog::on_closePushButton_pressed()
@@ -379,4 +370,26 @@ void FriendsMgmtDialog::on_newFriendLineEdit_textEdited(QString )
     {
     addFriendPushButton->setEnabled(false);
     }
+}
+
+void FriendsMgmtDialog::followImpl(QString screenName)
+{
+    for(int i=0; i<screenName.length(); i++)
+    {
+	if(!TwitterWidgetItem::isUsernameChar(screenName[i]))
+	{
+	    cout << "Screenname contains illegal character: " << QString(screenName[i]).toStdString() << endl;
+	    return;
+	}
+    }
+
+    MainWindow *mainWindow = MainWindow::getInstance();
+
+    twitter->createFriendship(screenName, mainWindow->username, mainWindow->password);
+
+    newFriendLineEdit->setText("");
+
+    cout << "Following: " << screenName.toStdString() << endl;
+
+    this->tabWidget->setCurrentIndex(FRIENDS_MGMT_TAB);
 }

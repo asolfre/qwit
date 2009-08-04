@@ -115,6 +115,11 @@ void FriendsMgmtWidget::unfollowClicked(const QUrl &url)
     emit unfollow(url.path().remove(0, 1));
 }
 
+void FriendsMgmtWidget::followClicked(const QUrl &url)
+{
+    emit follow(url.path().remove(0, 1));
+}
+
 void FriendsMgmtWidget::blockClicked(const QUrl &url)
 {
     emit block("Received: " + url.toString());
