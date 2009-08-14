@@ -40,8 +40,10 @@ Twitter::Twitter() {
 	urls[6] = SEARCH_ATOM_URL;
         urls[7] = FRIENDS_XML_URL;
 	urls[8] = FOLLOWERS_XML_URL;
-	urls[9] = FOLLOW_USER_XML_URL;
-	urls[10] = UNFOLLOW_USER_XML_URL;
+	urls[9] = BLOCKED_XML_URL;
+	urls[10] = FOLLOW_USER_XML_URL;
+	urls[11] = UNFOLLOW_USER_XML_URL;
+	urls[12] = BLOCK_USER_XML;
 	proxyAddress = "";
 	connect(&statusHttp, SIGNAL(done(bool)), this, SLOT(statusHttpDone(bool)));
 	connect(&timelineHttp, SIGNAL(done(bool)), this, SLOT(timelineHttpDone(bool)));
@@ -219,7 +221,7 @@ void Twitter::getFriendships(QString username, QString password, int type)
 
     currentType = type;
     QUrl url;
-    if((type == 7) || (type == 8))
+    if((type == 7) || (type == 8) || (type == 9))
     {
         url=(serviceAPIURL + urls[type]);
     }
@@ -234,12 +236,11 @@ void Twitter::getFriendships(QString username, QString password, int type)
     friendshipsBuffer.open(QIODevice::WriteOnly);
 
     friendshipsHttp.get(urls[type], &friendshipsBuffer);
-    // emit stateChanged
 }
 
 void Twitter::createFriendship(QString screenName, QString username, QString password)
 {
-    int type = 9;
+    int type = 10;
     currentType = type;
     QUrl url(serviceBaseURL + urls[type]);
 
@@ -278,7 +279,7 @@ void Twitter::setupConnection(QHttp *qHttp, QUrl *url, QString username, QString
 
 void Twitter::destroyFriendship(QString screenName, QString username, QString password)
 {
-    int type = 10;
+    int type = 11;
     currentType = type;
 
     QUrl url(serviceBaseURL + urls[type]);
@@ -289,6 +290,20 @@ void Twitter::destroyFriendship(QString screenName, QString username, QString pa
 
     QByteArray data = "screen_name=";
     data += screenName;
+    friendsMgmtHttp.post(url.path(), data, &friendsMgmtBuffer);
+}
+
+void Twitter::blockUser(QString screenName, QString username, QString password)
+{
+    int type = 12;
+    currentType = type;
+
+    QUrl url(serviceBaseURL + urls[type] + screenName + ".xml");
+
+    setupConnection(&friendsMgmtHttp, &url, username, password);
+
+    friendsMgmtBuffer.open(QIODevice::WriteOnly);
+    QByteArray data = "";
     friendsMgmtHttp.post(url.path(), data, &friendsMgmtBuffer);
 }
 #endif

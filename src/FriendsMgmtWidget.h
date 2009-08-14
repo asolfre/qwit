@@ -25,6 +25,7 @@
 #include <QPaintEvent>
 
 #include "FriendsMgmtWidgetItem.h"
+#include "UserProcessingType.h"
 
 class FriendsMgmtWidget : public QWidget
 {
@@ -34,12 +35,13 @@ private:
     QScrollArea *scrollArea;
     QVector<FriendsMgmtWidgetItem*> items;
     int nextItemIndex;
+    int tabIndex;
     QString serviceBaseUrl;
 
 public:
-    FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL);
+    FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL, int tabIndex);
     void clear();
-    void addItem(QString username, QString userpic, bool following, QString statusText, uint messageId, QDateTime time, uint replyStatusId);
+    void addItem(QString username, QString userpic, UserProcessingType itemType, QString statusText, uint messageId, QDateTime time, uint replyStatusId);
     void removeItem(QString screenName);
     void updateItems();
     const FriendsMgmtWidgetItem getItem(int index);
@@ -66,7 +68,7 @@ public slots:
 signals:
     void unfollow(const QString);
     void follow(const QString);
-    void block(const QString &);
+    void block(const QString, int);
 };
 
 #endif // FRIENDSMGMTWIDGET_H

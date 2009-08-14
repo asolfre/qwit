@@ -18,9 +18,10 @@
 #ifndef FriendsMgmtDialog_H
 #define FriendsMgmtDialog_H
 
-const int MGMT_TABS = 2;
+const int MGMT_TABS = 3;
 const int FRIENDS_MGMT_TAB = 0;
 const int FOLLOWERS_MGMT_TAB = 1;
+const int BLOCKED_MGMT_TAB = 2;
 
 #include <QtXml/QDomDocument>
 
@@ -28,6 +29,7 @@ const int FOLLOWERS_MGMT_TAB = 1;
 #include "FriendsMgmtTab.h"
 #include "UserpicsDownloader.h"
 #include "Twitter.h"
+#include "UserProcessingType.h"
 
 /**
 	@author tosate <tosate@googlemail.com>
@@ -40,6 +42,9 @@ private:
     FriendsMgmtTab friendsMgmtTabs[MGMT_TABS];
     UserpicsDownloader *userpicsDownloader;
     Twitter *twitter;
+    uint friends_count;
+    uint followers_count;
+    uint blocked_count;
 
     void followImpl(QString screenName);
 
@@ -50,7 +55,7 @@ public:
 public slots:
 	void unfollow(const QString screenName);
 	void follow(const QString screenName);
-        void block(const QString &url);
+	void block(const QString screenName, int tabIndex);
 	void friendshipsUpdated(const QByteArray &friendshipsBuffer, int type);
         void saveState();
 	void tabChanged(int index);
@@ -62,7 +67,7 @@ protected:
         void showEvent(QShowEvent *event);
 
 private:
-	void processUserXmlStructure(QDomNode *currentNode, bool remove);
+	void processUserXmlStructure(QDomNode *currentNode, UserProcessingType behavior);
 
 private slots:
     void on_newFriendLineEdit_textEdited(QString );

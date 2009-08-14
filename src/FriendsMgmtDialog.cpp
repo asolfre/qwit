@@ -39,7 +39,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         // set up friends management tab
         QScrollArea *scrollArea = new QScrollArea(friendsTab);
 
-	FriendsMgmtWidget *friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL());
+	FriendsMgmtWidget *friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL(), FRIENDS_MGMT_TAB);
         friendsMgmtWidget->setObjectName(QString::fromUtf8("friendsMgmtWidget"));
         friendsMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 
@@ -51,7 +51,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         vBoxLayout2->addWidget(scrollArea);
 
         connect(friendsMgmtWidget, SIGNAL(unfollow(QString)), this, SLOT(unfollow(QString)));
-        connect(friendsMgmtWidget, SIGNAL(block(QString)), this, SLOT(block(QString)));
+	connect(friendsMgmtWidget, SIGNAL(block(const QString, int)), this, SLOT(block(const QString, int)));
         friendsMgmtTabs[FRIENDS_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
 
         // set up followers management tab
@@ -60,7 +60,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 
         scrollArea = new QScrollArea(followersTab);
 
-	friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL());
+	friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL(), FOLLOWERS_MGMT_TAB);
         friendsMgmtWidget->setObjectName(QString::fromUtf8("followersMgmtWidget"));
         friendsMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 
@@ -72,7 +72,26 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
 
 	connect(friendsMgmtWidget, SIGNAL(follow(QString)), this, SLOT(follow(QString)));
+	connect(friendsMgmtWidget, SIGNAL(block(const QString, int)), this, SLOT(block(const QString, int)));
         friendsMgmtTabs[FOLLOWERS_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
+
+	// set up blocked management tab
+	gridLayout = new QGridLayout(blockedTab);
+	gridLayout->setObjectName(QString::fromUtf8("blockedGridLayout"));
+
+	scrollArea = new QScrollArea(blockedTab);
+
+	friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL(), BLOCKED_MGMT_TAB);
+	friendsMgmtWidget->setObjectName(QString::fromUtf8("blockedMgmtWidget"));
+	friendsMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+
+	scrollArea->setBackgroundRole(QPalette::Light);
+	scrollArea->setWidget(friendsMgmtWidget);
+	scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+	gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
+	friendsMgmtTabs[BLOCKED_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
 
         // bring friends tab to the front
         tabWidget->setCurrentIndex(0);
@@ -100,23 +119,41 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
     event->accept();
 }
 
-void FriendsMgmtDialog::unfollow(QString screenName)
+void FriendsMgmtDialog::unfollow(const QString screenName)
 {
     MainWindow *mainWindow = MainWindow::getInstance();
 
     twitter->destroyFriendship(screenName, mainWindow->username, mainWindow->password);
 
     cout << "Unfollowing: " << screenName.toStdString() << endl;
+    this->stateLabel->setText("Unfollowing " + screenName);
 }
 
-void FriendsMgmtDialog::follow(QString screenName)
+void FriendsMgmtDialog::follow(const QString screenName)
 {
     followImpl(screenName);
 }
 
-void FriendsMgmtDialog::block(const QString &url)
+void FriendsMgmtDialog::block(const QString screenName, int tabIndex)
 {
-    cerr << url.toStdString() << endl;
+    if(tabIndex == FRIENDS_MGMT_TAB)
+    {
+	friends_count--;
+    }
+    else if(tabIndex == FOLLOWERS_MGMT_TAB)
+    {
+	followers_count--;
+    }
+
+    friendsMgmtTabs[tabIndex].getFriendsMgmtWidget()->removeItem(screenName);
+
+    MainWindow *mainWindow = MainWindow::getInstance();
+
+    twitter->blockUser(screenName, mainWindow->username, mainWindow->password);
+
+    cerr << "Blocking: " << screenName.toStdString() << endl;
+
+    this->stateLabel->setText(tr("Blocking : %1").arg(screenName));
 }
 
 void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer, int type)
@@ -130,14 +167,25 @@ void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer, 
     if(root->tagName() == "users")
     {
 	QDomNode *node = new QDomNode(root->firstChild());
+	UserProcessingType behavior;
 
 	if(type == 7)
 	{
-	friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->clear();
+	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->clear();
+	    friends_count = 0;
+	    behavior = Friends;
 	}
 	else if(type == 8)
 	{
-	friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->clear();
+	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->clear();
+	    followers_count = 0;
+	    behavior = Followers;
+	}
+	else if(type == 9)
+	{
+	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->clear();
+	    blocked_count = 0;
+	    behavior = Blocked;
 	}
 
 	while(!node->isNull())
@@ -145,9 +193,22 @@ void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer, 
 	    if(node->toElement().tagName() != "user")
 		return;
 
-	    processUserXmlStructure(new QDomNode(node->firstChild()), false);
+	    processUserXmlStructure(new QDomNode(node->firstChild()), behavior);
 	    node = new QDomNode(node->nextSibling());
         }
+
+	if(behavior == Friends)
+	{
+	    this->stateLabel->setText(tr("%n friend(s)", "", friends_count));
+	}
+	else if(behavior == Followers)
+	{
+	    this->stateLabel->setText(tr("%n follower(s)", "", followers_count));
+	}
+	else if(behavior == Blocked)
+	{
+	    this->stateLabel->setText(tr("%n blocked", "", blocked_count));
+	}
         this->saveState();
     }
 }
@@ -184,6 +245,20 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, in
 
     QDomElement *root = new QDomElement(document->documentElement());
 
+    UserProcessingType behavior;
+    switch(type)
+    {
+	case 10:
+	    behavior = Friends;
+	    break;
+	case 11:
+	    behavior = Unfollow;
+	    break;
+	case 12:
+	    behavior = Block;
+	    break;
+    }
+
     if(root->tagName() == "user")
     {
 //	QDomNode *node = new QDomNode(root->firstChild());
@@ -193,7 +268,7 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, in
 //	    if(node->toElement().tagName() != "user")
 //		return;
 
-	    processUserXmlStructure(new QDomNode(root->firstChild()), (type==10 ? true : false));
+	    processUserXmlStructure(new QDomNode(root->firstChild()), behavior);
 //	    node = new QDomNode(node->nextSibling());
 //	}
 	this->saveState();
@@ -214,7 +289,7 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, in
     }
 }
 
-void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, bool remove)
+void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, UserProcessingType behavior)
 {
     QString screenName;
     bool following;
@@ -326,25 +401,34 @@ void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, bool remo
     imageFileName = dir.absolutePath() + "/.qwit/" + imageFileName;
     userpicsDownloader->download(image, imageFileName);
 
-    if(remove)
-    {
-	friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->removeItem(screenName);
-    }
-    else
-    {
     MainWindow *mainWindow = MainWindow::getInstance();
     QDateTime time = mainWindow->dateFromString(timeStr);
     time = QDateTime(time.date(), time.time(), Qt::UTC);
 
-	if(following)
-	{
-	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	}
-	else
-	{
-	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, following, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	}
+    switch(behavior)
+    {
+	case Friends:
+	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, behavior, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
+	    friends_count++;
+	    break;
+	case Followers:
+	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, behavior, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
+	    followers_count++;
+	    break;
+	case Blocked:
+	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, behavior, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
+	    blocked_count++;
+	    break;
+	case Unfollow:
+	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->removeItem(screenName);
+	    friends_count--;
+	    break;
+	case Block:
+	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, Blocked, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
+	    blocked_count++;
+	    break;
     }
+
     return;
 }
 
@@ -364,11 +448,11 @@ void FriendsMgmtDialog::on_newFriendLineEdit_textEdited(QString )
 {
     if(newFriendLineEdit->text().length() > 0)
     {
-    addFriendPushButton->setEnabled(true);
+	addFriendPushButton->setEnabled(true);
     }
     else
     {
-    addFriendPushButton->setEnabled(false);
+	addFriendPushButton->setEnabled(false);
     }
 }
 
@@ -390,6 +474,7 @@ void FriendsMgmtDialog::followImpl(QString screenName)
     newFriendLineEdit->setText("");
 
     cout << "Following: " << screenName.toStdString() << endl;
+    this->stateLabel->setText("Following Request sent to " + screenName);
 
     this->tabWidget->setCurrentIndex(FRIENDS_MGMT_TAB);
 }
