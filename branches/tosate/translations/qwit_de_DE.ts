@@ -21,7 +21,7 @@
     <message>
         <location filename="../src/FriendsMgmtDialog.ui" line="95"/>
         <source>Close Friends Manager</source>
-        <translation>Freundeverwaltung schließen</translation>
+        <translation type="obsolete">Freundeverwaltung schließen</translation>
     </message>
     <message>
         <location filename="../src/FriendsMgmtDialog.ui" line="44"/>
@@ -32,6 +32,45 @@
         <location filename="../src/FriendsMgmtDialog.ui" line="57"/>
         <source>add</source>
         <translation>hinzufügen</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/FriendsMgmtDialog.cpp" line="202"/>
+        <source>%n friend(s)</source>
+        <translation>
+            <numerusform>%n Freund</numerusform>
+            <numerusform>%n Freunde</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/FriendsMgmtDialog.cpp" line="206"/>
+        <source>%n follower(s)</source>
+        <translation>
+            <numerusform>%n Anhänger</numerusform>
+            <numerusform>%n Anhänger</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="108"/>
+        <source>Close</source>
+        <translation>schließen</translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="156"/>
+        <source>Blocking : %1</source>
+        <translation>Sperre: %1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/FriendsMgmtDialog.cpp" line="210"/>
+        <source>%n blocked</source>
+        <translation>
+            <numerusform>%n gesperrt</numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="77"/>
+        <source>Blocked</source>
+        <translation>Gesperrt</translation>
     </message>
 </context>
 <context>
@@ -351,37 +390,37 @@
 <context>
     <name>Twitter</name>
     <message>
-        <location filename="../src/Twitter.cpp" line="101"/>
+        <location filename="../src/Twitter.cpp" line="103"/>
         <source>Sending status: %1</source>
         <translation>Sende Status: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="133"/>
+        <location filename="../src/Twitter.cpp" line="135"/>
         <source>Updating timeline: %1</source>
         <translation>Aktualisiere Zeitleiste: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="139"/>
+        <location filename="../src/Twitter.cpp" line="141"/>
         <source>Error sending status: %1</source>
         <translation>Fehler beim senden des Status: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="142"/>
+        <location filename="../src/Twitter.cpp" line="144"/>
         <source>Status sent: %1</source>
         <translation>Status gesendet: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="148"/>
+        <location filename="../src/Twitter.cpp" line="150"/>
         <source>Error while updating timeline: %1</source>
         <translation>Fehler beim Aktualisieren der Zeitleiste: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="152"/>
+        <location filename="../src/Twitter.cpp" line="154"/>
         <source>Timeline updated: %1</source>
         <translation>Zeitleiste aktualisiert: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="188"/>
+        <location filename="../src/Twitter.cpp" line="190"/>
         <source>SSL Error while updating/sending: %1</source>
         <translation>SSL Fehler beim Aktualisieren/Senden: %1</translation>
     </message>

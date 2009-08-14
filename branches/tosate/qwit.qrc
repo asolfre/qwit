@@ -21,5 +21,6 @@
         <file>images/block.png</file>
         <file>images/unfollow.png</file>
         <file>images/follow.png</file>
+        <file>images/friends.png</file>
     </qresource>
 </RCC>

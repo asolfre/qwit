@@ -18,11 +18,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FriendsMgmtDialog.ui" line="95"/>
-        <source>Close Friends Manager</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/FriendsMgmtDialog.ui" line="44"/>
         <source>new friend:</source>
         <translation type="unfinished"></translation>
@@ -30,6 +25,48 @@
     <message>
         <location filename="../src/FriendsMgmtDialog.ui" line="57"/>
         <source>add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/FriendsMgmtDialog.cpp" line="202"/>
+        <source>%n friend(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/FriendsMgmtDialog.cpp" line="206"/>
+        <source>%n follower(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="108"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="156"/>
+        <source>Blocking : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/FriendsMgmtDialog.cpp" line="210"/>
+        <source>%n blocked</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="77"/>
+        <source>Blocked</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -350,37 +387,37 @@
 <context>
     <name>Twitter</name>
     <message>
-        <location filename="../src/Twitter.cpp" line="139"/>
+        <location filename="../src/Twitter.cpp" line="141"/>
         <source>Error sending status: %1</source>
         <translation>Ошибка при отправлении статуса: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="142"/>
+        <location filename="../src/Twitter.cpp" line="144"/>
         <source>Status sent: %1</source>
         <translation>Статус отправлен: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="148"/>
+        <location filename="../src/Twitter.cpp" line="150"/>
         <source>Error while updating timeline: %1</source>
         <translation>Ошибка обновления: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="152"/>
+        <location filename="../src/Twitter.cpp" line="154"/>
         <source>Timeline updated: %1</source>
         <translation>Сообщения обновлены: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="188"/>
+        <location filename="../src/Twitter.cpp" line="190"/>
         <source>SSL Error while updating/sending: %1</source>
         <translation>Ошибка SSL: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="133"/>
+        <location filename="../src/Twitter.cpp" line="135"/>
         <source>Updating timeline: %1</source>
         <translation>Обновление сообщения: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="101"/>
+        <location filename="../src/Twitter.cpp" line="103"/>
         <source>Sending status: %1</source>
         <translation>Отправка статуса: %1</translation>
     </message>

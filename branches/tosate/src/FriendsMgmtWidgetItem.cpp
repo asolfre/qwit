@@ -17,6 +17,7 @@
 
 #include <QDesktopServices>
 #include <QScrollBar>
+
 #include "FriendsMgmtWidgetItem.h"
 #include "TwitterWidget.h"
 
@@ -24,12 +25,23 @@
 
 using namespace std;
 
-FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName, bool following, uint messageId, const QDateTime &time)
+FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const UserProcessingType itemType, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl)
 {
     this->parent = parent;
     this->status = new QTextBrowser(parent);
+    this->status->setHtml(TwitterWidgetItem::prepare(statusText,replyStatusId, serviceBaseUrl));
+    this->status->setReadOnly(true);
+    this->status->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->status->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->status->setFrameShape(QFrame::NoFrame);
+    this->status->setOpenExternalLinks(true);
+
+    QFont font = status->document()->defaultFont();
+    font.setFamily("Verdana");
+    this->status->document()->setDefaultFont(font);
+
     this->username = username;
-    this->following = following;
+    this->itemType = itemType;
     this->icon = new QLabel(parent);
     this->messageId = messageId;
     this->time = time;
@@ -73,10 +85,10 @@ QColor FriendsMgmtWidgetItem::getColor()
     return this->color;
 }
 
-QTextBrowser* FriendsMgmtWidgetItem::getStatus()
-{
-    return this->status;
-}
+//QTextBrowser* FriendsMgmtWidgetItem::getStatus()
+//{
+//    return this->status;
+//}
 
 //void FriendsMgmtWidgetItem::setIcon(QLabel *icon)
 //{
@@ -184,15 +196,21 @@ int FriendsMgmtWidgetItem::update(int top, bool odd)
     sign->resize(parent->width() + (7 * MARGIN), 16);
     sign->move(MARGIN, top + statusItemHeight + MARGIN);
 
-    if(following)
+    switch(itemType)
     {
-	ctrl->setText("<a href=\"unfollow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br>"
-	+ "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
-    }
-    else
-    {
-	ctrl->setText("<a href=\"follow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/follow.png\"/></a><br>"
-	+ "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
+	case Friends:
+	    ctrl->setText("<a href=\"unfollow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br>"
+	    + "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
+	    break;
+	case Followers:
+	    ctrl->setText("<a href=\"follow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/follow.png\"/></a><br>"
+	    + "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
+	    break;
+	case Blocked:
+	    ctrl->setText("");
+	    break;
+	default:
+	    break;
     }
     // positioning of the ctrl element
     ctrl->adjustSize();

@@ -25,6 +25,8 @@
 #include <QPainter>
 #include <QDateTime>
 
+#include "UserProcessingType.h"
+
 class FriendsMgmtWidgetItem
 {
 private:
@@ -39,13 +41,13 @@ private:
     int height;
     QColor color;
     QString username;
-    bool following;
+    UserProcessingType itemType;
     uint messageId;
     uint replyStatusId;
     QDateTime time;
 
 public:
-    FriendsMgmtWidgetItem(QWidget *parent, QString username, QString iconFileName, bool following, uint messageId, const QDateTime &time);
+    FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const UserProcessingType itemType, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl);
     ~FriendsMgmtWidgetItem();
     void loadIcon();
 //    void setTopPosition(int top);
@@ -53,7 +55,7 @@ public:
     void setHeight(int height);
     int getHeight();
     QColor getColor();
-    QTextBrowser* getStatus();
+//    QTextBrowser* getStatus();
 //    void setIcon(QLabel *icon);
 //    void setSignText(QString text);
 //    QLabel* getSign();

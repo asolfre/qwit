@@ -24,30 +24,18 @@
 
 using namespace std;
 
-FriendsMgmtWidget::FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL) : QWidget()
+FriendsMgmtWidget::FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL, int tabIndex) : QWidget()
 {
     this->serviceBaseUrl = serviceBaseURL;
     this->scrollArea = scrollArea;
+    this->tabIndex = tabIndex;
     nextItemIndex = 0;
 }
 
 
-void FriendsMgmtWidget::addItem(QString username, QString userpic, bool following, QString statusText, uint messageId, QDateTime time, uint replyStatusId)
+void FriendsMgmtWidget::addItem(QString username, QString userpic, UserProcessingType itemType, QString statusText, uint messageId, QDateTime time, uint replyStatusId)
 {
-    // FIXME duplicates check?
-    // FIXME item creation (status)
-    FriendsMgmtWidgetItem *item = new FriendsMgmtWidgetItem(this, username, userpic, following, messageId, time);
-    QTextBrowser *status = item->getStatus();
-    status->setHtml(TwitterWidgetItem::prepare(statusText,replyStatusId, serviceBaseUrl));
-    status->setReadOnly(true);
-    status->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    status->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    status->setFrameShape(QFrame::NoFrame);
-    status->setOpenExternalLinks(true);
-
-    QFont font = status->document()->defaultFont();
-    font.setFamily("Verdana");
-    status->document()->setDefaultFont(font);
+    FriendsMgmtWidgetItem *item = new FriendsMgmtWidgetItem(this, username, userpic, itemType, statusText, messageId, time, replyStatusId, this->serviceBaseUrl);
 
     item->loadIcon();
 
@@ -122,7 +110,7 @@ void FriendsMgmtWidget::followClicked(const QUrl &url)
 
 void FriendsMgmtWidget::blockClicked(const QUrl &url)
 {
-    emit block("Received: " + url.toString());
+    emit block(url.path().remove(0, 1), tabIndex);
 }
 
 void FriendsMgmtWidget::removeItem(QString screenName)
