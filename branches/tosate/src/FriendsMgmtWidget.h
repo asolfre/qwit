@@ -39,7 +39,7 @@ private:
     QString serviceBaseUrl;
 
 public:
-    FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL, int tabIndex);
+    FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL);
     void clear();
     void addItem(QString username, QString userpic, UserProcessingType itemType, QString statusText, uint messageId, QDateTime time, uint replyStatusId);
     void removeItem(QString screenName);
@@ -51,6 +51,7 @@ public:
     void setVerticalAlignControl(bool value);
     void saveScrollPosition();
     void restoreScrollPosition();
+    int getItemCount();
 
     static QString formatDateTime(const QDateTime &time);
 
@@ -64,11 +65,13 @@ public slots:
     void unfollowClicked(const QUrl &url);
     void followClicked(const QUrl &url);
     void blockClicked(const QUrl &url);
+    void unblockClicked(const QUrl &url);
 
 signals:
     void unfollow(const QString);
     void follow(const QString);
-    void block(const QString, int);
+    void block(const QString);
+    void unblock(const QString);
 };
 
 #endif // FRIENDSMGMTWIDGET_H

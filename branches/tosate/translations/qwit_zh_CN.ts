@@ -28,14 +28,14 @@
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/FriendsMgmtDialog.cpp" line="202"/>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="200"/>
         <source>%n friend(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/FriendsMgmtDialog.cpp" line="206"/>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="204"/>
         <source>%n follower(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -47,12 +47,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FriendsMgmtDialog.cpp" line="156"/>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="146"/>
         <source>Blocking : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/FriendsMgmtDialog.cpp" line="210"/>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="208"/>
         <source>%n blocked</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -61,6 +61,24 @@
     <message>
         <location filename="../src/FriendsMgmtDialog.ui" line="77"/>
         <source>Blocked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="157"/>
+        <source>Unblocking : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="467"/>
+        <source>Screenname contains illegal character: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FriendsMgmtWidget</name>
+    <message>
+        <location filename="../src/FriendsMgmtWidget.cpp" line="117"/>
+        <source>Blocking will prevent %1 from following you. And you won&apos;t see their tweets in your timeline. Are you sure you want to block?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -376,37 +394,37 @@
 <context>
     <name>Twitter</name>
     <message>
-        <location filename="../src/Twitter.cpp" line="103"/>
+        <location filename="../src/Twitter.cpp" line="104"/>
         <source>Sending status: %1</source>
         <translation>正在发送状态: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="135"/>
+        <location filename="../src/Twitter.cpp" line="136"/>
         <source>Updating timeline: %1</source>
         <translation>正在更新时间线: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="141"/>
+        <location filename="../src/Twitter.cpp" line="142"/>
         <source>Error sending status: %1</source>
         <translation>发送状态出错: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="144"/>
+        <location filename="../src/Twitter.cpp" line="145"/>
         <source>Status sent: %1</source>
         <translation>状态已发送: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="150"/>
+        <location filename="../src/Twitter.cpp" line="151"/>
         <source>Error while updating timeline: %1</source>
         <translation>更新时间线出错: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="154"/>
+        <location filename="../src/Twitter.cpp" line="155"/>
         <source>Timeline updated: %1</source>
         <translation>时间线已更新: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="190"/>
+        <location filename="../src/Twitter.cpp" line="191"/>
         <source>SSL Error while updating/sending: %1</source>
         <translation>更新/发送时发生SSL错误: %1</translation>
     </message>

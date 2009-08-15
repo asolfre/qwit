@@ -18,13 +18,14 @@
 
 #include <QScrollBar>
 #include <iostream>
+#include <QMessageBox>
 
 #include "FriendsMgmtWidget.h"
 #include "TwitterWidgetItem.h"
 
 using namespace std;
 
-FriendsMgmtWidget::FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL, int tabIndex) : QWidget()
+FriendsMgmtWidget::FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL) : QWidget()
 {
     this->serviceBaseUrl = serviceBaseURL;
     this->scrollArea = scrollArea;
@@ -110,7 +111,25 @@ void FriendsMgmtWidget::followClicked(const QUrl &url)
 
 void FriendsMgmtWidget::blockClicked(const QUrl &url)
 {
-    emit block(url.path().remove(0, 1), tabIndex);
+    QString screenName = url.path().remove(0, 1);
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("Blocking will prevent %1 from following you. And you won't see their tweets in your timeline. Are you sure you want to block?").arg(screenName));
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    msgBox.setIcon(QMessageBox::Warning);
+    int ret = msgBox.exec();
+
+    if(ret == QMessageBox::Ok)
+    {
+	this->removeItem(screenName);
+	emit block(screenName);
+    }
+}
+
+void FriendsMgmtWidget::unblockClicked(const QUrl &url)
+{
+    emit unblock(url.path().remove(0, 1));
 }
 
 void FriendsMgmtWidget::removeItem(QString screenName)
@@ -126,4 +145,9 @@ void FriendsMgmtWidget::removeItem(QString screenName)
 	    return;
 	}
     }
+}
+
+int FriendsMgmtWidget::getItemCount()
+{
+    return nextItemIndex;
 }

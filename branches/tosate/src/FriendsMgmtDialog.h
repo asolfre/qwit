@@ -42,9 +42,6 @@ private:
     FriendsMgmtTab friendsMgmtTabs[MGMT_TABS];
     UserpicsDownloader *userpicsDownloader;
     Twitter *twitter;
-    uint friends_count;
-    uint followers_count;
-    uint blocked_count;
 
     void followImpl(QString screenName);
 
@@ -55,7 +52,8 @@ public:
 public slots:
 	void unfollow(const QString screenName);
 	void follow(const QString screenName);
-	void block(const QString screenName, int tabIndex);
+	void block(const QString screenName);
+	void unblock(const QString screenName);
 	void friendshipsUpdated(const QByteArray &friendshipsBuffer, int type);
         void saveState();
 	void tabChanged(int index);

@@ -44,6 +44,7 @@ Twitter::Twitter() {
 	urls[10] = FOLLOW_USER_XML_URL;
 	urls[11] = UNFOLLOW_USER_XML_URL;
 	urls[12] = BLOCK_USER_XML;
+	urls[13] = UNBLOCK_USER_XML;
 	proxyAddress = "";
 	connect(&statusHttp, SIGNAL(done(bool)), this, SLOT(statusHttpDone(bool)));
 	connect(&timelineHttp, SIGNAL(done(bool)), this, SLOT(timelineHttpDone(bool)));
@@ -293,9 +294,23 @@ void Twitter::destroyFriendship(QString screenName, QString username, QString pa
     friendsMgmtHttp.post(url.path(), data, &friendsMgmtBuffer);
 }
 
-void Twitter::blockUser(QString screenName, QString username, QString password)
+void Twitter::createBlock(QString screenName, QString username, QString password)
 {
     int type = 12;
+    currentType = type;
+
+    QUrl url(serviceBaseURL + urls[type] + screenName + ".xml");
+
+    setupConnection(&friendsMgmtHttp, &url, username, password);
+
+    friendsMgmtBuffer.open(QIODevice::WriteOnly);
+    QByteArray data = "";
+    friendsMgmtHttp.post(url.path(), data, &friendsMgmtBuffer);
+}
+
+void Twitter::destroyBlock(QString screenName, QString username, QString password)
+{
+    int type = 13;
     currentType = type;
 
     QUrl url(serviceBaseURL + urls[type] + screenName + ".xml");
