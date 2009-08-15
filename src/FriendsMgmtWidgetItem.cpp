@@ -59,6 +59,7 @@ FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, const QString user
     QDesktopServices::setUrlHandler("unfollow", parent, "unfollowClicked");
     QDesktopServices::setUrlHandler("follow", parent, "followClicked");
     QDesktopServices::setUrlHandler("block", parent, "blockClicked");
+    QDesktopServices::setUrlHandler("unblock", parent, "unblockClicked");
 }
 
 FriendsMgmtWidgetItem::~FriendsMgmtWidgetItem()
@@ -207,7 +208,7 @@ int FriendsMgmtWidgetItem::update(int top, bool odd)
 	    + "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
 	    break;
 	case Blocked:
-	    ctrl->setText("");
+	    ctrl->setText("<a href=\"unblock://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/follow.png\"/></a>");
 	    break;
 	default:
 	    break;

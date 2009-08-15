@@ -18,6 +18,6 @@
 #ifndef USERPROCESSINGTYPE_H
 #define USERPROCESSINGTYPE_H
 
-enum UserProcessingType{Friends, Followers, Blocked, Unfollow, Block};
+enum UserProcessingType{Friends, Followers, Blocked, Unfollow, Block, Unblock};
 
 #endif // USERPROCESSINGTYPE_H

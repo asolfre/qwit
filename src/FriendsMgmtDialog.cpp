@@ -39,7 +39,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         // set up friends management tab
         QScrollArea *scrollArea = new QScrollArea(friendsTab);
 
-	FriendsMgmtWidget *friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL(), FRIENDS_MGMT_TAB);
+	FriendsMgmtWidget *friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL());
         friendsMgmtWidget->setObjectName(QString::fromUtf8("friendsMgmtWidget"));
         friendsMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 
@@ -51,7 +51,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         vBoxLayout2->addWidget(scrollArea);
 
         connect(friendsMgmtWidget, SIGNAL(unfollow(QString)), this, SLOT(unfollow(QString)));
-	connect(friendsMgmtWidget, SIGNAL(block(const QString, int)), this, SLOT(block(const QString, int)));
+	connect(friendsMgmtWidget, SIGNAL(block(const QString)), this, SLOT(block(const QString)));
         friendsMgmtTabs[FRIENDS_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
 
         // set up followers management tab
@@ -60,7 +60,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 
         scrollArea = new QScrollArea(followersTab);
 
-	friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL(), FOLLOWERS_MGMT_TAB);
+	friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL());
         friendsMgmtWidget->setObjectName(QString::fromUtf8("followersMgmtWidget"));
         friendsMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 
@@ -72,7 +72,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
 
 	connect(friendsMgmtWidget, SIGNAL(follow(QString)), this, SLOT(follow(QString)));
-	connect(friendsMgmtWidget, SIGNAL(block(const QString, int)), this, SLOT(block(const QString, int)));
+	connect(friendsMgmtWidget, SIGNAL(block(const QString)), this, SLOT(block(const QString)));
         friendsMgmtTabs[FOLLOWERS_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
 
 	// set up blocked management tab
@@ -81,7 +81,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 
 	scrollArea = new QScrollArea(blockedTab);
 
-	friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL(), BLOCKED_MGMT_TAB);
+	friendsMgmtWidget = new FriendsMgmtWidget(scrollArea, twitter->getServiceBaseURL());
 	friendsMgmtWidget->setObjectName(QString::fromUtf8("blockedMgmtWidget"));
 	friendsMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 
@@ -91,6 +91,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 	scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
+	connect(friendsMgmtWidget, SIGNAL(unblock(QString)), this, SLOT(unblock(QString)));
 	friendsMgmtTabs[BLOCKED_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
 
         // bring friends tab to the front
@@ -134,26 +135,26 @@ void FriendsMgmtDialog::follow(const QString screenName)
     followImpl(screenName);
 }
 
-void FriendsMgmtDialog::block(const QString screenName, int tabIndex)
+void FriendsMgmtDialog::block(const QString screenName)
 {
-    if(tabIndex == FRIENDS_MGMT_TAB)
-    {
-	friends_count--;
-    }
-    else if(tabIndex == FOLLOWERS_MGMT_TAB)
-    {
-	followers_count--;
-    }
-
-    friendsMgmtTabs[tabIndex].getFriendsMgmtWidget()->removeItem(screenName);
-
     MainWindow *mainWindow = MainWindow::getInstance();
 
-    twitter->blockUser(screenName, mainWindow->username, mainWindow->password);
+    twitter->createBlock(screenName, mainWindow->username, mainWindow->password);
 
     cerr << "Blocking: " << screenName.toStdString() << endl;
 
     this->stateLabel->setText(tr("Blocking : %1").arg(screenName));
+}
+
+void FriendsMgmtDialog::unblock(const QString screenName)
+{
+    MainWindow *mainWindow = MainWindow::getInstance();
+
+    twitter->destroyBlock(screenName, mainWindow->username, mainWindow->password);
+
+    cerr << "Unblocking: " << screenName.toStdString() << endl;
+
+    this->stateLabel->setText(tr("Unblocking : %1").arg(screenName));
 }
 
 void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer, int type)
@@ -172,19 +173,16 @@ void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer, 
 	if(type == 7)
 	{
 	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->clear();
-	    friends_count = 0;
 	    behavior = Friends;
 	}
 	else if(type == 8)
 	{
 	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->clear();
-	    followers_count = 0;
 	    behavior = Followers;
 	}
 	else if(type == 9)
 	{
 	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->clear();
-	    blocked_count = 0;
 	    behavior = Blocked;
 	}
 
@@ -199,15 +197,15 @@ void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer, 
 
 	if(behavior == Friends)
 	{
-	    this->stateLabel->setText(tr("%n friend(s)", "", friends_count));
+	    this->stateLabel->setText(tr("%n friend(s)", "", friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->getItemCount()));
 	}
 	else if(behavior == Followers)
 	{
-	    this->stateLabel->setText(tr("%n follower(s)", "", followers_count));
+	    this->stateLabel->setText(tr("%n follower(s)", "", friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->getItemCount()));
 	}
 	else if(behavior == Blocked)
 	{
-	    this->stateLabel->setText(tr("%n blocked", "", blocked_count));
+	    this->stateLabel->setText(tr("%n blocked", "", friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->getItemCount()));
 	}
         this->saveState();
     }
@@ -256,6 +254,9 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, in
 	    break;
 	case 12:
 	    behavior = Block;
+	    break;
+	case 13:
+	    behavior = Unblock;
 	    break;
     }
 
@@ -409,23 +410,21 @@ void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, UserProce
     {
 	case Friends:
 	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, behavior, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	    friends_count++;
 	    break;
 	case Followers:
 	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, behavior, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	    followers_count++;
 	    break;
 	case Blocked:
 	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, behavior, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	    blocked_count++;
 	    break;
 	case Unfollow:
 	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->removeItem(screenName);
-	    friends_count--;
 	    break;
 	case Block:
 	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, Blocked, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	    blocked_count++;
+	    break;
+	case Unblock:
+	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->removeItem(screenName);
 	    break;
     }
 
@@ -462,7 +461,11 @@ void FriendsMgmtDialog::followImpl(QString screenName)
     {
 	if(!TwitterWidgetItem::isUsernameChar(screenName[i]))
 	{
-	    cout << "Screenname contains illegal character: " << QString(screenName[i]).toStdString() << endl;
+	    QString character = QString(screenName[i]);
+	    cout << "Screenname contains illegal character: " << character.toStdString() << endl;
+
+	    stateLabel->setText(tr("Screenname contains illegal character: %1").arg(character));
+
 	    return;
 	}
     }

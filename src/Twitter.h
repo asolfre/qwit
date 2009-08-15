@@ -24,7 +24,7 @@
 #include <QBuffer>
 #include <QSslError>
 
-#define URL_COUNT 13
+#define URL_COUNT 14
 #define HOME_XML_URL "/statuses/friends_timeline.xml"
 #define PUBLIC_XML_URL "/statuses/public_timeline.xml"
 #define REPLIES_XML_URL "/statuses/replies.xml"
@@ -38,6 +38,7 @@
 #define FOLLOW_USER_XML_URL "/friendships/create.xml"
 #define UNFOLLOW_USER_XML_URL "/friendships/destroy.xml"
 #define BLOCK_USER_XML "/blocks/create/"
+#define UNBLOCK_USER_XML "/blocks/destroy/"
 //http://search.twitter.com/search.atom?q=twitter
 
 #define STATUS_UPDATE_URL "/statuses/update.xml"
@@ -81,7 +82,8 @@ public:
 	void getFriendships(QString username, QString password, int type);
 	void createFriendship(QString screenName, QString username, QString password);
 	void destroyFriendship(QString screenName, QString username, QString password);
-	void blockUser(QString screenName, QString username, QString password);
+	void createBlock(QString screenName, QString username, QString password);
+	void destroyBlock(QString screenName, QString username, QString password);
 
 	QString getServiceBaseURL();
 	QString getServiceAPIURL();
