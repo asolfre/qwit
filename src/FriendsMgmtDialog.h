@@ -19,9 +19,6 @@
 #define FriendsMgmtDialog_H
 
 const int MGMT_TABS = 3;
-const int FRIENDS_MGMT_TAB = 0;
-const int FOLLOWERS_MGMT_TAB = 1;
-const int BLOCKED_MGMT_TAB = 2;
 
 #include <QtXml/QDomDocument>
 
@@ -29,7 +26,7 @@ const int BLOCKED_MGMT_TAB = 2;
 #include "FriendsMgmtTab.h"
 #include "UserpicsDownloader.h"
 #include "Twitter.h"
-#include "UserProcessingType.h"
+#include "Enumerations.h"
 
 /**
 	@author tosate <tosate@googlemail.com>
@@ -46,26 +43,24 @@ private:
     void followImpl(QString screenName);
 
 public:
-
-        FriendsMgmtDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader);
+    FriendsMgmtDialog(QWidget *parent, Twitter *twitter, UserpicsDownloader *userpicsDownloader);
 
 public slots:
-	void unfollow(const QString screenName);
-	void follow(const QString screenName);
-	void block(const QString screenName);
-	void unblock(const QString screenName);
-	void friendshipsUpdated(const QByteArray &friendshipsBuffer, int type);
-        void saveState();
-	void tabChanged(int index);
-	void friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, int type);
+    void unfollow(const QString screenName);
+    void follow(const QString screenName);
+    void block(const QString screenName);
+    void unblock(const QString screenName);
+    void friendshipsUpdated(const QByteArray &friendshipsBuffer, int type);
+    void saveState();
+    void tabChanged(int index);
+    void friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, int type);
 
 protected:
-
-        void resizeEvent(QResizeEvent *event);
-        void showEvent(QShowEvent *event);
+    void resizeEvent(QResizeEvent *event);
+    void showEvent(QShowEvent *event);
 
 private:
-	void processUserXmlStructure(QDomNode *currentNode, UserProcessingType behavior);
+	void processUserXmlStructure(QDomNode *currentNode, Categories category, Actions action);
 
 private slots:
     void on_newFriendLineEdit_textEdited(QString );

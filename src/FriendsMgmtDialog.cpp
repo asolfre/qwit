@@ -52,7 +52,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 
         connect(friendsMgmtWidget, SIGNAL(unfollow(QString)), this, SLOT(unfollow(QString)));
 	connect(friendsMgmtWidget, SIGNAL(block(const QString)), this, SLOT(block(const QString)));
-        friendsMgmtTabs[FRIENDS_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
+	friendsMgmtTabs[FRIENDS] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
 
         // set up followers management tab
         QGridLayout *gridLayout = new QGridLayout(followersTab);
@@ -73,7 +73,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 
 	connect(friendsMgmtWidget, SIGNAL(follow(QString)), this, SLOT(follow(QString)));
 	connect(friendsMgmtWidget, SIGNAL(block(const QString)), this, SLOT(block(const QString)));
-        friendsMgmtTabs[FOLLOWERS_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
+	friendsMgmtTabs[FOLLOWERS] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
 
 	// set up blocked management tab
 	gridLayout = new QGridLayout(blockedTab);
@@ -92,7 +92,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
 
 	gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
 	connect(friendsMgmtWidget, SIGNAL(unblock(QString)), this, SLOT(unblock(QString)));
-	friendsMgmtTabs[BLOCKED_MGMT_TAB] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
+	friendsMgmtTabs[BLOCKED] = FriendsMgmtTab(scrollArea, friendsMgmtWidget);
 
         // bring friends tab to the front
         tabWidget->setCurrentIndex(0);
@@ -168,44 +168,47 @@ void FriendsMgmtDialog::friendshipsUpdated(const QByteArray &friendshipsBuffer, 
     if(root->tagName() == "users")
     {
 	QDomNode *node = new QDomNode(root->firstChild());
-	UserProcessingType behavior;
+	Categories category;
 
-	if(type == 7)
+	switch(type)
 	{
-	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->clear();
-	    behavior = Friends;
+	    case 7:
+		category = FRIENDS;
+		break;
+	    case 8:
+		category = FOLLOWERS;
+		break;
+	    case 9:
+		category = BLOCKED;
+		break;
 	}
-	else if(type == 8)
-	{
-	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->clear();
-	    behavior = Followers;
-	}
-	else if(type == 9)
-	{
-	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->clear();
-	    behavior = Blocked;
-	}
+
+	friendsMgmtTabs[category].getFriendsMgmtWidget()->clear();
 
 	while(!node->isNull())
         {
 	    if(node->toElement().tagName() != "user")
 		return;
 
-	    processUserXmlStructure(new QDomNode(node->firstChild()), behavior);
+	    processUserXmlStructure(new QDomNode(node->firstChild()), category, NOTHING);
 	    node = new QDomNode(node->nextSibling());
         }
 
-	if(behavior == Friends)
+	int itemCount = friendsMgmtTabs[category].getFriendsMgmtWidget()->getItemCount();
+
+	switch(category)
 	{
-	    this->stateLabel->setText(tr("%n friend(s)", "", friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->getItemCount()));
-	}
-	else if(behavior == Followers)
-	{
-	    this->stateLabel->setText(tr("%n follower(s)", "", friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->getItemCount()));
-	}
-	else if(behavior == Blocked)
-	{
-	    this->stateLabel->setText(tr("%n blocked", "", friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->getItemCount()));
+	    case FRIENDS:
+		this->stateLabel->setText(tr("%n friend(s)", "", itemCount));
+		break;
+	    case FOLLOWERS:
+		this->stateLabel->setText(tr("%n follower(s)", "", itemCount));
+		break;
+	    case BLOCKED:
+		this->stateLabel->setText(tr("%n blocked", "", itemCount));
+		break;
+	    default:
+		break;
 	}
         this->saveState();
     }
@@ -243,20 +246,21 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, in
 
     QDomElement *root = new QDomElement(document->documentElement());
 
-    UserProcessingType behavior;
+    Actions action;
+
     switch(type)
     {
 	case 10:
-	    behavior = Friends;
+	    action = FOLLOW;
 	    break;
 	case 11:
-	    behavior = Unfollow;
+	    action = UNFOLLOW;
 	    break;
 	case 12:
-	    behavior = Block;
+	    action = BLOCK;
 	    break;
 	case 13:
-	    behavior = Unblock;
+	    action = UNBLOCK;
 	    break;
     }
 
@@ -269,7 +273,7 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, in
 //	    if(node->toElement().tagName() != "user")
 //		return;
 
-	    processUserXmlStructure(new QDomNode(root->firstChild()), behavior);
+	    processUserXmlStructure(new QDomNode(root->firstChild()), NONE, action);
 //	    node = new QDomNode(node->nextSibling());
 //	}
 	this->saveState();
@@ -290,7 +294,7 @@ void FriendsMgmtDialog::friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, in
     }
 }
 
-void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, UserProcessingType behavior)
+void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, Categories category, Actions action)
 {
     QString screenName;
     bool following;
@@ -406,26 +410,32 @@ void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, UserProce
     QDateTime time = mainWindow->dateFromString(timeStr);
     time = QDateTime(time.date(), time.time(), Qt::UTC);
 
-    switch(behavior)
+    if(action == NOTHING)
     {
-	case Friends:
-	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, behavior, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	    break;
-	case Followers:
-	    friendsMgmtTabs[FOLLOWERS_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, behavior, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	    break;
-	case Blocked:
-	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, behavior, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	    break;
-	case Unfollow:
-	    friendsMgmtTabs[FRIENDS_MGMT_TAB].getFriendsMgmtWidget()->removeItem(screenName);
-	    break;
-	case Block:
-	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->addItem(screenName, imageFileName, Blocked, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
-	    break;
-	case Unblock:
-	    friendsMgmtTabs[BLOCKED_MGMT_TAB].getFriendsMgmtWidget()->removeItem(screenName);
-	    break;
+	friendsMgmtTabs[category].getFriendsMgmtWidget()->addItem(screenName, imageFileName, category, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
+    }
+    else if(category == NONE)
+    {
+	switch(action)
+	{
+	    case FOLLOW:
+		/*
+		 * Following a user starts with sending a friendship request. If the user accepts this request, the friendship is created.
+		 * As soon as the user accepts the request, he appears in the FRIENDS list.
+		 */
+		break;
+	    case UNFOLLOW:
+		friendsMgmtTabs[FRIENDS].getFriendsMgmtWidget()->removeItem(screenName);
+		break;
+	    case BLOCK:
+		friendsMgmtTabs[BLOCKED].getFriendsMgmtWidget()->addItem(screenName, imageFileName, BLOCKED, statusText.simplified(), statusId, time.toLocalTime(), replyStatusId);
+		break;
+	    case UNBLOCK:
+		friendsMgmtTabs[BLOCKED].getFriendsMgmtWidget()->removeItem(screenName);
+		break;
+	    default:
+		break;
+	}
     }
 
     return;
@@ -479,5 +489,5 @@ void FriendsMgmtDialog::followImpl(QString screenName)
     cout << "Following: " << screenName.toStdString() << endl;
     this->stateLabel->setText("Following Request sent to " + screenName);
 
-    this->tabWidget->setCurrentIndex(FRIENDS_MGMT_TAB);
+    this->tabWidget->setCurrentIndex(FRIENDS);
 }

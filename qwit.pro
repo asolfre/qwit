@@ -28,7 +28,7 @@ HEADERS += src/LogsDialog.h \
     src/FriendsMgmtWidget.h \
     src/FriendsMgmtTab.h \
     src/FriendsMgmtDialog.h \
-    src/UserProcessingType.h
+    src/Enumerations.h
 FORMS += src/LogsDialog.ui \
     src/MainWindow.ui \
     src/OptionsDialog.ui \

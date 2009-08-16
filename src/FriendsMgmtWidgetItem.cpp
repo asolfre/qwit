@@ -25,7 +25,7 @@
 
 using namespace std;
 
-FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const UserProcessingType itemType, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl)
+FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const int category, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl)
 {
     this->parent = parent;
     this->status = new QTextBrowser(parent);
@@ -41,7 +41,7 @@ FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, const QString user
     this->status->document()->setDefaultFont(font);
 
     this->username = username;
-    this->itemType = itemType;
+    this->category = category;
     this->icon = new QLabel(parent);
     this->messageId = messageId;
     this->time = time;
@@ -197,17 +197,17 @@ int FriendsMgmtWidgetItem::update(int top, bool odd)
     sign->resize(parent->width() + (7 * MARGIN), 16);
     sign->move(MARGIN, top + statusItemHeight + MARGIN);
 
-    switch(itemType)
+    switch(category)
     {
-	case Friends:
+	case FRIENDS:
 	    ctrl->setText("<a href=\"unfollow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br>"
 	    + "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
 	    break;
-	case Followers:
+	case FOLLOWERS:
 	    ctrl->setText("<a href=\"follow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/follow.png\"/></a><br>"
 	    + "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
 	    break;
-	case Blocked:
+	case BLOCKED:
 	    ctrl->setText("<a href=\"unblock://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/follow.png\"/></a>");
 	    break;
 	default:

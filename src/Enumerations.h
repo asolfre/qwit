@@ -15,9 +15,23 @@
     You should have received a copy of the GNU General Public License
     along with Qwit.  If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef USERPROCESSINGTYPE_H
-#define USERPROCESSINGTYPE_H
+#ifndef ENUMERATIONS_H
+#define ENUMERATIONS_H
 
-enum UserProcessingType{Friends, Followers, Blocked, Unfollow, Block, Unblock};
+enum Categories
+{
+    FRIENDS = 0,
+    FOLLOWERS = 1,
+    BLOCKED = 2,
+    NONE
+};
 
-#endif // USERPROCESSINGTYPE_H
+enum Actions
+{
+    FOLLOW,
+    UNFOLLOW,
+    BLOCK,
+    UNBLOCK,
+    NOTHING
+};
+#endif // ENUMERATIONS_H
