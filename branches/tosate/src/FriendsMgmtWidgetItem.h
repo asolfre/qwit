@@ -25,7 +25,7 @@
 #include <QPainter>
 #include <QDateTime>
 
-#include "UserProcessingType.h"
+#include "Enumerations.h"
 
 class FriendsMgmtWidgetItem
 {
@@ -37,17 +37,17 @@ private:
     QLabel *sign;
     QLabel *ctrl;
     QString iconFileName;
+    int category;
     int topPos;
     int height;
     QColor color;
     QString username;
-    UserProcessingType itemType;
     uint messageId;
     uint replyStatusId;
     QDateTime time;
 
 public:
-    FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const UserProcessingType itemType, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl);
+    FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const int category, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl);
     ~FriendsMgmtWidgetItem();
     void loadIcon();
 //    void setTopPosition(int top);
