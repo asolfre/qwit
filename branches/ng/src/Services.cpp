@@ -96,13 +96,6 @@ void Services::initialize() {
 	fakeShortenerOptions["responseregexp"] = "";
 	urlShorteners["0"] = fakeShortenerOptions;
 
-	QMap<QString, QString> trimOptions;
-	trimOptions["title"] = "tr.im";
-	trimOptions["apiurl"] = "http://api.tr.im/api/trim_url.xml";
-	trimOptions["requesttemplate"] = "?url=%url";
-	trimOptions["responseregexp"] = "http://tr.im/\\w+";
-	urlShorteners["trim"] = trimOptions;
-
 	QMap<QString, QString> murlkzOptions;
 	murlkzOptions["title"] = "murl.kz";
 	murlkzOptions["apiurl"] = "http://api.murl.kz/basic";

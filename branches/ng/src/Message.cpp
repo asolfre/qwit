@@ -37,6 +37,11 @@
 #include "Message.h"
 
 Message::Message(quint64 id, const QString &text, const QString &username, const QString &userpicFilename, const QDateTime &time, bool favorited, Account *account, const QString &source, quint64 inReplyToMessageId, const QString &inReplyToUsername, bool following, bool directMessage) {
+/// FIXIT: temporary workaround for strange id values in ~/.qwit2/messages after KDE shutdown
+	if (id > ((quint64)1 << 60)) {
+		id = (long long)id + ((long long) 1 << 32);
+	}
+
 	this->id = id;
 	this->text = text;
 	this->username = username;

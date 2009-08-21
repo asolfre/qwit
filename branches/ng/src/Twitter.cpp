@@ -108,8 +108,9 @@ void Twitter::receiveFriendsMessages(quint64 lastMessageId, int count) {
 
 	buffer.open(QIODevice::WriteOnly);
 
-	int id = http->get(url.path() + "?count=" + QString::number(count) + (lastMessageId ? "&since_id=" + QString::number(lastMessageId) : ""), &buffer);
-	receiveFriendsMessagesRequests[id] = tr("Updating friends messages: %1").arg(url.host() + url.path());
+	QString path = url.path() + "?count=" + QString::number(count) + (lastMessageId ? "&since_id=" + QString::number(lastMessageId) : "");
+	int id = http->get(path, &buffer);
+	receiveFriendsMessagesRequests[id] = tr("Updating friends messages: %1").arg(url.host() + path);
 }
 
 void Twitter::receiveReplies(quint64 lastMessageId, int count) {
