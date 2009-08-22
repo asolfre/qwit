@@ -161,7 +161,7 @@ void Configuration::load() {
 
 // UrlShortener
 	settings.beginGroup("UrlShortener");
-	urlShortener = settings.value("urlShortener", "trim").toString();
+	urlShortener = settings.value("urlShortener", "unu").toString();
 	settings.endGroup();
 
 	loadMessages();

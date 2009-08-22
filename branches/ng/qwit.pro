@@ -16,7 +16,7 @@ unix {
     isEmpty( PREFIX ):PREFIX = /usr/local
 }
 DEFINES += 'REVISION=\\\"$(shell svnversion -n .)\\\"'
-DEFINES += 'VERSION=\\\"ng\\\"'
+DEFINES += 'VERSION=\\\"1.0-alpha\\\"'
 
 # Input
 HEADERS += src/Configuration.h \
