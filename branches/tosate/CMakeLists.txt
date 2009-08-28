@@ -20,22 +20,40 @@ include_directories(
 set( LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
 
 set( qwit_UI
-	src/LogsDialog.ui 
-	src/MainWindow.ui 
+	src/MainWindow.ui
 	src/OptionsDialog.ui
+	src/AboutDialog.ui
+	src/AccountConfigurationDialog.ui
+	src/DirectMessageDialog.ui
 	)
 
 set( qwit_SRCS
-	src/LogsDialog.cpp
-	src/MainWindow.cpp
+	src/Configuration.cpp
+	src/MessageTextEdit.cpp
 	src/OptionsDialog.cpp
-	src/qwit.cpp
-	src/StatusTextEdit.cpp
-	src/Twitter.cpp
+	src/AboutDialog.cpp
+	src/DirectMessageDialog.cpp
+	src/TwitPicDialog.cpp
+	src/AccountConfigurationDialog.cpp
+	src/Account.cpp
+	src/AbstractPage.cpp
+	src/HomePage.cpp
+	src/PublicPage.cpp
+	src/RepliesPage.cpp
+	src/FavoritesPage.cpp
+	src/InboxPage.cpp
+	src/OutboxPage.cpp
+	src/SearchPage.cpp
 	src/TwitterWidget.cpp
 	src/TwitterWidgetItem.cpp
+	src/Services.cpp
+	src/Twitter.cpp
+	src/Message.cpp
+	src/QwitTools.cpp
 	src/UserpicsDownloader.cpp
-	src/TwitPicDialog.cpp
+	src/UrlShortener.cpp
+	src/MainWindow.cpp
+	src/qwit.cpp
 	)
 
 file( GLOB qwit_TS translations/*.ts )
@@ -50,18 +68,7 @@ qt4_wrap_ui( qwit_UI_SRCS ${qwit_UI} )
 qt4_add_resources( qwit_RCC_SRCS ${qwit_RCC} )
 qt4_add_translation( qwit_QM ${qwit_TS} )
 
-IF( MINGW )
-# resource compilation for MinGW
-ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qwit-win.o
-		COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qwit-win.rc 
-		-o ${CMAKE_CURRENT_BINARY_DIR}/qwit-win.o )
-	SET(qwit_SRCS ${qwit_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/qwit-win.o)
-ELSE( MINGW )
-	SET(qwit_SRCS ${qwit_SRCS} qwit-win.rc)
-ENDIF( MINGW )
-
-
-automoc4_add_executable( qwit WIN32
+automoc4_add_executable( qwit
 	${qwit_SRCS}
 	${qwit_UI_SRCS}
 	${qwit_RCC_SRCS}
@@ -71,9 +78,9 @@ add_custom_target (translations_target DEPENDS ${qwit_QM} )
 add_dependencies( qwit translations_target )
 
 target_link_libraries( qwit
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY}
-    ${QT_QTXML_LIBRARY}
+	${QT_QTCORE_LIBRARY}
+	${QT_QTGUI_LIBRARY}
+	${QT_QTXML_LIBRARY}
 	${QT_QTNETWORK_LIBRARY}
 	)
 
