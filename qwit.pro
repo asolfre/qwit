@@ -11,51 +11,82 @@ MOC_DIR = var
 UI_SOURCES_DIR = var
 UI_HEADERS_DIR = var
 RCC_DIR = var
-unix:# Prefix: base instalation directory
-isEmpty( PREFIX ):PREFIX = /usr/local
+unix {
+# Prefix: base instalation directory
+    isEmpty( PREFIX ):PREFIX = /usr/local
+}
+DEFINES += 'REVISION=\\\"$(shell svnversion -n .)\\\"'
+DEFINES += 'VERSION=\\\"1.0-alpha\\\"'
 
 # Input
-HEADERS += src/LogsDialog.h \
+HEADERS += src/Configuration.h \
+    src/QwitException.h \
     src/MainWindow.h \
+    src/MessageTextEdit.h \
     src/OptionsDialog.h \
-    src/StatusTextEdit.h \
-    src/Twitter.h \
-    src/TwitterWidget.h \
-    src/UserpicsDownloader.h \
+    src/AboutDialog.h \
+    src/DirectMessageDialog.h \
     src/TwitPicDialog.h \
-    src/TwitterWidgetItem.h \
-    src/FriendsMgmtWidgetItem.h \
-    src/FriendsMgmtWidget.h \
-    src/FriendsMgmtTab.h \
-    src/FriendsMgmtDialog.h \
-    src/Enumerations.h
-FORMS += src/LogsDialog.ui \
-    src/MainWindow.ui \
+    src/Account.h \
+    src/AccountConfigurationDialog.h \
+    src/AbstractPage.h \
+    src/HomePage.h \
+    src/PublicPage.h \
+    src/RepliesPage.h \
+    src/FavoritesPage.h \
+    src/InboxPage.h \
+    src/OutboxPage.h \
+    src/SearchPage.h \
+    src/TwitterWidget.h \
+    src/Twitter.h \
+    src/Services.h \
+    src/Message.h \
+    src/QwitTools.h \
+    src/UserpicsDownloader.h \
+    src/QwitHeaders.h \
+    src/UrlShortener.h \
+    src/TwitterWidgetItem.h
+FORMS += src/MainWindow.ui \
     src/OptionsDialog.ui \
-    src/FriendsMgmtDialog.ui
-SOURCES += src/LogsDialog.cpp \
+    src/AboutDialog.ui \
+    src/AccountConfigurationDialog.ui \
+    src/DirectMessageDialog.ui
+SOURCES += src/qwit.cpp \
+    src/Configuration.cpp \
     src/MainWindow.cpp \
+    src/MessageTextEdit.cpp \
     src/OptionsDialog.cpp \
-    src/qwit.cpp \
-    src/StatusTextEdit.cpp \
-    src/Twitter.cpp \
-    src/TwitterWidget.cpp \
-    src/UserpicsDownloader.cpp \
+    src/AboutDialog.cpp \
+    src/DirectMessageDialog.cpp \
     src/TwitPicDialog.cpp \
-    src/TwitterWidgetItem.cpp \
-    src/FriendsMgmtWidgetItem.cpp \
-    src/FriendsMgmtWidget.cpp \
-    src/FriendsMgmtTab.cpp \
-    src/FriendsMgmtDialog.cpp
+    src/AccountConfigurationDialog.cpp \
+    src/Account.cpp \
+    src/AbstractPage.cpp \
+    src/HomePage.cpp \
+    src/PublicPage.cpp \
+    src/RepliesPage.cpp \
+    src/FavoritesPage.cpp \
+    src/InboxPage.cpp \
+    src/OutboxPage.cpp \
+    src/SearchPage.cpp \
+    src/TwitterWidget.cpp \
+    src/Services.cpp \
+    src/Twitter.cpp \
+    src/Message.cpp \
+    src/QwitTools.cpp \
+    src/UserpicsDownloader.cpp \
+    src/UrlShortener.cpp \
+    src/TwitterWidgetItem.cpp
 TRANSLATIONS += translations/qwit_en_US.ts \
     translations/qwit_es_ES.ts \
     translations/qwit_it_IT.ts \
     translations/qwit_pt_BR.ts \
     translations/qwit_ru_RU.ts \
-    translations/qwit_tr_TR.ts \
-    translations/qwit_de_DE.ts \
     translations/qwit_kk_KZ.ts \
-    translations/qwit_zh_CN.ts
+    translations/qwit_de_DE.ts \
+    translations/qwit_fi_FI.ts \
+    translations/qwit_zh_CN.ts \
+    translations/qwit_tr_TR.ts
 QT += network \
     xml
 RESOURCES = qwit.qrc
@@ -77,5 +108,6 @@ CONFIG += debug \
     x86 \
     ppc \
     x86_64 \
-    ppc64
+    ppc64 \
+    console
 OTHER_FILES += qwit-win.rc

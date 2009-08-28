@@ -1,7 +1,10 @@
+$Id$
+
 GENERAL
 
 Qwit - free cross-platform Qt4-based Twitter client.
 Copyright (C) 2008, 2009 Artem Iglikov
+Qwit uses icons from Crystal Project Icons (C) Everaldo Coelho
 
 CONTACTS
 
@@ -30,7 +33,7 @@ THANKS
 
 ...to Linus Torvalds, for Linux
 ...to Richard Stallman, for GNU
-...to Trolltech, for Qt
-...to all people who post issues, submits patches and commits features
+...to Nokia, for Qt
+...and to all people who post issues, submit patches and make translations
 
 and to me, for starting this stuff :)
