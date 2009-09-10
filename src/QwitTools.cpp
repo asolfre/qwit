@@ -803,4 +803,98 @@ bool QwitTools::isMention(const Message &message) {
 	return (re.indexIn(message.text) != -1);
 }
 
+QVector<UserData> QwitTools::parseUsers(const QByteArray &data, Account *account) {
+    QVector<UserData> users;
+
+    QDomDocument document;
+    document.setContent(data);
+
+    QDomElement root = document.documentElement();
+
+    if(root.tagName() != "users")
+	return users;
+
+    QDomNode node = root.firstChild();
+    while(!node.isNull()) {
+	if(node.toElement().tagName() != "user")
+	    return users;
+
+	UserData user;
+	user.account = account;
+
+	QDomNode node2 = node.firstChild();
+	while(!node2.isNull()) {
+	    if(node2.toElement().tagName() == "id") {}
+	    else if(node2.toElement().tagName() == "name"){}
+	    else if(node2.toElement().tagName() == "screen_name")
+	    {
+		user.screenName = node2.toElement().text();
+	    }
+	    else if(node2.toElement().tagName() == "location"){}
+	    //	    else if(node2.toElement().tagName() == "description"){}
+	    else if(node2.toElement().tagName() == "profile_image_url")
+	    {
+//		image = node2.toElement().text();
+	    }
+	    //	    else if(node2.toElement().tagName() == "url"){}
+	    //	    else if(node2.toElement().tagName() == "protected"){}
+	    //	    else if(node2.toElement().tagName() == "followers_count"){}
+	    //	    else if(node2.toElement().tagName() == "profile_background_color"){}
+	    //	    else if(node2.toElement().tagName() == "profile_text_color"){}
+	    //	    else if(node2.toElement().tagName() == "profile_link_color"){}
+	    //	    else if(node2.toElement().tagName() == "profile_sidebar_fill_color"){}
+	    //	    else if(node2.toElement().tagName() == "profile_sidebar_border_color"){}
+	    //	    else if(node2.toElement().tagName() == "friends_count"){}
+	    //	    else if(node2.toElement().tagName() == "created_at"){}
+	    //	    else if(node2.toElement().tagName() == "favourites_count"){}
+	    //	    else if(node2.toElement().tagName() == "utc_offset"){}
+	    //	    else if(node2.toElement().tagName() == "time_zone"){}
+	    //	    else if(node2.toElement().tagName() == "profile_background_image_url"){}
+	    //	    else if(node2.toElement().tagName() == "profile_background_tile"){}
+	    //	    else if(node2.toElement().tagName() == "statuses_count"){}
+	    //	    else if(node2.toElement().tagName() == "notifications"){}
+	    //	    else if(node2.toElement().tagName() == "verified"){}
+	    //	    else if(node2.toElement().tagName() == "following"){}
+	    else if(node2.toElement().tagName() == "status")
+	    {
+		QDomNode node3 = node2.firstChild();
+		while(!node3.isNull())
+		{
+		    if(node3.toElement().tagName() == "created_at")
+		    {
+			QDateTime tmp = dateFromString(node3.toElement().text());
+			user.time = formatDateTime(tmp);
+		    }
+		    else if(node3.toElement().tagName() == "id")
+		    {
+			user.messageId = node3.toElement().text().toULongLong();
+		    }
+		    else if(node3.toElement().tagName() == "text")
+		    {
+			user.lastMessage = node3.toElement().text();
+		    }
+		    //		    else if(node3.toElement().tagName() == "source"){}
+		    //		    else if(node3.toElement().tagName() == "truncated"){}
+		    else if(node3.toElement().tagName() == "in_reply_to_status_id")
+		    {
+			user.inReplyToMessageId = node3.toElement().text().toULongLong();
+		    }
+//		    else if(node3.toElement().tagName() == "in_reply_to_user_id"){}
+//		    else if(node3.toElement().tagName() == "favorited"){}
+		    else if(node3.toElement().tagName() == "in_reply_to_screen_name")
+		    {
+			user.inReplyToUsername = node3.toElement().text();
+		    }
+		    node3 = node3.nextSibling();
+		}
+	    }
+	    node2 = node2.nextSibling();
+	}
+
+	users.push_back(user);
+	node = node.nextSibling();
+    }
+
+    return users;
+}
 #endif

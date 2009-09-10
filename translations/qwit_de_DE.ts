@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
+<!DOCTYPE TS><TS version="1.1" language="de_DE">
+<defaultcodec></defaultcodec>
 <context>
     <name>AboutDialog</name>
     <message>
         <location filename="../src/AboutDialog.ui" line="17"/>
         <source>About Qwit</source>
-        <translation type="unfinished"></translation>
+        <translation>Über Qwit</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="66"/>
         <source>Qwit</source>
-        <translation type="unfinished">Qwit</translation>
+        <translation>Qwit</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="95"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Über</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="116"/>
@@ -34,7 +34,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/AboutDialog.ui" line="150"/>
         <source>Authors</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoren</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="156"/>
@@ -52,9 +52,9 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/AboutDialog.ui" line="172"/>
         <source>Thanks To</source>
-        <translation type="unfinished"></translation>
+        <translation>Dank an</translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
         <location filename="../src/AboutDialog.ui" line="178"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -74,7 +74,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/AboutDialog.ui" line="198"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Lizenz</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="204"/>
@@ -103,37 +103,45 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="17"/>
         <source>Configure account...</source>
-        <translation type="unfinished"></translation>
+        <translation>Konto einrichten...</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="28"/>
         <source>Username:</source>
-        <translation type="unfinished">Benutzername:</translation>
+        <translation>Benutzername:</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="38"/>
         <source>Password:</source>
-        <translation type="unfinished">Passwort:</translation>
+        <translation>Passwort:</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="52"/>
         <source>save password</source>
-        <translation type="unfinished">Passwort speichern</translation>
+        <translation>Passwort speichern</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="59"/>
         <source>use https instead of http</source>
-        <translation type="unfinished"></translation>
+        <translation>https statt http nutzen</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="66"/>
         <source>Service base URL:</source>
-        <translation type="unfinished">Service Basis-URL:</translation>
+        <translation>Service Basis-URL:</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="76"/>
         <source>Service API URL:</source>
-        <translation type="unfinished">Service API-URL:</translation>
+        <translation>Service API-URL:</translation>
+    </message>
+</context>
+<context>
+    <name>BlocksMgmtPage</name>
+    <message>
+        <location filename="../BlocksMgmtPage.cpp" line="63"/>
+        <source>Blocked</source>
+        <translation>Gesperrt</translation>
     </message>
 </context>
 <context>
@@ -168,11 +176,75 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>FollowersMgmtPage</name>
+    <message>
+        <location filename="../FollowersMgmtPage.cpp" line="63"/>
+        <source>Followers</source>
+        <translation>Anhänger</translation>
+    </message>
+</context>
+<context>
+    <name>FriendsMgmtDialog</name>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="14"/>
+        <source>Friends Management</source>
+        <translation>Freunde verwalten</translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="28"/>
+        <source>Friends</source>
+        <translation>Freunde</translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="44"/>
+        <source>new friend:</source>
+        <translation>neuer Freund:</translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="57"/>
+        <source>add</source>
+        <translation>hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="72"/>
+        <source>Followers</source>
+        <translation>Anhänger</translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="77"/>
+        <source>Blocked</source>
+        <translation>Gesperrt</translation>
+    </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.ui" line="108"/>
+        <source>Close</source>
+        <translation>schließen</translation>
+    </message>
+</context>
+<context>
+    <name>FriendshipsMgmtPage</name>
+    <message>
+        <location filename="../FriendshipsMgmtPage.cpp" line="48"/>
+        <source>new friend:</source>
+        <translation>neuer Freund:</translation>
+    </message>
+    <message>
+        <location filename="../FriendshipsMgmtPage.cpp" line="52"/>
+        <source>add</source>
+        <translation>hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../FriendshipsMgmtPage.cpp" line="76"/>
+        <source>Friends</source>
+        <translation>Freunde</translation>
+    </message>
+</context>
+<context>
     <name>HomePage</name>
     <message>
         <location filename="../src/HomePage.cpp" line="64"/>
         <source>Home</source>
-        <translation type="unfinished">Home</translation>
+        <translation>Home</translation>
     </message>
 </context>
 <context>
@@ -180,35 +252,35 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/InboxPage.cpp" line="64"/>
         <source>Inbox</source>
-        <translation type="unfinished">Eingang</translation>
+        <translation>Eingang</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="748"/>
+        <location filename="../src/MainWindow.cpp" line="751"/>
         <source>Pick an image</source>
         <translation>Wähle Avatar-Bild</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="559"/>
+        <location filename="../src/MainWindow.cpp" line="562"/>
         <source>&amp;Show / Hide</source>
         <translation>&amp;Anzeigen / Verbergen</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="561"/>
+        <location filename="../src/MainWindow.cpp" line="564"/>
         <source>&amp;Quit</source>
         <translation>&amp;Beenden</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="681"/>
+        <location filename="../src/MainWindow.cpp" line="684"/>
         <source>Qwit: new messages receieved for %1@%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="748"/>
+        <location filename="../src/MainWindow.cpp" line="751"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.PNG *.JPG *.JPEG *.BMP)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilddateien (*.png *.jpg *.jpeg *.bmp *.JPG *.PNG *.GIF *.BMP)</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.ui" line="14"/>
@@ -226,12 +298,9 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="140"/>
-        <location filename="../src/MainWindow.ui" line="154"/>
-        <location filename="../src/MainWindow.ui" line="168"/>
-        <location filename="../src/MainWindow.ui" line="182"/>
+        <location filename="../src/MainWindow.ui" line="196"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -267,12 +336,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/OptionsDialog.ui" line="444"/>
         <source>Show greeting message:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige Begrüßungstext:</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="457"/>
         <source>Show left characters number</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbleibende Zeichen anzeigen</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="464"/>
@@ -295,28 +364,21 @@ p, li { white-space: pre-wrap; }
         <translation>Reiter vertikal anordnen</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.cpp" line="71"/>
-        <location filename="../src/OptionsDialog.ui" line="34"/>
         <location filename="../src/OptionsDialog.ui" line="1113"/>
         <source>Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Konten</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.cpp" line="73"/>
         <location filename="../src/OptionsDialog.ui" line="39"/>
         <source>URL shortener</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.cpp" line="75"/>
-        <location filename="../src/OptionsDialog.ui" line="44"/>
         <location filename="../src/OptionsDialog.ui" line="73"/>
         <source>Connection</source>
         <translation>Verbindung</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.cpp" line="77"/>
-        <location filename="../src/OptionsDialog.ui" line="49"/>
         <location filename="../src/OptionsDialog.ui" line="179"/>
         <source>User interface</source>
         <translation type="unfinished"></translation>
@@ -354,21 +416,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/OptionsDialog.ui" line="189"/>
         <source>Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Reiter</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="199"/>
         <source>Home</source>
-        <translation type="unfinished">Home</translation>
+        <translation>Home</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="209"/>
-        <location filename="../src/OptionsDialog.ui" line="233"/>
-        <location filename="../src/OptionsDialog.ui" line="254"/>
-        <location filename="../src/OptionsDialog.ui" line="278"/>
-        <location filename="../src/OptionsDialog.ui" line="299"/>
-        <location filename="../src/OptionsDialog.ui" line="323"/>
-        <location filename="../src/OptionsDialog.ui" line="344"/>
         <location filename="../src/OptionsDialog.ui" line="365"/>
         <source>auto-update</source>
         <translation type="unfinished"></translation>
@@ -376,32 +431,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/OptionsDialog.ui" line="223"/>
         <source>Public</source>
-        <translation type="unfinished">Öffentlich</translation>
+        <translation>Öffentlich</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="244"/>
         <source>Replies</source>
-        <translation type="unfinished">Antworten</translation>
+        <translation>Antworten</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="268"/>
         <source>Custom</source>
-        <translation type="unfinished">Privat</translation>
+        <translation>Privat</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="289"/>
         <source>Inbox</source>
-        <translation type="unfinished">Eingang</translation>
+        <translation>Eingang</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="313"/>
         <source>Outbox</source>
-        <translation type="unfinished">Ausgang</translation>
+        <translation>Ausgang</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="334"/>
         <source>Search</source>
-        <translation type="unfinished">Suche</translation>
+        <translation>Suche</translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="355"/>
@@ -484,7 +539,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/OutboxPage.cpp" line="64"/>
         <source>Outbox</source>
-        <translation type="unfinished">Ausgang</translation>
+        <translation>Ausgang</translation>
     </message>
 </context>
 <context>
@@ -492,7 +547,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/PublicPage.cpp" line="65"/>
         <source>Public</source>
-        <translation type="unfinished">Öffentlich</translation>
+        <translation>Öffentlich</translation>
     </message>
 </context>
 <context>
@@ -500,12 +555,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QwitTools.cpp" line="90"/>
         <source>Just now</source>
-        <translation type="unfinished">Jetzt gerade</translation>
+        <translation>Jetzt gerade</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/QwitTools.cpp" line="91"/>
         <source>about %n second(s) ago</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>vor einer Sekunde</numerusform>
             <numerusform>vor %n Sekunden</numerusform>
         </translation>
@@ -513,7 +568,7 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/QwitTools.cpp" line="93"/>
         <source>about %n minute(s) ago</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>vor einer Minute</numerusform>
             <numerusform>vor %n Minuten</numerusform>
         </translation>
@@ -521,7 +576,7 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/QwitTools.cpp" line="95"/>
         <source>about %n hour(s) ago</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>vor einer Stunde</numerusform>
             <numerusform>vor %n Stunden</numerusform>
         </translation>
@@ -529,7 +584,7 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/QwitTools.cpp" line="97"/>
         <source>about %n day(s) ago</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>vor einem Tag</numerusform>
             <numerusform>vor %n Tagen</numerusform>
         </translation>
@@ -540,7 +595,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RepliesPage.cpp" line="65"/>
         <source>Replies</source>
-        <translation type="unfinished">Antworten</translation>
+        <translation>Antworten</translation>
     </message>
 </context>
 <context>
@@ -548,12 +603,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/SearchPage.cpp" line="50"/>
         <source>Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen:</translation>
     </message>
     <message>
         <location filename="../src/SearchPage.cpp" line="71"/>
         <source>Search</source>
-        <translation type="unfinished">Suche</translation>
+        <translation>Suche</translation>
     </message>
 </context>
 <context>
@@ -561,83 +616,112 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Twitter.cpp" line="91"/>
         <source>Sending message: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende Nachricht: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="113"/>
         <location filename="../src/Twitter.cpp" line="237"/>
         <source>Updating friends messages: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisiere Nachrichten von Freunden: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="134"/>
         <location filename="../src/Twitter.cpp" line="258"/>
         <source>Updating replies: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisiere Antworten: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="155"/>
         <location filename="../src/Twitter.cpp" line="279"/>
         <source>Updating public messages: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisiere öffentliche Nachrichten: %1</translation>
     </message>
     <message>
         <location filename="../src/Twitter.cpp" line="174"/>
         <source>Updating search messages: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisiere Suche: %1</translation>
     </message>
     <message>
         <location filename="../src/Twitter.cpp" line="195"/>
         <source>Updating previous search messages: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisiere vorherige Suche: %1</translation>
     </message>
     <message>
         <location filename="../src/Twitter.cpp" line="216"/>
         <source>Updating last message: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisiere letzte Nachricht: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="300"/>
         <location filename="../src/Twitter.cpp" line="321"/>
         <source>Updating favorites: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisiere Favoriten: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="342"/>
         <location filename="../src/Twitter.cpp" line="363"/>
         <source>Updating inbox messages: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisiere Eingang: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="384"/>
         <location filename="../src/Twitter.cpp" line="405"/>
         <source>Updating outbox messages: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisiere Ausgang: %1</translation>
     </message>
     <message>
         <location filename="../src/Twitter.cpp" line="434"/>
         <source>Sending direct message: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende Direktnachricht: %1</translation>
     </message>
     <message>
         <location filename="../src/Twitter.cpp" line="463"/>
         <source>Favoring message: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nachricht zu Favoriten: %1</translation>
     </message>
     <message>
         <location filename="../src/Twitter.cpp" line="492"/>
         <source>Unfavoring message: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nachricht aus Favoriten entfernen: %1</translation>
     </message>
     <message>
         <location filename="../src/Twitter.cpp" line="521"/>
         <source>Destroying message: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Entferne Nachricht: %1</translation>
     </message>
     <message>
         <location filename="../src/Twitter.cpp" line="550"/>
         <source>Destroying direct message: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Entferne Direktnachricht: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Twitter.cpp" line="802"/>
+        <source>Getting friendships: %1</source>
+        <translation>Lade Freundschaften: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Twitter.cpp" line="823"/>
+        <source>Getting followers: %1</source>
+        <translation>Lade Anhänger: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Twitter.cpp" line="844"/>
+        <source>Getting blocked users: %1</source>
+        <translation>Lade gesperrte Nutzer: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Twitter.cpp" line="873"/>
+        <source>Sending create friendship request: %1</source>
+        <translation>Sende create friendship Request: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Twitter.cpp" line="902"/>
+        <source>Sending destroy friendship request: %1</source>
+        <translation>Sende destroy friendship Request: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Twitter.cpp" line="930"/>
+        <source>Sending create block request: %1</source>
+        <translation>Sende create block Request: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/Twitter.cpp" line="958"/>
+        <source>Sending destroy block request: %1</source>
+        <translation>Sende destroy block Request: %1</translation>
     </message>
 </context>
 <context>
@@ -645,22 +729,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/TwitterWidget.cpp" line="400"/>
         <source>more</source>
-        <translation type="unfinished"></translation>
+        <translation>mehr</translation>
     </message>
     <message>
         <location filename="../src/TwitterWidget.cpp" line="410"/>
         <source>less</source>
-        <translation type="unfinished"></translation>
+        <translation>weniger</translation>
     </message>
     <message>
         <location filename="../src/TwitterWidget.cpp" line="421"/>
         <source>Delete message</source>
-        <translation type="unfinished"></translation>
+        <translation>Lösche Nachricht</translation>
     </message>
     <message>
         <location filename="../src/TwitterWidget.cpp" line="421"/>
         <source>Are you sure to delete this message?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sind Sie sicher, dass Sie die Nachricht löschen möchten?</translation>
     </message>
 </context>
 </TS>

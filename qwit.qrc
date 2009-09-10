@@ -23,5 +23,6 @@
         <file>translations/qwit_es_ES.ts</file>
         <file>translations/qwit_en_US.ts</file>
         <file>images/qwitnewmessages.png</file>
+        <file>images/friends.png</file>
     </qresource>
 </RCC>
