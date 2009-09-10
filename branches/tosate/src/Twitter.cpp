@@ -558,170 +558,220 @@ void Twitter::requestStarted(int id) {
 	qDebug() << ("Twitter::requestStarted() " + QString::number(id));
 	
 	if (receiveFriendsMessagesRequests.find(id) != receiveFriendsMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receiveFriendsMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receiveFriendsMessagesRequests[id]);
 	} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
-		qDebug() << ("Request started: " + receiveRepliesRequests[id]);
+	    qDebug() << ("Request started: " + receiveRepliesRequests[id]);
 	} else if (receivePublicMessagesRequests.find(id) != receivePublicMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receivePublicMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receivePublicMessagesRequests[id]);
 	} else if (receiveLastMessageRequests.find(id) != receiveLastMessageRequests.end()) {
-		qDebug() << ("Request started: " + receiveLastMessageRequests[id]);
+	    qDebug() << ("Request started: " + receiveLastMessageRequests[id]);
 	} else if (sendMessageRequests.find(id) != sendMessageRequests.end()) {
-		qDebug() << ("Request started: " + sendMessageRequests[id]);
+	    qDebug() << ("Request started: " + sendMessageRequests[id]);
 	} else if (receiveFavoritesRequests.find(id) != receiveFavoritesRequests.end()) {
-		qDebug() << ("Request started: " + receiveFavoritesRequests[id]);
+	    qDebug() << ("Request started: " + receiveFavoritesRequests[id]);
 	} else if (receivePreviousFriendsMessagesRequests.find(id) != receivePreviousFriendsMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receivePreviousFriendsMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receivePreviousFriendsMessagesRequests[id]);
 	} else if (receivePreviousRepliesRequests.find(id) != receivePreviousRepliesRequests.end()) {
-		qDebug() << ("Request started: " + receivePreviousRepliesRequests[id]);
+	    qDebug() << ("Request started: " + receivePreviousRepliesRequests[id]);
 	} else if (receivePreviousPublicMessagesRequests.find(id) != receivePreviousPublicMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receivePreviousPublicMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receivePreviousPublicMessagesRequests[id]);
 	} else if (receivePreviousFavoritesRequests.find(id) != receivePreviousFavoritesRequests.end()) {
-		qDebug() << ("Request started: " + receivePreviousFavoritesRequests[id]);
+	    qDebug() << ("Request started: " + receivePreviousFavoritesRequests[id]);
 	} else if (receiveInboxMessagesRequests.find(id) != receiveInboxMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receiveInboxMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receiveInboxMessagesRequests[id]);
 	} else if (receivePreviousInboxMessagesRequests.find(id) != receivePreviousInboxMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receivePreviousInboxMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receivePreviousInboxMessagesRequests[id]);
 	} else if (receiveOutboxMessagesRequests.find(id) != receiveOutboxMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receiveOutboxMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receiveOutboxMessagesRequests[id]);
 	} else if (receivePreviousOutboxMessagesRequests.find(id) != receivePreviousOutboxMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receivePreviousOutboxMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receivePreviousOutboxMessagesRequests[id]);
 	} else if (sendDirectMessageRequests.find(id) != sendDirectMessageRequests.end()) {
-		qDebug() << ("Request started: " + sendDirectMessageRequests[id]);
+	    qDebug() << ("Request started: " + sendDirectMessageRequests[id]);
 	} else if (favorMessageRequests.find(id) != favorMessageRequests.end()) {
-		qDebug() << ("Request started: " + favorMessageRequests[id]);
+	    qDebug() << ("Request started: " + favorMessageRequests[id]);
 	} else if (unfavorMessageRequests.find(id) != unfavorMessageRequests.end()) {
-		qDebug() << ("Request started: " + unfavorMessageRequests[id]);
+	    qDebug() << ("Request started: " + unfavorMessageRequests[id]);
 	} else if (destroyMessageRequests.find(id) != destroyMessageRequests.end()) {
-		qDebug() << ("Request started: " + destroyMessageRequests[id]);
+	    qDebug() << ("Request started: " + destroyMessageRequests[id]);
 	} else if (destroyDirectMessageRequests.find(id) != destroyDirectMessageRequests.end()) {
-		qDebug() << ("Request started: " + destroyDirectMessageRequests[id]);
+	    qDebug() << ("Request started: " + destroyDirectMessageRequests[id]);
 	} else if (receiveSearchMessagesRequests.find(id) != receiveSearchMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receiveSearchMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receiveSearchMessagesRequests[id]);
 	} else if (receivePreviousSearchMessagesRequests.find(id) != receivePreviousSearchMessagesRequests.end()) {
-		qDebug() << ("Request started: " + receivePreviousSearchMessagesRequests[id]);
+	    qDebug() << ("Request started: " + receivePreviousSearchMessagesRequests[id]);
+	} else if (receiveFriendshipsRequests.find(id) != receiveFriendshipsRequests.end()) {
+	    qDebug() << ("Request started: " + receiveFriendshipsRequests[id]);
+	} else if (receiveFollowersRequests.find(id) != receiveFollowersRequests.end()) {
+	    qDebug() << ("Request started: " + receiveFollowersRequests[id]);
+	} else if (receiveBlocksRequests.find(id) != receiveBlocksRequests.end()) {
+	    qDebug() << ("Request started: " + receiveBlocksRequests[id]);
+	} else if (createFriendshipRequests.find(id) != createFriendshipRequests.end()) {
+	    qDebug() << ("Request started: " + createFriendshipRequests[id]);
+	} else if (destroyFriendshipRequests.find(id) != destroyFriendshipRequests.end()) {
+	    qDebug() << ("Request started: " + destroyFriendshipRequests[id]);
+	} else if (createBlockRequests.find(id) != createBlockRequests.end()) {
+	    qDebug() << ("Request started: " + createBlockRequests[id]);
+	} else if (destroyBlockRequests.find(id) != destroyBlockRequests.end()) {
+	    qDebug() << ("Request started: " + destroyBlockRequests[id]);
 	}
+
 }
 
 void Twitter::requestFinished(int id, bool error) {
-	if (!error && http->lastResponse().isValid() && (http->lastResponse().statusCode() == 200)) {
-		qDebug() << ("Twitter::requestFinished() " + QString::number(id));
-		buffer.close();
-		QHttpResponseHeader response = http->lastResponse();
-		QString remainingRequests = response.value("X-RateLimit-Remaining");
-		if (receiveFriendsMessagesRequests.find(id) != receiveFriendsMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receiveFriendsMessagesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit friendsMessagesReceived(buffer.data());
-			receiveFriendsMessagesRequests.remove(id);
-		} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
-			qDebug() << ("Request finished: " + receiveRepliesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit repliesReceived(buffer.data());
-			receiveRepliesRequests.remove(id);
-		} else if (receivePublicMessagesRequests.find(id) != receivePublicMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receivePublicMessagesRequests[id]);
-			emit publicMessagesReceived(buffer.data());
-			receivePublicMessagesRequests.remove(id);
-		} else if (receiveLastMessageRequests.find(id) != receiveLastMessageRequests.end()) {
-			qDebug() << ("Request finished: " + receiveLastMessageRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit lastMessageReceived(buffer.data());
-			receiveLastMessageRequests.remove(id);
-		} else if (sendMessageRequests.find(id) != sendMessageRequests.end()) {
-			qDebug() << ("Request finished: " + sendMessageRequests[id]);
-			emit messageSent(buffer.data());
-			sendMessageRequests.remove(id);
-		} else if (receiveFavoritesRequests.find(id) != receiveFavoritesRequests.end()) {
-			qDebug() << ("Request finished: " + receiveFavoritesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit favoritesReceived(buffer.data());
-			receiveFavoritesRequests.remove(id);
-		} else if (receivePreviousFriendsMessagesRequests.find(id) != receivePreviousFriendsMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receivePreviousFriendsMessagesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit previousFriendsMessagesReceived(buffer.data());
-			receivePreviousFriendsMessagesRequests.remove(id);
-		} else if (receivePreviousRepliesRequests.find(id) != receivePreviousRepliesRequests.end()) {
-			qDebug() << ("Request finished: " + receivePreviousRepliesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit previousRepliesReceived(buffer.data());
-			receivePreviousRepliesRequests.remove(id);
-		} else if (receivePreviousPublicMessagesRequests.find(id) != receivePreviousPublicMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receivePreviousPublicMessagesRequests[id]);
-			buffer.close();
-			emit previousPublicMessagesReceived(buffer.data());
-			receivePreviousPublicMessagesRequests.remove(id);
-		} else if (receivePreviousFavoritesRequests.find(id) != receivePreviousFavoritesRequests.end()) {
-			qDebug() << ("Request finished: " + receivePreviousFavoritesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit previousFavoritesReceived(buffer.data());
-			receivePreviousFavoritesRequests.remove(id);
-		} else if (receiveInboxMessagesRequests.find(id) != receiveInboxMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receiveInboxMessagesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit inboxMessagesReceived(buffer.data());
-			receiveInboxMessagesRequests.remove(id);
-		} else if (receivePreviousInboxMessagesRequests.find(id) != receivePreviousInboxMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receivePreviousInboxMessagesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit previousInboxMessagesReceived(buffer.data());
-			receivePreviousInboxMessagesRequests.remove(id);
-		} else if (receiveOutboxMessagesRequests.find(id) != receiveOutboxMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receiveOutboxMessagesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit outboxMessagesReceived(buffer.data());
-			receiveOutboxMessagesRequests.remove(id);
-		} else if (receivePreviousOutboxMessagesRequests.find(id) != receivePreviousOutboxMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receivePreviousOutboxMessagesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit previousOutboxMessagesReceived(buffer.data());
-			receivePreviousOutboxMessagesRequests.remove(id);
-		} else if (sendDirectMessageRequests.find(id) != sendDirectMessageRequests.end()) {
-			qDebug() << ("Request finished: " + sendDirectMessageRequests[id]);
-			emit directMessageSent(buffer.data());
-			sendDirectMessageRequests.remove(id);
-		} else if (favorMessageRequests.find(id) != favorMessageRequests.end()) {
-			qDebug() << ("Request finished: " + favorMessageRequests[id]);
-			emit messageFavored(buffer.data());
-			favorMessageRequests.remove(id);
-		} else if (unfavorMessageRequests.find(id) != unfavorMessageRequests.end()) {
-			qDebug() << ("Request finished: " + unfavorMessageRequests[id]);
-			buffer.close();
-			emit messageUnfavored(buffer.data());
-			unfavorMessageRequests.remove(id);
-		} else if (destroyMessageRequests.find(id) != destroyMessageRequests.end()) {
-			qDebug() << ("Request finished: " + destroyMessageRequests[id]);
-			emit messageDestroyed(buffer.data());
-			destroyMessageRequests.remove(id);
-		} else if (destroyDirectMessageRequests.find(id) != destroyDirectMessageRequests.end()) {
-			qDebug() << ("Request finished: " + destroyDirectMessageRequests[id]);
-			emit directMessageDestroyed(buffer.data());
-			destroyDirectMessageRequests.remove(id);
-		} else if (receiveSearchMessagesRequests.find(id) != receiveSearchMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receiveSearchMessagesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit searchMessagesReceived(buffer.data());
-			receiveSearchMessagesRequests.remove(id);
-		} else if (receivePreviousSearchMessagesRequests.find(id) != receivePreviousSearchMessagesRequests.end()) {
-			qDebug() << ("Request finished: " + receivePreviousSearchMessagesRequests[id]);
-			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			emit previousSearchMessagesReceived(buffer.data());
-			receivePreviousSearchMessagesRequests.remove(id);
-		}
-	} else {
-		if (sendMessageRequests.find(id) != sendMessageRequests.end()) {
-			qDebug() << ("Request failed (message not sent): " + sendMessageRequests[id]);
-			emit messageNotSent();
-			sendMessageRequests.remove(id);
-		}
-		if (http->lastResponse().isValid()) {
-			qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->lastResponse().statusCode()) + " " + http->lastResponse().reasonPhrase());
-		} else if (error) {
-			qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->error()) + " " + http->errorString());
-		} else {
-			qDebug() << ("Twitter::requestFinished() " + QString::number(id));
-		}
+    if (!error && http->lastResponse().isValid() && (http->lastResponse().statusCode() == 200)) {
+	qDebug() << ("Twitter::requestFinished() " + QString::number(id));
+	buffer.close();
+	QHttpResponseHeader response = http->lastResponse();
+	QString remainingRequests = response.value("X-RateLimit-Remaining");
+	if (receiveFriendsMessagesRequests.find(id) != receiveFriendsMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveFriendsMessagesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit friendsMessagesReceived(buffer.data());
+	    receiveFriendsMessagesRequests.remove(id);
+	} else if (receiveRepliesRequests.find(id) != receiveRepliesRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveRepliesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit repliesReceived(buffer.data());
+	    receiveRepliesRequests.remove(id);
+	} else if (receivePublicMessagesRequests.find(id) != receivePublicMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receivePublicMessagesRequests[id]);
+	    emit publicMessagesReceived(buffer.data());
+	    receivePublicMessagesRequests.remove(id);
+	} else if (receiveLastMessageRequests.find(id) != receiveLastMessageRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveLastMessageRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit lastMessageReceived(buffer.data());
+	    receiveLastMessageRequests.remove(id);
+	} else if (sendMessageRequests.find(id) != sendMessageRequests.end()) {
+	    qDebug() << ("Request finished: " + sendMessageRequests[id]);
+	    emit messageSent(buffer.data());
+	    sendMessageRequests.remove(id);
+	} else if (receiveFavoritesRequests.find(id) != receiveFavoritesRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveFavoritesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit favoritesReceived(buffer.data());
+	    receiveFavoritesRequests.remove(id);
+	} else if (receivePreviousFriendsMessagesRequests.find(id) != receivePreviousFriendsMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receivePreviousFriendsMessagesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit previousFriendsMessagesReceived(buffer.data());
+	    receivePreviousFriendsMessagesRequests.remove(id);
+	} else if (receivePreviousRepliesRequests.find(id) != receivePreviousRepliesRequests.end()) {
+	    qDebug() << ("Request finished: " + receivePreviousRepliesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit previousRepliesReceived(buffer.data());
+	    receivePreviousRepliesRequests.remove(id);
+	} else if (receivePreviousPublicMessagesRequests.find(id) != receivePreviousPublicMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receivePreviousPublicMessagesRequests[id]);
+	    buffer.close();
+	    emit previousPublicMessagesReceived(buffer.data());
+	    receivePreviousPublicMessagesRequests.remove(id);
+	} else if (receivePreviousFavoritesRequests.find(id) != receivePreviousFavoritesRequests.end()) {
+	    qDebug() << ("Request finished: " + receivePreviousFavoritesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit previousFavoritesReceived(buffer.data());
+	    receivePreviousFavoritesRequests.remove(id);
+	} else if (receiveInboxMessagesRequests.find(id) != receiveInboxMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveInboxMessagesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit inboxMessagesReceived(buffer.data());
+	    receiveInboxMessagesRequests.remove(id);
+	} else if (receivePreviousInboxMessagesRequests.find(id) != receivePreviousInboxMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receivePreviousInboxMessagesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit previousInboxMessagesReceived(buffer.data());
+	    receivePreviousInboxMessagesRequests.remove(id);
+	} else if (receiveOutboxMessagesRequests.find(id) != receiveOutboxMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveOutboxMessagesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit outboxMessagesReceived(buffer.data());
+	    receiveOutboxMessagesRequests.remove(id);
+	} else if (receivePreviousOutboxMessagesRequests.find(id) != receivePreviousOutboxMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receivePreviousOutboxMessagesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit previousOutboxMessagesReceived(buffer.data());
+	    receivePreviousOutboxMessagesRequests.remove(id);
+	} else if (sendDirectMessageRequests.find(id) != sendDirectMessageRequests.end()) {
+	    qDebug() << ("Request finished: " + sendDirectMessageRequests[id]);
+	    emit directMessageSent(buffer.data());
+	    sendDirectMessageRequests.remove(id);
+	} else if (favorMessageRequests.find(id) != favorMessageRequests.end()) {
+	    qDebug() << ("Request finished: " + favorMessageRequests[id]);
+	    emit messageFavored(buffer.data());
+	    favorMessageRequests.remove(id);
+	} else if (unfavorMessageRequests.find(id) != unfavorMessageRequests.end()) {
+	    qDebug() << ("Request finished: " + unfavorMessageRequests[id]);
+	    buffer.close();
+	    emit messageUnfavored(buffer.data());
+	    unfavorMessageRequests.remove(id);
+	} else if (destroyMessageRequests.find(id) != destroyMessageRequests.end()) {
+	    qDebug() << ("Request finished: " + destroyMessageRequests[id]);
+	    emit messageDestroyed(buffer.data());
+	    destroyMessageRequests.remove(id);
+	} else if (destroyDirectMessageRequests.find(id) != destroyDirectMessageRequests.end()) {
+	    qDebug() << ("Request finished: " + destroyDirectMessageRequests[id]);
+	    emit directMessageDestroyed(buffer.data());
+	    destroyDirectMessageRequests.remove(id);
+	} else if (receiveSearchMessagesRequests.find(id) != receiveSearchMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveSearchMessagesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit searchMessagesReceived(buffer.data());
+	    receiveSearchMessagesRequests.remove(id);
+	} else if (receivePreviousSearchMessagesRequests.find(id) != receivePreviousSearchMessagesRequests.end()) {
+	    qDebug() << ("Request finished: " + receivePreviousSearchMessagesRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit previousSearchMessagesReceived(buffer.data());
+	    receivePreviousSearchMessagesRequests.remove(id);
+	} else if (receiveFriendshipsRequests.find(id) != receiveFriendshipsRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveFriendshipsRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit friendshipsReceived(buffer.data());
+	    receiveFriendshipsRequests.remove(id);
+	} else if (receiveFollowersRequests.find(id) != receiveFollowersRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveFollowersRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit followersReceived(buffer.data());
+	    receiveFollowersRequests.remove(id);
+	} else if (receiveBlocksRequests.find(id) != receiveBlocksRequests.end()) {
+	    qDebug() << ("Request finished: " + receiveBlocksRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit blocksReceived(buffer.data());
+	    receiveBlocksRequests.remove(id);
+	} else if (createFriendshipRequests.find(id) != createFriendshipRequests.end()) {
+	    qDebug() << ("Request finished: " + createFriendshipRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit friendshipCreated(buffer.data());
+	    createFriendshipRequests.remove(id);
+	} else if (destroyFriendshipRequests.find(id) != destroyFriendshipRequests.end()) {
+	    qDebug() << ("Request finished: " + destroyFriendshipRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit friendshipDestroyed(buffer.data());
+	    destroyFriendshipRequests.remove(id);
+	} else if (createBlockRequests.find(id) != createBlockRequests.end()) {
+	    qDebug() << ("Request finished: " + createBlockRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit blockCreated(buffer.data());
+	    createBlockRequests.remove(id);
+	} else if (destroyBlockRequests.find(id) != destroyBlockRequests.end()) {
+	    qDebug() << ("Request finished: " + destroyBlockRequests[id]);
+	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+	    emit blockDestroyed(buffer.data());
+	    destroyBlockRequests.remove(id);
 	}
+    } else {
+	if (sendMessageRequests.find(id) != sendMessageRequests.end()) {
+	    qDebug() << ("Request failed (message not sent): " + sendMessageRequests[id]);
+	    emit messageNotSent();
+	    sendMessageRequests.remove(id);
+	}
+	if (http->lastResponse().isValid()) {
+	    qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->lastResponse().statusCode()) + " " + http->lastResponse().reasonPhrase());
+	} else if (error) {
+	    qDebug() << ("Twitter::requestFinished() " + QString::number(id) + " error " + QString::number(http->error()) + " " + http->errorString());
+	} else {
+	    qDebug() << ("Twitter::requestFinished() " + QString::number(id));
+	}
+    }
 }
 
 void Twitter::sslErrors(const QList<QSslError> &errors) {
@@ -731,4 +781,180 @@ void Twitter::sslErrors(const QList<QSslError> &errors) {
 	}
 }
 
+void Twitter::receiveFriendships() {
+    qDebug() << ("Twitter::receiveFriendships()");
+
+    setupProxy();
+
+    QUrl url(account->serviceApiUrl() + Services::options[account->type]["showFriendships"] + ".xml");
+
+    if(url.toString().indexOf("https") == 0) {
+	http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+	http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+    http->setUser(account->username, account->password);
+
+    buffer.open(QIODevice::WriteOnly);
+
+    int id = http->get(url.path(), &buffer);
+    receiveFriendshipsRequests[id] = tr("Getting friendships: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receiveFollowers() {
+    qDebug() << ("Twitter::receiveFollowers()");
+
+    setupProxy();
+
+    QUrl url(account->serviceApiUrl() + Services::options[account->type]["showFollowers"] + ".xml");
+
+    if(url.toString().indexOf("https") == 0) {
+	http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+	http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+    http->setUser(account->username, account->password);
+
+    buffer.open(QIODevice::WriteOnly);
+
+    int id = http->get(url.path(), &buffer);
+    receiveFollowersRequests[id] = tr("Getting followers: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receiveBlocks() {
+    qDebug() << ("Twitter::receiveBlocks()");
+
+    setupProxy();
+
+    QUrl url(account->serviceApiUrl() + Services::options[account->type]["showBlocks"] + ".xml");
+
+    if(url.toString().indexOf("https") == 0) {
+	http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+	http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+    http->setUser(account->username, account->password);
+
+    buffer.open(QIODevice::WriteOnly);
+
+    int id = http->get(url.path(), &buffer);
+    receiveBlocksRequests[id] = tr("Getting blocked users: %1").arg(url.host() + url.path());
+}
+
+void Twitter::createFriendship(QString screenName) {
+    qDebug() << ("Twitter::createFriendship()");
+
+    setupProxy();
+
+    QUrl url(account->serviceApiUrl() + Services::options[account->type]["createFriendship"] + ".xml");
+
+    QHttpRequestHeader header;
+    header.setRequest("POST", url.path());
+    header.setValue("Host", url.host());
+    header.setContentType("application/x-www-form-urlencoded");
+
+    if(url.toString().indexOf("https") == 0) {
+	http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+	http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+    http->setUser(account->username, account->password);
+
+    QByteArray data = "screen_name=";
+    data+= screenName;
+
+    buffer.open(QIODevice::WriteOnly);
+
+    int id = http->request(header, data, &buffer);
+    createFriendshipRequests[id] = tr("Sending create friendship request: %1").arg(url.host() + url.path());
+}
+
+void Twitter::destroyFriendship(QString screenName) {
+    qDebug() << ("Twitter::destroyFriendship()");
+
+    setupProxy();
+
+    QUrl url(account->serviceApiUrl() + Services::options[account->type]["destroyFriendship"] + ".xml");
+
+    QHttpRequestHeader header;
+    header.setRequest("POST", url.path());
+    header.setValue("Host", url.host());
+    header.setContentType("application/x-www-form-urlencoded");
+
+    if(url.toString().indexOf("https") == 0) {
+	http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+	http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+    http->setUser(account->username, account->password);
+
+    QByteArray data = "screen_name=";
+    data += screenName;
+
+    buffer.open(QIODevice::WriteOnly);
+
+    int id = http->request(header, data, &buffer);
+    destroyFriendshipRequests[id] = tr("Sending destroy friendship request: %1").arg(url.host() + url.path());
+}
+
+void Twitter::createBlock(QString screenName) {
+    qDebug() << ("Twitter::createBlock()");
+
+    setupProxy();
+
+    QUrl url(account->serviceApiUrl() + Services::options[account->type]["createBlock"] + screenName + ".xml");
+
+    QHttpRequestHeader header;
+    header.setRequest("POST", url.path());
+    header.setValue("Host", url.host());
+    header.setContentType("application/x-www-form-urlencoded");
+
+    if(url.toString().indexOf("https") == 0) {
+	http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+	http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+    http->setUser(account->username, account->password);
+
+    QByteArray data;
+
+    buffer.open(QIODevice::WriteOnly);
+
+    int id = http->request(header, data, &buffer);
+    createBlockRequests[id] = tr("Sending create block request: %1").arg(url.host() + url.path());
+}
+
+void Twitter::destroyBlock(QString screenName) {
+    qDebug() << ("Twitter::destroyBlock()");
+
+    setupProxy();
+
+    QUrl url(account->serviceApiUrl() + Services::options[account->type]["destroyBlock"] + screenName + ".xml");
+
+    QHttpRequestHeader header;
+    header.setRequest("POST", url.path());
+    header.setValue("Host", url.host());
+    header.setContentType("application/x-www-form-urlencoded");
+
+    if(url.toString().indexOf("https") == 0) {
+	http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+	http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+    http->setUser(account->username, account->password);
+
+    QByteArray data;
+
+    buffer.open(QIODevice::WriteOnly);
+
+    int id = http->request(header, data, &buffer);
+    destroyBlockRequests[id] = tr("Sending destroy block request: %1").arg(url.host() + url.path());
+}
 #endif

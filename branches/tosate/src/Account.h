@@ -35,6 +35,7 @@
 
 #include "Twitter.h"
 #include "Message.h"
+#include "UserData.h"
 
 class Twitter;
 class Message;
@@ -70,6 +71,9 @@ public:
 	QVector<Message> inboxMessages;
 	QVector<Message> outboxMessages;
 	QVector<Message> searchMessages;
+	QVector<UserData> friendships;
+	QVector<UserData> followers;
+	QVector<UserData> blocks;
 
 	Account();
 	Account(const QString &type, const QString &username, const QString &password, bool useHttps = false);
@@ -127,6 +131,16 @@ public slots:
 	void favorMessage(const Message &message);
 	void unfavorMessage(const Message &message);
 	void destroyMessage(const Message &message);
+	void receiveFriendships();
+	void receiveFollowers();
+	void receiveBlocks();
+	void createFriendship(QString screenName);
+	void destroyFriendship(QString screenName);
+	void createBlock(QString screenName);
+	void destroyBlock(QString screenName);
+	void updateFriendships(const QByteArray &data);
+	void updateFollowers(const QByteArray &data);
+	void updateBlocks(const QByteArray &data);
 	
 signals:
 	void friendsMessagesUpdated(const QVector<Message> &, Account *);
@@ -148,6 +162,14 @@ signals:
 	void previousFavoritesReceived();
 	void previousInboxMessagesReceived();
 	void previousOutboxMessagesReceived();
+	// redirect incoming signal to the dedicated element
+	void friendshipsUpdated(const QVector<UserData> &);
+	void followersUpdated(const QVector<UserData> &);
+	void blocksUpdated(const QVector<UserData> &);
+//	void friendshipAdded(const QByteArray&);
+//	void friendshipRemoved(const QByteArray&);
+//	void blockAdded(const QByteArray&);
+//	void BbockRemoved(const QByteArray&);
 };
 
 #endif
