@@ -37,6 +37,7 @@
 FollowersMgmtPage::FollowersMgmtPage(QWidget *parent) : AbstractUserMgmtPage(parent)
 {
     qDebug() << ("FollowersMgmtPage::FollowersMgmtPage()");
+
     userMgmtWidget->setObjectName(QString::fromUtf8("followersMgmtWidget"));
     // define connects
 

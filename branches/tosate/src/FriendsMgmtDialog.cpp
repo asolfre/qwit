@@ -96,6 +96,8 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
     config->currentAccount()->receiveFollowers();
     config->currentAccount()->receiveBlocks();
 
+    tabWidget->setCurrentIndex(0);
+
     event->accept();
 }
 
@@ -489,3 +491,13 @@ void FriendsMgmtDialog::updateConnects()
     connect(config->currentAccount(), SIGNAL(blocksUpdated(QVector<UserData>)), blocksPage, SLOT(updateItems(QVector<UserData>)));
 }
 #endif
+
+void FriendsMgmtDialog::on_tabWidget_currentChanged(int index)
+{
+    qDebug() << ("FriendsMgmtDialog::on_tabWidget_currentChanged()");
+
+    if((index >= 0) && (index < pages.size()) && pages[index])
+    {
+	pages[index]->updateSize();
+    }
+}

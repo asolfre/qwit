@@ -37,6 +37,7 @@
 BlocksMgmtPage::BlocksMgmtPage(QWidget *parent) :AbstractUserMgmtPage(parent)
 {
     qDebug() << ("BlocksMgmtPage::BlocksMgmtPage()");
+
     userMgmtWidget->setObjectName(QString::fromUtf8("blocksMgmtWidget"));
     // define
 

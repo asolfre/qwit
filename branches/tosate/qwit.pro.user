@@ -63,7 +63,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >AXIS2_HOME=/opt/axis2-1.4</value>
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-ipk155wu6Z,guid=5a1a0b2692df011b57e5c1614aa813e0</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-e8uZ442sD5,guid=3316b1a8ecd9fe5be6b1820d4aa922cd</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -71,9 +71,9 @@
     <value type="QString" >GDM_LANG=en_US.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=6315</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-neLgBf/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-z1g4xO/S.gpg-agent:6390:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=6250</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-8zVvLW/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-fe0fDU/S.gpg-agent:6326:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/tosate/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/tosate</value>
     <value type="QString" >JAVA_HOME=/usr/lib/jvm/java-6-sun</value>
@@ -83,17 +83,17 @@
     <value type="QString" >LOGNAME=tosate</value>
     <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-tosate</value>
     <value type="QString" >PATH=/home/tosate/qtsdk-2009.03/qt/bin:/home/tosate/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games":$JAVA_HOME/bin</value>
-    <value type="QString" >PWD=/home/tosate/qtsdk-2009.03/bin</value>
+    <value type="QString" >PWD=/home/tosate</value>
     <value type="QString" >QTDIR=/home/tosate/qtsdk-2009.03/qt</value>
-    <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6325</value>
+    <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6261</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-neLgBf/ssh</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-8zVvLW/ssh</value>
     <value type="QString" >USER=tosate</value>
     <value type="QString" >USERNAME=tosate</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/tosate/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1252529119.207763-1973662478</value>
+    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1252598475.785958-748147237</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >/home/tosate/cppProgramming/qwit/qwit.pro</value>
@@ -114,7 +114,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >AXIS2_HOME=/opt/axis2-1.4</value>
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-ipk155wu6Z,guid=5a1a0b2692df011b57e5c1614aa813e0</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-e8uZ442sD5,guid=3316b1a8ecd9fe5be6b1820d4aa922cd</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -122,9 +122,9 @@
     <value type="QString" >GDM_LANG=en_US.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=6315</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-neLgBf/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-z1g4xO/S.gpg-agent:6390:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=6250</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-8zVvLW/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-fe0fDU/S.gpg-agent:6326:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/tosate/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/tosate</value>
     <value type="QString" >JAVA_HOME=/usr/lib/jvm/java-6-sun</value>
@@ -134,17 +134,17 @@
     <value type="QString" >LOGNAME=tosate</value>
     <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-tosate</value>
     <value type="QString" >PATH=/home/tosate/qtsdk-2009.03/qt/bin:/home/tosate/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games":$JAVA_HOME/bin</value>
-    <value type="QString" >PWD=/home/tosate/qtsdk-2009.03/bin</value>
+    <value type="QString" >PWD=/home/tosate</value>
     <value type="QString" >QTDIR=/home/tosate/qtsdk-2009.03/qt</value>
-    <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6325</value>
+    <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6261</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-neLgBf/ssh</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-8zVvLW/ssh</value>
     <value type="QString" >USER=tosate</value>
     <value type="QString" >USERNAME=tosate</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/tosate/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1252529119.207763-1973662478</value>
+    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1252598475.785958-748147237</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >-w</value>
@@ -160,7 +160,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >AXIS2_HOME=/opt/axis2-1.4</value>
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-ipk155wu6Z,guid=5a1a0b2692df011b57e5c1614aa813e0</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-e8uZ442sD5,guid=3316b1a8ecd9fe5be6b1820d4aa922cd</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -168,9 +168,9 @@
     <value type="QString" >GDM_LANG=en_US.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=6315</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-neLgBf/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-z1g4xO/S.gpg-agent:6390:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=6250</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-8zVvLW/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-fe0fDU/S.gpg-agent:6326:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/tosate/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/tosate</value>
     <value type="QString" >JAVA_HOME=/usr/lib/jvm/java-6-sun</value>
@@ -180,17 +180,17 @@
     <value type="QString" >LOGNAME=tosate</value>
     <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-tosate</value>
     <value type="QString" >PATH=/home/tosate/qtsdk-2009.03/qt/bin:/home/tosate/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games":$JAVA_HOME/bin</value>
-    <value type="QString" >PWD=/home/tosate/qtsdk-2009.03/bin</value>
+    <value type="QString" >PWD=/home/tosate</value>
     <value type="QString" >QTDIR=/home/tosate/qtsdk-2009.03/qt</value>
-    <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6325</value>
+    <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6261</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-neLgBf/ssh</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-8zVvLW/ssh</value>
     <value type="QString" >USER=tosate</value>
     <value type="QString" >USERNAME=tosate</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/tosate/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1252529119.207763-1973662478</value>
+    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1252598475.785958-748147237</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >clean</value>
