@@ -51,9 +51,9 @@ class UserMgmtWidget : public QWidget
 private:
 //    QScrollArea *scrollArea;
     QVector<UserMgmtWidgetItem*> items;
-    int nextItemIndex;
-    int tabIndex;
-    QString serviceBaseUrl;
+//    int nextItemIndex;
+//    int tabIndex;
+//    QString serviceBaseUrl;
     int widgetType;
 
 public:
@@ -74,7 +74,7 @@ public:
 //    int getItemCount();
 //    void resizeWidget();
 
-    static QString formatDateTime(const QDateTime &time);
+//    static QString formatDateTime(const QDateTime &time);
 
 protected:
     // overwrite QWidget::paintEvent() method

@@ -84,6 +84,7 @@ private:
 //	void processUserXmlStructure(QDomNode *currentNode, Categories category, Actions action);
 
 private slots:
+    void on_tabWidget_currentChanged(int index);
     void on_newFriendLineEdit_textEdited(QString );
     void on_closePushButton_pressed();
     void on_addFriendPushButton_pressed();

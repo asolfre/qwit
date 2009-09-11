@@ -48,7 +48,7 @@
 UserMgmtWidget::UserMgmtWidget(QWidget *parent) : QWidget(parent)
 {
     qDebug() << ("UserMgmtWidget::UserMgmtWidget()");
-    nextItemIndex = 0;
+//    nextItemIndex = 0;
 }
 
 
@@ -74,6 +74,7 @@ void UserMgmtWidget::addItem(UserData userData)
     UserMgmtWidgetItem *item = new UserMgmtWidgetItem(userData, this, this->widgetType);
 
     items.push_back(item);
+//    nextItemIndex++;
 }
 
 void UserMgmtWidget::updateItems()
@@ -91,13 +92,12 @@ void UserMgmtWidget::clear()
 {
     qDebug() << ("UserMgmtWidget::clear()");
 
-    if(nextItemIndex > 0)
+    if(items.size() > 0)
     {
-	for(int i=nextItemIndex-1; i>=0; i--)
+	for(int i=items.size()-1; i>=0; i--)
 	{
 	    delete items[i];
 	}
-	nextItemIndex = 0;
 	this->items.clear();
     }
 }

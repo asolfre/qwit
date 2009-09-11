@@ -42,7 +42,7 @@ public:
     FollowersMgmtPage(QWidget *parent = 0);
     void updateSize();
     QString title();
-    void update(Account *account);
+    void update(Account *account = 0);
 };
 
 #endif // FOLLOWERSMGMTPAGE_H
