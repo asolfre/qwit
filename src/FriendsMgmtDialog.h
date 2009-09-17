@@ -67,27 +67,19 @@ public:
     FriendsMgmtDialog(QWidget *parent);
 
 public slots:
-//    void unfollow(const QString screenName);
-//    void follow(const QString screenName);
-//    void block(const QString screenName);
-//    void unblock(const QString screenName);
-//    void friendshipsUpdated(const QByteArray &friendshipsBuffer, int type);
+    void unfollow(QString screenName);
+    void follow(QString screenName);
+    void block(QString screenName);
+    void unblock(QString screenName);
 //    void saveState();
-//    void tabChanged(int index);
-//    void friendsMgmtEvent(const QByteArray &friendsMgmtBuffer, int type);
 
 protected:
     void resizeEvent(QResizeEvent *event);
     void showEvent(QShowEvent *event);
 
-private:
-//	void processUserXmlStructure(QDomNode *currentNode, Categories category, Actions action);
-
 private slots:
     void on_tabWidget_currentChanged(int index);
-    void on_newFriendLineEdit_textEdited(QString );
     void on_closePushButton_pressed();
-    void on_addFriendPushButton_pressed();
 };
 
 #endif

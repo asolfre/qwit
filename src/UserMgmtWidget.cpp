@@ -33,7 +33,6 @@
 #define UserMgmtWidget_cpp
 
 #include <QScrollBar>
-#include <QMessageBox>
 
 #include "UserMgmtWidget.h"
 
@@ -69,9 +68,9 @@ UserMgmtWidget::UserMgmtWidget(QWidget *parent) : QWidget(parent)
 //    this->updateItems();
 //}
 
-void UserMgmtWidget::addItem(UserData userData)
+void UserMgmtWidget::addItem(Message message, int widgetType)
 {
-    UserMgmtWidgetItem *item = new UserMgmtWidgetItem(userData, this, this->widgetType);
+    UserMgmtWidgetItem *item = new UserMgmtWidgetItem(message, this, widgetType);
 
     items.push_back(item);
 //    nextItemIndex++;
@@ -83,7 +82,7 @@ void UserMgmtWidget::updateItems()
 
     for (int i = 0; i < items.size(); ++i)
     {
-	height += items[i]->update(height, (i & 1));
+	height += items[i]->update(i, height);
     }
     resize(width(), height);
 }
@@ -125,58 +124,25 @@ void UserMgmtWidget::resizeEvent(QResizeEvent *event)
     event->accept();
 }
 
-//void UserMgmtWidget::unfollowClicked(const QUrl &url)
-//{
-//    emit unfollow(url.path().remove(0, 1));
-//}
-//
-//void UserMgmtWidget::followClicked(const QUrl &url)
-//{
-//    emit follow(url.path().remove(0, 1));
-//}
-//
-//void UserMgmtWidget::blockClicked(const QUrl &url)
-//{
-//    QString screenName = url.path().remove(0, 1);
-//
-//    QMessageBox msgBox;
-//    msgBox.setText(tr("Blocking will prevent %1 from following you. And you won't see their tweets in your timeline. Are you sure you want to block?").arg(screenName));
-//    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-//    msgBox.setDefaultButton(QMessageBox::Cancel);
-//    msgBox.setIcon(QMessageBox::Warning);
-//    int ret = msgBox.exec();
-//
-//    if(ret == QMessageBox::Ok)
-//    {
-//	this->removeItem(screenName);
-//	emit block(screenName);
-//    }
-//}
-//
-//void UserMgmtWidget::unblockClicked(const QUrl &url)
-//{
-//    emit unblock(url.path().remove(0, 1));
-//}
-//
-//void UserMgmtWidget::removeItem(QString screenName)
-//{
-//    for(int i=0; i<items.size(); i++)
-//    {
-//	if(items[i]->getUsername() == screenName)
-//	{
-//	    delete items[i];
-//	    this->items.remove(i);
-//	    nextItemIndex--;
-//	    updateItems();
-//	    return;
-//	}
-//    }
-//}
-//
-//int UserMgmtWidget::getItemCount()
-//{
-//    return nextItemIndex;
-//}
+void UserMgmtWidget::follow(QString screenName)
+{
+    emit createFriendship(screenName);
+}
+
+void UserMgmtWidget::unfollow(QString screenName)
+{
+    emit destroyFriendship(screenName);
+}
+
+void UserMgmtWidget::block(QString screenName)
+{
+    emit createBlock(screenName);
+}
+
+void UserMgmtWidget::unblock(QString screenName)
+{
+    emit destroyBlock(screenName);
+}
 
 //void UserMgmtWidget::resizeWidget()
 //{

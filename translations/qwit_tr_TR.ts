@@ -166,7 +166,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>BlocksMgmtPage</name>
     <message>
-        <location filename="../BlocksMgmtPage.cpp" line="63"/>
+        <location filename="../BlocksMgmtPage.cpp" line="64"/>
         <source>Blocked</source>
         <translation type="unfinished"></translation>
     </message>
@@ -205,7 +205,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>FollowersMgmtPage</name>
     <message>
-        <location filename="../FollowersMgmtPage.cpp" line="63"/>
+        <location filename="../FollowersMgmtPage.cpp" line="64"/>
         <source>Followers</source>
         <translation type="unfinished"></translation>
     </message>
@@ -247,6 +247,11 @@ p, li { white-space: pre-wrap; }
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="128"/>
+        <source>Blocking will prevent %1 from following you. And you won&apos;t see their tweets in your timeline. Are you sure you want to block?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FriendshipsMgmtPage</name>
@@ -261,7 +266,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FriendshipsMgmtPage.cpp" line="76"/>
+        <location filename="../FriendshipsMgmtPage.cpp" line="78"/>
         <source>Friends</source>
         <translation type="unfinished"></translation>
     </message>
@@ -285,27 +290,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="751"/>
+        <location filename="../src/MainWindow.cpp" line="752"/>
         <source>Pick an image</source>
         <translation>Bir resim seçin</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="562"/>
+        <location filename="../src/MainWindow.cpp" line="563"/>
         <source>&amp;Show / Hide</source>
         <translation>&amp;Göster / Gizle</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="564"/>
+        <location filename="../src/MainWindow.cpp" line="565"/>
         <source>&amp;Quit</source>
         <translation>Çı&amp;kış</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="684"/>
+        <location filename="../src/MainWindow.cpp" line="685"/>
         <source>Qwit: new messages receieved for %1@%2</source>
         <translation>Qwit: %1@%2 için yeni iletiler alındı</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="751"/>
+        <location filename="../src/MainWindow.cpp" line="752"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.PNG *.JPG *.JPEG *.BMP)</source>
         <translation>Resim Dosyaları (*.png *.jpg *.jpeg *.bmp *.PNG *.JPG *.JPEG *.BMP)</translation>
     </message>

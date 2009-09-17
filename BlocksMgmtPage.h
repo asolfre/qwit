@@ -36,8 +36,13 @@
 
 class BlocksMgmtPage : public AbstractUserMgmtPage
 {
+    Q_OBJECT
+
+protected:
+    int widgetType();
+
 public:
-    BlocksMgmtPage(QWidget *parent = 0);
+    BlocksMgmtPage(QWidget *parent);
     void updateSize();
     QString title();
     void update(Account *account = 0);

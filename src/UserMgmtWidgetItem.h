@@ -40,20 +40,22 @@
 #include <QDateTime>
 
 #include "QwitHeaders.h"
-#include "UserData.h"
+#include "Message.h"
 //#include "Enumerations.h"
 
-class UserMgmtWidgetItem
+class UserMgmtWidgetItem : public QObject
 {
+    Q_OBJECT
+
 private:
     QWidget *parent;
     int widgetType;
     // object that displays all the information about a friend
-    QTextBrowser *userDataTextBrowser;
+    QTextBrowser *messageTextBrowser;
     QToolButton *followButton;
     QToolButton *unfollowButton;
     QToolButton *blockButton;
-    QToolButton *destroyBlockButton;
+    QToolButton *unblockButton;
     QLabel *userpicLabel;
     QLabel *signLabel;
     QString iconFileName;
@@ -61,20 +63,25 @@ private:
     int topPosition;
     int height;
     QColor color;
-    UserData userData;
+    Message message;
 
 public:
     static const int IconSize = 48;
     static const int Margin = 5;
-//    UserMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const int category, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl);
-    UserMgmtWidgetItem(UserData userData, QWidget *parent, int widgetType);
+    UserMgmtWidgetItem(Message message, QWidget *parent, int widgetType);
     ~UserMgmtWidgetItem();
     void loadUserpic();
 //    void show();
-    int update(int top, bool odd);
+    int arrangeMessage(int index, int currentHeight);
+    int update(int index, int currentHeight);
     void paint(QPainter &painter, QPalette palette, int width);
 //    void hide();
 
+private slots:
+    void on_followToolButton_pressed();
+    void on_unfollowToolButton_pressed();
+    void on_blockToolButton_pressed();
+    void on_unblockToolButton_pressed();
 };
 
 #endif // UserMgmtWidgetITEM_H

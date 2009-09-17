@@ -34,7 +34,6 @@
 #include "QwitHeaders.h"
 
 #include "Message.h"
-#include "UserData.h"
 
 class QwitTools: public QObject {
 	Q_OBJECT
@@ -64,7 +63,7 @@ public:
 	static QVector<Message> mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages);
 	static bool isUrl(const QString &s);
 	static bool isMention(const Message &message);
-	static QVector<UserData> parseUsers(const QByteArray &data, Account *account);
+	static QVector<Message> parseUsers(const QByteArray &data, Account *account);
 };
 
 void handleMessage(QtMsgType type, const char *msg);
