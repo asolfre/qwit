@@ -111,4 +111,9 @@ void FriendshipsMgmtPage::on_addFriendPushButton_pressed()
 
 //    followImpl(screenName);
 }
+
+int FriendshipsMgmtPage::widgetType()
+{
+    return 0;
+}
 #endif

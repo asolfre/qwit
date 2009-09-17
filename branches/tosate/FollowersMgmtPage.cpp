@@ -78,4 +78,9 @@ void FollowersMgmtPage::update(Account *account)
 	config->currentAccount()->receiveFollowers();
     }
 }
+
+int FollowersMgmtPage::widgetType()
+{
+    return 1;
+}
 #endif

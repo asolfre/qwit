@@ -47,7 +47,6 @@ HEADERS += src/Configuration.h \
     src/FriendsMgmtDialog.h \
     src/UserMgmtWidget.h \
     src/UserMgmtWidgetItem.h \
-    src/UserData.h \
     src/AbstractUserMgmtPage.h \
     FriendshipsMgmtPage.h \
     FollowersMgmtPage.h \
@@ -87,7 +86,6 @@ SOURCES += src/qwit.cpp \
     src/FriendsMgmtDialog.cpp \
     src/UserMgmtWidget.cpp \
     src/UserMgmtWidgetItem.cpp \
-    src/UserData.cpp \
     src/AbstractUserMgmtPage.cpp \
     FriendshipsMgmtPage.cpp \
     FollowersMgmtPage.cpp \

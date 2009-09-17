@@ -41,7 +41,7 @@
 #include "QwitHeaders.h"
 
 #include "UserMgmtWidgetItem.h"
-#include "UserData.h"
+#include "Message.h"
 //#include "Enumerations.h"
 
 class UserMgmtWidget : public QWidget
@@ -52,16 +52,13 @@ private:
 //    QScrollArea *scrollArea;
     QVector<UserMgmtWidgetItem*> items;
 //    int nextItemIndex;
-//    int tabIndex;
 //    QString serviceBaseUrl;
-    int widgetType;
 
 public:
-//    UserMgmtWidget(QWidget *parent, QScrollArea *scrollArea, int widgetType);
     UserMgmtWidget(QWidget *parent);
     void clear();
 //    void addItem(QString username, QString userpic, Categories category, QString statusText, uint messageId, QDateTime time, uint replyStatusId);
-    void addItem(UserData userData);
+    void addItem(Message message, int widgetType);
 //    void removeItem(QString screenName);
     void updateItems();
 //    const UserMgmtWidgetItem getItem(int index);
@@ -73,6 +70,10 @@ public:
 //    void restoreScrollPosition();
 //    int getItemCount();
 //    void resizeWidget();
+    void follow(QString screenName);
+    void unfollow(QString screenName);
+    void block(QString screenName);
+    void unblock(QString screenName);
 
 //    static QString formatDateTime(const QDateTime &time);
 
@@ -82,17 +83,11 @@ protected:
     // overwrite QWidget::resizeEvent() method
     void resizeEvent(QResizeEvent *event);
 
-public slots:
-//    void unfollowClicked(const QUrl &url);
-//    void followClicked(const QUrl &url);
-//    void blockClicked(const QUrl &url);
-//    void unblockClicked(const QUrl &url);
-
 signals:
-//    void unfollow(const QString);
-//    void follow(const QString);
-//    void block(const QString);
-//    void unblock(const QString);
+    void createFriendship(QString);
+    void destroyFriendship(QString);
+    void createBlock(QString);
+    void destroyBlock(QString);
 };
 
 #endif // UserMgmtWidget_H

@@ -38,6 +38,9 @@ class FriendshipsMgmtPage : public AbstractUserMgmtPage
 {
     Q_OBJECT
 
+protected:
+    int widgetType();
+
 private:
     QVBoxLayout *vBoxLayout;
     QHBoxLayout *hBoxLayout;
@@ -45,7 +48,7 @@ private:
     QLineEdit *newFriendLineEdit;
     QPushButton *addFriendPushButton;
 public:
-    FriendshipsMgmtPage(QWidget *parent = 0);
+    FriendshipsMgmtPage(QWidget *parent);
     void updateSize();
     QString title();
     void update(Account *account = 0);

@@ -35,7 +35,6 @@
 
 #include "Twitter.h"
 #include "Message.h"
-#include "UserData.h"
 
 class Twitter;
 class Message;
@@ -71,9 +70,9 @@ public:
 	QVector<Message> inboxMessages;
 	QVector<Message> outboxMessages;
 	QVector<Message> searchMessages;
-	QVector<UserData> friendships;
-	QVector<UserData> followers;
-	QVector<UserData> blocks;
+	QVector<Message> friendships;
+	QVector<Message> followers;
+	QVector<Message> blocks;
 
 	Account();
 	Account(const QString &type, const QString &username, const QString &password, bool useHttps = false);
@@ -163,9 +162,9 @@ signals:
 	void previousInboxMessagesReceived();
 	void previousOutboxMessagesReceived();
 	// redirect incoming signal to the dedicated element
-	void friendshipsUpdated(const QVector<UserData> &);
-	void followersUpdated(const QVector<UserData> &);
-	void blocksUpdated(const QVector<UserData> &);
+	void friendshipsUpdated(const QVector<Message> &);
+	void followersUpdated(const QVector<Message> &);
+	void blocksUpdated(const QVector<Message> &);
 //	void friendshipAdded(const QByteArray&);
 //	void friendshipRemoved(const QByteArray&);
 //	void blockAdded(const QByteArray&);

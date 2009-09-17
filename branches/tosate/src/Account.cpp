@@ -810,7 +810,7 @@ void Account::destroyBlock(QString screenName) {
 void Account::updateFriendships(const QByteArray &data) {
     qDebug() << ("Account::updateFriendships()");
 
-    QVector<UserData> friends = QwitTools::parseUsers(data, this);
+    QVector<Message> friends = QwitTools::parseUsers(data, this);
 
     emit friendshipsUpdated(friends);
 }
@@ -818,7 +818,7 @@ void Account::updateFriendships(const QByteArray &data) {
 void Account::updateFollowers(const QByteArray &data) {
     qDebug() << ("Account::updateFollowers()");
 
-    QVector<UserData> followers = QwitTools::parseUsers(data, this);
+    QVector<Message> followers = QwitTools::parseUsers(data, this);
 
     emit followersUpdated(followers);
 }
@@ -826,7 +826,7 @@ void Account::updateFollowers(const QByteArray &data) {
 void Account::updateBlocks(const QByteArray &data) {
     qDebug() << (" Account::updateBlocks()");
 
-    QVector<UserData> blocks = QwitTools::parseUsers(data, this);
+    QVector<Message> blocks = QwitTools::parseUsers(data, this);
 
     emit blocksUpdated(blocks);
 }

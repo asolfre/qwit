@@ -38,8 +38,11 @@ class FollowersMgmtPage : public AbstractUserMgmtPage
 {
     Q_OBJECT
 
+protected:
+    int widgetType();
+
 public:
-    FollowersMgmtPage(QWidget *parent = 0);
+    FollowersMgmtPage(QWidget *parent);
     void updateSize();
     QString title();
     void update(Account *account = 0);

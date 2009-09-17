@@ -34,7 +34,7 @@
 
 #include "BlocksMgmtPage.h"
 
-BlocksMgmtPage::BlocksMgmtPage(QWidget *parent) :AbstractUserMgmtPage(parent)
+BlocksMgmtPage::BlocksMgmtPage(QWidget *parent) : AbstractUserMgmtPage(parent)
 {
     qDebug() << ("BlocksMgmtPage::BlocksMgmtPage()");
 
@@ -77,5 +77,10 @@ void BlocksMgmtPage::update(Account *account)
     {
 	config->currentAccount()->receiveBlocks();
     }
+}
+
+int BlocksMgmtPage::widgetType()
+{
+    return 3;
 }
 #endif

@@ -44,19 +44,20 @@ class AbstractUserMgmtPage : public QWidget
 protected:
     QScrollArea *scrollArea;
     UserMgmtWidget *userMgmtWidget;
+    virtual int widgetType() = 0;
 
 public:
-    AbstractUserMgmtPage(QWidget *parent = 0);
+    AbstractUserMgmtPage(QWidget *parent);
     virtual void update(Account *accout = 0) = 0;
     virtual void redraw();
-    virtual void addItem(UserData userData);
+    virtual void addItem(Message message);
     virtual void updateSize() = 0;
     virtual QString title() = 0;
     virtual void reloadUserpics();
     void clear();
 
 public slots:
-    virtual void updateItems(const QVector<UserData> &items);
+    virtual void updateItems(const QVector<Message> &items);
 };
 
 #endif // ABSTRACTUSERMGMTPAGE_H

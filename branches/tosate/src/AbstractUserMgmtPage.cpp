@@ -33,19 +33,26 @@
 #define AbstractUserMgmtPage_cpp
 
 #include "AbstractUserMgmtPage.h"
+#include "FriendsMgmtDialog.h"
 
 AbstractUserMgmtPage::AbstractUserMgmtPage(QWidget *parent) : QWidget(parent)
 {
     qDebug() << ("AbstractUserMgmtPage::AbstractUserMgmtPage()");
     userMgmtWidget = new UserMgmtWidget(this);
     userMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+
     // define general connects
+    FriendsMgmtDialog *friendsMgmtDialog = (FriendsMgmtDialog*) parent;
+    connect(userMgmtWidget, SIGNAL(createFriendship(QString)), friendsMgmtDialog, SLOT(follow(QString)));
+    connect(userMgmtWidget, SIGNAL(destroyFriendship(QString)), friendsMgmtDialog, SLOT(unfollow(QString)));
+    connect(userMgmtWidget, SIGNAL(createBlock(QString)), friendsMgmtDialog, SLOT(block(QString)));
+    connect(userMgmtWidget, SIGNAL(destroyBlock(QString)), friendsMgmtDialog, SLOT(unblock(QString)));
 }
 
-void AbstractUserMgmtPage::addItem(UserData userData)
+void AbstractUserMgmtPage::addItem(Message message)
 {
     qDebug() << ("AbstractUserMgmtPage::addItem()");
-    userMgmtWidget->addItem(userData);
+    userMgmtWidget->addItem(message, widgetType());
 }
 
 void AbstractUserMgmtPage::clear()
@@ -60,7 +67,7 @@ void AbstractUserMgmtPage::reloadUserpics()
 //    userMgmtWidget->reloadUserpics();
 }
 
-void AbstractUserMgmtPage::updateItems(const QVector<UserData> &items)
+void AbstractUserMgmtPage::updateItems(const QVector<Message> &items)
 {
     qDebug() << ("AbstractUserMgmtPage::updateItems()");
     clear();

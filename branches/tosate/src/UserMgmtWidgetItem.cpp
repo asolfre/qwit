@@ -37,59 +37,23 @@
 
 #include "UserMgmtWidgetItem.h"
 #include "QwitTools.h"
-//#include "TwitterWidget.h"
+#include "Configuration.h"
+#include "UserMgmtWidget.h"
 
-//UserMgmtWidgetItem::UserMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const int category, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl)
-//{
-//    this->parent = parent;
-//    this->status = new QTextBrowser(parent);
-//    this->status->setHtml(TwitterWidgetItem::prepare(statusText,replyStatusId, serviceBaseUrl));
-//    this->status->setReadOnly(true);
-//    this->status->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    this->status->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    this->status->setFrameShape(QFrame::NoFrame);
-//    this->status->setOpenExternalLinks(true);
-//
-//    QFont font = status->document()->defaultFont();
-//    font.setFamily("Verdana");
-//    this->status->document()->setDefaultFont(font);
-//
-//    this->username = username;
-//    this->category = category;
-//    this->icon = new QLabel(parent);
-//    this->messageId = messageId;
-//    this->time = time;
-//
-//    this->sign = new QLabel(parent);
-//    this->sign->setAlignment(Qt::AlignRight);
-//    this->sign->setOpenExternalLinks(true);
-//
-//    this->ctrl = new QLabel(parent);
-//    this->ctrl->setAlignment(Qt::AlignRight);
-//    this->ctrl->setOpenExternalLinks(true);
-//
-//    this->iconFileName = iconFileName;
-//
-//    QDesktopServices::setUrlHandler("unfollow", parent, "unfollowClicked");
-//    QDesktopServices::setUrlHandler("follow", parent, "followClicked");
-//    QDesktopServices::setUrlHandler("block", parent, "blockClicked");
-//    QDesktopServices::setUrlHandler("unblock", parent, "unblockClicked");
-//}
-
-UserMgmtWidgetItem::UserMgmtWidgetItem(UserData userData, QWidget *parent, int widgetType)
+UserMgmtWidgetItem::UserMgmtWidgetItem(Message message, QWidget *parent, int widgetType)
 {
     qDebug() << ("UserMgmtWidgetItem::UserMgmtWidgetItem()");
     this->parent = parent;
     this->widgetType = widgetType;
 
-    this->userData = userData;
-    this->userDataTextBrowser = new QTextBrowser(parent);
-    this->userDataTextBrowser->setHtml(QwitTools::prepareMessage(userData.lastMessage, userData.account));
-    this->userDataTextBrowser->setReadOnly(true);
-    this->userDataTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->userDataTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->userDataTextBrowser->setFrameShape(QFrame::NoFrame);
-    this->userDataTextBrowser->setOpenExternalLinks(true);
+    this->message = message;
+    this->messageTextBrowser = new QTextBrowser(parent);
+    this->messageTextBrowser->setHtml(QwitTools::prepareMessage(message.text, message.account));
+    this->messageTextBrowser->setReadOnly(true);
+    this->messageTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->messageTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->messageTextBrowser->setFrameShape(QFrame::NoFrame);
+    this->messageTextBrowser->setOpenExternalLinks(true);
 
     this->userpicLabel = new QLabel(parent);
     this->loadUserpic();
@@ -99,8 +63,33 @@ UserMgmtWidgetItem::UserMgmtWidgetItem(UserData userData, QWidget *parent, int w
     this->signLabel->setStyleSheet("a{text-decoration:none;}");
 
     // add Buttons
+    followButton = new QToolButton(parent);
+    followButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
+    followButton->setText("");
+    followButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    followButton->setAutoRaise(true);
+    unfollowButton = new QToolButton(parent);
+    unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
+    unfollowButton->setText("");
+    unfollowButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    unfollowButton->setAutoRaise(true);
+    blockButton = new QToolButton(parent);
+    blockButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
+    blockButton->setText("");
+    blockButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    blockButton->setAutoRaise(true);
+    unblockButton = new QToolButton(parent);
+    unblockButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
+    unblockButton->setText("");
+    unblockButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    unblockButton->setAutoRaise(true);
 
-    this->userDataTextBrowser->show();
+    connect(followButton, SIGNAL(pressed()), this, SLOT(on_followToolButton_pressed()));
+    connect(unfollowButton, SIGNAL(pressed()), this, SLOT(on_unfollowToolButton_pressed()));
+    connect(blockButton, SIGNAL(pressed()), this, SLOT(on_blockToolButton_pressed()));
+    connect(unblockButton, SIGNAL(pressed()), this, SLOT(on_unblockToolButton_pressed()));
+
+    this->messageTextBrowser->show();
     this->userpicLabel->show();
     this->signLabel->show();
 }
@@ -108,6 +97,11 @@ UserMgmtWidgetItem::UserMgmtWidgetItem(UserData userData, QWidget *parent, int w
 UserMgmtWidgetItem::~UserMgmtWidgetItem()
 {
     qDebug() << ("UserMgmtWidgetItem::~UserMgmtWidgetItem()");
+
+    delete followButton;
+    delete unfollowButton;
+    delete blockButton;
+    delete unblockButton;
 }
 
 //void UserMgmtWidgetItem::show()
@@ -135,92 +129,131 @@ void UserMgmtWidgetItem::loadUserpic()
 	userpicLabel->resize(UserMgmtWidgetItem::IconSize, UserMgmtWidgetItem::IconSize);
 }
 
-int UserMgmtWidgetItem::update(int top, bool odd)
-{
-    // calculate the size of the status element
-    int messageItemWidth = parent->width() - (UserMgmtWidgetItem::IconSize + 5 * UserMgmtWidgetItem::Margin);
-    QFontMetrics fontMetrics(userDataTextBrowser->font());
-    int messageItemHeight = fontMetrics.boundingRect(0, 0, messageItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, userDataTextBrowser->toPlainText()).height() + 5;
-
-    if(messageItemHeight < UserMgmtWidgetItem::IconSize)
-    {
-	messageItemHeight = UserMgmtWidgetItem::IconSize;
-    }
-
-    // positioning and scaling of the status element
-    this->topPosition = top;
-    userDataTextBrowser->move(UserMgmtWidgetItem::IconSize + 2 * UserMgmtWidgetItem::Margin, top + UserMgmtWidgetItem::Margin);
-    userDataTextBrowser->resize(messageItemWidth, messageItemHeight);
-    messageItemHeight += userDataTextBrowser->verticalScrollBar()->maximum() - userDataTextBrowser->verticalScrollBar()->minimum();
-    userDataTextBrowser->resize(messageItemWidth, messageItemHeight);
-    // positioning of the icon
-    userpicLabel->move(UserMgmtWidgetItem::Margin, top + UserMgmtWidgetItem::Margin);
-
-    QString messageIdText(QString::number(userData.messageId));
-
-    QString tablew = "";
-    tablew.setNum(messageItemWidth + 70);
-    signLabel->setText("<table border=\"0\" width=\"" + tablew + "\" cellpadding=\"0\" cellspacing=\"0\">"
-			+ "<tr valign=\"top\"><td width=\"50%\">"
-			+ "<a href=\"twitter://user/username\" style=\"font-weight:bold;text-decoration:none;font-size:small\">" + userData.screenName + "</a>"
-			+ "</td>"
-			+ "<td width=\"50%\">"
-			+ "<p align=\"right\" style=\"UserMgmtWidgetItem::Margin-right:20px\">"
-			+ "<a href=\"http://twitter.com/username/statuses/messageIdText\" style=\"font-size:small;text-decoration:none\">"
-			+ "TwitterWidget::formatDateTime(this->time)</a>"
-			+ "</p>"
-			+ "</td>"
-			+ "</tr></table>");
-
-    signLabel->resize(parent->width() + (7 * UserMgmtWidgetItem::Margin), 16);
-    signLabel->move(UserMgmtWidgetItem::Margin, top + messageItemHeight + UserMgmtWidgetItem::Margin);
-
-//    switch(category)
-//    {
-//	case FRIENDS:
-//	    ctrl->setText("<a href=\"unfollow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/unfollow.png\"/></a><br>"
-//	    + "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
-//	    break;
-//	case FOLLOWERS:
-//	    ctrl->setText("<a href=\"follow://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/follow.png\"/></a><br>"
-//	    + "<a href=\"block://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/block.png\"/></a>");
-//	    break;
-//	case BLOCKED:
-//	    ctrl->setText("<a href=\"unblock://twitter.com/" + username + "\" style=\"text-decoration:none\"><img src=\":/images/follow.png\"/></a>");
-//	    break;
-//	default:
-//	    break;
-//    }
-//    // positioning of the ctrl element
-//    ctrl->adjustSize();
-//    ctrl->move(parent->width() - ctrl->width() - UserMgmtWidgetItem::Margin, top + UserMgmtWidgetItem::Margin);
-
-    // set color of the FriendMgmtWidgetItem
-    if(odd)
-    {
-	this->color.setRgb(230, 230, 230);
-    }
-    else
-    {
-	this->color.setRgb(255, 255, 255);
-    }
-
-    int itemHeight = signLabel->y() + signLabel->height();
-    if(UserMgmtWidgetItem::IconSize > itemHeight)
-    {
-	itemHeight = UserMgmtWidgetItem::IconSize;
-    }
-    itemHeight += UserMgmtWidgetItem::Margin - top;
-    height = itemHeight;
-
-    return itemHeight;
-}
-
 void UserMgmtWidgetItem::paint(QPainter &painter, QPalette palette, int width)
 {
     painter.fillRect(0, topPosition, width, height, QBrush(color));
     palette.setColor(QPalette::Active, QPalette::Base, color);
     palette.setColor(QPalette::Inactive, QPalette::Base, color);
-    userDataTextBrowser->setPalette(palette);
+    messageTextBrowser->setPalette(palette);
+}
+
+int UserMgmtWidgetItem::update(int index, int currentHeight)
+{
+    return arrangeMessage(index, currentHeight);
+}
+
+int UserMgmtWidgetItem::arrangeMessage(int index, int currentHeight)
+{
+    QFontMetrics fontMetrics(messageTextBrowser->font());
+    int messageItemWidth = parent->width() - (UserMgmtWidgetItem::IconSize + 4 * UserMgmtWidgetItem::Margin + followButton->width());
+    int messageItemHeight = fontMetrics.boundingRect(0, 0, messageItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, messageTextBrowser->toPlainText()).height() + UserMgmtWidgetItem::Margin;
+    if(messageItemHeight < UserMgmtWidgetItem::IconSize)
+	messageItemHeight = UserMgmtWidgetItem::IconSize;
+
+    messageTextBrowser->move(UserMgmtWidgetItem::IconSize + 2 * UserMgmtWidgetItem::Margin, currentHeight + UserMgmtWidgetItem::Margin);
+    messageTextBrowser->resize(messageItemWidth, messageItemHeight);
+
+    messageItemHeight += messageTextBrowser->verticalScrollBar()->maximum() - messageTextBrowser->verticalScrollBar()->minimum();
+    messageTextBrowser->resize(messageItemWidth, messageItemHeight);
+
+    userpicLabel->move(UserMgmtWidgetItem::Margin, currentHeight + UserMgmtWidgetItem::Margin);
+
+    // arrange buttons on the right
+    switch(widgetType)
+    {
+    case 0:
+	followButton->hide();
+	unfollowButton->show();
+	blockButton->show();
+	unblockButton->hide();
+	break;
+    case 1:
+	if(message.following)
+	{
+	    followButton->hide();
+	    unfollowButton->show();
+	}
+	else
+	{
+	    followButton->show();
+	    unfollowButton->hide();
+	}
+	blockButton->show();
+	unblockButton->hide();
+	break;
+    case 2:
+	followButton->hide();
+	unfollowButton->hide();
+	blockButton->hide();
+	unblockButton->show();
+	break;
+    default:
+	break;
+    }
+    followButton->move(parent->width() - UserMgmtWidgetItem::Margin - followButton->width(), currentHeight);
+    unfollowButton->move(parent->width() - UserMgmtWidgetItem::Margin - unfollowButton->width(), currentHeight);
+    blockButton->move(parent->width() - UserMgmtWidgetItem::Margin - blockButton->width(), currentHeight + blockButton->height());
+    unblockButton->move(parent->width() - UserMgmtWidgetItem::Margin - unblockButton->width(), currentHeight + unblockButton->height());
+
+    QString messageUrl = this->message.account->singleMessageUrl().replace("%username", this->message.username).replace("%messageid", QString::number(this->message.id));
+    QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" +
+		   message.account->serviceBaseUrl() + "/" + message.username + "\" style=\"font-weight:bold\">" + message.username + "</a> - " +
+		   "<a href=\"" + messageUrl + "\">" + QwitTools::formatDateTime(message.time) + "</a>";
+    if(message.source != "")
+    {
+	sign += " - from " + message.source;
+    }
+    if(message.inReplyToMessageId)
+    {
+	QString inReplyToMessageUrl = message.account->singleMessageUrl().replace("%username", this->message.inReplyToUsername).replace("%messageid", QString::number(this->message.inReplyToMessageId));
+	sign += " - <a href=\"" + inReplyToMessageUrl + "\"> in reply to " + message.inReplyToUsername + "</a>";
+    }
+    sign += "</div>";
+    this->signLabel->setText(sign);
+    this->signLabel->adjustSize();
+    this->signLabel->setToolTip(message.time.toString(Qt::DefaultLocaleLongDate));
+    int signY = 0, signX = 0;
+    // positioning
+    signY = blockButton->pos().y() + blockButton->height() - signLabel->height();
+    signY = max(signY, messageTextBrowser->pos().y() + messageTextBrowser->height() + UserMgmtWidgetItem::Margin);
+    signX = parent->width() - signLabel->width() - UserMgmtWidgetItem::Margin - blockButton->width();
+    signLabel->move(signX, signY);
+
+    Configuration *config = Configuration::getInstance();
+    if(index & 1)
+	color = config->commonMessagesEvenColor;
+    else
+	color = config->commonMessagesOddColor;
+
+    int itemHeight = messageItemHeight + signLabel->height() + UserMgmtWidgetItem::Margin;
+    itemHeight = max(blockButton->y() + blockButton->height(), signLabel->y() + signLabel->height()) + UserMgmtWidgetItem::Margin - currentHeight;
+    this->topPosition = currentHeight;
+    this->height = itemHeight;
+
+    return itemHeight;
+}
+
+void UserMgmtWidgetItem::on_followToolButton_pressed()
+{
+    UserMgmtWidget *userMgmtWidget = (UserMgmtWidget*) parent;
+    userMgmtWidget->follow(message.username);
+}
+
+void UserMgmtWidgetItem::on_unfollowToolButton_pressed()
+{
+    UserMgmtWidget *userMgmtWidget = (UserMgmtWidget*) parent;
+    userMgmtWidget->unfollow(message.username);
+}
+
+void UserMgmtWidgetItem::on_blockToolButton_pressed()
+{
+    UserMgmtWidget *userMgmtWidget = (UserMgmtWidget*) parent;
+    userMgmtWidget->block(message.username);
+}
+
+void UserMgmtWidgetItem::on_unblockToolButton_pressed()
+{
+    UserMgmtWidget *userMgmtWidget = (UserMgmtWidget*) parent;
+    userMgmtWidget->unblock(message.username);
 }
 #endif

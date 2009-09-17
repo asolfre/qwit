@@ -432,7 +432,7 @@ Message QwitTools::parseUser(const QByteArray &data, Account *account) {
 			QDomNode node2 = node.firstChild();
 			QString text = "", timeStr = "", user = "", image = "", source = "";
 			quint64 id = 0;
-			int inReplyToMessageId = 0;
+			quint64 inReplyToMessageId = 0;
 			QString inReplyToUsername = "";
                         bool following = false;
                         bool favorited = false;
@@ -803,8 +803,8 @@ bool QwitTools::isMention(const Message &message) {
 	return (re.indexIn(message.text) != -1);
 }
 
-QVector<UserData> QwitTools::parseUsers(const QByteArray &data, Account *account) {
-    QVector<UserData> users;
+QVector<Message> QwitTools::parseUsers(const QByteArray &data, Account *account) {
+    QVector<Message> messages;
 
     QDomDocument document;
     document.setContent(data);
@@ -812,29 +812,33 @@ QVector<UserData> QwitTools::parseUsers(const QByteArray &data, Account *account
     QDomElement root = document.documentElement();
 
     if(root.tagName() != "users")
-	return users;
+	return messages;
 
     QDomNode node = root.firstChild();
     while(!node.isNull()) {
 	if(node.toElement().tagName() != "user")
-	    return users;
+	    return messages;
 
-	UserData user;
-	user.account = account;
+	QString text = "", timeStr = "", user = "", image = "", source = "";
+	quint64 id = 0;
+	quint64 inReplyToMessageId = 0;
+	QString inReplyToUsername = "";
+	bool following = false;
+	bool favorited = false;
 
 	QDomNode node2 = node.firstChild();
 	while(!node2.isNull()) {
-	    if(node2.toElement().tagName() == "id") {}
+	    if(node2.toElement().tagName() == "id"){}
 	    else if(node2.toElement().tagName() == "name"){}
 	    else if(node2.toElement().tagName() == "screen_name")
 	    {
-		user.screenName = node2.toElement().text();
+		user = node2.toElement().text();
 	    }
 	    else if(node2.toElement().tagName() == "location"){}
 	    //	    else if(node2.toElement().tagName() == "description"){}
 	    else if(node2.toElement().tagName() == "profile_image_url")
 	    {
-//		image = node2.toElement().text();
+		image = node2.toElement().text();
 	    }
 	    //	    else if(node2.toElement().tagName() == "url"){}
 	    //	    else if(node2.toElement().tagName() == "protected"){}
@@ -854,7 +858,10 @@ QVector<UserData> QwitTools::parseUsers(const QByteArray &data, Account *account
 	    //	    else if(node2.toElement().tagName() == "statuses_count"){}
 	    //	    else if(node2.toElement().tagName() == "notifications"){}
 	    //	    else if(node2.toElement().tagName() == "verified"){}
-	    //	    else if(node2.toElement().tagName() == "following"){}
+	    else if(node2.toElement().tagName() == "following")
+	    {
+		following = node2.toElement().text() == "true";
+	    }
 	    else if(node2.toElement().tagName() == "status")
 	    {
 		QDomNode node3 = node2.firstChild();
@@ -862,28 +869,33 @@ QVector<UserData> QwitTools::parseUsers(const QByteArray &data, Account *account
 		{
 		    if(node3.toElement().tagName() == "created_at")
 		    {
-			QDateTime tmp = dateFromString(node3.toElement().text());
-			user.time = formatDateTime(tmp);
+			timeStr = node3.toElement().text();
 		    }
 		    else if(node3.toElement().tagName() == "id")
 		    {
-			user.messageId = node3.toElement().text().toULongLong();
+			id = node3.toElement().text().toULongLong();
 		    }
 		    else if(node3.toElement().tagName() == "text")
 		    {
-			user.lastMessage = node3.toElement().text();
+			text = node3.toElement().text();
 		    }
-		    //		    else if(node3.toElement().tagName() == "source"){}
+		    else if(node3.toElement().tagName() == "source")
+		    {
+			source = node3.toElement().text();
+		    }
 		    //		    else if(node3.toElement().tagName() == "truncated"){}
 		    else if(node3.toElement().tagName() == "in_reply_to_status_id")
 		    {
-			user.inReplyToMessageId = node3.toElement().text().toULongLong();
+			inReplyToMessageId = node3.toElement().text().toULongLong();
 		    }
 //		    else if(node3.toElement().tagName() == "in_reply_to_user_id"){}
-//		    else if(node3.toElement().tagName() == "favorited"){}
+		    else if(node3.toElement().tagName() == "favorited")
+		    {
+			favorited = node3.toElement().text() == "true";
+		    }
 		    else if(node3.toElement().tagName() == "in_reply_to_screen_name")
 		    {
-			user.inReplyToUsername = node3.toElement().text();
+			inReplyToUsername = node3.toElement().text();
 		    }
 		    node3 = node3.nextSibling();
 		}
@@ -891,10 +903,37 @@ QVector<UserData> QwitTools::parseUsers(const QByteArray &data, Account *account
 	    node2 = node2.nextSibling();
 	}
 
-	users.push_back(user);
+	if(id) {
+	    QDateTime time = QwitTools::dateFromString(timeStr);
+	    time = QDateTime(time.date(), time.time(), Qt::UTC);
+	    QByteArray hash = QCryptographicHash::hash(image.toAscii(), QCryptographicHash::Md5);
+	    QString imageFileName = "";
+	    for (int i = 0; i < hash.size(); ++i) {
+		unsigned char c = hash[i];
+		c >>= 4;
+		if (c < 10) {
+		    c += '0';
+		} else {
+		    c += 'A' - 10;
+		}
+		imageFileName += (char)c;
+		c = hash[i];
+		c &= 15;
+		if (c < 10) {
+		    c += '0';
+		} else {
+		    c += 'A' - 10;
+		}
+		imageFileName += (char)c;
+	    }
+	    imageFileName = Configuration::CacheDirectory + imageFileName;
+	    UserpicsDownloader::getInstance()->download(image, imageFileName);
+	    Message message = Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToMessageId, inReplyToUsername, following, false);
+	    messages.push_back(message);
+	}
 	node = node.nextSibling();
     }
 
-    return users;
+    return messages;
 }
 #endif
