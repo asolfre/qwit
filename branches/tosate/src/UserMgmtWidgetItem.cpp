@@ -62,24 +62,24 @@ UserMgmtWidgetItem::UserMgmtWidgetItem(Message message, QWidget *parent, int wid
     this->signLabel->setOpenExternalLinks(true);
     this->signLabel->setStyleSheet("a{text-decoration:none;}");
 
-    // add Buttons
+    // setup Buttons
     followButton = new QToolButton(parent);
-    followButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
+    followButton->setIcon(QwitTools::getToolButtonIcon(":/images/follow.png"));
     followButton->setText("");
     followButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     followButton->setAutoRaise(true);
     unfollowButton = new QToolButton(parent);
-    unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
+    unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/unfollow.png"));
     unfollowButton->setText("");
     unfollowButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     unfollowButton->setAutoRaise(true);
     blockButton = new QToolButton(parent);
-    blockButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
+    blockButton->setIcon(QwitTools::getToolButtonIcon(":/images/block.png"));
     blockButton->setText("");
     blockButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     blockButton->setAutoRaise(true);
     unblockButton = new QToolButton(parent);
-    unblockButton->setIcon(QwitTools::getToolButtonIcon(":/images/favor.png"));
+    unblockButton->setIcon(QwitTools::getToolButtonIcon(":/images/block.png"));
     unblockButton->setText("");
     unblockButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     unblockButton->setAutoRaise(true);
@@ -98,31 +98,17 @@ UserMgmtWidgetItem::~UserMgmtWidgetItem()
 {
     qDebug() << ("UserMgmtWidgetItem::~UserMgmtWidgetItem()");
 
+    delete messageTextBrowser;
+    delete userpicLabel;
     delete followButton;
     delete unfollowButton;
     delete blockButton;
     delete unblockButton;
 }
 
-//void UserMgmtWidgetItem::show()
-//{
-//    status->show();
-//    icon->show();
-//    sign->show();
-//    ctrl->show();
-//}
-//
-//void UserMgmtWidgetItem::hide()
-//{
-//    status->hide();
-//    icon->hide();
-//    sign->hide();
-//    ctrl->hide();
-//}
-
 void UserMgmtWidgetItem::loadUserpic()
 {
-	QPixmap pixmap(iconFileName);
+	QPixmap pixmap(message.userpicFilename);
 	if (!pixmap.isNull()) {
 		userpicLabel->setPixmap(pixmap.scaled(UserMgmtWidgetItem::IconSize, UserMgmtWidgetItem::IconSize));
 	}
@@ -182,7 +168,8 @@ int UserMgmtWidgetItem::arrangeMessage(int index, int currentHeight)
 	unblockButton->hide();
 	break;
     case 2:
-	followButton->hide();
+	followButton->show();
+	followButton->setDisabled(true);
 	unfollowButton->hide();
 	blockButton->hide();
 	unblockButton->show();
@@ -201,7 +188,7 @@ int UserMgmtWidgetItem::arrangeMessage(int index, int currentHeight)
 		   "<a href=\"" + messageUrl + "\">" + QwitTools::formatDateTime(message.time) + "</a>";
     if(message.source != "")
     {
-	sign += " - from " + message.source;
+	sign += "<br/>from " + message.source;
     }
     if(message.inReplyToMessageId)
     {

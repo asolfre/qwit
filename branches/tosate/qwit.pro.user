@@ -160,7 +160,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >AXIS2_HOME=/opt/axis2-1.4</value>
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-8VtWwNI3HO,guid=58e4eda7d73b3448cdaaf3a74ab2539a</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-4EzvuPv4vD,guid=38f0f60af3adddcc7365e8684ab28e67</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -168,9 +168,9 @@
     <value type="QString" >GDM_LANG=en_US.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=6506</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-D8y7Jl/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-IrIvNL/S.gpg-agent:6582:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=6518</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-B8BvdC/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-WqS8gC/S.gpg-agent:6594:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/tosate/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/tosate</value>
     <value type="QString" >JAVA_HOME=/usr/lib/jvm/java-6-sun</value>
@@ -182,15 +182,15 @@
     <value type="QString" >PATH=/home/tosate/qtsdk-2009.03/qt/bin:/home/tosate/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games":$JAVA_HOME/bin</value>
     <value type="QString" >PWD=/home/tosate</value>
     <value type="QString" >QTDIR=/home/tosate/qtsdk-2009.03/qt</value>
-    <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6517</value>
+    <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6529</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-D8y7Jl/ssh</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-B8BvdC/ssh</value>
     <value type="QString" >USER=tosate</value>
     <value type="QString" >USERNAME=tosate</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/tosate/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1253200793.240466-1279766846</value>
+    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1253215846.514508-1918304907</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >clean</value>

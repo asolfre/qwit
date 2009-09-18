@@ -24,5 +24,8 @@
         <file>translations/qwit_en_US.ts</file>
         <file>images/qwitnewmessages.png</file>
         <file>images/friends.png</file>
+        <file>translations/qwit_de_DE.ts</file>
+        <file>images/unblock.png</file>
+        <file>images/block.png</file>
     </qresource>
 </RCC>
