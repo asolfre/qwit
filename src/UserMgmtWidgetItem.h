@@ -50,7 +50,6 @@ class UserMgmtWidgetItem : public QObject
 private:
     QWidget *parent;
     int widgetType;
-    // object that displays all the information about a friend
     QTextBrowser *messageTextBrowser;
     QToolButton *followButton;
     QToolButton *unfollowButton;
@@ -58,8 +57,6 @@ private:
     QToolButton *unblockButton;
     QLabel *userpicLabel;
     QLabel *signLabel;
-    QString iconFileName;
-//    int category;
     int topPosition;
     int height;
     QColor color;
@@ -71,11 +68,9 @@ public:
     UserMgmtWidgetItem(Message message, QWidget *parent, int widgetType);
     ~UserMgmtWidgetItem();
     void loadUserpic();
-//    void show();
     int arrangeMessage(int index, int currentHeight);
     int update(int index, int currentHeight);
     void paint(QPainter &painter, QPalette palette, int width);
-//    void hide();
 
 private slots:
     void on_followToolButton_pressed();

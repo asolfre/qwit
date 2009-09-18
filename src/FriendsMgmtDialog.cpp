@@ -99,6 +99,9 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
 
     tabWidget->setCurrentIndex(0);
 
+    for(int i=0; i<pages.size(); i++)
+	pages[i]->updateSize();
+
     event->accept();
 }
 
