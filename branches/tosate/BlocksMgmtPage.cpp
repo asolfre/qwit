@@ -51,6 +51,8 @@ BlocksMgmtPage::BlocksMgmtPage(QWidget *parent) : AbstractUserMgmtPage(parent)
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
+
+    connect(userMgmtWidget, SIGNAL(destroyBlock(QString,UserMgmtWidgetItem*)), this, SIGNAL(unblock(QString,UserMgmtWidgetItem*)));
 }
 
 void BlocksMgmtPage::updateSize()
@@ -81,6 +83,6 @@ void BlocksMgmtPage::update(Account *account)
 
 int BlocksMgmtPage::widgetType()
 {
-    return 3;
+    return 2;
 }
 #endif

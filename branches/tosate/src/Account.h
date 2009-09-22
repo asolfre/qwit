@@ -133,13 +133,19 @@ public slots:
 	void receiveFriendships();
 	void receiveFollowers();
 	void receiveBlocks();
-	void createFriendship(QString screenName);
-	void destroyFriendship(QString screenName);
-	void createBlock(QString screenName);
-	void destroyBlock(QString screenName);
+	void createFriendship(QString screenName, uint requestId = 0);
+	void destroyFriendship(QString screenName, uint requestId);
+	void createBlock(QString screenName, uint requestId);
+	void destroyBlock(QString screenName, uint requestId);
+
+    private slots:
 	void updateFriendships(const QByteArray &data);
 	void updateFollowers(const QByteArray &data);
 	void updateBlocks(const QByteArray &data);
+	void addFriendship(const QByteArray &data, uint requestId);
+	void removeFriendship(const QByteArray &data, uint requestId);
+	void addBlock(const QByteArray &data, uint requestId);
+	void removeBlock(const QByteArray &data, uint requestId);
 	
 signals:
 	void friendsMessagesUpdated(const QVector<Message> &, Account *);
@@ -165,10 +171,10 @@ signals:
 	void friendshipsUpdated(const QVector<Message> &);
 	void followersUpdated(const QVector<Message> &);
 	void blocksUpdated(const QVector<Message> &);
-//	void friendshipAdded(const QByteArray&);
-//	void friendshipRemoved(const QByteArray&);
-//	void blockAdded(const QByteArray&);
-//	void BbockRemoved(const QByteArray&);
+	void friendshipAdded(const Message&, uint);
+	void friendshipRemoved(const Message&, uint);
+	void blockAdded(const Message&, uint);
+	void blockRemoved(const Message&, uint);
 };
 
 #endif

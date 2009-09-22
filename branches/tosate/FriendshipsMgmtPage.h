@@ -55,6 +55,10 @@ public:
 private slots:
     void on_newFriendLineEdit_textEdited(QString);
     void on_addFriendPushButton_pressed();
+signals:
+    void follow(QString);
+    void unfollow(QString, UserMgmtWidgetItem*);
+    void block(QString, UserMgmtWidgetItem*);
 };
 
 #endif // FRIENDSHIPSMGMTPAGE_H

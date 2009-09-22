@@ -46,6 +46,10 @@ public:
     void updateSize();
     QString title();
     void update(Account *account = 0);
+signals:
+    void follow(QString, UserMgmtWidgetItem*);
+    void unfollow(QString, UserMgmtWidgetItem*);
+    void block(QString, UserMgmtWidgetItem*);
 };
 
 #endif // FOLLOWERSMGMTPAGE_H

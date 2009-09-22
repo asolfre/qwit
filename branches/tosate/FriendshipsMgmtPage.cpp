@@ -33,6 +33,7 @@
 #define FriendshipsMgmtPage_cpp
 
 #include "FriendshipsMgmtPage.h"
+#include "QwitTools.h"
 
 FriendshipsMgmtPage::FriendshipsMgmtPage(QWidget *parent) : AbstractUserMgmtPage(parent)
 {
@@ -65,6 +66,9 @@ FriendshipsMgmtPage::FriendshipsMgmtPage(QWidget *parent) : AbstractUserMgmtPage
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     vBoxLayout->addWidget(scrollArea);
+
+    connect(userMgmtWidget, SIGNAL(destroyFriendship(QString,UserMgmtWidgetItem*)), this, SIGNAL(unfollow(QString,UserMgmtWidgetItem*)));
+    connect(userMgmtWidget, SIGNAL(createBlock(QString,UserMgmtWidgetItem*)), this, SIGNAL(block(QString,UserMgmtWidgetItem*)));
 }
 
 void FriendshipsMgmtPage::updateSize()
@@ -108,8 +112,10 @@ void FriendshipsMgmtPage::on_newFriendLineEdit_textEdited(QString )
 void FriendshipsMgmtPage::on_addFriendPushButton_pressed()
 {
     QString screenName = newFriendLineEdit->text();
+    newFriendLineEdit->setText("");
 
-//    followImpl(screenName);
+    // FIXEM check screenName synthax
+    emit follow(screenName);
 }
 
 int FriendshipsMgmtPage::widgetType()
