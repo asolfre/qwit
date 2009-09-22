@@ -45,7 +45,6 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
 {
     qDebug() << ("FriendsMgmtDialog::FriendsMgmtDialog()");
     setupUi(this);
-//        this->userpicsDownloader = userpicsDownloader;
 
     oldAccountId = -1;
     firstRun = true;
@@ -56,6 +55,15 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
     pages.push_back(friendshipsPage = new FriendshipsMgmtPage(this));
     pages.push_back(followersPage = new FollowersMgmtPage(this));
     pages.push_back(blocksPage = new BlocksMgmtPage(this));
+
+    connect(friendshipsPage, SIGNAL(follow(QString)), this, SLOT(on_add_friend(QString)));
+    connect(friendshipsPage, SIGNAL(unfollow(QString,UserMgmtWidgetItem*)), this, SLOT(on_unfollow_friend(QString,UserMgmtWidgetItem*)));
+    connect(friendshipsPage, SIGNAL(block(QString,UserMgmtWidgetItem*)), this, SLOT(on_block_friend(QString,UserMgmtWidgetItem*)));
+    connect(followersPage, SIGNAL(follow(QString,UserMgmtWidgetItem*)), this, SLOT(on_follow_follower(QString,UserMgmtWidgetItem*)));
+    connect(followersPage, SIGNAL(unfollow(QString,UserMgmtWidgetItem*)), this, SLOT(on_unfollow_follower(QString,UserMgmtWidgetItem*)));
+    connect(followersPage, SIGNAL(block(QString,UserMgmtWidgetItem*)), this, SLOT(on_block_follower(QString,UserMgmtWidgetItem*)));
+    connect(blocksPage, SIGNAL(unblock(QString,UserMgmtWidgetItem*)), this, SLOT(on_unblock_user(QString,UserMgmtWidgetItem*)));
+    this->requestId = 1000;
 
     for(int i=0; i<pages.size(); i++)
 	tabWidget->addTab(pages[i], pages[i]->title());
@@ -86,6 +94,10 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
 	    connect(config->currentAccount(), SIGNAL(friendshipsUpdated(QVector<Message>)), friendshipsPage, SLOT(updateItems(QVector<Message>)));
 	    connect(config->currentAccount(), SIGNAL(followersUpdated(QVector<Message>)), followersPage, SLOT(updateItems(QVector<Message>)));
 	    connect(config->currentAccount(), SIGNAL(blocksUpdated(QVector<Message>)), blocksPage, SLOT(updateItems(QVector<Message>)));
+	    connect(config->currentAccount(), SIGNAL(friendshipAdded(Message,uint)), this, SLOT(addFriend(Message,uint)));
+	    connect(config->currentAccount(), SIGNAL(friendshipRemoved(Message,uint)), this, SLOT(removeFriend(Message,uint)));
+	    connect(config->currentAccount(), SIGNAL(blockAdded(Message,uint)), this, SLOT(addBlock(Message,uint)));
+	    connect(config->currentAccount(), SIGNAL(blockRemoved(Message,uint)), this, SLOT(removeBlock(Message,uint)));
 	}
 	firstRun = false;
     }
@@ -105,51 +117,51 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
     event->accept();
 }
 
-void FriendsMgmtDialog::unfollow(const QString screenName)
-{
-    qDebug() << ("FriendsMgmtDialog::unfollow()");
-
-    Configuration *config = Configuration::getInstance();
-
-    config->currentAccount()->destroyFriendship(screenName);
-}
-
-void FriendsMgmtDialog::follow(const QString screenName)
-{
-    qDebug() << ("FriendsMgmtDialog::follow()");
-
-    Configuration *config = Configuration::getInstance();
-
-    config->currentAccount()->createFriendship(screenName);
-}
-
-void FriendsMgmtDialog::block(const QString screenName)
-{
-    qDebug() << ("FriendsMgmtDialog::block()");
-
-    QMessageBox msgBox;
-    msgBox.setText(tr("Blocking will prevent %1 from following you. And you won't see their tweets in your timeline. Are you sure you want to block?").arg(screenName));
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    msgBox.setDefaultButton(QMessageBox::Cancel);
-    msgBox.setIcon(QMessageBox::Warning);
-    int ret = msgBox.exec();
-
-    if(ret == QMessageBox::Ok)
-    {
-	Configuration *config = Configuration::getInstance();
-
-	config->currentAccount()->createBlock(screenName);
-    }
-}
-
-void FriendsMgmtDialog::unblock(const QString screenName)
-{
-    qDebug() << ("FriendsMgmtDialog::unblock()");
-
-    Configuration *config = Configuration::getInstance();
-
-    config->currentAccount()->destroyBlock(screenName);
-}
+//void FriendsMgmtDialog::unfollow(const QString screenName)
+//{
+//    qDebug() << ("FriendsMgmtDialog::unfollow()");
+//
+//    Configuration *config = Configuration::getInstance();
+//
+//    config->currentAccount()->destroyFriendship(screenName);
+//}
+//
+//void FriendsMgmtDialog::follow(const QString screenName)
+//{
+//    qDebug() << ("FriendsMgmtDialog::follow()");
+//
+//    Configuration *config = Configuration::getInstance();
+//
+//    config->currentAccount()->createFriendship(screenName);
+//}
+//
+//void FriendsMgmtDialog::block(const QString screenName)
+//{
+//    qDebug() << ("FriendsMgmtDialog::block()");
+//
+//    QMessageBox msgBox;
+//    msgBox.setText(tr("Blocking will prevent %1 from following you. And you won't see their tweets in your timeline. Are you sure you want to block?").arg(screenName));
+//    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+//    msgBox.setDefaultButton(QMessageBox::Cancel);
+//    msgBox.setIcon(QMessageBox::Warning);
+//    int ret = msgBox.exec();
+//
+//    if(ret == QMessageBox::Ok)
+//    {
+//	Configuration *config = Configuration::getInstance();
+//
+//	config->currentAccount()->createBlock(screenName);
+//    }
+//}
+//
+//void FriendsMgmtDialog::unblock(const QString screenName)
+//{
+//    qDebug() << ("FriendsMgmtDialog::unblock()");
+//
+//    Configuration *config = Configuration::getInstance();
+//
+//    config->currentAccount()->destroyBlock(screenName);
+//}
 
 //void FriendsMgmtDialog::saveState()
 //{
@@ -208,6 +220,14 @@ void FriendsMgmtDialog::updateConnects()
     connect(config->currentAccount(), SIGNAL(followersUpdated(QVector<Message>)), followersPage, SLOT(updateItems(QVector<Message>)));
     disconnect(config->accounts[oldAccountId], SIGNAL(blocksUpdated(QVector<Message>)), 0, 0);
     connect(config->currentAccount(), SIGNAL(blocksUpdated(QVector<Message>)), blocksPage, SLOT(updateItems(QVector<Message>)));
+    disconnect(config->accounts[oldAccountId], SIGNAL(friendshipAdded(Message,uint)), 0, 0);
+    connect(config->currentAccount(), SIGNAL(friendshipAdded(Message,uint)), this, SLOT(addFriend(Message,uint)));
+    disconnect(config->accounts[oldAccountId], SIGNAL(friendshipRemoved(Message,uint)), 0, 0);
+    connect(config->currentAccount(), SIGNAL(friendshipRemoved(Message,uint)), this, SLOT(removeFriend(Message,uint)));
+    disconnect(config->accounts[oldAccountId], SIGNAL(blockAdded(Message,uint)), 0 , 0);
+    connect(config->currentAccount(), SIGNAL(blockAdded(Message,uint)), this, SLOT(addBlock(Message,uint)));
+    disconnect(config->accounts[oldAccountId], SIGNAL(blockRemoved(Message,uint)), 0, 0);
+    connect(config->currentAccount(), SIGNAL(blockRemoved(Message,uint)), this, SLOT(removeBlock(Message,uint)));
 }
 
 void FriendsMgmtDialog::on_tabWidget_currentChanged(int index)
@@ -217,6 +237,153 @@ void FriendsMgmtDialog::on_tabWidget_currentChanged(int index)
     if((index >= 0) && (index < pages.size()) && pages[index])
     {
 	pages[index]->updateSize();
+    }
+}
+
+void FriendsMgmtDialog::on_add_friend(QString screenName)
+{
+    qDebug() << ("FriendsMgmtDialog::on_add_friend()");
+
+    requestsFromFrienshipsPage.insert(requestId, 0);
+
+    Configuration *config = Configuration::getInstance();
+    config->currentAccount()->createFriendship(screenName, requestId++);
+}
+
+void FriendsMgmtDialog::on_unfollow_friend(QString screenName, UserMgmtWidgetItem *item)
+{
+   qDebug() << ("FriendsMgmtDialog::on_unfollow_friend()");
+
+   requestsFromFrienshipsPage.insert(requestId, item);
+
+   Configuration *config = Configuration::getInstance();
+   config->currentAccount()->destroyFriendship(screenName, requestId++);
+}
+
+void FriendsMgmtDialog::on_block_friend(QString screenName, UserMgmtWidgetItem *item)
+{
+    qDebug() << ("FriendsMgmtDialog::on_block_friend()");
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("Blocking will prevent %1 from following you. And you won't see their tweets in your timeline. Are you sure you want to block?").arg(screenName));
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    msgBox.setIcon(QMessageBox::Warning);
+    int ret = msgBox.exec();
+
+    if(ret == QMessageBox::Ok)
+    {
+	requestsFromFrienshipsPage.insert(requestId, item);
+
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->createBlock(screenName, requestId++);
+    }
+}
+
+void FriendsMgmtDialog::on_follow_follower(QString screenName, UserMgmtWidgetItem *item)
+{
+    qDebug() << ("FriendsMgmtDialog::on_follow_follower()");
+
+    requestsFromFollowersPage.insert(requestId, item);
+
+    Configuration *config = Configuration::getInstance();
+    config->currentAccount()->createFriendship(screenName, requestId++);
+}
+
+void FriendsMgmtDialog::on_unfollow_follower(QString screenName, UserMgmtWidgetItem *item)
+{
+   qDebug() << ("FriendsMgmtDialog::on_unfollow_follower()");
+
+   requestsFromFollowersPage.insert(requestId, item);
+
+   Configuration *config = Configuration::getInstance();
+   config->currentAccount()->destroyFriendship(screenName, requestId++);
+}
+
+void FriendsMgmtDialog::on_block_follower(QString screenName, UserMgmtWidgetItem *item)
+{
+    qDebug() << ("FriendsMgmtDialog::on_block_follower()");
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("Blocking will prevent %1 from following you. And you won't see their tweets in your timeline. Are you sure you want to block?").arg(screenName));
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    msgBox.setIcon(QMessageBox::Warning);
+    int ret = msgBox.exec();
+
+    if(ret == QMessageBox::Ok)
+    {
+	requestsFromFollowersPage.insert(requestId, item);
+
+	Configuration *config = Configuration::getInstance();
+	config->currentAccount()->createBlock(screenName, requestId++);
+    }
+}
+
+void FriendsMgmtDialog::on_unblock_user(QString screenName, UserMgmtWidgetItem *item)
+{
+    qDebug() << ("FriendsMgmtDialog::on_unblock_user()");
+
+    requestsFromBlocksPage.insert(requestId, item);
+
+    Configuration *config = Configuration::getInstance();
+    config->currentAccount()->destroyBlock(screenName, requestId++);
+}
+
+void FriendsMgmtDialog::addFriend(Message message, uint requestId)
+{
+    qDebug() << ("FriendsMgmtDialog::addFriend()");
+
+    if(requestsFromFrienshipsPage.contains(requestId)) {
+	if(requestsFromFrienshipsPage[requestId] == 0) {
+	    // friendships request
+	} else {
+	    // friendships request
+	}
+    }
+    if(requestsFromFollowersPage.contains(requestId)) {
+	// friendships request
+    }
+}
+
+void FriendsMgmtDialog::removeFriend(Message message, uint requestId)
+{
+    qDebug() << ("FriendsMgmtDialog::removeFriend()");
+
+    if(requestsFromFrienshipsPage.contains(requestId)) {
+	UserMgmtWidgetItem *item = requestsFromFrienshipsPage[requestId];
+	friendshipsPage->removeItem(item);
+	pages[0]->updateSize();
+    }
+}
+
+void FriendsMgmtDialog::addBlock(Message message, uint requestId)
+{
+    qDebug() << ("FriendsMgmtDialog::addBlock()");
+
+    if(requestsFromFrienshipsPage.contains(requestId)) {
+	UserMgmtWidgetItem *item = requestsFromFrienshipsPage[requestId];
+	friendshipsPage->removeItem(item);
+	pages[0]->updateSize();
+    }
+    if(requestsFromFollowersPage.contains(requestId)) {
+	UserMgmtWidgetItem *item = requestsFromFollowersPage[requestId];
+	followersPage->removeItem(item);
+	pages[1]->updateSize();
+    }
+}
+
+void FriendsMgmtDialog::removeBlock(Message message, uint requestId)
+{
+    qDebug() << ("FriendsMgmtDialog::removeBlock()");
+
+    if(requestsFromBlocksPage.contains(requestId))
+    {
+	UserMgmtWidgetItem *item = requestsFromBlocksPage[requestId];
+	blocksPage->removeItem(item);
+
+	for(int i=0; i<pages.size(); i++)
+	    pages[i]->updateSize();
     }
 }
 #endif

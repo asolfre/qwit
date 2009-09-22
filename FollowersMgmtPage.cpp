@@ -51,6 +51,10 @@ FollowersMgmtPage::FollowersMgmtPage(QWidget *parent) : AbstractUserMgmtPage(par
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     gridLayout->addWidget(scrollArea, 0, 0, 1, 1);
+
+    connect(userMgmtWidget, SIGNAL(createFriendship(QString,UserMgmtWidgetItem*)), this, SIGNAL(follow(QString,UserMgmtWidgetItem*)));
+    connect(userMgmtWidget, SIGNAL(destroyFriendship(QString,UserMgmtWidgetItem*)), this, SIGNAL(unfollow(QString,UserMgmtWidgetItem*)));
+    connect(userMgmtWidget, SIGNAL(createBlock(QString,UserMgmtWidgetItem*)), this, SIGNAL(block(QString,UserMgmtWidgetItem*)));
 }
 
 void FollowersMgmtPage::updateSize()

@@ -51,6 +51,7 @@ public:
     virtual void update(Account *accout = 0) = 0;
     virtual void redraw();
     virtual void addItem(Message message);
+    virtual void removeItem(UserMgmtWidgetItem *item);
     virtual void updateSize() = 0;
     virtual QString title() = 0;
     virtual void reloadUserpics();

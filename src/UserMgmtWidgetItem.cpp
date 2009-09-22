@@ -79,7 +79,7 @@ UserMgmtWidgetItem::UserMgmtWidgetItem(Message message, QWidget *parent, int wid
     blockButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     blockButton->setAutoRaise(true);
     unblockButton = new QToolButton(parent);
-    unblockButton->setIcon(QwitTools::getToolButtonIcon(":/images/block.png"));
+    unblockButton->setIcon(QwitTools::getToolButtonIcon(":/images/unblock.png"));
     unblockButton->setText("");
     unblockButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     unblockButton->setAutoRaise(true);
@@ -100,6 +100,7 @@ UserMgmtWidgetItem::~UserMgmtWidgetItem()
 
     delete messageTextBrowser;
     delete userpicLabel;
+    delete signLabel;
     delete followButton;
     delete unfollowButton;
     delete blockButton;
@@ -223,24 +224,34 @@ int UserMgmtWidgetItem::arrangeMessage(int index, int currentHeight)
 void UserMgmtWidgetItem::on_followToolButton_pressed()
 {
     UserMgmtWidget *userMgmtWidget = (UserMgmtWidget*) parent;
-    userMgmtWidget->follow(message.username);
+    userMgmtWidget->follow(message.username, this);
 }
 
 void UserMgmtWidgetItem::on_unfollowToolButton_pressed()
 {
     UserMgmtWidget *userMgmtWidget = (UserMgmtWidget*) parent;
-    userMgmtWidget->unfollow(message.username);
+    userMgmtWidget->unfollow(message.username, this);
 }
 
 void UserMgmtWidgetItem::on_blockToolButton_pressed()
 {
     UserMgmtWidget *userMgmtWidget = (UserMgmtWidget*) parent;
-    userMgmtWidget->block(message.username);
+    userMgmtWidget->block(message.username, this);
 }
 
 void UserMgmtWidgetItem::on_unblockToolButton_pressed()
 {
     UserMgmtWidget *userMgmtWidget = (UserMgmtWidget*) parent;
-    userMgmtWidget->unblock(message.username);
+    userMgmtWidget->unblock(message.username, this);
 }
+
+//bool UserMgmtWidgetItem::operator ==(const UserMgmtWidgetItem &other)
+//{
+//    qDebug() << ("UserMgmtWidgetItem::operator ==()");
+//
+//    if(this->message.username == other.message.username)
+//	return true;
+//
+//    return false;
+//}
 #endif

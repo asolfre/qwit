@@ -57,8 +57,8 @@ private:
 public:
     UserMgmtWidget(QWidget *parent);
     void clear();
-//    void addItem(QString username, QString userpic, Categories category, QString statusText, uint messageId, QDateTime time, uint replyStatusId);
     void addItem(Message message, int widgetType);
+    void removeItem(UserMgmtWidgetItem *item);
 //    void removeItem(QString screenName);
     void updateItems();
 //    const UserMgmtWidgetItem getItem(int index);
@@ -70,10 +70,10 @@ public:
 //    void restoreScrollPosition();
 //    int getItemCount();
 //    void resizeWidget();
-    void follow(QString screenName);
-    void unfollow(QString screenName);
-    void block(QString screenName);
-    void unblock(QString screenName);
+    void follow(QString screenName, UserMgmtWidgetItem *item);
+    void unfollow(QString screenName, UserMgmtWidgetItem *item);
+    void block(QString screenName, UserMgmtWidgetItem *item);
+    void unblock(QString screenName, UserMgmtWidgetItem *item);
 
 //    static QString formatDateTime(const QDateTime &time);
 
@@ -84,10 +84,10 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 signals:
-    void createFriendship(QString);
-    void destroyFriendship(QString);
-    void createBlock(QString);
-    void destroyBlock(QString);
+    void createFriendship(QString, UserMgmtWidgetItem*);
+    void destroyFriendship(QString, UserMgmtWidgetItem*);
+    void createBlock(QString, UserMgmtWidgetItem*);
+    void destroyBlock(QString, UserMgmtWidgetItem*);
 };
 
 #endif // UserMgmtWidget_H

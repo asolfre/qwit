@@ -40,11 +40,10 @@
 
 #include <QtXml/QDomDocument>
 #include "UserpicsDownloader.h"
-//#include "FriendsMgmtWidget.h"
 #include "FriendshipsMgmtPage.h"
 #include "FollowersMgmtPage.h"
 #include "BlocksMgmtPage.h"
-//#include "Enumerations.h"
+#include "UserMgmtWidgetItem.h"
 
 class FriendsMgmtDialog : public QDialog, public Ui::FriendsMgmtDialog
 {
@@ -55,8 +54,10 @@ private:
     FriendshipsMgmtPage *friendshipsPage;
     FollowersMgmtPage *followersPage;
     BlocksMgmtPage *blocksPage;
-//    FriendsMgmtWidget *widgets[MGMT_TABS];
-    UserpicsDownloader *userpicsDownloader;
+    QMap<uint, UserMgmtWidgetItem*> requestsFromFrienshipsPage;
+    QMap<uint, UserMgmtWidgetItem*> requestsFromFollowersPage;
+    QMap<uint, UserMgmtWidgetItem*> requestsFromBlocksPage;
+    uint requestId;
 
 //    void followImpl(QString screenName);
     void updateConnects();
@@ -67,10 +68,6 @@ public:
     FriendsMgmtDialog(QWidget *parent);
 
 public slots:
-    void unfollow(QString screenName);
-    void follow(QString screenName);
-    void block(QString screenName);
-    void unblock(QString screenName);
 //    void saveState();
 
 protected:
@@ -80,6 +77,17 @@ protected:
 private slots:
     void on_tabWidget_currentChanged(int index);
     void on_closePushButton_pressed();
+    void on_add_friend(QString screenName);
+    void on_unfollow_friend(QString screenName, UserMgmtWidgetItem *item);
+    void on_block_friend(QString screenName, UserMgmtWidgetItem *item);
+    void on_follow_follower(QString screenName, UserMgmtWidgetItem *item);
+    void on_unfollow_follower(QString screenName, UserMgmtWidgetItem *item);
+    void on_block_follower(QString screenName, UserMgmtWidgetItem *item);
+    void on_unblock_user(QString screenName, UserMgmtWidgetItem *item);
+    void addFriend(Message message, uint requestId);
+    void removeFriend(Message Message, uint requestId);
+    void addBlock(Message message, uint requestId);
+    void removeBlock(Message message, uint requestId);
 };
 
 #endif

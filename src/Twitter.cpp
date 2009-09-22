@@ -740,22 +740,30 @@ void Twitter::requestFinished(int id, bool error) {
 	} else if (createFriendshipRequests.find(id) != createFriendshipRequests.end()) {
 	    qDebug() << ("Request finished: " + createFriendshipRequests[id]);
 	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-	    emit friendshipCreated(buffer.data());
+	    uint requestId = httpRequestId2InternalRequestId[id];
+	    httpRequestId2InternalRequestId.remove(id);
+	    emit friendshipCreated(buffer.data(), requestId);
 	    createFriendshipRequests.remove(id);
 	} else if (destroyFriendshipRequests.find(id) != destroyFriendshipRequests.end()) {
 	    qDebug() << ("Request finished: " + destroyFriendshipRequests[id]);
 	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-	    emit friendshipDestroyed(buffer.data());
+	    uint requestId = httpRequestId2InternalRequestId[id];
+	    httpRequestId2InternalRequestId.remove(id);
+	    emit friendshipDestroyed(buffer.data(), requestId);
 	    destroyFriendshipRequests.remove(id);
 	} else if (createBlockRequests.find(id) != createBlockRequests.end()) {
 	    qDebug() << ("Request finished: " + createBlockRequests[id]);
 	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-	    emit blockCreated(buffer.data());
+	    uint requestId = httpRequestId2InternalRequestId[id];
+	    httpRequestId2InternalRequestId.remove(id);
+	    emit blockCreated(buffer.data(), requestId);
 	    createBlockRequests.remove(id);
 	} else if (destroyBlockRequests.find(id) != destroyBlockRequests.end()) {
 	    qDebug() << ("Request finished: " + destroyBlockRequests[id]);
 	    account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-	    emit blockDestroyed(buffer.data());
+	    uint requestId = httpRequestId2InternalRequestId[id];
+	    httpRequestId2InternalRequestId.remove(id);
+	    emit blockDestroyed(buffer.data(), requestId);
 	    destroyBlockRequests.remove(id);
 	}
     } else {
@@ -844,7 +852,7 @@ void Twitter::receiveBlocks() {
     receiveBlocksRequests[id] = tr("Getting blocked users: %1").arg(url.host() + url.path());
 }
 
-void Twitter::createFriendship(QString screenName) {
+void Twitter::createFriendship(QString screenName, uint requestId) {
     qDebug() << ("Twitter::createFriendship()");
 
     setupProxy();
@@ -871,9 +879,10 @@ void Twitter::createFriendship(QString screenName) {
 
     int id = http->request(header, data, &buffer);
     createFriendshipRequests[id] = tr("Sending create friendship request: %1").arg(url.host() + url.path());
+    httpRequestId2InternalRequestId[id] = requestId;
 }
 
-void Twitter::destroyFriendship(QString screenName) {
+void Twitter::destroyFriendship(QString screenName, uint requestId) {
     qDebug() << ("Twitter::destroyFriendship()");
 
     setupProxy();
@@ -900,9 +909,10 @@ void Twitter::destroyFriendship(QString screenName) {
 
     int id = http->request(header, data, &buffer);
     destroyFriendshipRequests[id] = tr("Sending destroy friendship request: %1").arg(url.host() + url.path());
+    httpRequestId2InternalRequestId[id] = requestId;
 }
 
-void Twitter::createBlock(QString screenName) {
+void Twitter::createBlock(QString screenName, uint requestId) {
     qDebug() << ("Twitter::createBlock()");
 
     setupProxy();
@@ -928,9 +938,10 @@ void Twitter::createBlock(QString screenName) {
 
     int id = http->request(header, data, &buffer);
     createBlockRequests[id] = tr("Sending create block request: %1").arg(url.host() + url.path());
+    httpRequestId2InternalRequestId[id] = requestId;
 }
 
-void Twitter::destroyBlock(QString screenName) {
+void Twitter::destroyBlock(QString screenName, uint requestId) {
     qDebug() << ("Twitter::destroyBlock()");
 
     setupProxy();
@@ -956,5 +967,6 @@ void Twitter::destroyBlock(QString screenName) {
 
     int id = http->request(header, data, &buffer);
     destroyBlockRequests[id] = tr("Sending destroy block request: %1").arg(url.host() + url.path());
+    httpRequestId2InternalRequestId[id] = requestId;
 }
 #endif

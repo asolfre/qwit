@@ -50,30 +50,11 @@ UserMgmtWidget::UserMgmtWidget(QWidget *parent) : QWidget(parent)
 //    nextItemIndex = 0;
 }
 
-
-//void UserMgmtWidget::addItem(QString username, QString userpic, Categories category, QString statusText, uint messageId, QDateTime time, uint replyStatusId)
-//{
-//    UserMgmtWidgetItem *item = new UserMgmtWidgetItem(this, username, userpic, category, statusText, messageId, time, replyStatusId, this->serviceBaseUrl);
-//
-//    item->loadIcon();
-//
-//    if(nextItemIndex > items.size())
-//    nextItemIndex = items.size();
-//
-//    items.insert(nextItemIndex++, item);
-//    cout << "added item" << endl;
-//
-//    item->show();
-//
-//    this->updateItems();
-//}
-
 void UserMgmtWidget::addItem(Message message, int widgetType)
 {
     UserMgmtWidgetItem *item = new UserMgmtWidgetItem(message, this, widgetType);
 
     items.push_back(item);
-//    nextItemIndex++;
 }
 
 void UserMgmtWidget::updateItems()
@@ -124,28 +105,40 @@ void UserMgmtWidget::resizeEvent(QResizeEvent *event)
     event->accept();
 }
 
-void UserMgmtWidget::follow(QString screenName)
+void UserMgmtWidget::follow(QString screenName, UserMgmtWidgetItem *item)
 {
-    emit createFriendship(screenName);
+    emit createFriendship(screenName, item);
 }
 
-void UserMgmtWidget::unfollow(QString screenName)
+void UserMgmtWidget::unfollow(QString screenName, UserMgmtWidgetItem *item)
 {
-    emit destroyFriendship(screenName);
+    emit destroyFriendship(screenName, item);
 }
 
-void UserMgmtWidget::block(QString screenName)
+void UserMgmtWidget::block(QString screenName, UserMgmtWidgetItem *item)
 {
-    emit createBlock(screenName);
+    emit createBlock(screenName, item);
 }
 
-void UserMgmtWidget::unblock(QString screenName)
+void UserMgmtWidget::unblock(QString screenName, UserMgmtWidgetItem *item)
 {
-    emit destroyBlock(screenName);
+    emit destroyBlock(screenName, item);
 }
 
 //void UserMgmtWidget::resizeWidget()
 //{
 //    this->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() - 5, 500);
 //}
+
+void UserMgmtWidget::removeItem(UserMgmtWidgetItem *item)
+{
+    qDebug() << ("UserMgmtWidget::removeItem()");
+
+    if(items.contains(item))
+    {
+	int index = items.indexOf(item);
+	delete items[index];
+	items.remove(index);
+    }
+}
 #endif
