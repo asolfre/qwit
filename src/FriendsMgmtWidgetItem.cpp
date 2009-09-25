@@ -25,7 +25,7 @@
 
 using namespace std;
 
-FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const int category, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl)
+FriendsMgmtWidgetItem::FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const int category, const QString statusText, quint64 messageId, const QDateTime &time, const quint64 replyStatusId, const QString &serviceBaseUrl)
 {
     this->parent = parent;
     this->status = new QTextBrowser(parent);

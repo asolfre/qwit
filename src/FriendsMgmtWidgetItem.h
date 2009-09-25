@@ -42,12 +42,12 @@ private:
     int height;
     QColor color;
     QString username;
-    uint messageId;
-    uint replyStatusId;
+    quint64 messageId;
+    quint64 replyStatusId;
     QDateTime time;
 
 public:
-    FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const int category, const QString statusText, uint messageId, const QDateTime &time, const uint replyStatusId, const QString &serviceBaseUrl);
+    FriendsMgmtWidgetItem(QWidget *parent, const QString username, const QString iconFileName, const int category, const QString statusText, quint64 messageId, const QDateTime &time, const quint64 replyStatusId, const QString &serviceBaseUrl);
     ~FriendsMgmtWidgetItem();
     void loadIcon();
 //    void setTopPosition(int top);
