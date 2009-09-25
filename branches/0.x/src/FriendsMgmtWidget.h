@@ -41,7 +41,7 @@ private:
 public:
     FriendsMgmtWidget(QScrollArea *scrollArea, const QString &serviceBaseURL);
     void clear();
-    void addItem(QString username, QString userpic, Categories category, QString statusText, uint messageId, QDateTime time, uint replyStatusId);
+    void addItem(QString username, QString userpic, Categories category, QString statusText, quint64 messageId, QDateTime time, quint64 replyStatusId);
     void removeItem(QString screenName);
     void updateItems();
     const FriendsMgmtWidgetItem getItem(int index);

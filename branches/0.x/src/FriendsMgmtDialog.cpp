@@ -299,10 +299,10 @@ void FriendsMgmtDialog::processUserXmlStructure(QDomNode *currentNode, Categorie
     QString screenName;
     bool following;
     QString statusText;
-    uint statusId;
+    quint64 statusId;
     QString timeStr;
     QString image;
-    uint replyStatusId = 0;
+    quint64 replyStatusId = 0;
 
     QDomNode *node = currentNode;
 

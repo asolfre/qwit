@@ -34,7 +34,7 @@ FriendsMgmtWidget::FriendsMgmtWidget(QScrollArea *scrollArea, const QString &ser
 }
 
 
-void FriendsMgmtWidget::addItem(QString username, QString userpic, Categories category, QString statusText, uint messageId, QDateTime time, uint replyStatusId)
+void FriendsMgmtWidget::addItem(QString username, QString userpic, Categories category, QString statusText, quint64 messageId, QDateTime time, quint64 replyStatusId)
 {
     FriendsMgmtWidgetItem *item = new FriendsMgmtWidgetItem(this, username, userpic, category, statusText, messageId, time, replyStatusId, this->serviceBaseUrl);
 
