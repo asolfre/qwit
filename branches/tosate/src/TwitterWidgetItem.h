@@ -34,12 +34,13 @@
 #include "QwitHeaders.h"
 
 #include "Message.h"
+#include "TwitterWidgetItemMessage.h"
 
 const int ICON_SIZE = 48;
 
 class TwitterWidgetItem {
 public:
-	QTextBrowser *messageTextBrowser;
+	TwitterWidgetItemMessage *messageTextBrowser;
 	QLabel *userpicLabel;
 	QLabel *signLabel;
 	QToolButton *replyButton;

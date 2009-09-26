@@ -33,6 +33,7 @@
 
 #include "QwitHeaders.h"
 #include "TwitterWidgetItem.h"
+#include "TwitterWidgetItemMessage.h"
 
 const int MARGIN = 5;
 
@@ -83,6 +84,7 @@ public slots:
 	void disableLessButton();
 	void enableMoreButton();
 	void enableLessButton();
+	void insertTranslation(const QString &translation, QObject *item);
 
 signals:
 	

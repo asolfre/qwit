@@ -33,7 +33,6 @@
 
 #include "QwitHeaders.h"
 
-#include "MainWindow.h"
 #include "Configuration.h"
 #include "Services.h"
 
@@ -52,6 +51,9 @@ QVector<QString> Configuration::Services;
 QMap<QString, QString> Configuration::UrlShortenersNames;
 QMap<QString, int> Configuration::UrlShortenersIds;
 QVector<QString> Configuration::UrlShorteners;
+QVector<QString> Configuration::TranslationsTitles;
+QVector<QString> Configuration::TranslationsCodes;
+QVector<QString> Configuration::TranslationsCountries;
 
 Configuration::Configuration() {
 	for (QMap<QString, QMap<QString, QString> >::iterator it = Services::options.begin(); it != Services::options.end(); ++it) {
@@ -132,6 +134,10 @@ void Configuration::load() {
 	mentionsEvenColor.setRgb(color >> 16, (color >> 8) & 255, color & 255);
 	settings.endGroup();
 
+	settings.beginGroup("Language");
+	language = settings.value("language", "system").toString();
+	settings.endGroup();
+
 	settings.endGroup();
 
 // Accounts
@@ -144,7 +150,9 @@ void Configuration::load() {
 		QString password = settings.value("password", "").toString();
 		QString type = settings.value("type", "").toString();
 		bool useHttps = settings.value("useHttps", false).toBool();
-		Account *account = new Account(type, username, password, useHttps);
+                QString serviceBaseUrl = settings.value("serviceBaseUrl", "").toString();
+                QString serviceApiUrl = settings.value("serviceApiUrl", "").toString();
+                Account *account = new Account(type, username, password, useHttps, serviceBaseUrl, serviceApiUrl);
 		addAccount(account);
 	}
 	settings.endArray();
@@ -221,6 +229,10 @@ void Configuration::save() {
 	settings.setValue("mentionsEvenColor", (((mentionsEvenColor.red() << 8) + mentionsEvenColor.green()) << 8) + mentionsEvenColor.blue());
 	settings.endGroup();
 
+	settings.beginGroup("Language");
+	settings.setValue("language", language);
+	settings.endGroup();
+
 	settings.endGroup();
 
 // Accounts
@@ -232,7 +244,11 @@ void Configuration::save() {
 		settings.setValue("password", accounts[i]->password);
 		settings.setValue("type", accounts[i]->type);
 		settings.setValue("useHttps", accounts[i]->useHttps);
-	}
+                if (accounts[i]->type == "custom") {
+                        settings.setValue("serviceBaseUrl", accounts[i]->serviceBaseUrl());
+                        settings.setValue("serviceApiUrl", accounts[i]->serviceBaseUrl());
+                }
+        }
 	settings.endArray();
 	settings.endGroup();
 	
@@ -256,7 +272,6 @@ void Configuration::save() {
 int Configuration::addAccount(Account *account) {
 	accounts.push_back(account);
 	account->id = accounts.size() - 1;
-	QObject::connect(account, SIGNAL(newMessagesReceived(const QVector<Message>&, Account *)), MainWindow::getInstance(), SLOT(showNewMessages(const QVector<Message>&, Account *)));
 	if (currentAccountId == -1) {
 		currentAccountId = account->id;
 	}

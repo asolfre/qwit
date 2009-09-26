@@ -125,6 +125,7 @@ public slots:
 	void destroy(const Message &message);
 	void sendDirectMessage();
 	void postTwitPic();
+	void ensureThereAreAccounts();
 	
 signals:
 

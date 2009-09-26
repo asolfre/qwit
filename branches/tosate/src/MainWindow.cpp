@@ -72,7 +72,8 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	optionsDialog = new OptionsDialog(this);
 	connect(optionsDialog, SIGNAL(accepted()), this, SLOT(saveOptions()));
 	connect(optionsDialog, SIGNAL(rejected()), this, SLOT(resetOptionsDialog()));
-	
+	connect(optionsDialog, SIGNAL(rejected()), this, SLOT(ensureThereAreAccounts()));
+
 	aboutDialog = new AboutDialog(this);
 	
 	directMessageDialog = new DirectMessageDialog(this);
@@ -117,6 +118,11 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	connect(UrlShortener::getInstance(), SIGNAL(urlShortened(const QString &)), messageTextEdit, SLOT(insertUrl(const QString &)));
 
 	updateAll();
+
+	Configuration *config = Configuration::getInstance();
+	if (config->accounts.size() == 0) {
+		showOptionsDialog();
+	}
 }
 
 void MainWindow::leftCharsNumberChanged(int count) {
@@ -190,6 +196,7 @@ void MainWindow::saveOptions() {
 	config->commonMessagesOddColor = optionsDialog->commonMessagesOddColorPushButton->palette().color(QPalette::Button);
 	config->mentionsEvenColor = optionsDialog->mentionsEvenColorPushButton->palette().color(QPalette::Button);
 	config->mentionsOddColor = optionsDialog->mentionsOddColorPushButton->palette().color(QPalette::Button);
+	config->language = config->TranslationsCodes[optionsDialog->translationsComboBox->currentIndex()];
 
 	config->useProxy = (optionsDialog->useProxyCheckBox->checkState() == Qt::Checked);
 	config->proxyAddress = optionsDialog->proxyAddressLineEdit->text();
@@ -201,6 +208,8 @@ void MainWindow::saveOptions() {
 
 	saveState();
 	updateState();
+
+	ensureThereAreAccounts();
 }
 
 void MainWindow::updateState() {
@@ -349,10 +358,12 @@ void MainWindow::resetOptionsDialog() {
 	palette.setColor(QPalette::Button, config->mentionsOddColor);
 	optionsDialog->mentionsOddColorPushButton->setPalette(palette);
 
+	optionsDialog->translationsComboBox->setCurrentIndex(config->TranslationsCodes.indexOf(config->language));
+
 // Accounts
 	optionsDialog->accountsListWidget->clear();
 	for (int i = 0; i < config->accounts.size(); ++i) {
-		optionsDialog->accountsListWidget->addItem(Configuration::ServicesNames[config->accounts[i]->type] + ": " + config->accounts[i]->username);
+		optionsDialog->accountsListWidget->addItem(new QListWidgetItem(QIcon(":/images/" + config->accounts[i]->type + ".png"), config->accounts[i]->username));
 	}
 
 // Connection
@@ -369,6 +380,8 @@ void MainWindow::resetOptionsDialog() {
 
 void MainWindow::addAccountButton(Account *account) {
 	qDebug() << ("MainWindow::addAccountButton()");
+
+	QObject::connect(account, SIGNAL(newMessagesReceived(const QVector<Message>&, Account *)), this, SLOT(showNewMessages(const QVector<Message>&, Account *)));
 
 	QToolButton *accountButton = new QToolButton(this);
 	accountButton->setIcon(QIcon(":/images/" + account->type + ".png"));
@@ -452,6 +465,9 @@ void MainWindow::updateCurrentAccount(int id) {
 	qDebug() << ("MainWindow::updateCurrentAccount()");
 
 	Configuration *config = Configuration::getInstance();
+	if (config->accounts.size() == 0) {
+		return;
+	}
 	if (config->currentAccountId == -1) {
 		return;
 	}
@@ -693,6 +709,7 @@ void MainWindow::redrawPages() {
 }
 
 void MainWindow::updateAccount(Account *account) {
+	qDebug() << "MainWindow::updateAccount()";
 	for (int i = 0; i < pages.size(); ++i) {
 		if (pages[i]->updateAutomatically()) {
 			pages[i]->update(account);
@@ -758,6 +775,24 @@ void MainWindow::postTwitPic() {
 	dialog.setUser(config->currentAccount()->username, config->currentAccount()->password);
 	if (dialog.exec() == QDialog::Accepted) {
 		messageTextEdit->append(dialog.twitPickedUrlString());
+	}
+}
+
+void MainWindow::ensureThereAreAccounts() {
+	Configuration *config = Configuration::getInstance();
+	if (config->accounts.size() == 0) {
+		QMessageBox::warning(this, "Warning!", "You must configure at least one account before you can use Qwit!");
+		mainTabWidget->setEnabled(false);
+		refreshToolButton->setEnabled(false);
+		messageTextEdit->setEnabled(false);
+		twitPicButton->setEnabled(false);
+		lastMessageLabel->setText("");
+		stateLabel->setText("No accounts configured");
+	} else {
+		mainTabWidget->setEnabled(true);
+		refreshToolButton->setEnabled(true);
+		messageTextEdit->setEnabled(true);
+		twitPicButton->setEnabled(true);
 	}
 }
 

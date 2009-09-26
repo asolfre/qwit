@@ -44,6 +44,8 @@ HEADERS += src/Configuration.h \
     src/QwitHeaders.h \
     src/UrlShortener.h \
     src/TwitterWidgetItem.h \
+	src/TwitterWidgetItemMessage.h \
+	src/Translator.h \
     src/FriendsMgmtDialog.h \
     src/UserMgmtWidget.h \
     src/UserMgmtWidgetItem.h \
@@ -86,6 +88,8 @@ SOURCES += src/qwit.cpp \
     src/FriendsMgmtDialog.cpp \
     src/UserMgmtWidget.cpp \
     src/UserMgmtWidgetItem.cpp \
+	src/TwitterWidgetItemMessage.cpp \
+	src/Translator.cpp \
     src/AbstractUserMgmtPage.cpp \
     src/FriendshipsMgmtPage.cpp \
     src/FollowersMgmtPage.cpp \
