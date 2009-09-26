@@ -81,7 +81,7 @@ Account::Account() {
 	sendingMessage = false;
 }
 
-Account::Account(const QString &type, const QString &username, const QString &password, bool useHttps) {
+Account::Account(const QString &type, const QString &username, const QString &password, bool useHttps, const QString &serviceBaseUrl, const QString &serviceApiUrl) {
 	qDebug() << ("Account::Account()");
 	remainingRequests = -1;
 	twitter = new Twitter(this);
@@ -126,6 +126,8 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(blockCreated(QByteArray,uint)), this, SLOT(addBlock(QByteArray,uint)));
 	connect(twitter, SIGNAL(blockDestroyed(QByteArray,uint)), this, SLOT(removeBlock(QByteArray,uint)));
 	sendingMessage = false;
+        _serviceBaseUrl = serviceBaseUrl;
+        _serviceApiUrl = serviceApiUrl;
 }
 
 void Account::addFriendsMessages(const QByteArray &data) {
@@ -449,7 +451,7 @@ void Account::loadMessages(QSettings &messagesCache) {
 }
 
 QString Account::serviceApiUrl() {
-	QString url = (_serviceApiUrl == "" ? Services::options[type]["apiurl"] : _serviceApiUrl);
+        QString url = (type != "custom" ? Services::options[type]["apiurl"] : _serviceApiUrl);
 	if (useHttps) {
 		if (url.startsWith("http://")) {
 			url = "https://" + url.mid(7);
@@ -459,7 +461,7 @@ QString Account::serviceApiUrl() {
 }
 
 QString Account::serviceBaseUrl() {
-	QString url = (_serviceBaseUrl == "" ? Services::options[type]["baseurl"] : _serviceBaseUrl);
+        QString url = (type != "custom" ? Services::options[type]["baseurl"] : _serviceBaseUrl);
 	if (useHttps) {
 		if (url.startsWith("http://")) {
 			url = "https://" + url.mid(7);

@@ -34,6 +34,7 @@
 #include "QwitHeaders.h"
 
 #include "TwitterWidget.h"
+#include "Translator.h"
 #include "QwitException.h"
 #include "QwitTools.h"
 #include "Configuration.h"
@@ -52,6 +53,7 @@ TwitterWidget::TwitterWidget(QWidget *parent, bool paintMentions): QWidget(paren
 	connect(&directMessageButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(directMessageButtonClicked(int)));
 	connect(&favorButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(favorButtonClicked(int)));
 	connect(&destroyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(destroyButtonClicked(int)));
+	connect(Translator::getInstance(), SIGNAL(textTranslated(const QString&, QObject*)), this, SLOT(insertTranslation(const QString&, QObject*)));
 }
 
 void TwitterWidget::clear() {
@@ -69,7 +71,7 @@ void TwitterWidget::addItem(const Message &message) {
 
 	item->message = message;
 
-	item->messageTextBrowser = new QTextBrowser(this);
+	item->messageTextBrowser = new TwitterWidgetItemMessage(this, message);
 	item->messageTextBrowser->setHtml(QwitTools::prepareMessage(message.text, message.account));
 	item->messageTextBrowser->setReadOnly(true);
 	item->messageTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -293,13 +295,19 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 }
 
 void TwitterWidget::updateItems() {
-//	qDebug() << ("TwitterWidget::updateItems()");
+	qDebug() << ("TwitterWidget::updateItems()");
 
 	retweetButtonGroup.buttons().clear();
 	replyButtonGroup.buttons().clear();
 	directMessageButtonGroup.buttons().clear();
 	favorButtonGroup.buttons().clear();
 	destroyButtonGroup.buttons().clear();
+	Configuration *config = Configuration::getInstance();
+	if (config->accounts.size() == 0) {
+		removeLessButton();
+		removeMoreButton();
+		return;
+	}
 	int height = 0;
 	for (int i = 0; i < items.size(); ++i) {
 		TwitterWidgetItem *item = items[i];
@@ -322,7 +330,6 @@ void TwitterWidget::updateItems() {
 			height += arrangeDirectMessage(item, i, height);
 		}
 	}
-	Configuration *config = Configuration::getInstance();
 	if (moreToolButton) {
 		moreToolButton->move((width() - moreToolButton->width()) / 2, height + MARGIN);
 		moreToolButton->show();
@@ -462,6 +469,18 @@ void TwitterWidget::disableMoreButton() {
 void TwitterWidget::disableLessButton() {
 	if (lessToolButton) {
 		lessToolButton->setEnabled(false);
+	}
+}
+
+void TwitterWidget::insertTranslation(const QString &translation, QObject *item) {
+	if (item && item->inherits("TwitterWidgetItemMessage")) {
+		for (int i = 0; i < items.size(); ++i) {
+			if (items[i]->messageTextBrowser == item) {
+				TwitterWidgetItemMessage *receiver = (TwitterWidgetItemMessage*)item;
+				receiver->insertTranslation(translation);
+				break;
+			}
+		}
 	}
 }
 

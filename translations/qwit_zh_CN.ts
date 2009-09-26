@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="zh_CN">
+<!DOCTYPE TS><TS version="1.1">
+<context>
+    <name></name>
+    <message>
+        <location filename="../src/qwit.cpp" line="58"/>
+        <source>System (%1, %2)</source>
+        <translation>系统语言(%1,%2)</translation>
+    </message>
+</context>
 <context>
     <name>AboutDialog</name>
     <message>
         <location filename="../src/AboutDialog.ui" line="17"/>
         <source>About Qwit</source>
-        <translation type="unfinished"></translation>
+        <translation>关于 快推</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="66"/>
         <source>Qwit</source>
-        <translation type="unfinished"></translation>
+        <translation>快推</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="95"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>关于</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="116"/>
@@ -28,12 +36,20 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright (c) 2008-2009, Artem Iglikov.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://code.google.com/p/qwit/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://code.google.com/p/qwit/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;一个基于QT4开发的跨平台的开源Twitter客户端。&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright (C) 2008-2009, Artem Iglikov.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://code.google.com/p/qwit/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://code.google.com/p/qwit/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="150"/>
         <source>Authors</source>
-        <translation type="unfinished"></translation>
+        <translation>作者</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="156"/>
@@ -46,12 +62,20 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  blog: &lt;a href=&quot;http://arti.kz&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://arti.kz&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Artem Iglikov - 创始人和主要开发者&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:artem.iglikov@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;artem.iglikov@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  博客: &lt;a href=&quot;http://arti.kz&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://arti.kz&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="172"/>
         <source>Thanks To</source>
-        <translation type="unfinished"></translation>
+        <translation>鸣谢</translation>
     </message>
     <message encoding="UTF-8">
         <location filename="../src/AboutDialog.ui" line="178"/>
@@ -68,12 +92,24 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Carlos Galisteo&lt;br /&gt;  official Debian package maintainer&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Salvatore Ansani&lt;br /&gt;  unofficial Debian package maintainer&lt;br /&gt;  blog: &lt;a href=&quot;http://ansani.it/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://ansani.it/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;all people who post issues, submit patches, make translations and use Qwit&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Everaldo Coelho&lt;br /&gt;超酷的Crystal图标主题作者&lt;br /&gt;网站：&lt;a href=&quot;http://www.everaldo.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.everaldo.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Thomas Salm&lt;br /&gt;好友管理界面开发者&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Roopesh Chander&lt;br /&gt;TwitPic集成&lt;br /&gt;博客：&lt;a href=&quot;http://blog.forwardbias.in/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://blog.forwardbias.in/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Valentin Gritsinger&lt;br /&gt;私信和搜索集成&lt;br /&gt;博客：&lt;a href=&quot;http://gritsinger.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gritsinger.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;kiracatgirl&lt;br /&gt;补丁编写者&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Mstislav Sokolov&lt;br /&gt;FreeBSD包维护者&lt;br /&gt;博客：&lt;a href=&quot;http://truebsd.org/sokolov/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://truebsd.org/sokolov/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Carlos Galisteo&lt;br /&gt;官方Debian包维护者&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Salvatore Ansani&lt;br /&gt;非官方Debian包维护者&lt;br /&gt;博客：&lt;a href=&quot;http://ansani.it/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://ansani.it/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;以及所有Issue报告者,补丁提交者，翻译者和快推使用者&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="198"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>许可证</translation>
     </message>
     <message>
         <location filename="../src/AboutDialog.ui" line="204"/>
@@ -94,7 +130,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You should have received a copy of the GNU General Public License&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;along with this program.  If not, see &amp;lt;http://www.gnu.org/licenses/&amp;gt;.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -102,43 +138,43 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="17"/>
         <source>Configure account...</source>
-        <translation type="unfinished"></translation>
+        <translation>配置账户...</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="28"/>
         <source>Username:</source>
-        <translation type="unfinished">用户名:</translation>
+        <translation>用户名:</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="38"/>
         <source>Password:</source>
-        <translation type="unfinished">密码:</translation>
+        <translation>密码:</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="52"/>
         <source>save password</source>
-        <translation type="unfinished">保存密码</translation>
+        <translation>保存密码</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="59"/>
         <source>use https instead of http</source>
-        <translation type="unfinished"></translation>
+        <translation>使用https安全连接</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="66"/>
         <source>Service base URL:</source>
-        <translation type="unfinished">服务基本URL地址:</translation>
+        <translation>服务基本URL地址:</translation>
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="76"/>
         <source>Service API URL:</source>
-        <translation type="unfinished">服务API URL地址:</translation>
+        <translation>服务API URL地址:</translation>
     </message>
 </context>
 <context>
     <name>BlocksMgmtPage</name>
     <message>
-        <location filename="../BlocksMgmtPage.cpp" line="64"/>
+        <location filename="../src/BlocksMgmtPage.cpp" line="66"/>
         <source>Blocked</source>
         <translation type="unfinished"></translation>
     </message>
@@ -148,22 +184,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/DirectMessageDialog.ui" line="17"/>
         <source>Direct message</source>
-        <translation type="unfinished"></translation>
+        <translation>私信内容</translation>
     </message>
     <message>
         <location filename="../src/DirectMessageDialog.ui" line="27"/>
         <source>Account:</source>
-        <translation type="unfinished"></translation>
+        <translation>账户:</translation>
     </message>
     <message>
         <location filename="../src/DirectMessageDialog.ui" line="48"/>
         <source>To:</source>
-        <translation type="unfinished"></translation>
+        <translation>发送至:</translation>
     </message>
     <message>
         <location filename="../src/DirectMessageDialog.ui" line="60"/>
         <source>Message:</source>
-        <translation type="unfinished"></translation>
+        <translation>私信内容:</translation>
     </message>
 </context>
 <context>
@@ -171,13 +207,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/FavoritesPage.cpp" line="64"/>
         <source>Favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>收藏夹</translation>
     </message>
 </context>
 <context>
     <name>FollowersMgmtPage</name>
     <message>
-        <location filename="../FollowersMgmtPage.cpp" line="64"/>
+        <location filename="../src/FollowersMgmtPage.cpp" line="68"/>
         <source>Followers</source>
         <translation type="unfinished"></translation>
     </message>
@@ -220,7 +256,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FriendsMgmtDialog.cpp" line="128"/>
+        <location filename="../src/FriendsMgmtDialog.cpp" line="308"/>
         <source>Blocking will prevent %1 from following you. And you won&apos;t see their tweets in your timeline. Are you sure you want to block?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -228,17 +264,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>FriendshipsMgmtPage</name>
     <message>
-        <location filename="../FriendshipsMgmtPage.cpp" line="48"/>
+        <location filename="../src/FriendshipsMgmtPage.cpp" line="49"/>
         <source>new friend:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FriendshipsMgmtPage.cpp" line="52"/>
+        <location filename="../src/FriendshipsMgmtPage.cpp" line="53"/>
         <source>add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../FriendshipsMgmtPage.cpp" line="78"/>
+        <location filename="../src/FriendshipsMgmtPage.cpp" line="82"/>
         <source>Friends</source>
         <translation type="unfinished"></translation>
     </message>
@@ -248,7 +284,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/HomePage.cpp" line="64"/>
         <source>Home</source>
-        <translation type="unfinished">首页</translation>
+        <translation>首页</translation>
     </message>
 </context>
 <context>
@@ -256,40 +292,40 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/InboxPage.cpp" line="64"/>
         <source>Inbox</source>
-        <translation type="unfinished">收件箱</translation>
+        <translation>私信收件箱</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="752"/>
-        <source>Pick an image</source>
-        <translation>选择一幅图片</translation>
-    </message>
-    <message>
-        <location filename="../src/MainWindow.cpp" line="563"/>
+        <location filename="../src/MainWindow.cpp" line="579"/>
         <source>&amp;Show / Hide</source>
-        <translation>&amp;显示/隐藏主界面</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="565"/>
+        <location filename="../src/MainWindow.cpp" line="581"/>
         <source>&amp;Quit</source>
-        <translation>&amp;退出</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="685"/>
+        <location filename="../src/MainWindow.cpp" line="701"/>
         <source>Qwit: new messages receieved for %1@%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="752"/>
+        <location filename="../src/MainWindow.cpp" line="769"/>
+        <source>Pick an image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="769"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.PNG *.JPG *.JPEG *.BMP)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/MainWindow.ui" line="14"/>
         <source>Qwit</source>
-        <translation></translation>
+        <translation type="unfinished">快推</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.ui" line="72"/>
@@ -318,222 +354,232 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="20"/>
-        <source>Options</source>
-        <translation>选项</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="376"/>
-        <source>Update interval:</source>
-        <translation>更新时间间隔:</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="389"/>
-        <source>s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="436"/>
-        <source>Misc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="444"/>
-        <source>Show greeting message:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="457"/>
-        <source>Show left characters number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="464"/>
-        <source>Number of messages per page:</source>
-        <translation>每页显示消息数:</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="494"/>
-        <source>Display retweet tag after text instead of in front</source>
-        <translation>把RT标记移到条目末尾</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="521"/>
-        <source>Place controls vertically</source>
-        <translation>竖直放置控件栏</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="531"/>
-        <source>Place tabs vertically</source>
-        <translation>竖直放置标签栏</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="1113"/>
+        <location filename="../src/OptionsDialog.ui" line="1153"/>
         <source>Accounts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="39"/>
+        <location filename="../src/OptionsDialog.ui" line="45"/>
         <source>URL shortener</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="73"/>
+        <location filename="../src/OptionsDialog.ui" line="79"/>
         <source>Connection</source>
-        <translation>连接</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="179"/>
+        <location filename="../src/OptionsDialog.ui" line="185"/>
         <source>User interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="87"/>
+        <location filename="../src/OptionsDialog.ui" line="20"/>
+        <source>Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="93"/>
         <source>use proxy</source>
-        <translation>使用代理</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="94"/>
+        <location filename="../src/OptionsDialog.ui" line="100"/>
         <source>Proxy address:</source>
-        <translation>地址:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="107"/>
+        <location filename="../src/OptionsDialog.ui" line="113"/>
         <source>Proxy port:</source>
-        <translation>端口:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="120"/>
+        <location filename="../src/OptionsDialog.ui" line="126"/>
         <source>Proxy username:</source>
-        <translation>用户名:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="133"/>
+        <location filename="../src/OptionsDialog.ui" line="139"/>
         <source>Proxy password:</source>
-        <translation>密码:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="150"/>
+        <location filename="../src/OptionsDialog.ui" line="156"/>
         <source>save proxy password</source>
-        <translation>保存密码</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="189"/>
+        <location filename="../src/OptionsDialog.ui" line="195"/>
         <source>Tabs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="199"/>
+        <location filename="../src/OptionsDialog.ui" line="205"/>
         <source>Home</source>
         <translation type="unfinished">首页</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="365"/>
+        <location filename="../src/OptionsDialog.ui" line="371"/>
         <source>auto-update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="223"/>
+        <location filename="../src/OptionsDialog.ui" line="229"/>
         <source>Public</source>
-        <translation type="unfinished">公众页面</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="244"/>
-        <source>Replies</source>
-        <translation type="unfinished">回复</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="268"/>
-        <source>Custom</source>
-        <translation type="unfinished">自定义</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="289"/>
-        <source>Inbox</source>
-        <translation type="unfinished">收件箱</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="313"/>
-        <source>Outbox</source>
-        <translation type="unfinished">发件箱</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="334"/>
-        <source>Search</source>
-        <translation type="unfinished">搜索</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="355"/>
-        <source>Favorites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="474"/>
+        <location filename="../src/OptionsDialog.ui" line="250"/>
+        <source>Replies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="274"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="295"/>
+        <source>Inbox</source>
+        <translation type="unfinished">私信收件箱</translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="319"/>
+        <source>Outbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="340"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="361"/>
+        <source>Favorites</source>
+        <translation type="unfinished">收藏夹</translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="382"/>
+        <source>Update interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="395"/>
+        <source>s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="442"/>
+        <source>Misc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="450"/>
+        <source>Show greeting message:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="463"/>
+        <source>Show left characters number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="470"/>
+        <source>Number of messages per page:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="480"/>
         <source>Number of messages in popup:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="484"/>
+        <location filename="../src/OptionsDialog.ui" line="490"/>
         <source>Retweet tag:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="501"/>
+        <location filename="../src/OptionsDialog.ui" line="500"/>
+        <source>Display retweet tag after text instead of in front</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="507"/>
         <source>Place username under avatar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="511"/>
+        <location filename="../src/OptionsDialog.ui" line="517"/>
         <source>Show messages in the tray</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="541"/>
+        <location filename="../src/OptionsDialog.ui" line="527"/>
+        <source>Place controls vertically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="537"/>
+        <source>Place tabs vertically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="547"/>
         <source>Show last status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="567"/>
+        <location filename="../src/OptionsDialog.ui" line="573"/>
         <source>Colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="577"/>
+        <location filename="../src/OptionsDialog.ui" line="583"/>
         <source>Common messages:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="833"/>
+        <location filename="../src/OptionsDialog.ui" line="839"/>
         <source>Mentions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1121"/>
+        <location filename="../src/OptionsDialog.ui" line="1109"/>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="1117"/>
+        <source>Choose UI language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/OptionsDialog.ui" line="1161"/>
         <source>Service:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1139"/>
+        <location filename="../src/OptionsDialog.ui" line="1179"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1155"/>
+        <location filename="../src/OptionsDialog.ui" line="1195"/>
         <source>Edit...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1162"/>
+        <location filename="../src/OptionsDialog.ui" line="1202"/>
         <source>Delete...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1195"/>
+        <location filename="../src/OptionsDialog.ui" line="1235"/>
         <source>Url shortener</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1203"/>
+        <location filename="../src/OptionsDialog.ui" line="1243"/>
         <source>Choose service:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -543,7 +589,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/OutboxPage.cpp" line="64"/>
         <source>Outbox</source>
-        <translation type="unfinished">发件箱</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -551,7 +597,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/PublicPage.cpp" line="65"/>
         <source>Public</source>
-        <translation type="unfinished">公众页面</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -559,34 +605,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QwitTools.cpp" line="90"/>
         <source>Just now</source>
-        <translation type="unfinished">刚刚</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/QwitTools.cpp" line="91"/>
         <source>about %n second(s) ago</source>
         <translation type="unfinished">
-            <numerusform>约%n秒前</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/QwitTools.cpp" line="93"/>
         <source>about %n minute(s) ago</source>
         <translation type="unfinished">
-            <numerusform>约%n分钟前</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/QwitTools.cpp" line="95"/>
         <source>about %n hour(s) ago</source>
         <translation type="unfinished">
-            <numerusform>约%n小时前</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/QwitTools.cpp" line="97"/>
         <source>about %n day(s) ago</source>
         <translation type="unfinished">
-            <numerusform>约%n天前</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -595,7 +641,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RepliesPage.cpp" line="65"/>
         <source>Replies</source>
-        <translation type="unfinished">回复</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -608,7 +654,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/SearchPage.cpp" line="71"/>
         <source>Search</source>
-        <translation type="unfinished">搜索</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -689,37 +735,37 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="802"/>
+        <location filename="../src/Twitter.cpp" line="810"/>
         <source>Getting friendships: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="823"/>
+        <location filename="../src/Twitter.cpp" line="831"/>
         <source>Getting followers: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="844"/>
+        <location filename="../src/Twitter.cpp" line="852"/>
         <source>Getting blocked users: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="873"/>
+        <location filename="../src/Twitter.cpp" line="881"/>
         <source>Sending create friendship request: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="902"/>
+        <location filename="../src/Twitter.cpp" line="911"/>
         <source>Sending destroy friendship request: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="930"/>
+        <location filename="../src/Twitter.cpp" line="940"/>
         <source>Sending create block request: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="958"/>
+        <location filename="../src/Twitter.cpp" line="969"/>
         <source>Sending destroy block request: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -727,23 +773,31 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TwitterWidget</name>
     <message>
-        <location filename="../src/TwitterWidget.cpp" line="400"/>
+        <location filename="../src/TwitterWidget.cpp" line="407"/>
         <source>more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TwitterWidget.cpp" line="410"/>
+        <location filename="../src/TwitterWidget.cpp" line="417"/>
         <source>less</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TwitterWidget.cpp" line="421"/>
+        <location filename="../src/TwitterWidget.cpp" line="428"/>
         <source>Delete message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/TwitterWidget.cpp" line="421"/>
+        <location filename="../src/TwitterWidget.cpp" line="428"/>
         <source>Are you sure to delete this message?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TwitterWidgetItemMessage</name>
+    <message>
+        <location filename="../src/TwitterWidgetItemMessage.cpp" line="46"/>
+        <source>Translate by GoogleTranslate</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

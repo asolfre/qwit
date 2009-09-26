@@ -44,7 +44,7 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	
 	accountConfigurationDialog = new AccountConfigurationDialog(this);
 	
-	connect(optionsGroupListWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(changeOptionsGroup(QListWidgetItem*)));
+	connect(optionsGroupListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(changeOptionsGroup(QListWidgetItem*)));
 	optionsStackedWidget->setCurrentWidget(accountsPage);
 	connect(addAccountPushButton, SIGNAL(pressed()), this, SLOT(addAccount()));
 	connect(deleteAccountPushButton, SIGNAL(pressed()), this, SLOT(deleteAccount()));
@@ -53,11 +53,16 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 	
 	Configuration *config = Configuration::getInstance();
 	for (int i = 0; i < config->UrlShorteners.size(); ++i) {
-		urlShortenersComboBox->addItem(config->UrlShortenersNames[config->UrlShorteners[i]]);
+		urlShortenersComboBox->addItem(QIcon(":/images/" + config->UrlShorteners[i] + ".png"), config->UrlShortenersNames[config->UrlShorteners[i]]);
 	}
 	for (int i = 0; i < config->Services.size(); ++i) {
-		servicesComboBox->addItem(config->ServicesNames[config->Services[i]]);
+		servicesComboBox->addItem(QIcon(":/images/" + config->Services[i] + ".png"), config->ServicesNames[config->Services[i]]);
 	}
+	for (int i = 0; i < config->TranslationsTitles.size(); ++i) {
+		translationsComboBox->addItem(QIcon(":/images/countries/" + config->TranslationsCodes[i].mid(3, 2).toLower() + ".png"), config->TranslationsTitles[i]);
+	}
+	translationsComboBox->setCurrentIndex(config->TranslationsCodes.indexOf(config->language));
+	servicesComboBox->setCurrentIndex(config->Services.indexOf("twitter"));
 
 	optionsStackedWidget->setCurrentWidget(accountsPage);
 
@@ -86,7 +91,6 @@ void OptionsDialog::addAccount() {
 	accountConfigurationDialog->accountPasswordLineEdit->setText("");
 	accountConfigurationDialog->accountUsernameLineEdit->setFocus();
 	accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Unchecked);
-	Configuration *config = Configuration::getInstance();
 	int serviceId = servicesComboBox->currentIndex();
 	if (serviceId == Configuration::ServicesIds["custom"]) {
 		accountConfigurationDialog->serviceBaseUrlLineEdit->setText("");
@@ -154,9 +158,15 @@ void OptionsDialog::commitAccount() {
 	MainWindow *mainWindow = MainWindow::getInstance();
 	switch (accountConfigurationDialog->action) {
 		case AccountConfigurationDialog::ActionAdd: {
-				Account *account = new Account(Configuration::Services[accountConfigurationDialog->accountType], accountConfigurationDialog->accountUsernameLineEdit->text(), accountConfigurationDialog->accountPasswordLineEdit->text(), accountConfigurationDialog->useHttpsCheckBox->checkState() == Qt::Checked);
+                                Account *account = new Account(
+                                        Configuration::Services[accountConfigurationDialog->accountType],
+                                        accountConfigurationDialog->accountUsernameLineEdit->text(),
+                                        accountConfigurationDialog->accountPasswordLineEdit->text(),
+                                        accountConfigurationDialog->useHttpsCheckBox->checkState() == Qt::Checked,
+                                        accountConfigurationDialog->serviceBaseUrlLineEdit->text(),
+                                        accountConfigurationDialog->serviceApiUrlLineEdit->text());
 				config->addAccount(account);
-				accountsListWidget->addItem(Configuration::ServicesNames[account->type] + ": " + account->username);
+				accountsListWidget->addItem(new QListWidgetItem(QIcon(":/images/" + account->type + ".png"), account->username));
 				accountsListWidget->setCurrentRow(account->id);
 				mainWindow->addAccountButton(account);
 			}
@@ -166,8 +176,10 @@ void OptionsDialog::commitAccount() {
 				account->username = accountConfigurationDialog->accountUsernameLineEdit->text();
 				account->password = accountConfigurationDialog->accountPasswordLineEdit->text();
 				account->useHttps = (accountConfigurationDialog->useHttpsCheckBox->checkState() == Qt::Checked);
-				accountsListWidget->takeItem(account->id);
-				accountsListWidget->insertItem(account->id, Configuration::ServicesNames[account->type] + ": " + account->username);
+                                account->_serviceBaseUrl = accountConfigurationDialog->serviceBaseUrlLineEdit->text();
+                                account->_serviceApiUrl = accountConfigurationDialog->serviceApiUrlLineEdit->text();
+                                accountsListWidget->takeItem(account->id);
+				accountsListWidget->insertItem(account->id, new QListWidgetItem(QIcon(":/images/" + account->type + ".png"), account->username));
 				accountsListWidget->setCurrentRow(account->id);
 				mainWindow->updateAccountButton(account);
 			}

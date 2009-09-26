@@ -83,7 +83,7 @@
     <value type="QString" >LOGNAME=tosate</value>
     <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-tosate</value>
     <value type="QString" >PATH=/home/tosate/qtsdk-2009.03/qt/bin:/home/tosate/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games":$JAVA_HOME/bin</value>
-    <value type="QString" >PWD=/home/tosate</value>
+    <value type="QString" >PWD=/home/tosate/qtsdk-2009.03/bin</value>
     <value type="QString" >QTDIR=/home/tosate/qtsdk-2009.03/qt</value>
     <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6607</value>
     <value type="QString" >SHELL=/bin/bash</value>
@@ -134,7 +134,7 @@
     <value type="QString" >LOGNAME=tosate</value>
     <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-tosate</value>
     <value type="QString" >PATH=/home/tosate/qtsdk-2009.03/qt/bin:/home/tosate/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games":$JAVA_HOME/bin</value>
-    <value type="QString" >PWD=/home/tosate</value>
+    <value type="QString" >PWD=/home/tosate/qtsdk-2009.03/bin</value>
     <value type="QString" >QTDIR=/home/tosate/qtsdk-2009.03/qt</value>
     <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6607</value>
     <value type="QString" >SHELL=/bin/bash</value>
@@ -180,7 +180,7 @@
     <value type="QString" >LOGNAME=tosate</value>
     <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-tosate</value>
     <value type="QString" >PATH=/home/tosate/qtsdk-2009.03/qt/bin:/home/tosate/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games":$JAVA_HOME/bin</value>
-    <value type="QString" >PWD=/home/tosate</value>
+    <value type="QString" >PWD=/home/tosate/qtsdk-2009.03/bin</value>
     <value type="QString" >QTDIR=/home/tosate/qtsdk-2009.03/qt</value>
     <value type="QString" >SESSION_MANAGER=local/x2tosate:/tmp/.ICE-unix/6607</value>
     <value type="QString" >SHELL=/bin/bash</value>
