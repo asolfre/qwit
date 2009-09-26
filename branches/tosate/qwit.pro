@@ -48,9 +48,9 @@ HEADERS += src/Configuration.h \
     src/UserMgmtWidget.h \
     src/UserMgmtWidgetItem.h \
     src/AbstractUserMgmtPage.h \
-    FriendshipsMgmtPage.h \
-    FollowersMgmtPage.h \
-    BlocksMgmtPage.h
+    src/FriendshipsMgmtPage.h \
+    src/FollowersMgmtPage.h \
+    src/BlocksMgmtPage.h
 FORMS += src/MainWindow.ui \
     src/OptionsDialog.ui \
     src/AboutDialog.ui \
@@ -87,9 +87,9 @@ SOURCES += src/qwit.cpp \
     src/UserMgmtWidget.cpp \
     src/UserMgmtWidgetItem.cpp \
     src/AbstractUserMgmtPage.cpp \
-    FriendshipsMgmtPage.cpp \
-    FollowersMgmtPage.cpp \
-    BlocksMgmtPage.cpp
+    src/FriendshipsMgmtPage.cpp \
+    src/FollowersMgmtPage.cpp \
+    src/BlocksMgmtPage.cpp
 TRANSLATIONS += translations/qwit_en_US.ts \
     translations/qwit_es_ES.ts \
     translations/qwit_it_IT.ts \
