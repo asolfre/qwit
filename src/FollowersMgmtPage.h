@@ -44,7 +44,6 @@ protected:
 public:
     FollowersMgmtPage(QWidget *parent);
     void updateSize();
-    QString title();
     void update(Account *account = 0);
 signals:
     void follow(QString, UserMgmtWidgetItem*);

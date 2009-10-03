@@ -69,6 +69,8 @@ void AbstractUserMgmtPage::updateItems(const QVector<Message> &items)
     }
 
     userMgmtWidget->updateItems();
+
+    emit stateChanged(this->title + " updated");
 }
 
 void AbstractUserMgmtPage::redraw()
@@ -82,5 +84,10 @@ void AbstractUserMgmtPage::removeItem(UserMgmtWidgetItem *item)
 
     userMgmtWidget->removeItem(item);
     userMgmtWidget->updateItems();
+}
+
+QString AbstractUserMgmtPage::getTitle()
+{
+    return this->title;
 }
 #endif

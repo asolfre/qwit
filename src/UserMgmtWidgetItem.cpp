@@ -68,21 +68,25 @@ UserMgmtWidgetItem::UserMgmtWidgetItem(Message message, QWidget *parent, int wid
     followButton->setText("");
     followButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     followButton->setAutoRaise(true);
+    followButton->setStatusTip(tr("follow %1").arg(message.username));
     unfollowButton = new QToolButton(parent);
     unfollowButton->setIcon(QwitTools::getToolButtonIcon(":/images/unfollow.png"));
     unfollowButton->setText("");
     unfollowButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     unfollowButton->setAutoRaise(true);
+    unfollowButton->setStatusTip(tr("unfollow %1").arg(message.username));
     blockButton = new QToolButton(parent);
     blockButton->setIcon(QwitTools::getToolButtonIcon(":/images/block.png"));
     blockButton->setText("");
     blockButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     blockButton->setAutoRaise(true);
+    blockButton->setStatusTip(tr("block %1").arg(message.username));
     unblockButton = new QToolButton(parent);
     unblockButton->setIcon(QwitTools::getToolButtonIcon(":/images/unblock.png"));
     unblockButton->setText("");
     unblockButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     unblockButton->setAutoRaise(true);
+    unblockButton->setStatusTip(tr("unblock %1").arg(message.username));
 
     connect(followButton, SIGNAL(pressed()), this, SLOT(on_followToolButton_pressed()));
     connect(unfollowButton, SIGNAL(pressed()), this, SLOT(on_unfollowToolButton_pressed()));
@@ -189,7 +193,7 @@ int UserMgmtWidgetItem::arrangeMessage(int index, int currentHeight)
 		   "<a href=\"" + messageUrl + "\">" + QwitTools::formatDateTime(message.time) + "</a>";
     if(message.source != "")
     {
-	sign += "<br/>from " + message.source;
+	sign += " from " + message.source;
     }
     if(message.inReplyToMessageId)
     {

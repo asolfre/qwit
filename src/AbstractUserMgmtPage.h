@@ -42,6 +42,7 @@ class AbstractUserMgmtPage : public QWidget
     Q_OBJECT
 
 protected:
+    QString title;
     QScrollArea *scrollArea;
     UserMgmtWidget *userMgmtWidget;
     virtual int widgetType() = 0;
@@ -53,12 +54,15 @@ public:
     virtual void addItem(Message message);
     virtual void removeItem(UserMgmtWidgetItem *item);
     virtual void updateSize() = 0;
-    virtual QString title() = 0;
+    virtual QString getTitle();
     virtual void reloadUserpics();
     void clear();
 
 public slots:
     virtual void updateItems(const QVector<Message> &items);
+
+signals:
+    void stateChanged(QString state);
 };
 
 #endif // ABSTRACTUSERMGMTPAGE_H

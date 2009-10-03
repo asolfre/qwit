@@ -50,7 +50,6 @@ private:
 public:
     FriendshipsMgmtPage(QWidget *parent);
     void updateSize();
-    QString title();
     void update(Account *account = 0);
 private slots:
     void on_newFriendLineEdit_textEdited(QString);

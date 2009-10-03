@@ -38,6 +38,8 @@
 FriendshipsMgmtPage::FriendshipsMgmtPage(QWidget *parent) : AbstractUserMgmtPage(parent)
 {
     qDebug() << ("FriendshipsMgmtPage::FriendshipsMgmtPage()");
+    this->title = tr("Friends");
+
     userMgmtWidget->setObjectName(QString::fromUtf8("friendshipsMgmtWidget"));
     // define connects
 
@@ -77,10 +79,6 @@ void FriendshipsMgmtPage::updateSize()
     userMgmtWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() -5, 500);
 }
 
-QString FriendshipsMgmtPage::title()
-{
-    return tr("Friends");
-}
 
 void FriendshipsMgmtPage::update(Account *accout)
 {

@@ -82,7 +82,6 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	connect(twitPicButton, SIGNAL(clicked()), this, SLOT(postTwitPic()));
 
 	friendsMgmtDialog = new FriendsMgmtDialog(this);
-	friendsMgmtDialog->setModal(true);
 
 	connect(refreshToolButton, SIGNAL(pressed()), this, SLOT(refresh()));
 	connect(optionsToolButton, SIGNAL(pressed()), this, SLOT(showOptionsDialog()));

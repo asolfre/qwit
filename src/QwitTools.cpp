@@ -855,7 +855,10 @@ QVector<Message> QwitTools::parseUsers(const QByteArray &data, Account *account)
 
 	QDomNode node2 = node.firstChild();
 	while(!node2.isNull()) {
-	    if(node2.toElement().tagName() == "id"){}
+	    if(node2.toElement().tagName() == "id")
+	    {
+		id = node2.toElement().text().toULongLong();
+	    }
 	    else if(node2.toElement().tagName() == "name"){}
 	    else if(node2.toElement().tagName() == "screen_name")
 	    {
@@ -900,7 +903,8 @@ QVector<Message> QwitTools::parseUsers(const QByteArray &data, Account *account)
 		    }
 		    else if(node3.toElement().tagName() == "id")
 		    {
-			id = node3.toElement().text().toULongLong();
+			// in this case we are not interested in the message ID
+//			id = node3.toElement().text().toULongLong();
 		    }
 		    else if(node3.toElement().tagName() == "text")
 		    {

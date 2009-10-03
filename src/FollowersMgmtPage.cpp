@@ -37,6 +37,7 @@
 FollowersMgmtPage::FollowersMgmtPage(QWidget *parent) : AbstractUserMgmtPage(parent)
 {
     qDebug() << ("FollowersMgmtPage::FollowersMgmtPage()");
+    this->title = tr("Followers");
 
     userMgmtWidget->setObjectName(QString::fromUtf8("followersMgmtWidget"));
     // define connects
@@ -63,10 +64,6 @@ void FollowersMgmtPage::updateSize()
     userMgmtWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() -5, 500);
 }
 
-QString FollowersMgmtPage::title()
-{
-    return tr("Followers");
-}
 
 void FollowersMgmtPage::update(Account *account)
 {
