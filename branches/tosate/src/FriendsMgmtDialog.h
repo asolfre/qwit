@@ -32,8 +32,6 @@
 #ifndef FriendsMgmtDialog_h
 #define FriendsMgmtDialog_h
 
-//const int MGMT_TABS = 3;
-
 #include "ui_FriendsMgmtDialog.h"
 
 #include "QwitHeaders.h"
@@ -58,25 +56,23 @@ private:
     QMap<uint, UserMgmtWidgetItem*> requestsFromFollowersPage;
     QMap<uint, UserMgmtWidgetItem*> requestsFromBlocksPage;
     uint requestId;
+    QStatusBar *statusBar;
 
-//    void followImpl(QString screenName);
     void updateConnects();
     int oldAccountId;
     bool firstRun;
 
 public:
     FriendsMgmtDialog(QWidget *parent);
-
-public slots:
-//    void saveState();
+    ~FriendsMgmtDialog();
 
 protected:
     void resizeEvent(QResizeEvent *event);
     void showEvent(QShowEvent *event);
+    bool event(QEvent *e);
 
 private slots:
     void on_tabWidget_currentChanged(int index);
-    void on_closePushButton_pressed();
     void on_add_friend(QString screenName);
     void on_unfollow_friend(QString screenName, UserMgmtWidgetItem *item);
     void on_block_friend(QString screenName, UserMgmtWidgetItem *item);
@@ -88,6 +84,7 @@ private slots:
     void removeFriend(Message Message, uint requestId);
     void addBlock(Message message, uint requestId);
     void removeBlock(Message message, uint requestId);
+    void setState(QString state);
 };
 
 #endif

@@ -44,7 +44,6 @@ protected:
 public:
     BlocksMgmtPage(QWidget *parent);
     void updateSize();
-    QString title();
     void update(Account *account = 0);
 signals:
     void unblock(QString, UserMgmtWidgetItem*);

@@ -37,6 +37,7 @@
 BlocksMgmtPage::BlocksMgmtPage(QWidget *parent) : AbstractUserMgmtPage(parent)
 {
     qDebug() << ("BlocksMgmtPage::BlocksMgmtPage()");
+    this->title = tr("Blocks");
 
     userMgmtWidget->setObjectName(QString::fromUtf8("blocksMgmtWidget"));
     // define
@@ -59,11 +60,6 @@ void BlocksMgmtPage::updateSize()
 {
     qDebug() << ("BlocksMgmtPage::updateSize()");
     userMgmtWidget->resize(scrollArea->width() - scrollArea->verticalScrollBar()->width() -5, 500);
-}
-
-QString BlocksMgmtPage::title()
-{
-    return tr("Blocked");
 }
 
 void BlocksMgmtPage::update(Account *account)

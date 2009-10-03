@@ -181,7 +181,7 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 	QString messageUrl = item->message.account->singleMessageUrl().replace("%username", item->message.username).replace("%messageid", QString::number(item->message.id));
 	QString sign = "<style>a{text-decoration:none;}</style><div style=\"font-size:small\"><a href=\"" + item->message.account->serviceBaseUrl() + "/" + item->message.username + "\" style=\"font-weight:bold\">" + item->message.username + "</a> - <a href=\"" + messageUrl + "\">" + QwitTools::formatDateTime(item->message.time) + "</a>";
 	if (item->message.source != "") {
-		sign += "<br/>from " + item->message.source;
+		sign += " from " + item->message.source;
 	}
 	if (item->message.inReplyToMessageId) {
 		QString inReplyToMessageUrl = item->message.account->singleMessageUrl().replace("%username", item->message.inReplyToUsername).replace("%messageid", QString::number(item->message.inReplyToMessageId));
