@@ -44,7 +44,7 @@ void FriendsMgmtWidget::addItem(QString username, QString userpic, Categories ca
     nextItemIndex = items.size();
 
     items.insert(nextItemIndex++, item);
-    cout << "added item" << endl;
+//    cout << "added item" << endl;
 
     item->show();
 
