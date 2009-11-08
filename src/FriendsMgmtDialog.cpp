@@ -47,10 +47,8 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
     setupUi(this);
 
     statusBar = new QStatusBar(this);
-    topLevelLayout->addWidget(statusBar);
-
-    oldAccountId = -1;
-    firstRun = true;
+    statusBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
+    this->layout()->addWidget(statusBar);
 
     tabWidget->removeTab(0);
     tabWidget->removeTab(0);
@@ -100,30 +98,32 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
 {
     qDebug() << ("FriendsMgmtDialog::showEvent()");
 
-    if(firstRun)
-    {
-	Configuration *config = Configuration::getInstance();
-	oldAccountId = config->currentAccountId;
-
-	if(config->currentAccountId != -1)
-	{
-	    connect(config->currentAccount(), SIGNAL(friendshipsUpdated(QVector<Message>)), friendshipsPage, SLOT(updateItems(QVector<Message>)));
-	    connect(config->currentAccount(), SIGNAL(followersUpdated(QVector<Message>)), followersPage, SLOT(updateItems(QVector<Message>)));
-	    connect(config->currentAccount(), SIGNAL(blocksUpdated(QVector<Message>)), blocksPage, SLOT(updateItems(QVector<Message>)));
-	    connect(config->currentAccount(), SIGNAL(friendshipAdded(Message,uint)), this, SLOT(addFriend(Message,uint)));
-	    connect(config->currentAccount(), SIGNAL(friendshipRemoved(Message,uint)), this, SLOT(removeFriend(Message,uint)));
-	    connect(config->currentAccount(), SIGNAL(blockAdded(Message,uint)), this, SLOT(addBlock(Message,uint)));
-	    connect(config->currentAccount(), SIGNAL(blockRemoved(Message,uint)), this, SLOT(removeBlock(Message,uint)));
-	}
-	firstRun = false;
-    }
-    else
-	updateConnects();
-
     Configuration *config = Configuration::getInstance();
-    config->currentAccount()->receiveFriendships();
-    config->currentAccount()->receiveFollowers();
-    config->currentAccount()->receiveBlocks();
+    int itemCount = config->accounts.size();
+    QListWidgetItem *currentItem;
+    for(int i=0; i<itemCount; i++)
+    {
+	Account *account = config->accounts[i];
+	QListWidgetItem *item = new QListWidgetItem(QIcon(":/images/" + account->type + ".png"), account->username);
+	item->setData(Qt::UserRole, account->id);
+	if(config->currentAccount() == account)
+	    currentItem = item;
+	accountsListWidget->addItem(item);
+    }
+
+    if(itemCount > 0)
+    {
+	accountsListWidget->setCurrentItem(currentItem);
+    }
+
+    updateConnects();
+
+    if(config->currentAccountId != -1)
+    {
+	config->currentAccount()->receiveFriendships();
+	config->currentAccount()->receiveFollowers();
+	config->currentAccount()->receiveBlocks();
+    }
 
     tabWidget->setCurrentIndex(0);
 
@@ -145,19 +145,23 @@ void FriendsMgmtDialog::updateConnects()
 
     oldAccountId = config->currentAccountId;
 
-    disconnect(config->accounts[oldAccountId], SIGNAL(friendshipsUpdated(QVector<Message>)), 0, 0);
+    if(oldAccountId != -1)
+    {
+	disconnect(config->accounts[oldAccountId], SIGNAL(friendshipsUpdated(QVector<Message>)), 0, 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(followersUpdated(QVector<Message>)), 0, 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(blocksUpdated(QVector<Message>)), 0, 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(friendshipAdded(Message,uint)), 0, 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(friendshipRemoved(Message,uint)), 0, 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(blockAdded(Message,uint)), 0 , 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(blockRemoved(Message,uint)), 0, 0);
+    }
+
     connect(config->currentAccount(), SIGNAL(friendshipsUpdated(QVector<Message>)), friendshipsPage, SLOT(updateItems(QVector<Message>)));
-    disconnect(config->accounts[oldAccountId], SIGNAL(followersUpdated(QVector<Message>)), 0, 0);
     connect(config->currentAccount(), SIGNAL(followersUpdated(QVector<Message>)), followersPage, SLOT(updateItems(QVector<Message>)));
-    disconnect(config->accounts[oldAccountId], SIGNAL(blocksUpdated(QVector<Message>)), 0, 0);
     connect(config->currentAccount(), SIGNAL(blocksUpdated(QVector<Message>)), blocksPage, SLOT(updateItems(QVector<Message>)));
-    disconnect(config->accounts[oldAccountId], SIGNAL(friendshipAdded(Message,uint)), 0, 0);
     connect(config->currentAccount(), SIGNAL(friendshipAdded(Message,uint)), this, SLOT(addFriend(Message,uint)));
-    disconnect(config->accounts[oldAccountId], SIGNAL(friendshipRemoved(Message,uint)), 0, 0);
     connect(config->currentAccount(), SIGNAL(friendshipRemoved(Message,uint)), this, SLOT(removeFriend(Message,uint)));
-    disconnect(config->accounts[oldAccountId], SIGNAL(blockAdded(Message,uint)), 0 , 0);
     connect(config->currentAccount(), SIGNAL(blockAdded(Message,uint)), this, SLOT(addBlock(Message,uint)));
-    disconnect(config->accounts[oldAccountId], SIGNAL(blockRemoved(Message,uint)), 0, 0);
     connect(config->currentAccount(), SIGNAL(blockRemoved(Message,uint)), this, SLOT(removeBlock(Message,uint)));
 }
 
@@ -339,4 +343,27 @@ bool FriendsMgmtDialog::event(QEvent *e)
     }
     return QDialog::event(e);
 }
+
+void FriendsMgmtDialog::on_splitter_splitterMoved(int pos, int index)
+{
+    qDebug() << ("FriendsMgmtDialog::on_splitter_splitterMoved()");
+
+    for(int i=0; i<pages.size(); i++)
+	pages[i]->updateSize();
+}
 #endif
+
+void FriendsMgmtDialog::on_accountsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
+{
+    if(!current || !previous)
+	return;
+
+    QVariant dataCurrent = current->data(Qt::UserRole);
+    QVariant dataPrevious = previous->data(Qt::UserRole);
+
+    Configuration *config = Configuration::getInstance();
+    int currentAccountId = dataCurrent.toInt();
+    int oldAccountId = dataPrevious.toInt();
+
+//    updateConnects();
+}

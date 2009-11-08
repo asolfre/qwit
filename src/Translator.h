@@ -37,16 +37,21 @@ class Translator: public QObject {
 	Q_OBJECT
 
 	QHttp *http;
-	QBuffer buffer;
+	QBuffer *buffer;
 	QMap<int, QObject*> requestSender;
+        QVector<QString> languageCodesSorted;
 	static Translator *instance;
 	Translator();
+	~Translator();
 
 public:
-	static Translator *getInstance();
+	QMap<QString, QString> languages;
+	QMap<QString, QString> countries;
+	static Translator* getInstance();
+	QMenu* createLanguagesMenu(QMap<QAction*, QString> &actionLanguage);
 
 public slots:
-	void translate(const QString &url, QObject *sender);
+	void translate(const QString &url, const QString &language, QObject *sender);
 	void requestFinished(int id, bool error);
 
 signals:
