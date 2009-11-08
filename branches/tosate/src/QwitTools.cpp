@@ -176,7 +176,8 @@ QVector<Message> QwitTools::parseMessages(const QByteArray &data, Account *accou
 			}
 			imageFileName = Configuration::CacheDirectory + imageFileName;
 			UserpicsDownloader::getInstance()->download(image, imageFileName);
-                        messages.push_back(Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToMessageId, inReplyToUsername, following, false));
+			UserpicsDownloader::getInstance()->setUserImageFileName(account->serviceBaseUrl(), user, imageFileName);
+			messages.push_back(Message(id, text.simplified(), user, imageFileName, time.toLocalTime(), favorited, account, source, inReplyToMessageId, inReplyToUsername, following, false));
 		}
 		node = node.nextSibling();
 	}
@@ -760,7 +761,7 @@ QString QwitTools::prepareMessage(const QString &text, Account *account) {
 void handleMessage(QtMsgType type, const char *msg) {
 	switch (type) {
 		case QtDebugMsg:
-			cout << qPrintable(QDateTime::currentDateTime().toString()) << " Debug: " << msg << endl;
+//			cout << qPrintable(QDateTime::currentDateTime().toString()) << " Debug: " << msg << endl;
 			break;
 		case QtWarningMsg:
 			cerr << qPrintable(QDateTime::currentDateTime().toString()) << " Warning: " << msg << endl;

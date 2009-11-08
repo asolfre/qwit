@@ -13,8 +13,9 @@ UI_HEADERS_DIR = var
 RCC_DIR = var
 unix:# Prefix: base instalation directory
 isEmpty( PREFIX ):PREFIX = /usr/local
-DEFINES += 'REVISION=\\\"$(shell svnversion -n .)\\\"'
-DEFINES += 'VERSION=\\\"1.0-alpha\\\"'
+
+# DEFINES += 'REVISION=\\\"$(shell svnversion -n .)\\\"'
+DEFINES += 'VERSION=\\\"1.0-beta\\\"'
 
 # Input
 HEADERS += src/Configuration.h \
@@ -44,15 +45,17 @@ HEADERS += src/Configuration.h \
     src/QwitHeaders.h \
     src/UrlShortener.h \
     src/TwitterWidgetItem.h \
-	src/TwitterWidgetItemMessage.h \
-	src/Translator.h \
+    src/TwitterWidgetItemMessage.h \
+    src/Translator.h \
     src/FriendsMgmtDialog.h \
     src/UserMgmtWidget.h \
     src/UserMgmtWidgetItem.h \
     src/AbstractUserMgmtPage.h \
     src/FriendshipsMgmtPage.h \
     src/FollowersMgmtPage.h \
-    src/BlocksMgmtPage.h
+    src/BlocksMgmtPage.h \
+    src/AccountTreeModel.h \
+    src/AccountTreeItem.h
 FORMS += src/MainWindow.ui \
     src/OptionsDialog.ui \
     src/AboutDialog.ui \
@@ -88,12 +91,14 @@ SOURCES += src/qwit.cpp \
     src/FriendsMgmtDialog.cpp \
     src/UserMgmtWidget.cpp \
     src/UserMgmtWidgetItem.cpp \
-	src/TwitterWidgetItemMessage.cpp \
-	src/Translator.cpp \
+    src/TwitterWidgetItemMessage.cpp \
+    src/Translator.cpp \
     src/AbstractUserMgmtPage.cpp \
     src/FriendshipsMgmtPage.cpp \
     src/FollowersMgmtPage.cpp \
-    src/BlocksMgmtPage.cpp
+    src/BlocksMgmtPage.cpp \
+    src/AccountTreeModel.cpp \
+    src/AccountTreeItem.cpp
 TRANSLATIONS += translations/qwit_en_US.ts \
     translations/qwit_es_ES.ts \
     translations/qwit_it_IT.ts \

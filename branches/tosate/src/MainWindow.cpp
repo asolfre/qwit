@@ -55,11 +55,12 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	instance = this;
 
 	setupUi(this);
-	
+
 	greetingMessageLabel = new QLabel(this);
 	leftCharactersNumberLabel = new QLabel(this);
 
 	messageTextEdit = new MessageTextEdit(this);
+
 	messageTextEdit->setObjectName(QString::fromUtf8("messageTextEdit"));
 	messageHorizontalLayout->insertWidget(0, messageTextEdit);
 	connect(messageTextEdit, SIGNAL(leftCharsNumberChanged(int)), this, SLOT(leftCharsNumberChanged(int)));
@@ -79,6 +80,10 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	directMessageDialog = new DirectMessageDialog(this);
 	connect(directMessageDialog , SIGNAL(accepted()), this, SLOT(sendDirectMessage()));
 
+	connect(urlShorteningEnabledButton, SIGNAL(toggled(bool)), UrlShortener::getInstance(), SLOT(setShorteningEnabled(bool)));
+	connect(urlShorteningEnabledButton, SIGNAL(toggled(bool)), this, SLOT(updateUrlShorteningButtonTooltip(bool)));
+	UrlShortener::getInstance()->setShorteningEnabled(urlShorteningEnabledButton->isChecked());
+	updateUrlShorteningButtonTooltip(urlShorteningEnabledButton->isChecked());
 	connect(twitPicButton, SIGNAL(clicked()), this, SLOT(postTwitPic()));
 
 	friendsMgmtDialog = new FriendsMgmtDialog(this);
@@ -292,6 +297,8 @@ void MainWindow::updateState() {
 	for (int i = 0; i < pages.size(); ++i) {
 		mainTabWidget->addTab(pages[i], pages[i]->title());
 	}
+
+	urlShorteningEnabledButton->setIcon(QIcon(":/images/" + config->urlShortener + ".png"));
 	
 	updateCurrentAccount(config->currentAccountId);
 	
@@ -452,6 +459,7 @@ void MainWindow::showOptionsDialog() {
 
 	resetOptionsDialog();
 	optionsDialog->showNormal();
+	optionsToolButton->setChecked(false);
 }
 
 void MainWindow::accountButtonClicked(int id) {
@@ -627,7 +635,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
 void MainWindow::quit() {
 	qDebug() << ("MainWindow::quit()");
-
+	trayIcon->hide();
 	acceptClose = true;
 	close();
 }
@@ -742,14 +750,14 @@ void MainWindow::directMessage(const Message &message) {
 	}
 	directMessageDialog->accountsComboBox->setCurrentIndex(message.account->id);
 	directMessageDialog->usernameLineEdit->setText(message.username);
-	directMessageDialog->messagePlainTextEdit->clear();
-	directMessageDialog->messagePlainTextEdit->setFocus();
+	directMessageDialog->messageTextEdit->clear();
+	directMessageDialog->messageTextEdit->setFocus();
 	directMessageDialog->showNormal();
 }
 
 void MainWindow::sendDirectMessage() {
 	Configuration *config = Configuration::getInstance();
-	config->accounts[directMessageDialog->accountsComboBox->currentIndex()]->sendDirectMessage(directMessageDialog->usernameLineEdit->text(), directMessageDialog->messagePlainTextEdit->toPlainText());
+	config->accounts[directMessageDialog->accountsComboBox->currentIndex()]->sendDirectMessage(directMessageDialog->usernameLineEdit->text(), directMessageDialog->messageTextEdit->toPlainText());
 }
 
 void MainWindow::favor(const Message &message) {
@@ -793,6 +801,13 @@ void MainWindow::ensureThereAreAccounts() {
 		messageTextEdit->setEnabled(true);
 		twitPicButton->setEnabled(true);
 	}
+}
+
+void MainWindow::updateUrlShorteningButtonTooltip(bool enabled) {
+	if (enabled)
+		urlShorteningEnabledButton->setToolTip(tr("Disable shortening of pasted links"));
+	else
+		urlShorteningEnabledButton->setToolTip(tr("Enable shortening of pasted links"));
 }
 
 #endif

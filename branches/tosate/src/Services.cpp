@@ -120,14 +120,14 @@ void Services::initialize() {
         customOptions["send"] = "/direct_messages/new";
         customOptions["destroydirectmessage"] = "/direct_messages/destroy/";
         options["custom"] = customOptions;
-
+/*
 	QMap<QString, QString> fakeShortenerOptions;
 	fakeShortenerOptions["title"] = "Do not shorten urls";
 	fakeShortenerOptions["apiurl"] = "";
 	fakeShortenerOptions["requesttemplate"] = "";
 	fakeShortenerOptions["responseregexp"] = "";
 	urlShorteners["0"] = fakeShortenerOptions;
-
+*/
 	QMap<QString, QString> murlkzOptions;
 	murlkzOptions["title"] = "murl.kz";
 	murlkzOptions["apiurl"] = "http://api.murl.kz/basic";
@@ -155,6 +155,13 @@ void Services::initialize() {
 	uiopmeOptions["requesttemplate"] = "?u=%url";
 	uiopmeOptions["responseregexp"] = "http://uiop.me/\\w+";
 	urlShorteners["uiopme"] = uiopmeOptions;
+
+	QMap<QString, QString> trimOptions;
+	trimOptions["title"] = "tr.im";
+	trimOptions["apiurl"] = "http://api.tr.im/v1/trim_simple";
+	trimOptions["requesttemplate"] = "?url=%url";
+	trimOptions["responseregexp"] = "http://tr.im/\\w+";
+	urlShorteners["trim"] = trimOptions;
 }
 
 #endif

@@ -72,6 +72,8 @@ protected:
     bool event(QEvent *e);
 
 private slots:
+    void on_accountsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+    void on_splitter_splitterMoved(int pos, int index);
     void on_tabWidget_currentChanged(int index);
     void on_add_friend(QString screenName);
     void on_unfollow_friend(QString screenName, UserMgmtWidgetItem *item);

@@ -39,20 +39,32 @@
 
 TwitterWidgetItemMessage::TwitterWidgetItemMessage(QWidget *parent, const Message &message): QTextBrowser(parent) {
 	this->message = message;
+	languagesMenu = Translator::getInstance()->createLanguagesMenu(actionLanguage);
 }
 
 void TwitterWidgetItemMessage::contextMenuEvent(QContextMenuEvent *event) {
 	QMenu *menu = createStandardContextMenu(event->pos());
-	QAction *action = menu->addAction(tr("Translate by GoogleTranslate"));
-	if (menu->exec(event->globalPos()) == action) {
-		Translator::getInstance()->translate(message.text, this);
+	menu->addMenu(languagesMenu);
+	Translator *translator = Translator::getInstance();
+	QAction *action = menu->exec(event->globalPos());
+	if (actionLanguage.find(action) != actionLanguage.end()) {
+		if (actionLanguage[action] == "-") {
+			setHtml(QwitTools::prepareMessage(message.text, message.account));
+		} else {
+			translator->translate(message.text, actionLanguage[action], this);
+		}
 	}
 	delete menu;
 }
 
 void TwitterWidgetItemMessage::insertTranslation(const QString &text) {
 	qDebug() << "TwitterWidgetItemMessage::insertTranslation()";
-	setHtml(QwitTools::prepareMessage(text, message.account));
+	if (text != "") {
+		setPlainText(text);
+		//setHtml(QwitTools::prepareMessage(text, message.account));
+	} else {
+		QMessageBox::critical(this, tr("Translation error"), tr("An error occured during translation - maybe this language isn't supported by GoogleTranslate yet."));
+	}
 }
 
 #endif

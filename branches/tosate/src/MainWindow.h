@@ -126,7 +126,10 @@ public slots:
 	void sendDirectMessage();
 	void postTwitPic();
 	void ensureThereAreAccounts();
-	
+
+private slots:
+	void updateUrlShorteningButtonTooltip(bool);
+
 signals:
 
 	void retweet(const Message &);

@@ -42,6 +42,9 @@ private:
 	quint64 inReplyToMessageId;
 	QCompleter *_completer;
 	QString textUnderCursor() const;
+	QMenu *languagesMenu;
+	QMap<QAction*, QString> actionLanguage;
+	QString original;
 
 public:
 	static const int MaxMessageCharacters = 140;
@@ -77,6 +80,7 @@ public slots:
 	void retweet(const Message &message);
 	void reply(const Message &message);
 	void insertUrl(const QString &url);
+	void insertTranslation(const QString &text, QObject *item);
 };
 
 #endif

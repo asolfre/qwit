@@ -36,6 +36,7 @@
 #include "MessageTextEdit.h"
 #include "Configuration.h"
 #include "QwitTools.h"
+#include "Translator.h"
 
 const int MessageTextEdit::MaxMessageCharacters;
 const int MessageTextEdit::StandardHeight;
@@ -54,6 +55,9 @@ MessageTextEdit::MessageTextEdit(QWidget *parent): QTextEdit(parent) {
 	completer->setCompletionMode(QCompleter::PopupCompletion);
 	completer->setCaseSensitivity(Qt::CaseInsensitive);
 	QObject::connect(completer, SIGNAL(activated(const QString&)), this, SLOT(insertCompletion(const QString&)));
+
+	languagesMenu = Translator::getInstance()->createLanguagesMenu(actionLanguage);
+	connect(Translator::getInstance(), SIGNAL(textTranslated(const QString&, QObject*)), this, SLOT(insertTranslation(const QString&, QObject*)));
 }
 
 int MessageTextEdit::getMaxMessageCharactersNumber() {
@@ -94,8 +98,24 @@ void MessageTextEdit::keyPressEvent(QKeyEvent *e) {
 		}
 	}
 	if ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)) {
+		QString tweet = toPlainText();
+		if (tweet.count() > getMaxMessageCharactersNumber()) {
+			// if tweet > 140 chars, popup an Are-You-Sure dialog
+			QMessageBox mbox(QMessageBox::Warning,
+							 tr("Message too long"),
+							 tr("This message exceeds %1 characters.").arg(getMaxMessageCharactersNumber()));
+			mbox.setInformativeText(tr("Your followers might receive only a truncated message. Do you want to send this message anyway?"));
+			QPushButton *yesButton = mbox.addButton(tr("Send"), QMessageBox::AcceptRole);
+			QPushButton *noButton = mbox.addButton(tr("Don't send"), QMessageBox::DestructiveRole);
+			mbox.setDefaultButton(noButton);
+			mbox.exec();
+			if (mbox.clickedButton() == noButton) {
+				e->accept();
+				return;
+			}
+		}
 		setEnabled(false);
-		emit messageEntered(toPlainText(), inReplyToMessageId);
+		emit messageEntered(tweet, inReplyToMessageId);
 		e->accept();
 		return;
 	}
@@ -142,10 +162,18 @@ void MessageTextEdit::updateSize() {
 }
 
 void MessageTextEdit::contextMenuEvent(QContextMenuEvent *event) {
-// custom context menu example
-	QMenu *menu = createStandardContextMenu();
-	menu->addAction(tr("My Menu Item"));
-	menu->exec(event->globalPos());
+	QMenu *menu = createStandardContextMenu(event->pos());
+	menu->addMenu(languagesMenu);
+	Translator *translator = Translator::getInstance();
+	QAction *action = menu->exec(event->globalPos());
+	original = toPlainText();
+	if (actionLanguage.find(action) != actionLanguage.end()) {
+		if (actionLanguage[action] == "-") {
+			setPlainText(original);
+		} else {
+			translator->translate(original, actionLanguage[action], this);
+		}
+	}
 	delete menu;
 }
 
@@ -230,4 +258,13 @@ QString MessageTextEdit::textUnderCursor() const {
 	return tc.selectedText();
 }
 
+void MessageTextEdit::insertTranslation(const QString &text, QObject *item) {
+	if (item == this) {
+		if (text != "") {
+			setPlainText(text);
+		} else {
+			QMessageBox::critical(this, tr("Translation error"), tr("An error occured during translation - maybe this language isn't supported by GoogleTranslate yet."));
+		}
+	}
+}
 #endif
