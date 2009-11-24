@@ -43,7 +43,7 @@
 #include "BlocksMgmtPage.h"
 #include "UserMgmtWidgetItem.h"
 
-class FriendsMgmtDialog : public QDialog, public Ui::FriendsMgmtDialog
+class FriendsMgmtDialog : public QDialog, private Ui::FriendsMgmtDialog
 {
         Q_OBJECT
 
@@ -60,6 +60,7 @@ private:
 
     void updateConnects();
     int oldAccountId;
+    int mainWindowAccountId;
     bool firstRun;
 
 public:
@@ -75,18 +76,19 @@ private slots:
     void on_accountsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void on_splitter_splitterMoved(int pos, int index);
     void on_tabWidget_currentChanged(int index);
-    void on_add_friend(QString screenName);
-    void on_unfollow_friend(QString screenName, UserMgmtWidgetItem *item);
-    void on_block_friend(QString screenName, UserMgmtWidgetItem *item);
-    void on_follow_follower(QString screenName, UserMgmtWidgetItem *item);
-    void on_unfollow_follower(QString screenName, UserMgmtWidgetItem *item);
-    void on_block_follower(QString screenName, UserMgmtWidgetItem *item);
-    void on_unblock_user(QString screenName, UserMgmtWidgetItem *item);
+    void friendshipsPage_follow(QString screenName);
+    void friendshipsPage_unfollow(QString screenName, UserMgmtWidgetItem *item);
+    void friendshipsPabe_block(QString screenName, UserMgmtWidgetItem *item);
+    void followersPage_follow(QString screenName, UserMgmtWidgetItem *item);
+    void followersPage_unfollow(QString screenName, UserMgmtWidgetItem *item);
+    void followersPage_block(QString screenName, UserMgmtWidgetItem *item);
+    void blocksPage_unblock(QString screenName, UserMgmtWidgetItem *item);
     void addFriend(Message message, uint requestId);
     void removeFriend(Message Message, uint requestId);
     void addBlock(Message message, uint requestId);
     void removeBlock(Message message, uint requestId);
     void setState(QString state);
+    void on_closeButtonBox_rejected();
 };
 
 #endif
