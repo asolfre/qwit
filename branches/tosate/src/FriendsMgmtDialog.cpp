@@ -57,15 +57,15 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
     pages.push_back(followersPage = new FollowersMgmtPage(this));
     pages.push_back(blocksPage = new BlocksMgmtPage(this));
 
-    connect(friendshipsPage, SIGNAL(follow(QString)), this, SLOT(on_add_friend(QString)));
-    connect(friendshipsPage, SIGNAL(unfollow(QString,UserMgmtWidgetItem*)), this, SLOT(on_unfollow_friend(QString,UserMgmtWidgetItem*)));
-    connect(friendshipsPage, SIGNAL(block(QString,UserMgmtWidgetItem*)), this, SLOT(on_block_friend(QString,UserMgmtWidgetItem*)));
+    connect(friendshipsPage, SIGNAL(follow(QString)), this, SLOT(friendshipsPage_follow(QString)));
+    connect(friendshipsPage, SIGNAL(unfollow(QString,UserMgmtWidgetItem*)), this, SLOT(friendshipsPage_unfollow(QString,UserMgmtWidgetItem*)));
+    connect(friendshipsPage, SIGNAL(block(QString,UserMgmtWidgetItem*)), this, SLOT(friendshipsPabe_block(QString,UserMgmtWidgetItem*)));
     connect(friendshipsPage, SIGNAL(stateChanged(QString)), this, SLOT(setState(QString)));
-    connect(followersPage, SIGNAL(follow(QString,UserMgmtWidgetItem*)), this, SLOT(on_follow_follower(QString,UserMgmtWidgetItem*)));
-    connect(followersPage, SIGNAL(unfollow(QString,UserMgmtWidgetItem*)), this, SLOT(on_unfollow_follower(QString,UserMgmtWidgetItem*)));
-    connect(followersPage, SIGNAL(block(QString,UserMgmtWidgetItem*)), this, SLOT(on_block_follower(QString,UserMgmtWidgetItem*)));
+    connect(followersPage, SIGNAL(follow(QString,UserMgmtWidgetItem*)), this, SLOT(followersPage_follow(QString,UserMgmtWidgetItem*)));
+    connect(followersPage, SIGNAL(unfollow(QString,UserMgmtWidgetItem*)), this, SLOT(followersPage_unfollow(QString,UserMgmtWidgetItem*)));
+    connect(followersPage, SIGNAL(block(QString,UserMgmtWidgetItem*)), this, SLOT(followersPage_block(QString,UserMgmtWidgetItem*)));
     connect(followersPage, SIGNAL(stateChanged(QString)), this, SLOT(setState(QString)));
-    connect(blocksPage, SIGNAL(unblock(QString,UserMgmtWidgetItem*)), this, SLOT(on_unblock_user(QString,UserMgmtWidgetItem*)));
+    connect(blocksPage, SIGNAL(unblock(QString,UserMgmtWidgetItem*)), this, SLOT(blocksPage_unblock(QString,UserMgmtWidgetItem*)));
     connect(blocksPage, SIGNAL(stateChanged(QString)), this, SLOT(setState(QString)));
     this->requestId = 1000;
 
@@ -99,7 +99,9 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
     qDebug() << ("FriendsMgmtDialog::showEvent()");
 
     Configuration *config = Configuration::getInstance();
+    mainWindowAccountId = config->currentAccountId;
     int itemCount = config->accounts.size();
+    accountsListWidget->clear();
     QListWidgetItem *currentItem;
     for(int i=0; i<itemCount; i++)
     {
@@ -143,7 +145,11 @@ void FriendsMgmtDialog::updateConnects()
     if(config->currentAccountId == oldAccountId)
 	return;
 
+    qDebug() << ("old account id: " + oldAccountId);
+
     oldAccountId = config->currentAccountId;
+
+    qDebug() << ("new account id: " + oldAccountId);
 
     if(oldAccountId != -1)
     {
@@ -175,7 +181,7 @@ void FriendsMgmtDialog::on_tabWidget_currentChanged(int index)
     }
 }
 
-void FriendsMgmtDialog::on_add_friend(QString screenName)
+void FriendsMgmtDialog::friendshipsPage_follow(QString screenName)
 {
     qDebug() << ("FriendsMgmtDialog::on_add_friend()");
 
@@ -185,7 +191,7 @@ void FriendsMgmtDialog::on_add_friend(QString screenName)
     config->currentAccount()->createFriendship(screenName, requestId++);
 }
 
-void FriendsMgmtDialog::on_unfollow_friend(QString screenName, UserMgmtWidgetItem *item)
+void FriendsMgmtDialog::friendshipsPage_unfollow(QString screenName, UserMgmtWidgetItem *item)
 {
    qDebug() << ("FriendsMgmtDialog::on_unfollow_friend()");
 
@@ -195,7 +201,7 @@ void FriendsMgmtDialog::on_unfollow_friend(QString screenName, UserMgmtWidgetIte
    config->currentAccount()->destroyFriendship(screenName, requestId++);
 }
 
-void FriendsMgmtDialog::on_block_friend(QString screenName, UserMgmtWidgetItem *item)
+void FriendsMgmtDialog::friendshipsPabe_block(QString screenName, UserMgmtWidgetItem *item)
 {
     qDebug() << ("FriendsMgmtDialog::on_block_friend()");
 
@@ -215,7 +221,7 @@ void FriendsMgmtDialog::on_block_friend(QString screenName, UserMgmtWidgetItem *
     }
 }
 
-void FriendsMgmtDialog::on_follow_follower(QString screenName, UserMgmtWidgetItem *item)
+void FriendsMgmtDialog::followersPage_follow(QString screenName, UserMgmtWidgetItem *item)
 {
     qDebug() << ("FriendsMgmtDialog::on_follow_follower()");
 
@@ -225,7 +231,7 @@ void FriendsMgmtDialog::on_follow_follower(QString screenName, UserMgmtWidgetIte
     config->currentAccount()->createFriendship(screenName, requestId++);
 }
 
-void FriendsMgmtDialog::on_unfollow_follower(QString screenName, UserMgmtWidgetItem *item)
+void FriendsMgmtDialog::followersPage_unfollow(QString screenName, UserMgmtWidgetItem *item)
 {
    qDebug() << ("FriendsMgmtDialog::on_unfollow_follower()");
 
@@ -235,7 +241,7 @@ void FriendsMgmtDialog::on_unfollow_follower(QString screenName, UserMgmtWidgetI
    config->currentAccount()->destroyFriendship(screenName, requestId++);
 }
 
-void FriendsMgmtDialog::on_block_follower(QString screenName, UserMgmtWidgetItem *item)
+void FriendsMgmtDialog::followersPage_block(QString screenName, UserMgmtWidgetItem *item)
 {
     qDebug() << ("FriendsMgmtDialog::on_block_follower()");
 
@@ -255,7 +261,7 @@ void FriendsMgmtDialog::on_block_follower(QString screenName, UserMgmtWidgetItem
     }
 }
 
-void FriendsMgmtDialog::on_unblock_user(QString screenName, UserMgmtWidgetItem *item)
+void FriendsMgmtDialog::blocksPage_unblock(QString screenName, UserMgmtWidgetItem *item)
 {
     qDebug() << ("FriendsMgmtDialog::on_unblock_user()");
 
@@ -351,10 +357,11 @@ void FriendsMgmtDialog::on_splitter_splitterMoved(int pos, int index)
     for(int i=0; i<pages.size(); i++)
 	pages[i]->updateSize();
 }
-#endif
+
 
 void FriendsMgmtDialog::on_accountsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
 {
+    qDebug() << ("FriendsMgmtDialog::on_accountsListWidget_currentItemChanged()");
     if(!current || !previous)
 	return;
 
@@ -362,8 +369,37 @@ void FriendsMgmtDialog::on_accountsListWidget_currentItemChanged(QListWidgetItem
     QVariant dataPrevious = previous->data(Qt::UserRole);
 
     Configuration *config = Configuration::getInstance();
-    int currentAccountId = dataCurrent.toInt();
-    int oldAccountId = dataPrevious.toInt();
+    int currentId = dataCurrent.toInt();
+    int oldId = dataPrevious.toInt();
 
-//    updateConnects();
+    if(currentId == oldId)
+	return;
+
+    config->currentAccountId = currentId;
+
+    updateConnects();
+
+    config->currentAccount()->receiveFriendships();
+    config->currentAccount()->receiveFollowers();
+    config->currentAccount()->receiveBlocks();
+
+    tabWidget->setCurrentIndex(0);
+
+    for(int i=0; i<pages.size(); i++)
+	pages[i]->updateSize();
 }
+
+void FriendsMgmtDialog::on_closeButtonBox_rejected()
+{
+    qDebug() << ("FriendsMgmtDialog::on_close()");
+
+    Configuration *config = Configuration::getInstance();
+
+    if(mainWindowAccountId == config->currentAccountId)
+	return;
+
+    config->currentAccountId = mainWindowAccountId;
+
+    updateConnects();
+}
+#endif

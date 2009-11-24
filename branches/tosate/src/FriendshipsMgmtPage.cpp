@@ -40,7 +40,7 @@ FriendshipsMgmtPage::FriendshipsMgmtPage(QWidget *parent) : AbstractUserMgmtPage
     qDebug() << ("FriendshipsMgmtPage::FriendshipsMgmtPage()");
     this->title = tr("Friends");
 
-    userMgmtWidget->setObjectName(QString::fromUtf8("friendshipsMgmtWidget"));
+    userMgmtWidget->setObjectName(QString::fromUtf8("friendshipsPage"));
     // define connects
 
     vBoxLayout = new QVBoxLayout(this);
