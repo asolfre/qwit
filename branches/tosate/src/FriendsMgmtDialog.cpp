@@ -49,6 +49,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
     statusBar = new QStatusBar(this);
     statusBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
     this->layout()->addWidget(statusBar);
+    accountsTreeWidget->setHeaderLabels(QStringList(tr("accounts")));
 
     tabWidget->removeTab(0);
     tabWidget->removeTab(0);
@@ -101,21 +102,44 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
     Configuration *config = Configuration::getInstance();
     mainWindowAccountId = config->currentAccountId;
     int itemCount = config->accounts.size();
-    accountsListWidget->clear();
-    QListWidgetItem *currentItem;
+    treeItems.clear();
+    accountsTreeWidget->clear();
+    QTreeWidgetItem *currentItem;
     for(int i=0; i<itemCount; i++)
     {
 	Account *account = config->accounts[i];
-	QListWidgetItem *item = new QListWidgetItem(QIcon(":/images/" + account->type + ".png"), account->username);
-	item->setData(Qt::UserRole, account->id);
+	QTreeWidgetItem *accountItem = new QTreeWidgetItem(accountsTreeWidget, QStringList(account->username));
+	accountItem->setIcon(0, QIcon(":/images/" + account->type + ".png"));
+	accountItem->setData(0, Qt::UserRole, account->id);
+	treeItems.append(accountItem);
+
+	QTreeWidgetItem *friendsItem = new QTreeWidgetItem(accountItem, QStringList(tr("friends")));
+	friendsItem->setData(0, Qt::UserRole, 1001);
+	treeItems.append(friendsItem);
+
+	QTreeWidgetItem *followersItem = new QTreeWidgetItem(accountItem, QStringList(tr("followers")));
+	followersItem->setData(0, Qt::UserRole, 1002);
+	treeItems.append(followersItem);
+
+	QTreeWidgetItem *blocksItem = new QTreeWidgetItem(accountItem, QStringList(tr("blocks")));
+	blocksItem->setData(0, Qt::UserRole, 1003);
+	blocksItem->setIcon(0, QIcon(":/images/block.png"));
+	treeItems.append(blocksItem);
+
+	// insert lists of the account
+//	for(int i=0; i<list; i++) {}
+
 	if(config->currentAccount() == account)
-	    currentItem = item;
-	accountsListWidget->addItem(item);
+	    currentItem = friendsItem;
     }
+
+    accountsTreeWidget->insertTopLevelItems(0, treeItems);
+
+    accountsTreeWidget->expandAll();
 
     if(itemCount > 0)
     {
-	accountsListWidget->setCurrentItem(currentItem);
+	accountsTreeWidget->setCurrentItem(currentItem);
     }
 
     updateConnects();
@@ -145,13 +169,11 @@ void FriendsMgmtDialog::updateConnects()
     if(config->currentAccountId == oldAccountId)
 	return;
 
-    QString message = "old account id: " + oldAccountId;
-    qDebug() << (message);
+    qDebug() << (QString("old account id: %1").arg(oldAccountId));
 
     oldAccountId = config->currentAccountId;
 
-    message = "new account id: " + oldAccountId;
-    qDebug() << (message);
+    qDebug() << (QString("old account id: %1").arg(oldAccountId));
 
     if(oldAccountId != -1)
     {
@@ -361,34 +383,50 @@ void FriendsMgmtDialog::on_splitter_splitterMoved(int pos, int index)
 }
 
 
-void FriendsMgmtDialog::on_accountsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
+void FriendsMgmtDialog::on_accountsTreeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
-    qDebug() << ("FriendsMgmtDialog::on_accountsListWidget_currentItemChanged()");
+    qDebug() << ("FriendsMgmtDialog::on_accountsTreeWidget_currentItemChanged()");
     if(!current || !previous)
 	return;
 
-    QVariant dataCurrent = current->data(Qt::UserRole);
-    QVariant dataPrevious = previous->data(Qt::UserRole);
+    QVariant dataCurrent = current->data(0, Qt::UserRole);
 
     Configuration *config = Configuration::getInstance();
     int currentId = dataCurrent.toInt();
-    int oldId = dataPrevious.toInt();
 
-    if(currentId == oldId)
-	return;
+    if(currentId > 1000)
+    {
+	// user page or list selected
+	QTreeWidgetItem *accountItem = current->parent();
+	int accountId = accountItem->data(0, Qt::UserRole).toInt();
 
-    config->currentAccountId = currentId;
+	if(accountId != config->currentAccountId)
+	{
+	    config->currentAccountId = accountId;
+	    updateConnects();
+	}
 
-    updateConnects();
-
-    config->currentAccount()->receiveFriendships();
-    config->currentAccount()->receiveFollowers();
-    config->currentAccount()->receiveBlocks();
-
-    tabWidget->setCurrentIndex(0);
-
-    for(int i=0; i<pages.size(); i++)
-	pages[i]->updateSize();
+	switch(currentId)
+	{
+	case 1001:
+	    config->currentAccount()->receiveFriendships();
+	    tabWidget->setCurrentIndex(0);
+	    pages[0]->updateSize();
+	    break;
+	case 1002:
+	    config->currentAccount()->receiveFollowers();
+	    tabWidget->setCurrentIndex(1);
+	    pages[1]->updateSize();
+	    break;
+	case 1003:
+	    config->currentAccount()->receiveBlocks();
+	    tabWidget->setCurrentIndex(2);
+	    pages[2]->updateSize();
+	    break;
+	default:
+	    break;
+	}
+    }
 }
 
 void FriendsMgmtDialog::on_closeButtonBox_rejected()

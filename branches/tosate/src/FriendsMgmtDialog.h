@@ -57,6 +57,7 @@ private:
     QMap<uint, UserMgmtWidgetItem*> requestsFromBlocksPage;
     uint requestId;
     QStatusBar *statusBar;
+    QList<QTreeWidgetItem *> treeItems;
 
     void updateConnects();
     int oldAccountId;
@@ -73,7 +74,7 @@ protected:
     bool event(QEvent *e);
 
 private slots:
-    void on_accountsListWidget_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+    void on_accountsTreeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
     void on_splitter_splitterMoved(int pos, int index);
     void on_tabWidget_currentChanged(int index);
     void friendshipsPage_follow(QString screenName);
