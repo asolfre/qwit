@@ -145,11 +145,13 @@ void FriendsMgmtDialog::updateConnects()
     if(config->currentAccountId == oldAccountId)
 	return;
 
-    qDebug() << ("old account id: " + oldAccountId);
+    QString message = "old account id: " + oldAccountId;
+    qDebug() << (message);
 
     oldAccountId = config->currentAccountId;
 
-    qDebug() << ("new account id: " + oldAccountId);
+    message = "new account id: " + oldAccountId;
+    qDebug() << (message);
 
     if(oldAccountId != -1)
     {
