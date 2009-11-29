@@ -50,13 +50,21 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
     statusBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
     this->layout()->addWidget(statusBar);
     accountsTreeWidget->setHeaderLabels(QStringList(tr("accounts")));
+    this->oldAccountId = -1;
 
-    tabWidget->removeTab(0);
-    tabWidget->removeTab(0);
-    tabWidget->removeTab(0);
+//    tabWidget->removeTab(0);
+//    tabWidget->removeTab(0);
+//    tabWidget->removeTab(0);
     pages.push_back(friendshipsPage = new FriendshipsMgmtPage(this));
     pages.push_back(followersPage = new FollowersMgmtPage(this));
     pages.push_back(blocksPage = new BlocksMgmtPage(this));
+    pagesContainerLayout = new QVBoxLayout();
+    pagesWidget->setLayout(pagesContainerLayout);
+    pagesContainerLayout->addWidget(friendshipsPage);
+    pagesContainerLayout->addWidget(followersPage);
+    pagesContainerLayout->addWidget(blocksPage);
+    followersPage->hide();
+    blocksPage->hide();
 
     connect(friendshipsPage, SIGNAL(follow(QString)), this, SLOT(friendshipsPage_follow(QString)));
     connect(friendshipsPage, SIGNAL(unfollow(QString,UserMgmtWidgetItem*)), this, SLOT(friendshipsPage_unfollow(QString,UserMgmtWidgetItem*)));
@@ -70,8 +78,8 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
     connect(blocksPage, SIGNAL(stateChanged(QString)), this, SLOT(setState(QString)));
     this->requestId = 1000;
 
-    for(int i=0; i<pages.size(); i++)
-	tabWidget->addTab(pages[i], pages[i]->getTitle());
+//    for(int i=0; i<pages.size(); i++)
+//	tabWidget->addTab(pages[i], pages[i]->getTitle());
 }
 
 
@@ -140,21 +148,23 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
     if(itemCount > 0)
     {
 	accountsTreeWidget->setCurrentItem(currentItem);
+	on_accountsTreeWidget_currentItemChanged(currentItem, (QTreeWidgetItem*) 0);
     }
 
-    updateConnects();
+//    updateConnects();
+//
+//    if(config->currentAccountId != -1)
+//    {
+//	config->currentAccount()->receiveFriendships();
+//	config->currentAccount()->receiveFollowers();
+//	config->currentAccount()->receiveBlocks();
+//    }
 
-    if(config->currentAccountId != -1)
-    {
-	config->currentAccount()->receiveFriendships();
-	config->currentAccount()->receiveFollowers();
-	config->currentAccount()->receiveBlocks();
-    }
-
-    tabWidget->setCurrentIndex(0);
-
-    for(int i=0; i<pages.size(); i++)
-	pages[i]->updateSize();
+//    tabWidget->setCurrentIndex(0);
+//
+//    for(int i=0; i<pages.size(); i++)
+//	pages[i]->updateSize();
+//    currentPageWidget->updateSize();
 
     event->accept();
 }
@@ -195,15 +205,15 @@ void FriendsMgmtDialog::updateConnects()
     connect(config->currentAccount(), SIGNAL(blockRemoved(Message,uint)), this, SLOT(removeBlock(Message,uint)));
 }
 
-void FriendsMgmtDialog::on_tabWidget_currentChanged(int index)
-{
-    qDebug() << ("FriendsMgmtDialog::on_tabWidget_currentChanged()");
-
-    if((index >= 0) && (index < pages.size()) && pages[index])
-    {
-	pages[index]->updateSize();
-    }
-}
+//void FriendsMgmtDialog::on_tabWidget_currentChanged(int index)
+//{
+//    qDebug() << ("FriendsMgmtDialog::on_tabWidget_currentChanged()");
+//
+//    if((index >= 0) && (index < pages.size()) && pages[index])
+//    {
+//	pages[index]->updateSize();
+//    }
+//}
 
 void FriendsMgmtDialog::friendshipsPage_follow(QString screenName)
 {
@@ -378,15 +388,16 @@ void FriendsMgmtDialog::on_splitter_splitterMoved(int pos, int index)
 {
     qDebug() << ("FriendsMgmtDialog::on_splitter_splitterMoved()");
 
-    for(int i=0; i<pages.size(); i++)
-	pages[i]->updateSize();
+//    for(int i=0; i<pages.size(); i++)
+//	pages[i]->updateSize();
+    currentPageWidget->updateSize();
 }
 
 
 void FriendsMgmtDialog::on_accountsTreeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
     qDebug() << ("FriendsMgmtDialog::on_accountsTreeWidget_currentItemChanged()");
-    if(!current || !previous)
+    if(!current)
 	return;
 
     QVariant dataCurrent = current->data(0, Qt::UserRole);
@@ -400,7 +411,7 @@ void FriendsMgmtDialog::on_accountsTreeWidget_currentItemChanged(QTreeWidgetItem
 	QTreeWidgetItem *accountItem = current->parent();
 	int accountId = accountItem->data(0, Qt::UserRole).toInt();
 
-	if(accountId != config->currentAccountId)
+	if(accountId != config->currentAccountId || previous == 0)
 	{
 	    config->currentAccountId = accountId;
 	    updateConnects();
@@ -410,18 +421,33 @@ void FriendsMgmtDialog::on_accountsTreeWidget_currentItemChanged(QTreeWidgetItem
 	{
 	case 1001:
 	    config->currentAccount()->receiveFriendships();
-	    tabWidget->setCurrentIndex(0);
-	    pages[0]->updateSize();
+	    currentPageWidget = friendshipsPage;
+	    friendshipsPage->show();
+	    followersPage->hide();
+	    blocksPage->hide();
+//	    pagesContainerLayout->removeWidget(currentPageWidget);
+//	    pagesContainerLayout->addWidget(currentPageWidget = friendshipsPage);
+	    currentPageWidget->updateSize();
 	    break;
 	case 1002:
 	    config->currentAccount()->receiveFollowers();
-	    tabWidget->setCurrentIndex(1);
-	    pages[1]->updateSize();
+	    currentPageWidget = followersPage;
+	    friendshipsPage->hide();
+	    followersPage->show();
+	    blocksPage->hide();
+//	    pagesContainerLayout->removeWidget(currentPageWidget);
+//	    pagesContainerLayout->addWidget(currentPageWidget = followersPage);
+	    currentPageWidget->updateSize();
 	    break;
 	case 1003:
 	    config->currentAccount()->receiveBlocks();
-	    tabWidget->setCurrentIndex(2);
-	    pages[2]->updateSize();
+	    currentPageWidget = blocksPage;
+	    friendshipsPage->hide();
+	    followersPage->hide();
+	    blocksPage->show();
+//	    pagesContainerLayout->removeWidget(currentPageWidget);
+//	    pagesContainerLayout->addWidget(currentPageWidget = blocksPage);
+	    currentPageWidget->updateSize();
 	    break;
 	default:
 	    break;
