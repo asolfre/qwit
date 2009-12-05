@@ -71,6 +71,7 @@ class Twitter: public QObject {
 	QMap<int, QString> destroyFriendshipRequests;
 	QMap<int, QString> createBlockRequests;
 	QMap<int, QString> destroyBlockRequests;
+	QMap<int, QString> receiveUserListsRequests;
 	void setupProxy();
 	QMap<int, uint> httpRequestId2InternalRequestId;
 
@@ -105,6 +106,7 @@ public:
 	void destroyFriendship(QString screenName, uint requestId);
 	void createBlock(QString screenName, uint requestId);
 	void destroyBlock(QString screenName, uint requestId);
+	void receiveUserLists();
 	void abort();
 
 signals:
@@ -138,6 +140,7 @@ signals:
 	void friendshipDestroyed(const QByteArray &, uint);
 	void blockCreated(const QByteArray &, uint);
 	void blockDestroyed(const QByteArray &, uint);
+	void userListsReceived(const QByteArray &);
 
 public slots:
 

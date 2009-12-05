@@ -40,7 +40,7 @@
 #include <QDateTime>
 
 #include "QwitHeaders.h"
-#include "Message.h"
+#include "User.h"
 //#include "Enumerations.h"
 
 class UserMgmtWidgetItem : public QObject
@@ -50,7 +50,7 @@ class UserMgmtWidgetItem : public QObject
 private:
     QWidget *parent;
     int widgetType;
-    QTextBrowser *messageTextBrowser;
+    QTextBrowser *itemTextBrowser;
     QToolButton *followButton;
     QToolButton *unfollowButton;
     QToolButton *blockButton;
@@ -60,15 +60,15 @@ private:
     int topPosition;
     int height;
     QColor color;
-    Message message;
+    User user;
 
 public:
     static const int IconSize = 48;
     static const int Margin = 5;
-    UserMgmtWidgetItem(Message message, QWidget *parent, int widgetType);
+    UserMgmtWidgetItem(User user, QWidget *parent, int widgetType);
     ~UserMgmtWidgetItem();
     void loadUserpic();
-    int arrangeMessage(int index, int currentHeight);
+    int arrangeItem(int index, int currentHeight);
     int update(int index, int currentHeight);
     void paint(QPainter &painter, QPalette palette, int width);
 

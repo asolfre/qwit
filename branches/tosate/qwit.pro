@@ -55,7 +55,10 @@ HEADERS += src/Configuration.h \
     src/FollowersMgmtPage.h \
     src/BlocksMgmtPage.h \
     src/AccountTreeModel.h \
-    src/AccountTreeItem.h
+    src/AccountTreeItem.h \
+    src/List.h \
+    src/User.h \
+    Status.h
 FORMS += src/MainWindow.ui \
     src/OptionsDialog.ui \
     src/AboutDialog.ui \
@@ -98,7 +101,10 @@ SOURCES += src/qwit.cpp \
     src/FollowersMgmtPage.cpp \
     src/BlocksMgmtPage.cpp \
     src/AccountTreeModel.cpp \
-    src/AccountTreeItem.cpp
+    src/AccountTreeItem.cpp \
+    src/List.cpp \
+    src/User.cpp \
+    Status.cpp
 TRANSLATIONS += translations/qwit_en_US.ts \
     translations/qwit_es_ES.ts \
     translations/qwit_it_IT.ts \

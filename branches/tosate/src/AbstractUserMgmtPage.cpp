@@ -41,10 +41,10 @@ AbstractUserMgmtPage::AbstractUserMgmtPage(QWidget *parent) : QWidget(parent)
     userMgmtWidget->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
 }
 
-void AbstractUserMgmtPage::addItem(Message message)
+void AbstractUserMgmtPage::addItem(User user)
 {
     qDebug() << ("AbstractUserMgmtPage::addItem()");
-    userMgmtWidget->addItem(message, widgetType());
+    userMgmtWidget->addItem(user, widgetType());
 }
 
 void AbstractUserMgmtPage::clear()
@@ -56,10 +56,10 @@ void AbstractUserMgmtPage::clear()
 void AbstractUserMgmtPage::reloadUserpics()
 {
     qDebug() << ("AbstractUserMgmtPage::reloadUserpics()");
-//    userMgmtWidget->reloadUserpics();
+    userMgmtWidget->reloadUserpics();
 }
 
-void AbstractUserMgmtPage::updateItems(const QVector<Message> &items)
+void AbstractUserMgmtPage::updateItems(const QVector<User> &items)
 {
     qDebug() << ("AbstractUserMgmtPage::updateItems()");
     clear();

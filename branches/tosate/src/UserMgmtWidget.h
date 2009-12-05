@@ -41,7 +41,7 @@
 #include "QwitHeaders.h"
 
 #include "UserMgmtWidgetItem.h"
-#include "Message.h"
+#include "User.h"
 //#include "Enumerations.h"
 
 class UserMgmtWidget : public QWidget
@@ -57,7 +57,7 @@ private:
 public:
     UserMgmtWidget(QWidget *parent);
     void clear();
-    void addItem(Message message, int widgetType);
+    void addItem(User user, int widgetType);
     void removeItem(UserMgmtWidgetItem *item);
 //    void removeItem(QString screenName);
     void updateItems();
@@ -74,6 +74,7 @@ public:
     void unfollow(QString screenName, UserMgmtWidgetItem *item);
     void block(QString screenName, UserMgmtWidgetItem *item);
     void unblock(QString screenName, UserMgmtWidgetItem *item);
+    void reloadUserpics();
 
 //    static QString formatDateTime(const QDateTime &time);
 

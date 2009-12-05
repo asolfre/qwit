@@ -70,6 +70,8 @@ void Services::initialize() {
 	twitterOptions["createBlock"] = "/blocks/create/";
 	twitterOptions["destroyBlock"] = "/blocks/destroy/";
 
+	twitterOptions["showUserLists"] = "/1/%1/lists";
+
 	options["twitter"] = twitterOptions;
 
 	QMap<QString, QString> identicaOptions;
@@ -119,6 +121,14 @@ void Services::initialize() {
         customOptions["outbox"] = "/direct_messages/sent";
         customOptions["send"] = "/direct_messages/new";
         customOptions["destroydirectmessage"] = "/direct_messages/destroy/";
+	// FIXME test whether the following options exist
+	customOptions["showFriendships"] = "/statuses/friends";
+	customOptions["showFollowers"] = "/statuses/followers";
+	customOptions["showBlocks"] = "/blocks/blocking";
+	customOptions["createFriendship"] = "/friendships/create";
+	customOptions["destroyFriendship"] = "/friendships/destroy";
+	customOptions["createBlock"] = "/blocks/create/";
+	customOptions["destroyBlock"] = "/blocks/destroy/";
         options["custom"] = customOptions;
 /*
 	QMap<QString, QString> fakeShortenerOptions;

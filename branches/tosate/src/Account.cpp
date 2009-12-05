@@ -79,6 +79,7 @@ Account::Account() {
 	connect(twitter, SIGNAL(friendshipDestroyed(const QByteArray&)), this, SIGNAL(friendshipRemoved(const QByteArray&)));
 	connect(twitter, SIGNAL(blockCreated(const QByteArray&)), this, SIGNAL(blockAdded(const QByteArray&)));
 	connect(twitter, SIGNAL(blockDestroyed(const QByteArray&)), this, SIGNAL(blockRemoved(const QByteArray&)));
+	connect(twitter, SIGNAL(userListsReceived(QByteArray)), this, SLOT(updateBlocks(QByteArray)));
 	sendingMessage = false;
 }
 
@@ -126,6 +127,7 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(friendshipDestroyed(QByteArray,uint)), this, SLOT(removeFriendship(QByteArray,uint)));
 	connect(twitter, SIGNAL(blockCreated(QByteArray,uint)), this, SLOT(addBlock(QByteArray,uint)));
 	connect(twitter, SIGNAL(blockDestroyed(QByteArray,uint)), this, SLOT(removeBlock(QByteArray,uint)));
+	connect(twitter, SIGNAL(userListsReceived(QByteArray)), this, SLOT(updateUserLists(QByteArray)));
 	sendingMessage = false;
         _serviceBaseUrl = serviceBaseUrl;
         _serviceApiUrl = serviceApiUrl;
@@ -213,7 +215,7 @@ void Account::addOutboxMessages(const QByteArray &data) {
 
 void Account::updateLastMessage(const QByteArray &data) {
 	qDebug() << ("Account::updateLastMessage()");
-	lastMessage = QwitTools::parseUser(data, this);
+	lastMessage = QwitTools::parseMessage(data, this);
 }
 
 void Account::updateLastMessage() {
@@ -814,7 +816,7 @@ void Account::destroyBlock(QString screenName, uint requestId) {
 void Account::updateFriendships(const QByteArray &data) {
     qDebug() << ("Account::updateFriendships()");
 
-    QVector<Message> friends = QwitTools::parseUsers(data, this);
+    QVector<User> friends = QwitTools::parseUsers(data, this);
 
     emit friendshipsUpdated(friends);
 }
@@ -822,7 +824,7 @@ void Account::updateFriendships(const QByteArray &data) {
 void Account::updateFollowers(const QByteArray &data) {
     qDebug() << ("Account::updateFollowers()");
 
-    QVector<Message> followers = QwitTools::parseUsers(data, this);
+    QVector<User> followers = QwitTools::parseUsers(data, this);
 
     emit followersUpdated(followers);
 }
@@ -830,7 +832,7 @@ void Account::updateFollowers(const QByteArray &data) {
 void Account::updateBlocks(const QByteArray &data) {
     qDebug() << (" Account::updateBlocks()");
 
-    QVector<Message> blocks = QwitTools::parseUsers(data, this);
+    QVector<User> blocks = QwitTools::parseUsers(data, this);
 
     emit blocksUpdated(blocks);
 }
@@ -838,32 +840,46 @@ void Account::updateBlocks(const QByteArray &data) {
 void Account::addFriendship(const QByteArray &data, uint requestId) {
     qDebug() << ("Account::addFriendship()");
 
-    Message message = QwitTools::parseUser(data, this);
+    User user = QwitTools::parseUser(data, this);
 
-    emit friendshipAdded(message, requestId);
+    emit friendshipAdded(user, requestId);
 }
 
 void Account::removeFriendship(const QByteArray &data, uint requestId) {
     qDebug() << ("removeFriendship()");
 
-    Message message = QwitTools::parseUser(data, this);
+    User user = QwitTools::parseUser(data, this);
 
-    emit friendshipRemoved(message, requestId);
+    emit friendshipRemoved(user, requestId);
 }
 
 void Account::addBlock(const QByteArray &data, uint requestId) {
     qDebug() << ("Account::addBlock()");
 
-    Message message = QwitTools::parseUser(data, this);
+    User user = QwitTools::parseUser(data, this);
 
-    emit blockAdded(message, requestId);
+    emit blockAdded(user, requestId);
 }
 
 void Account::removeBlock(const QByteArray &data, uint requestId) {
     qDebug() << ("Account::removeBlock()");
 
-    Message message = QwitTools::parseUser(data, this);
+    User user = QwitTools::parseUser(data, this);
 
-    emit blockRemoved(message, requestId);
+    emit blockRemoved(user, requestId);
+}
+
+void Account::receiveUserLists() {
+    qDebug() << ("Account::receiveUserLists()");
+
+    twitter->receiveUserLists();
+}
+
+void Account::updateUserLists(const QByteArray &data) {
+    qDebug() << ("Account::updateUserLists()");
+
+    QVector<List> lists = QwitTools::parseLists(data, this);
+
+    emit userListsUpdated(lists);
 }
 #endif

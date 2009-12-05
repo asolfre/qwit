@@ -34,6 +34,8 @@
 #include "QwitHeaders.h"
 
 #include "Message.h"
+#include "User.h"
+#include "List.h"
 
 class QwitTools: public QObject {
 	Q_OBJECT
@@ -44,6 +46,8 @@ private:
 	static QRegExp hashtagRegExp;
 	static QRegExp ipAddressRegExp;
 	static QMap<QString, int> monthes;
+	static List parseList(QDomNode &node, Account *account);
+	static User parseUser(QDomNode &node, Account *account);
 
 public:
 	static QDateTime dateFromString(QString date);
@@ -54,7 +58,7 @@ public:
 	static QVector<Message> parseInboxMessages(const QByteArray &data, Account *account);
 	static QVector<Message> parseOutboxMessages(const QByteArray &data, Account *account);
 	static QVector<Message> parseSearchMessages(const QByteArray &data, Account *account);
-	static Message parseUser(const QByteArray &data, Account *account);
+	static User parseUser(const QByteArray &data, Account *account);
 	static Message parseMessage(const QByteArray &data, Account *account);
 	static Message parseDirectMessage(const QByteArray &data, Account *account);
 	static QString parseError(const QByteArray &data);
@@ -63,7 +67,8 @@ public:
 	static QVector<Message> mergeMessages(QVector<Message> &messages, QVector<Message> &receivedMessages);
 	static bool isUrl(const QString &s);
 	static bool isMention(const Message &message);
-	static QVector<Message> parseUsers(const QByteArray &data, Account *account);
+	static QVector<User> parseUsers(const QByteArray &data, Account *account);
+	static QVector<List> parseLists(const QByteArray &data, Account *account);
 };
 
 void handleMessage(QtMsgType type, const char *msg);
