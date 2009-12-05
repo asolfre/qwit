@@ -78,7 +78,6 @@ protected:
 private slots:
     void on_accountsTreeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
     void on_splitter_splitterMoved(int pos, int index);
-//    void on_tabWidget_currentChanged(int index);
     void friendshipsPage_follow(QString screenName);
     void friendshipsPage_unfollow(QString screenName, UserMgmtWidgetItem *item);
     void friendshipsPabe_block(QString screenName, UserMgmtWidgetItem *item);
@@ -86,12 +85,13 @@ private slots:
     void followersPage_unfollow(QString screenName, UserMgmtWidgetItem *item);
     void followersPage_block(QString screenName, UserMgmtWidgetItem *item);
     void blocksPage_unblock(QString screenName, UserMgmtWidgetItem *item);
-    void addFriend(Message message, uint requestId);
-    void removeFriend(Message Message, uint requestId);
-    void addBlock(Message message, uint requestId);
-    void removeBlock(Message message, uint requestId);
+    void addFriend(User user, uint requestId);
+    void removeFriend(User User, uint requestId);
+    void addBlock(User user, uint requestId);
+    void removeBlock(User user, uint requestId);
     void setState(QString state);
     void on_closeButtonBox_rejected();
+    void reloadUserpics();
 };
 
 #endif

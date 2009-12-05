@@ -35,9 +35,12 @@
 
 #include "Twitter.h"
 #include "Message.h"
+#include "User.h"
+#include "List.h"
 
 class Twitter;
 class Message;
+class User;
 
 class Account: public QObject {
 	Q_OBJECT
@@ -71,9 +74,9 @@ public:
 	QVector<Message> inboxMessages;
 	QVector<Message> outboxMessages;
 	QVector<Message> searchMessages;
-	QVector<Message> friendships;
-	QVector<Message> followers;
-	QVector<Message> blocks;
+	QVector<User> friendships;
+	QVector<User> followers;
+	QVector<User> blocks;
 
 	Account();
         Account(const QString &type, const QString &username, const QString &password, bool useHttps = false, const QString &serviceBaseUrl = "", const QString &serviceApiUrl = "");
@@ -138,6 +141,7 @@ public slots:
 	void destroyFriendship(QString screenName, uint requestId);
 	void createBlock(QString screenName, uint requestId);
 	void destroyBlock(QString screenName, uint requestId);
+	void receiveUserLists();
 
     private slots:
 	void updateFriendships(const QByteArray &data);
@@ -147,6 +151,7 @@ public slots:
 	void removeFriendship(const QByteArray &data, uint requestId);
 	void addBlock(const QByteArray &data, uint requestId);
 	void removeBlock(const QByteArray &data, uint requestId);
+	void updateUserLists(const QByteArray &data);
 	
 signals:
 	void friendsMessagesUpdated(const QVector<Message> &, Account *);
@@ -169,13 +174,14 @@ signals:
 	void previousInboxMessagesReceived();
 	void previousOutboxMessagesReceived();
 	// redirect incoming signal to the dedicated element
-	void friendshipsUpdated(const QVector<Message> &);
-	void followersUpdated(const QVector<Message> &);
-	void blocksUpdated(const QVector<Message> &);
-	void friendshipAdded(const Message&, uint);
-	void friendshipRemoved(const Message&, uint);
-	void blockAdded(const Message&, uint);
-	void blockRemoved(const Message&, uint);
+	void friendshipsUpdated(const QVector<User> &);
+	void followersUpdated(const QVector<User> &);
+	void blocksUpdated(const QVector<User> &);
+	void friendshipAdded(const User&, uint);
+	void friendshipRemoved(const User&, uint);
+	void blockAdded(const User&, uint);
+	void blockRemoved(const User&, uint);
+	void userListsUpdated(const QVector<List> &);
 };
 
 #endif

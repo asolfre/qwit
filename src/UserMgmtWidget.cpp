@@ -50,9 +50,9 @@ UserMgmtWidget::UserMgmtWidget(QWidget *parent) : QWidget(parent)
 //    nextItemIndex = 0;
 }
 
-void UserMgmtWidget::addItem(Message message, int widgetType)
+void UserMgmtWidget::addItem(User user, int widgetType)
 {
-    UserMgmtWidgetItem *item = new UserMgmtWidgetItem(message, this, widgetType);
+    UserMgmtWidgetItem *item = new UserMgmtWidgetItem(user, this, widgetType);
 
     items.push_back(item);
 }
@@ -140,5 +140,11 @@ void UserMgmtWidget::removeItem(UserMgmtWidgetItem *item)
 	delete items[index];
 	items.remove(index);
     }
+}
+
+void UserMgmtWidget::reloadUserpics()
+{
+    for(int i=0;i<items.size();i++)
+	items[i]->loadUserpic();
 }
 #endif

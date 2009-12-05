@@ -637,6 +637,8 @@ void Twitter::requestStarted(int id) {
 	    qDebug() << ("Request started: " + createBlockRequests[id]);
 	} else if (destroyBlockRequests.find(id) != destroyBlockRequests.end()) {
 	    qDebug() << ("Request started: " + destroyBlockRequests[id]);
+	} else if (receiveUserListsRequests.find(id) != receiveUserListsRequests.end()) {
+	    qDebug() << ("Request started: " + receiveUserListsRequests[id]);
 	}
 }
 
@@ -788,6 +790,13 @@ void Twitter::requestFinished(int id, bool error) {
 			httpRequestId2InternalRequestId.remove(id);
 			emit blockDestroyed(buffer.data(), requestId);
 			destroyBlockRequests.remove(id);
+		} else if (receiveUserListsRequests.find(id) != receiveUserListsRequests.end()) {
+			qDebug() << ("Request finished: " + receiveUserListsRequests[id]);
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			uint requestId = httpRequestId2InternalRequestId[id];
+			httpRequestId2InternalRequestId.remove(id);
+			emit userListsReceived(buffer.data());
+			receiveUserListsRequests.remove(id);
 		}
 	} else {
 		if (sendMessageRequests.find(id) != sendMessageRequests.end()) {
@@ -991,5 +1000,28 @@ void Twitter::destroyBlock(QString screenName, uint requestId) {
     int id = http->request(header, data, &buffer);
     destroyBlockRequests[id] = tr("Sending destroy block request: %1").arg(url.host() + url.path());
     httpRequestId2InternalRequestId[id] = requestId;
+}
+
+void Twitter::receiveUserLists() {
+    qDebug() << ("Twitter::receiveUserLists()");
+
+    setupProxy();
+
+    QString urlPath = QString(Services::options[account->type]["showUserLists"]).arg(account->username);
+
+    QUrl url(account->serviceApiUrl() + urlPath + ".xml");
+
+    if(url.toString().indexOf("https") == 0) {
+	http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+	http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+    http->setUser(account->username, QString::fromAscii(account->password.toUtf8()));
+
+    buffer.open(QIODevice::WriteOnly);
+
+    int id = http->get(url.path(), &buffer);
+    receiveUserListsRequests[id] = tr("Getting user lists: %1").arg(url.host() + url.path());
 }
 #endif
