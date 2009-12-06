@@ -71,6 +71,7 @@ void Services::initialize() {
 	twitterOptions["destroyBlock"] = "/blocks/destroy/";
 
 	twitterOptions["showUserLists"] = "/1/%1/lists";
+	twitterOptions["getListMembers"] = "/1/%1/%2/members";
 
 	options["twitter"] = twitterOptions;
 

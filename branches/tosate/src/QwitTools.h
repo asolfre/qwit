@@ -69,6 +69,7 @@ public:
 	static bool isMention(const Message &message);
 	static QVector<User> parseUsers(const QByteArray &data, Account *account);
 	static QVector<List> parseLists(const QByteArray &data, Account *account);
+	static QVector<User> parseListMembers(const QByteArray &data, Account *account);
 };
 
 void handleMessage(QtMsgType type, const char *msg);
