@@ -142,6 +142,7 @@ public slots:
 	void createBlock(QString screenName, uint requestId);
 	void destroyBlock(QString screenName, uint requestId);
 	void receiveUserLists();
+	void receiveListMembers(quint64 listId);
 
     private slots:
 	void updateFriendships(const QByteArray &data);
@@ -152,6 +153,7 @@ public slots:
 	void addBlock(const QByteArray &data, uint requestId);
 	void removeBlock(const QByteArray &data, uint requestId);
 	void updateUserLists(const QByteArray &data);
+	void updateListMembers(const QByteArray &data, quint64 listId);
 	
 signals:
 	void friendsMessagesUpdated(const QVector<Message> &, Account *);
@@ -182,6 +184,7 @@ signals:
 	void blockAdded(const User&, uint);
 	void blockRemoved(const User&, uint);
 	void userListsUpdated(const QVector<List> &);
+	void listMembersUpdated(const QVector<User> &, quint64);
 };
 
 #endif

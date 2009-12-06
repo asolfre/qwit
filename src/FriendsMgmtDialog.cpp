@@ -52,9 +52,13 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
     accountsTreeWidget->setHeaderLabels(QStringList(tr("accounts")));
     this->oldAccountId = -1;
 
-    pages.push_back(friendshipsPage = new FriendshipsMgmtPage(this));
-    pages.push_back(followersPage = new FollowersMgmtPage(this));
-    pages.push_back(blocksPage = new BlocksMgmtPage(this));
+    friendshipsPage = new FriendshipsMgmtPage(this);
+    pages[1001] = friendshipsPage;
+    currentPageWidget = friendshipsPage;
+    followersPage = new FollowersMgmtPage(this);
+    pages[1002] = followersPage;
+    blocksPage = new BlocksMgmtPage(this);
+    pages[1003] = blocksPage;
     pagesContainerLayout = new QVBoxLayout();
     pagesContainerLayout->setMargin(0);
     pagesWidget->setLayout(pagesContainerLayout);
@@ -81,9 +85,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
 
 FriendsMgmtDialog::~FriendsMgmtDialog()
 {
-    delete friendshipsPage;
-    delete followersPage;
-    delete blocksPage;
+    pages.clear();
     delete statusBar;
 }
 
@@ -92,8 +94,7 @@ void FriendsMgmtDialog::resizeEvent(QResizeEvent *event)
 {
     qDebug() << ("FriendsMgmtDialog::resizeEvent()");
 
-    for(int i=0; i<pages.size(); i++)
-	pages[i]->updateSize();
+    currentPageWidget->updateSize();
 
     event->ignore();
 }
@@ -118,10 +119,12 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
 	treeItems.append(accountItem);
 
 	QTreeWidgetItem *friendsItem = new QTreeWidgetItem(accountItem, QStringList(tr("friends")));
+	friendsItem->setIcon(0, QIcon(":/images/following.png"));
 	friendsItem->setData(0, Qt::UserRole, 1001);
 	treeItems.append(friendsItem);
 
 	QTreeWidgetItem *followersItem = new QTreeWidgetItem(accountItem, QStringList(tr("followers")));
+	followersItem->setIcon(0, QIcon(":/images/following.png"));
 	followersItem->setData(0, Qt::UserRole, 1002);
 	treeItems.append(followersItem);
 
@@ -129,9 +132,6 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
 	blocksItem->setData(0, Qt::UserRole, 1003);
 	blocksItem->setIcon(0, QIcon(":/images/block.png"));
 	treeItems.append(blocksItem);
-
-	// insert lists of the account
-//	for(int i=0; i<list; i++) {}
 
 	if(config->currentAccount() == account)
 	    currentItem = friendsItem;
@@ -144,8 +144,11 @@ void FriendsMgmtDialog::showEvent(QShowEvent *event)
     if(itemCount > 0)
     {
 	accountsTreeWidget->setCurrentItem(currentItem);
+	// get items for current item
 	on_accountsTreeWidget_currentItemChanged(currentItem, (QTreeWidgetItem*) 0);
     }
+
+    config->currentAccount()->receiveUserLists();
 
     event->accept();
 }
@@ -175,6 +178,8 @@ void FriendsMgmtDialog::updateConnects()
 	disconnect(config->accounts[oldAccountId], SIGNAL(friendshipRemoved(User,uint)), 0, 0);
 	disconnect(config->accounts[oldAccountId], SIGNAL(blockAdded(User,uint)), 0 , 0);
 	disconnect(config->accounts[oldAccountId], SIGNAL(blockRemoved(User,uint)), 0, 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(userListsUpdated(QVector<List>)), 0, 0);
+	disconnect(config->accounts[oldAccountId], SIGNAL(listMembersUpdated(QVector<User>,quint64)), 0, 0);
     }
 
     connect(config->currentAccount(), SIGNAL(friendshipsUpdated(QVector<User>)), friendshipsPage, SLOT(updateItems(QVector<User>)));
@@ -184,6 +189,8 @@ void FriendsMgmtDialog::updateConnects()
     connect(config->currentAccount(), SIGNAL(friendshipRemoved(User,uint)), this, SLOT(removeFriend(User,uint)));
     connect(config->currentAccount(), SIGNAL(blockAdded(User,uint)), this, SLOT(addBlock(User,uint)));
     connect(config->currentAccount(), SIGNAL(blockRemoved(User,uint)), this, SLOT(removeBlock(User,uint)));
+    connect(config->currentAccount(), SIGNAL(userListsUpdated(QVector<List>)), this, SLOT(updateUserLists(QVector<List>)));
+    connect(config->currentAccount(), SIGNAL(listMembersUpdated(QVector<User>,quint64)), this, SLOT(updateListMembers(QVector<User>,quint64)));
 }
 
 
@@ -373,7 +380,7 @@ void FriendsMgmtDialog::on_accountsTreeWidget_currentItemChanged(QTreeWidgetItem
     QVariant dataCurrent = current->data(0, Qt::UserRole);
 
     Configuration *config = Configuration::getInstance();
-    int currentId = dataCurrent.toInt();
+    quint64 currentId = dataCurrent.toULongLong();
 
     if(currentId > 1000)
     {
@@ -387,35 +394,32 @@ void FriendsMgmtDialog::on_accountsTreeWidget_currentItemChanged(QTreeWidgetItem
 	    updateConnects();
 	}
 
+	if(!pages.contains(currentId))
+		return;
+
+	currentPageWidget->hide();
+	currentPageWidget->clear();
 	switch(currentId)
 	{
 	case 1001:
-	    config->currentAccount()->receiveFriendships();
 	    currentPageWidget = friendshipsPage;
-	    friendshipsPage->show();
-	    followersPage->hide();
-	    blocksPage->hide();
-	    currentPageWidget->updateSize();
+	    config->currentAccount()->receiveFriendships();
 	    break;
 	case 1002:
-	    config->currentAccount()->receiveFollowers();
 	    currentPageWidget = followersPage;
-	    friendshipsPage->hide();
-	    followersPage->show();
-	    blocksPage->hide();
-	    currentPageWidget->updateSize();
+	    config->currentAccount()->receiveFollowers();
 	    break;
 	case 1003:
-	    config->currentAccount()->receiveBlocks();
 	    currentPageWidget = blocksPage;
-	    friendshipsPage->hide();
-	    followersPage->hide();
-	    blocksPage->show();
-	    currentPageWidget->updateSize();
+	    config->currentAccount()->receiveBlocks();
 	    break;
 	default:
+	    currentPageWidget = pages[currentId];
+	    config->currentAccount()->receiveListMembers(currentId);
 	    break;
 	}
+	currentPageWidget->show();
+	currentPageWidget->updateSize();
     }
 }
 
@@ -438,5 +442,40 @@ void FriendsMgmtDialog::reloadUserpics()
     qDebug() << ("FriendsMgmtDialog::reloadUserpics()");
 
     currentPageWidget->reloadUserpics();
+}
+
+void FriendsMgmtDialog::updateUserLists(const QVector<List> &lists)
+{
+    qDebug() << ("FriendsMgmtDialog::updateUserLists()");
+
+    for(int i=0;i<lists.size();i++) {
+	List list = lists[i];
+
+	QTreeWidgetItem *accountItem;
+	for(int j=0;j<treeItems.size();j++) {
+	    QTreeWidgetItem *currItem = treeItems[j];
+	    int accountId = currItem->data(0, Qt::UserRole).toInt();
+
+	    if(accountId == list.account->id) {
+		accountItem = currItem;
+		break;
+	    }
+	}
+	QTreeWidgetItem *listItem = new QTreeWidgetItem(accountItem, QStringList(list.name));
+	listItem->setIcon(0, QIcon(":/images/list.png"));
+	listItem->setData(0, Qt::UserRole, list.id);
+	treeItems.append(listItem);
+
+	if(!pages.contains(list.id)) {
+	    pages[list.id] = new FriendshipsMgmtPage(this);
+	    pages[list.id]->hide();
+	    pagesContainerLayout->addWidget(pages[list.id]);
+	}
+    }
+}
+
+void FriendsMgmtDialog::updateListMembers(const QVector<User> &listMembers, quint64 listId)
+{
+    pages[listId]->updateItems(listMembers);
 }
 #endif

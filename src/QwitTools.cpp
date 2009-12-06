@@ -754,8 +754,10 @@ QVector<User> QwitTools::parseUsers(const QByteArray &data, Account *account) {
 
     QDomNode node = root.firstChild();
     while(!node.isNull()) {
-	if(node.toElement().tagName() != "user")
-	    return users;
+	if(node.toElement().tagName() != "user") {
+	    node = node.nextSibling();
+	    continue;
+	}
 
 	User user = parseUser(node, account);
 	if(user.id)
@@ -783,10 +785,12 @@ QVector<List> QwitTools::parseLists(const QByteArray &data, Account *account) {
     if(node.toElement().tagName() != "lists")
 	return lists;
 
-    node = node.nextSibling();
+    node = node.firstChild();
     while(!node.isNull()) {
-	if(node.toElement().tagName() != "list")
-	    return lists;
+	if(node.toElement().tagName() != "list") {
+	    node = node.nextSibling();
+	    continue;
+	}
 
 	List list = parseList(node, account);
 	if(list.id)
@@ -978,5 +982,37 @@ User QwitTools::parseUser(QDomNode &node, Account *account) {
 	}
     }
     return user;
+}
+
+QVector<User> QwitTools::parseListMembers(const QByteArray &data, Account *account) {
+    QVector<User> listMembers;
+
+    QDomDocument document;
+    document.setContent(data);
+
+    QDomElement root = document.documentElement();
+
+    if(root.tagName() != "users_list")
+	return listMembers;
+
+    QDomNode node = root.firstChild();
+
+    if(node.toElement().tagName() != "users")
+	return listMembers;
+
+    node = node.firstChild();
+    while(!node.isNull()) {
+	if(node.toElement().tagName() != "user") {
+	    node = node.nextSibling();
+	    continue;
+	}
+
+	User user = parseUser(node, account);
+	if(user.id)
+	    listMembers.push_back(user);
+	node = node.nextSibling();
+    }
+
+    return listMembers;
 }
 #endif

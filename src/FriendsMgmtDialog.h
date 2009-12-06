@@ -48,7 +48,7 @@ class FriendsMgmtDialog : public QDialog, private Ui::FriendsMgmtDialog
         Q_OBJECT
 
 private:
-    QVector<AbstractUserMgmtPage*> pages;
+    QMap<quint64, AbstractUserMgmtPage*> pages;
     FriendshipsMgmtPage *friendshipsPage;
     FollowersMgmtPage *followersPage;
     BlocksMgmtPage *blocksPage;
@@ -92,6 +92,8 @@ private slots:
     void setState(QString state);
     void on_closeButtonBox_rejected();
     void reloadUserpics();
+    void updateUserLists(const QVector<List> &lists);
+    void updateListMembers(const QVector<User> &listMembers, quint64 listId);
 };
 
 #endif

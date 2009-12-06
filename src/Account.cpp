@@ -79,7 +79,8 @@ Account::Account() {
 	connect(twitter, SIGNAL(friendshipDestroyed(const QByteArray&)), this, SIGNAL(friendshipRemoved(const QByteArray&)));
 	connect(twitter, SIGNAL(blockCreated(const QByteArray&)), this, SIGNAL(blockAdded(const QByteArray&)));
 	connect(twitter, SIGNAL(blockDestroyed(const QByteArray&)), this, SIGNAL(blockRemoved(const QByteArray&)));
-	connect(twitter, SIGNAL(userListsReceived(QByteArray)), this, SLOT(updateBlocks(QByteArray)));
+	connect(twitter, SIGNAL(userListsReceived(QByteArray)), this, SLOT(updateUserLists(QByteArray)));
+	connect(twitter, SIGNAL(listMembersReceived(QByteArray,quint64)), this, SLOT(updateListMembers(QByteArray,quint64)));
 	sendingMessage = false;
 }
 
@@ -128,6 +129,7 @@ Account::Account(const QString &type, const QString &username, const QString &pa
 	connect(twitter, SIGNAL(blockCreated(QByteArray,uint)), this, SLOT(addBlock(QByteArray,uint)));
 	connect(twitter, SIGNAL(blockDestroyed(QByteArray,uint)), this, SLOT(removeBlock(QByteArray,uint)));
 	connect(twitter, SIGNAL(userListsReceived(QByteArray)), this, SLOT(updateUserLists(QByteArray)));
+	connect(twitter, SIGNAL(listMembersReceived(QByteArray,quint64)), this, SLOT(updateListMembers(QByteArray,quint64)));
 	sendingMessage = false;
         _serviceBaseUrl = serviceBaseUrl;
         _serviceApiUrl = serviceApiUrl;
@@ -881,5 +883,19 @@ void Account::updateUserLists(const QByteArray &data) {
     QVector<List> lists = QwitTools::parseLists(data, this);
 
     emit userListsUpdated(lists);
+}
+
+void Account::receiveListMembers(quint64 listId) {
+    qDebug() << ("Account::receiveListMembers()");
+
+    twitter->receiveListMembers(listId);
+}
+
+void Account::updateListMembers(const QByteArray &data, quint64 listId) {
+    qDebug() << ("Account::updateListMembers()");
+
+    QVector<User> listMembers = QwitTools::parseListMembers(data, this);
+
+    emit listMembersUpdated(listMembers, listId);
 }
 #endif

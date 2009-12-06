@@ -639,6 +639,8 @@ void Twitter::requestStarted(int id) {
 	    qDebug() << ("Request started: " + destroyBlockRequests[id]);
 	} else if (receiveUserListsRequests.find(id) != receiveUserListsRequests.end()) {
 	    qDebug() << ("Request started: " + receiveUserListsRequests[id]);
+	} else if (receiveListMembersRequests.find(id) != receiveListMembersRequests.end()) {
+	    qDebug() << ("Request started: " + receiveListMembersRequests[id]);
 	}
 }
 
@@ -793,11 +795,16 @@ void Twitter::requestFinished(int id, bool error) {
 		} else if (receiveUserListsRequests.find(id) != receiveUserListsRequests.end()) {
 			qDebug() << ("Request finished: " + receiveUserListsRequests[id]);
 			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
-			uint requestId = httpRequestId2InternalRequestId[id];
-			httpRequestId2InternalRequestId.remove(id);
 			emit userListsReceived(buffer.data());
 			receiveUserListsRequests.remove(id);
-		}
+		    } else if(receiveListMembersRequests.find(id) != receiveListMembersRequests.end()) {
+			qDebug() << ("Request finished: " + receiveListMembersRequests[id]);
+			account->setRemainingRequests(remainingRequests != "" ? remainingRequests.toInt() : -1);
+			quint64 listId = httpRequestId2TwitterId[id];
+			httpRequestId2TwitterId.remove(id);
+			emit listMembersReceived(buffer.data(), listId);
+			receiveListMembersRequests.remove(id);
+		    }
 	} else {
 		if (sendMessageRequests.find(id) != sendMessageRequests.end()) {
 			qWarning() << ("Request failed (message not sent): " + sendMessageRequests[id]);
@@ -839,7 +846,7 @@ void Twitter::receiveFriendships() {
     buffer.open(QIODevice::WriteOnly);
 
     int id = http->get(url.path(), &buffer);
-    receiveFriendshipsRequests[id] = tr("Getting friendships: %1").arg(url.host() + url.path());
+    receiveFriendshipsRequests[id] = tr("Receiving friendships: %1").arg(url.host() + url.path());
 }
 
 void Twitter::receiveFollowers() {
@@ -860,7 +867,7 @@ void Twitter::receiveFollowers() {
     buffer.open(QIODevice::WriteOnly);
 
     int id = http->get(url.path(), &buffer);
-    receiveFollowersRequests[id] = tr("Getting followers: %1").arg(url.host() + url.path());
+    receiveFollowersRequests[id] = tr("Receiving followers: %1").arg(url.host() + url.path());
 }
 
 void Twitter::receiveBlocks() {
@@ -881,7 +888,7 @@ void Twitter::receiveBlocks() {
     buffer.open(QIODevice::WriteOnly);
 
     int id = http->get(url.path(), &buffer);
-    receiveBlocksRequests[id] = tr("Getting blocked users: %1").arg(url.host() + url.path());
+    receiveBlocksRequests[id] = tr("Receiving blocked users: %1").arg(url.host() + url.path());
 }
 
 void Twitter::createFriendship(QString screenName, uint requestId) {
@@ -1022,6 +1029,30 @@ void Twitter::receiveUserLists() {
     buffer.open(QIODevice::WriteOnly);
 
     int id = http->get(url.path(), &buffer);
-    receiveUserListsRequests[id] = tr("Getting user lists: %1").arg(url.host() + url.path());
+    receiveUserListsRequests[id] = tr("Receiving user lists: %1").arg(url.host() + url.path());
+}
+
+void Twitter::receiveListMembers(quint64 listId) {
+    qDebug() << ("Twitter::receiveListMembers()");
+
+    setupProxy();
+
+    QString urlPath = QString(Services::options[account->type]["getListMembers"]).arg(account->username).arg(listId);
+
+    QUrl url(account->serviceApiUrl() + urlPath + ".xml");
+
+    if(url.toString().indexOf("https") == 0) {
+	http->setHost(url.host(), QHttp::ConnectionModeHttps, url.port(443));
+    } else {
+	http->setHost(url.host(), QHttp::ConnectionModeHttp, url.port(80));
+    }
+
+    http->setUser(account->username, QString::fromAscii(account->password.toUtf8()));
+
+    buffer.open(QIODevice::WriteOnly);
+
+    int id = http->get(url.path(), &buffer);
+    receiveListMembersRequests[id] = tr("Receiving list members: %1").arg(url.host() + url.path());
+    httpRequestId2TwitterId[id] = listId;
 }
 #endif
