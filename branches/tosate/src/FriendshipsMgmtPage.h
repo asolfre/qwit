@@ -44,16 +44,15 @@ protected:
 private:
     QVBoxLayout *vBoxLayout;
     QHBoxLayout *hBoxLayout;
-    QLabel *newFriendsLabel;
-    QLineEdit *newFriendLineEdit;
-    QPushButton *addFriendPushButton;
+    QLineEdit *followLineEdit;
+    QPushButton *followPushButton;
 public:
     FriendshipsMgmtPage(QWidget *parent);
     void updateSize();
     void update(Account *account = 0);
 private slots:
-    void on_newFriendLineEdit_textEdited(QString);
-    void on_addFriendPushButton_pressed();
+    void on_followLineEdit_textEdited(QString);
+    void on_followPushButton_pressed();
 signals:
     void follow(QString);
     void unfollow(QString, UserMgmtWidgetItem*);

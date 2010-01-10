@@ -61,6 +61,7 @@ private:
     AbstractUserMgmtPage *currentPageWidget;
     QList<QTreeWidgetItem *> treeItems;
 
+    void updateTreeView();
     void updateConnects();
     int oldAccountId;
     int mainWindowAccountId;
@@ -76,7 +77,8 @@ protected:
     bool event(QEvent *e);
 
 private slots:
-    void on_accountsTreeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+    void on_accountComboBox_currentIndexChanged(int index);
+    void on_groupsTreeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
     void on_splitter_splitterMoved(int pos, int index);
     void friendshipsPage_follow(QString screenName);
     void friendshipsPage_unfollow(QString screenName, UserMgmtWidgetItem *item);

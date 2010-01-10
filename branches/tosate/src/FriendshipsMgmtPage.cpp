@@ -38,7 +38,7 @@
 FriendshipsMgmtPage::FriendshipsMgmtPage(QWidget *parent) : AbstractUserMgmtPage(parent)
 {
     qDebug() << ("FriendshipsMgmtPage::FriendshipsMgmtPage()");
-    this->title = tr("Friends");
+    this->title = tr("Following");
 
     userMgmtWidget->setObjectName(QString::fromUtf8("friendshipsPage"));
     // define connects
@@ -48,18 +48,16 @@ FriendshipsMgmtPage::FriendshipsMgmtPage(QWidget *parent) : AbstractUserMgmtPage
     hBoxLayout = new QHBoxLayout(this);
     hBoxLayout->setObjectName(QString::fromUtf8("friendshipsMgmtHorizontalBoxLayout"));
     vBoxLayout->addLayout(hBoxLayout);
-    newFriendsLabel = new QLabel(tr("new friend:"), this);
-    hBoxLayout->addWidget(newFriendsLabel);
-    newFriendLineEdit = new QLineEdit(this);
-    hBoxLayout->addWidget(newFriendLineEdit);
-    addFriendPushButton = new QPushButton(tr("add"), this);
-    addFriendPushButton->setEnabled(false);
-    addFriendPushButton->setAutoDefault(true);
-    addFriendPushButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-    hBoxLayout->addWidget(addFriendPushButton);
+    followLineEdit = new QLineEdit(this);
+    hBoxLayout->addWidget(followLineEdit);
+    followPushButton = new QPushButton(tr("follow"), this);
+    followPushButton->setEnabled(false);
+    followPushButton->setAutoDefault(true);
+    followPushButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    hBoxLayout->addWidget(followPushButton);
 
-    connect(newFriendLineEdit, SIGNAL(textEdited(QString)), this, SLOT(on_newFriendLineEdit_textEdited(QString)));
-    connect(addFriendPushButton, SIGNAL(pressed()), this, SLOT(on_addFriendPushButton_pressed()));
+    connect(followLineEdit, SIGNAL(textEdited(QString)), this, SLOT(on_followLineEdit_textEdited(QString)));
+    connect(followPushButton, SIGNAL(pressed()), this, SLOT(on_followPushButton_pressed()));
 
     scrollArea = new QScrollArea(this);
     scrollArea->setBackgroundRole(QPalette::Light);
@@ -95,22 +93,22 @@ void FriendshipsMgmtPage::update(Account *accout)
     }
 }
 
-void FriendshipsMgmtPage::on_newFriendLineEdit_textEdited(QString )
+void FriendshipsMgmtPage::on_followLineEdit_textEdited(QString )
 {
-    if(newFriendLineEdit->text().length() > 0)
+    if(followLineEdit->text().length() > 0)
     {
-	addFriendPushButton->setEnabled(true);
+	followPushButton->setEnabled(true);
     }
     else
     {
-	addFriendPushButton->setEnabled(false);
+	followPushButton->setEnabled(false);
     }
 }
 
-void FriendshipsMgmtPage::on_addFriendPushButton_pressed()
+void FriendshipsMgmtPage::on_followPushButton_pressed()
 {
-    QString screenName = newFriendLineEdit->text();
-    newFriendLineEdit->setText("");
+    QString screenName = followLineEdit->text();
+    followLineEdit->setText("");
 
     // FIXEM check screenName synthax
     emit follow(screenName);

@@ -51,5 +51,7 @@
         <file>images/google.png</file>
         <file>images/following.png</file>
         <file>images/list.png</file>
+        <file>images/bitly.png</file>
+        <file>images/budurlcom.png</file>
     </qresource>
 </RCC>

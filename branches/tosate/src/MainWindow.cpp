@@ -121,7 +121,7 @@ MainWindow::MainWindow(QWidget *parent): QDialog(parent) {
 	
 	connect(UrlShortener::getInstance(), SIGNAL(urlShortened(const QString &)), messageTextEdit, SLOT(insertUrl(const QString &)));
 
-	updateAll();
+	updateAll(true);
 
 	Configuration *config = Configuration::getInstance();
 	if (config->accounts.size() == 0) {
@@ -209,6 +209,8 @@ void MainWindow::saveOptions() {
 	config->proxyPassword = optionsDialog->proxyPasswordLineEdit->text();
 	
 	config->urlShortener = Configuration::UrlShorteners[optionsDialog->urlShortenersComboBox->currentIndex()];
+	config->urlShortenerUsername = optionsDialog->urlShortenersUsername->text();
+	config->urlShortenerAPIKey = optionsDialog->urlShortenersAPIKey->text();
 
 	saveState();
 	updateState();
@@ -381,6 +383,8 @@ void MainWindow::resetOptionsDialog() {
 
 // UrlShortener
 	optionsDialog->urlShortenersComboBox->setCurrentIndex(Configuration::UrlShortenersIds[config->urlShortener]);
+	optionsDialog->urlShortenersUsername->setText(config->urlShortenerUsername);
+	optionsDialog->urlShortenersAPIKey->setText(config->urlShortenerAPIKey);
 
 }
 
@@ -465,6 +469,8 @@ void MainWindow::showOptionsDialog() {
 void MainWindow::accountButtonClicked(int id) {
 	qDebug() << ("MainWindow::accountButtonClicked()");
 
+	Configuration *config = Configuration::getInstance();
+	setWindowTitle("Qwit - " + config->accounts[id]->username + "@" + config->accounts[id]->type);
 	updateCurrentAccount(id);
 }
 
@@ -717,20 +723,20 @@ void MainWindow::redrawPages() {
 	}
 }
 
-void MainWindow::updateAccount(Account *account) {
+void MainWindow::updateAccount(Account *account, bool initial) {
 	qDebug() << "MainWindow::updateAccount()";
 	for (int i = 0; i < pages.size(); ++i) {
 		if (pages[i]->updateAutomatically()) {
-			pages[i]->update(account);
+			pages[i]->update(account, initial);
 		}
 	}
 	account->updateLastMessage();
 }
 
-void MainWindow::updateAll() {
+void MainWindow::updateAll(bool initial) {
 	Configuration *config = Configuration::getInstance();
 	for (int i = 0; i < config->accounts.size(); ++i) {
-		updateAccount(config->accounts[i]);
+		updateAccount(config->accounts[i], initial);
 	}
 }
 
@@ -783,7 +789,8 @@ void MainWindow::postTwitPic() {
 	Configuration *config = Configuration::getInstance();
 	dialog.setUser(config->currentAccount()->username, config->currentAccount()->password);
 	if (dialog.exec() == QDialog::Accepted) {
-		messageTextEdit->append(dialog.twitPickedUrlString());
+		messageTextEdit->insertPlainText(dialog.twitPickedUrlString());
+		messageTextEdit->insertPlainText(" " + dialog.twitPicCommentString());
 	}
 }
 
