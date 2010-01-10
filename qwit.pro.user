@@ -63,7 +63,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >AXIS2_HOME=/opt/axis2-1.4</value>
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-8ZBdJN76zr,guid=975babbe1d00700d44b37a1f4b1a8ef8</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-lzLZJA3BFp,guid=12cd3247ee609dd51354f9294b3b30e4</value>
     <value type="QString" >DESKTOP_SESSION=gnome</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -71,8 +71,8 @@
     <value type="QString" >GDM_KEYBOARD_LAYOUT=de</value>
     <value type="QString" >GDM_LANG=en_US.UTF-8</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=2563</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-UiuVO8/socket</value>
+    <value type="QString" >GNOME_KEYRING_PID=2444</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-L4n6xj/socket</value>
     <value type="QString" >GTK_MODULES=canberra-gtk-module</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/tosate/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/tosate</value>
@@ -85,16 +85,16 @@
     <value type="QString" >PATH=/home/tosate/qtsdk-2009.04/qt/bin:/home/tosate/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games":$JAVA_HOME/bin</value>
     <value type="QString" >PWD=/home/tosate</value>
     <value type="QString" >QTDIR=/home/tosate/qtsdk-2009.04/qt</value>
-    <value type="QString" >SESSION_MANAGER=local/x2tosate:@/tmp/.ICE-unix/2578,unix/x2tosate:/tmp/.ICE-unix/2578</value>
+    <value type="QString" >SESSION_MANAGER=local/x2tosate:@/tmp/.ICE-unix/2476,unix/x2tosate:/tmp/.ICE-unix/2476</value>
     <value type="QString" >SHELL=/bin/bash</value>
     <value type="QString" >SPEECHD_PORT=7560</value>
-    <value type="QString" >SSH_AGENT_PID=2642</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-UiuVO8/socket.ssh</value>
+    <value type="QString" >SSH_AGENT_PID=2540</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-L4n6xj/socket.ssh</value>
     <value type="QString" >USER=tosate</value>
     <value type="QString" >USERNAME=tosate</value>
-    <value type="QString" >XAUTHORITY=/var/run/gdm/auth-for-tosate-hpOy8p/database</value>
+    <value type="QString" >XAUTHORITY=/var/run/gdm/auth-for-tosate-9QUXmj/database</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1260031735.841214-1405786865</value>
+    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1262170339.154917-980745886</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >/home/tosate/cppProgramming/qwit/qwit.pro</value>
@@ -115,7 +115,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >AXIS2_HOME=/opt/axis2-1.4</value>
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-8ZBdJN76zr,guid=975babbe1d00700d44b37a1f4b1a8ef8</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-lzLZJA3BFp,guid=12cd3247ee609dd51354f9294b3b30e4</value>
     <value type="QString" >DESKTOP_SESSION=gnome</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -123,8 +123,8 @@
     <value type="QString" >GDM_KEYBOARD_LAYOUT=de</value>
     <value type="QString" >GDM_LANG=en_US.UTF-8</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=2563</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-UiuVO8/socket</value>
+    <value type="QString" >GNOME_KEYRING_PID=2444</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-L4n6xj/socket</value>
     <value type="QString" >GTK_MODULES=canberra-gtk-module</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/tosate/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/tosate</value>
@@ -137,16 +137,16 @@
     <value type="QString" >PATH=/home/tosate/qtsdk-2009.04/qt/bin:/home/tosate/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games":$JAVA_HOME/bin</value>
     <value type="QString" >PWD=/home/tosate</value>
     <value type="QString" >QTDIR=/home/tosate/qtsdk-2009.04/qt</value>
-    <value type="QString" >SESSION_MANAGER=local/x2tosate:@/tmp/.ICE-unix/2578,unix/x2tosate:/tmp/.ICE-unix/2578</value>
+    <value type="QString" >SESSION_MANAGER=local/x2tosate:@/tmp/.ICE-unix/2476,unix/x2tosate:/tmp/.ICE-unix/2476</value>
     <value type="QString" >SHELL=/bin/bash</value>
     <value type="QString" >SPEECHD_PORT=7560</value>
-    <value type="QString" >SSH_AGENT_PID=2642</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-UiuVO8/socket.ssh</value>
+    <value type="QString" >SSH_AGENT_PID=2540</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-L4n6xj/socket.ssh</value>
     <value type="QString" >USER=tosate</value>
     <value type="QString" >USERNAME=tosate</value>
-    <value type="QString" >XAUTHORITY=/var/run/gdm/auth-for-tosate-hpOy8p/database</value>
+    <value type="QString" >XAUTHORITY=/var/run/gdm/auth-for-tosate-9QUXmj/database</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1260031735.841214-1405786865</value>
+    <value type="QString" >XDG_SESSION_COOKIE=a05ea1a34c6f08e67adb0e3548ac7c08-1262170339.154917-980745886</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >-w</value>
