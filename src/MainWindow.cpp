@@ -169,6 +169,7 @@ void MainWindow::saveOptions() {
 	config->greetingMessage = optionsDialog->greetingMessageLineEdit->text();
 	config->showLeftCharactersNumber = (optionsDialog->showLeftCharactersNumberCheckBox->checkState() == Qt::Checked);
 	config->showLastMessage = (optionsDialog->showLastMessageCheckBox->checkState() == Qt::Checked);
+    config->showTweetsAsBubble = (optionsDialog->showTweetsAsBubbleCheckBox->checkState() == Qt::Checked);
 	config->messagesPerPage = optionsDialog->messagesPerPageLineEdit->text().toInt();
 	config->messagesInPopup = optionsDialog->messagesInPopupLineEdit->text().toInt();
 	config->retweetTag = optionsDialog->retweetTagLineEdit->text();
@@ -323,6 +324,7 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->greetingMessageLineEdit->setText(config->greetingMessage);
 	optionsDialog->showLeftCharactersNumberCheckBox->setCheckState(config->showLeftCharactersNumber ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->showLastMessageCheckBox->setCheckState(config->showLastMessage ? Qt::Checked : Qt::Unchecked);
+    optionsDialog->showTweetsAsBubbleCheckBox->setCheckState(config->showTweetsAsBubble ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->messagesPerPageLineEdit->setText(QString::number(config->messagesPerPage));
 	optionsDialog->messagesInPopupLineEdit->setText(QString::number(config->messagesInPopup));
 	optionsDialog->retweetTagAfterTextCheckBox->setCheckState(config->retweetTagAfterText ? Qt::Checked : Qt::Unchecked);

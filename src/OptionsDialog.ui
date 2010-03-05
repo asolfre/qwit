@@ -1115,7 +1115,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="showTweetsAsBubble">
+                     <widget class="QCheckBox" name="showTweetsAsBubbleCheckBox">
                       <property name="text">
                        <string>Show tweets as bubble</string>
                       </property>

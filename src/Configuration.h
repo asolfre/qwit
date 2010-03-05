@@ -96,6 +96,7 @@ public:
 	bool autoUpdateSearchTab;
 	bool showFavoritesTab;
 	bool autoUpdateFavoritesTab;
+    bool showTweetsAsBubble;
 	int updateInterval;
 	QColor commonMessagesOddColor;
 	QColor commonMessagesEvenColor;
