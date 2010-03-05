@@ -69,7 +69,7 @@
           <number>-4</number>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="connectionPage">
           <layout class="QGridLayout" name="gridLayout_2">
@@ -79,11 +79,11 @@
               <string>Connection</string>
              </property>
              <layout class="QGridLayout" name="gridLayout">
-              <property name="verticalSpacing">
-               <number>6</number>
-              </property>
               <property name="leftMargin">
                <number>4</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>6</number>
               </property>
               <item row="0" column="0">
                <layout class="QVBoxLayout" name="verticalLayout">
@@ -422,137 +422,6 @@
                        <size>
                         <width>20</width>
                         <height>40</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-                <widget class="QWidget" name="tab">
-                 <attribute name="title">
-                  <string>Misc</string>
-                 </attribute>
-                 <layout class="QGridLayout" name="gridLayout_4">
-                  <item row="0" column="0">
-                   <layout class="QVBoxLayout" name="verticalLayout_4">
-                    <item>
-                     <widget class="QCheckBox" name="showGreetingMessageCheckBox">
-                      <property name="text">
-                       <string>Show greeting message:</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="greetingMessageLineEdit"/>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="showLeftCharactersNumberCheckBox">
-                      <property name="text">
-                       <string>Show left characters number</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_4">
-                      <property name="text">
-                       <string>Number of messages per page:</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="messagesPerPageLineEdit"/>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_12">
-                      <property name="text">
-                       <string>Number of messages in popup:</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="messagesInPopupLineEdit"/>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_13">
-                      <property name="text">
-                       <string>Retweet tag:</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="retweetTagLineEdit"/>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="retweetTagAfterTextCheckBox">
-                      <property name="text">
-                       <string>Display retweet tag after text instead of in front</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="placeUsernameUnderAvatarCheckBox">
-                      <property name="text">
-                       <string>Place username under avatar</string>
-                      </property>
-                      <property name="checked">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="showMessagesInTrayCheckBox">
-                      <property name="text">
-                       <string>Show messages in the tray</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="placeControlsVerticallyCheckBox">
-                      <property name="text">
-                       <string>Place controls vertically</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="placeTabsVerticallyCheckBox">
-                      <property name="text">
-                       <string>Place tabs vertically</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="showLastMessageCheckBox">
-                      <property name="text">
-                       <string>Show last status</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="verticalSpacer_2">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>17</width>
-                        <height>38</height>
                        </size>
                       </property>
                      </spacer>
@@ -1123,6 +992,147 @@
                        <size>
                         <width>20</width>
                         <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="tab">
+                 <attribute name="title">
+                  <string>Misc</string>
+                 </attribute>
+                 <layout class="QGridLayout" name="gridLayout_4">
+                  <item row="0" column="0">
+                   <layout class="QVBoxLayout" name="verticalLayout_4">
+                    <item>
+                     <widget class="QCheckBox" name="showGreetingMessageCheckBox">
+                      <property name="text">
+                       <string>Show greeting message:</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="greetingMessageLineEdit"/>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="showLeftCharactersNumberCheckBox">
+                      <property name="text">
+                       <string>Show left characters number</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_4">
+                      <property name="text">
+                       <string>Number of messages per page:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="messagesPerPageLineEdit"/>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_12">
+                      <property name="text">
+                       <string>Number of messages in popup:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="messagesInPopupLineEdit"/>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_13">
+                      <property name="text">
+                       <string>Retweet tag:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="retweetTagLineEdit"/>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="retweetTagAfterTextCheckBox">
+                      <property name="text">
+                       <string>Display retweet tag after text instead of in front</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="placeUsernameUnderAvatarCheckBox">
+                      <property name="text">
+                       <string>Place username under avatar</string>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="showMessagesInTrayCheckBox">
+                      <property name="text">
+                       <string>Show messages in the tray</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="placeControlsVerticallyCheckBox">
+                      <property name="text">
+                       <string>Place controls vertically</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="placeTabsVerticallyCheckBox">
+                      <property name="text">
+                       <string>Place tabs vertically</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="showLastMessageCheckBox">
+                      <property name="text">
+                       <string>Show last status</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="showTweetsAsBubble">
+                      <property name="text">
+                       <string>Show tweets as bubble</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_2">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>17</width>
+                        <height>38</height>
                        </size>
                       </property>
                      </spacer>
