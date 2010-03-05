@@ -108,6 +108,7 @@ void Configuration::load() {
 	placeControlsVertically = settings.value("placeControlsVertically", true).toBool();
 	placeTabsVertically = settings.value("placeTabsVertically", true).toBool();
 	showLastMessage = settings.value("showLastMessage", true).toBool();
+    showTweetsAsBubble = settings.value("showTweetAsBubble",false).toBool();
 	settings.endGroup();
 	
 	settings.beginGroup("Tabs");
@@ -216,6 +217,7 @@ void Configuration::save() {
 	settings.setValue("placeControlsVertically", placeControlsVertically);
 	settings.setValue("placeTabsVertically", placeTabsVertically);
 	settings.setValue("showLastMessage", showLastMessage);
+    settings.setValue("showTweetAsBubble", showTweetsAsBubble);
 	settings.endGroup();
 
 	settings.beginGroup("Tabs");

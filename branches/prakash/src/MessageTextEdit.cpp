@@ -38,8 +38,8 @@
 #include "QwitTools.h"
 #include "Translator.h"
 
-const int MessageTextEdit::MaxMessageCharacters;
-const int MessageTextEdit::StandardHeight;
+//const int MessageTextEdit::MaxMessageCharacters;
+//const int MessageTextEdit::StandardHeight;
 
 MessageTextEdit::MessageTextEdit(QWidget *parent): QTextEdit(parent) {
 	setFixedHeight(StandardHeight);
