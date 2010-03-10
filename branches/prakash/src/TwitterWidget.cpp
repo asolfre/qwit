@@ -166,27 +166,27 @@ void TwitterWidget::addItem(const Message &message) {
 
 int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height) {
 	QFontMetrics fontMetrics(item->messageTextBrowser->font());
-	int messageItemWidth = width() - (ICON_SIZE + 4 * MARGIN + item->favorButton->width());
+	int messageItemWidth = width() - (20 + ICON_SIZE + 4 * MARGIN + item->favorButton->width());
 	int messageItemHeight = fontMetrics.boundingRect(0, 0, messageItemWidth, 1000, Qt::AlignTop | Qt::TextWordWrap, item->messageTextBrowser->toPlainText()).height() + MARGIN;
 	if (messageItemHeight < ICON_SIZE) {
 		messageItemHeight = ICON_SIZE;
 	}
-	item->messageTextBrowser->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
+	item->messageTextBrowser->move(ICON_SIZE + 20+  2 * MARGIN, height + MARGIN + 5 + 2);
 	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
 	messageItemHeight += item->messageTextBrowser->verticalScrollBar()->maximum() - item->messageTextBrowser->verticalScrollBar()->minimum();
 	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
 	item->userpicLabel->move(MARGIN, height + MARGIN);
 
-	item->favorButton->move(width() - MARGIN - item->favorButton->width(), height);
+	item->favorButton->move(width() - MARGIN - item->favorButton->width(), height + 5 + 2);
 	item->favorButton->show();
-	item->replyButton->move(width() - MARGIN - item->replyButton->width(), height + item->favorButton->height());
+	item->replyButton->move(width() - MARGIN - item->replyButton->width(), height + item->favorButton->height() + 5 + 2);
 	item->replyButton->show();
 	if (item->retweetButton) {
-		item->retweetButton->move(width() - MARGIN - item->retweetButton->width(), height + item->favorButton->height() + item->replyButton->height());
+		item->retweetButton->move(width() - MARGIN - item->retweetButton->width(), height + item->favorButton->height() + item->replyButton->height() + 5 + 2);
 		item->retweetButton->show();
 	}
 	if (item->destroyButton) {
-		item->destroyButton->move(width() - MARGIN - item->destroyButton->width(), height + item->favorButton->height() + item->replyButton->height());
+		item->destroyButton->move(width() - MARGIN - item->destroyButton->width(), height + item->favorButton->height() + item->replyButton->height() + 5 + 2);
 		item->destroyButton->show();
 	}
 
@@ -217,7 +217,7 @@ int TwitterWidget::arrangeMessage(TwitterWidgetItem *item, int index, int height
 	if (signX < item->directMessageButton->pos().x() + item->directMessageButton->width() + MARGIN) {
 		signY = max(signY, item->directMessageButton->pos().y() + item->directMessageButton->height());
 	}
-	item->signLabel->move(signX, signY);
+	item->signLabel->move(signX, signY - 5);
 
 	Configuration *config = Configuration::getInstance();
 	if (paintMentions && item->message.mention) {
@@ -248,7 +248,7 @@ int TwitterWidget::arrangeDirectMessage(TwitterWidgetItem *item, int index, int 
 	if (messageItemHeight < ICON_SIZE) {
 		messageItemHeight = ICON_SIZE;
 	}
-	item->messageTextBrowser->move(ICON_SIZE + 2 * MARGIN, height + MARGIN);
+	item->messageTextBrowser->move(ICON_SIZE + 20 + 2 * MARGIN, height + MARGIN);
 	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
 	messageItemHeight += item->messageTextBrowser->verticalScrollBar()->maximum() - item->messageTextBrowser->verticalScrollBar()->minimum();
 	item->messageTextBrowser->resize(messageItemWidth, messageItemHeight);
@@ -380,9 +380,18 @@ void TwitterWidget::resizeEvent(QResizeEvent *event) {
 
 void TwitterWidget::paintEvent(QPaintEvent *event) {
 	QPainter painter(this);
+    QPainterPath path;
 	for (int i = 0; i < items.size(); ++i) {
 		TwitterWidgetItem *item = items[i];
-		painter.fillRect(0, item->top, width(), item->height, QBrush(item->color));
+		//painter.fillRect(0, item->top, width(), item->height, QBrush(item->color));
+        path.addRect(ICON_SIZE + 20, item->top + 5,width()-(ICON_SIZE + 20 + 5), item->height -10 ); //5,5);
+        //path.moveTo(ICON_SIZE + 20, item->top + 5);
+        //path.lineTo(ICON_SIZE + 20,item->top +10 + 1);
+        path.moveTo(ICON_SIZE + 20,item->top +10 + 1);
+        path.lineTo(ICON_SIZE + 10, item->top +10 + 1 + 10);
+        path.lineTo(ICON_SIZE + 20, item->top +10 + 1 + 10 + 10);
+        painter.setBrush(item->color);
+        painter.drawPath(path);
 		QPalette p = palette();
 		p.setColor(QPalette::Active, QPalette::Base, item->color);
 		p.setColor(QPalette::Inactive, QPalette::Base, item->color);
