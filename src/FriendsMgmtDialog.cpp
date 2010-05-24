@@ -48,7 +48,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent, Twitter *twitter, Userpics
         scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
         scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-        vBoxLayout2->addWidget(scrollArea);
+        vboxLayout1->addWidget(scrollArea);
 
         connect(friendsMgmtWidget, SIGNAL(unfollow(QString)), this, SLOT(unfollow(QString)));
 	connect(friendsMgmtWidget, SIGNAL(block(const QString)), this, SLOT(block(const QString)));
