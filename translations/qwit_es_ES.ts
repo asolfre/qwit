@@ -4,8 +4,9 @@
 <context>
     <name></name>
     <message>
+        <location filename="../src/qwit.cpp" line="58"/>
         <source>System (%1, %2)</source>
-        <translation type="obsolete">Sistema (%1, %2)</translation>
+        <translation>Sistema (%1, %2)</translation>
     </message>
 </context>
 <context>
@@ -122,73 +123,32 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/AccountConfigurationDialog.ui" line="28"/>
-        <source>Plain-text authorization</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/AccountConfigurationDialog.ui" line="39"/>
         <source>Username:</source>
         <translation>Usuario:</translation>
     </message>
     <message>
-        <location filename="../src/AccountConfigurationDialog.ui" line="49"/>
+        <location filename="../src/AccountConfigurationDialog.ui" line="38"/>
         <source>Password:</source>
         <translation>Contraseña:</translation>
-    </message>
-    <message>
-        <location filename="../src/AccountConfigurationDialog.ui" line="80"/>
-        <source>OAuth</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/AccountConfigurationDialog.ui" line="107"/>
-        <source>Authorize</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/AccountConfigurationDialog.ui" line="132"/>
-        <source>Service options</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>save password</source>
         <translation type="obsolete">guardar contraseña</translation>
     </message>
     <message>
-        <location filename="../src/AccountConfigurationDialog.ui" line="140"/>
+        <location filename="../src/AccountConfigurationDialog.ui" line="52"/>
         <source>use https instead of http</source>
         <translation>usar https en lugar de http</translation>
     </message>
     <message>
-        <location filename="../src/AccountConfigurationDialog.ui" line="147"/>
+        <location filename="../src/AccountConfigurationDialog.ui" line="59"/>
         <source>Service base URL:</source>
         <translation>URL base del servicio:</translation>
     </message>
     <message>
-        <location filename="../src/AccountConfigurationDialog.ui" line="157"/>
+        <location filename="../src/AccountConfigurationDialog.ui" line="69"/>
         <source>Service API URL:</source>
         <translation>URL base del API:</translation>
-    </message>
-    <message>
-        <location filename="../src/AccountConfigurationDialog.cpp" line="101"/>
-        <location filename="../src/AccountConfigurationDialog.cpp" line="124"/>
-        <source>Error!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/AccountConfigurationDialog.cpp" line="101"/>
-        <source>Error while trying OAuth!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/AccountConfigurationDialog.cpp" line="116"/>
-        <source>Authorization successfull!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/AccountConfigurationDialog.cpp" line="124"/>
-        <source>Wrong pin, try again!</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -334,50 +294,37 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="790"/>
+        <location filename="../src/MainWindow.cpp" line="776"/>
         <source>Pick an image</source>
         <translation>Elija una imagen</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="598"/>
+        <location filename="../src/MainWindow.cpp" line="586"/>
         <source>&amp;Show / Hide</source>
         <translation>&amp;Mostrar/Ocultar</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="600"/>
+        <location filename="../src/MainWindow.cpp" line="588"/>
         <source>&amp;Quit</source>
         <translation>&amp;Salir</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="721"/>
+        <location filename="../src/MainWindow.cpp" line="708"/>
         <source>Qwit: new messages receieved for %1@%2</source>
         <translation>Qwit: nuevos mensajes recibidos para %1@%2</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="753"/>
-        <source>Rate limit exceeded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../src/MainWindow.cpp" line="755"/>
-        <source>%n requests left</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message>
-        <location filename="../src/MainWindow.cpp" line="790"/>
+        <location filename="../src/MainWindow.cpp" line="776"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.PNG *.JPG *.JPEG *.BMP)</source>
         <translation>Archivos de imagen (*.png *.jpg *.jpeg *.bmp *.PNG *.JPG *.JPEG *.BMP)</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="823"/>
+        <location filename="../src/MainWindow.cpp" line="808"/>
         <source>Disable shortening of pasted links</source>
         <translation>Deshabilitar acortamiento de enlaces pegados</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="825"/>
+        <location filename="../src/MainWindow.cpp" line="810"/>
         <source>Enable shortening of pasted links</source>
         <translation>Habilitar acortamiento de enlaces pegados</translation>
     </message>
@@ -387,51 +334,51 @@ p, li { white-space: pre-wrap; }
         <translation>Qwit</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="66"/>
+        <location filename="../src/MainWindow.ui" line="65"/>
         <source>Add an image</source>
         <translation>Añadir una imagen</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="105"/>
+        <location filename="../src/MainWindow.ui" line="104"/>
         <source>watching movie - 10 minutes ago</source>
         <translation>viendo una peli - hace 10 minutos</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="140"/>
+        <location filename="../src/MainWindow.ui" line="136"/>
         <source>tmp</source>
         <translation>tmp</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="176"/>
+        <location filename="../src/MainWindow.ui" line="172"/>
         <source>Friends</source>
         <translation>Amigos</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="179"/>
-        <location filename="../src/MainWindow.ui" line="196"/>
-        <location filename="../src/MainWindow.ui" line="213"/>
-        <location filename="../src/MainWindow.ui" line="230"/>
-        <location filename="../src/MainWindow.ui" line="247"/>
+        <location filename="../src/MainWindow.ui" line="175"/>
+        <location filename="../src/MainWindow.ui" line="192"/>
+        <location filename="../src/MainWindow.ui" line="209"/>
+        <location filename="../src/MainWindow.ui" line="226"/>
+        <location filename="../src/MainWindow.ui" line="243"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="193"/>
+        <location filename="../src/MainWindow.ui" line="189"/>
         <source>Refresh</source>
         <translation>Refrescar</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="210"/>
+        <location filename="../src/MainWindow.ui" line="206"/>
         <source>Options</source>
         <translation>Opciones</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="227"/>
+        <location filename="../src/MainWindow.ui" line="223"/>
         <source>About Qwit</source>
         <translation>Acerca de Qwit</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.ui" line="244"/>
+        <location filename="../src/MainWindow.ui" line="240"/>
         <source>Exit Qwit</source>
         <translation>Salir de Qwit</translation>
     </message>
@@ -472,19 +419,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/MessageTextEdit.cpp" line="266"/>
         <source>An error occured during translation - maybe this language isn&apos;t supported by GoogleTranslate yet.</source>
         <translation>Ocurrió un error durante la traducción - puede que este idioma no esté soportado por GoogleTranslate todavía.</translation>
-    </message>
-</context>
-<context>
-    <name>OAuthDialog</name>
-    <message>
-        <location filename="../src/OAuthDialog.ui" line="14"/>
-        <source>OAuth configuration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/OAuthDialog.ui" line="25"/>
-        <source>Click &lt;a href=&quot;%url&quot;&gt;here&lt;/a&gt; to allow Qwit access your account and enter received pin code.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -550,35 +484,35 @@ p, li { white-space: pre-wrap; }
         <translation>Colocar pestañas verticalmente</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="40"/>
-        <location filename="../src/OptionsDialog.ui" line="1176"/>
         <location filename="../src/OptionsDialog.cpp" line="76"/>
+        <location filename="../src/OptionsDialog.ui" line="40"/>
+        <location filename="../src/OptionsDialog.ui" line="1169"/>
         <source>Accounts</source>
         <translation>Cuentas</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="45"/>
         <location filename="../src/OptionsDialog.cpp" line="78"/>
+        <location filename="../src/OptionsDialog.ui" line="45"/>
         <source>URL shortener</source>
         <translation>Acortador de URLs</translation>
     </message>
     <message>
+        <location filename="../src/OptionsDialog.cpp" line="80"/>
         <location filename="../src/OptionsDialog.ui" line="50"/>
         <location filename="../src/OptionsDialog.ui" line="79"/>
-        <location filename="../src/OptionsDialog.cpp" line="80"/>
         <source>Connection</source>
         <translation>Conexión</translation>
     </message>
     <message>
+        <location filename="../src/OptionsDialog.cpp" line="82"/>
         <location filename="../src/OptionsDialog.ui" line="55"/>
         <location filename="../src/OptionsDialog.ui" line="178"/>
-        <location filename="../src/OptionsDialog.cpp" line="82"/>
         <source>User interface</source>
         <translation>Interfaz de usuario</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1153"/>
         <location filename="../src/OptionsDialog.cpp" line="84"/>
+        <location filename="../src/OptionsDialog.ui" line="1146"/>
         <source>Translator</source>
         <translation>Traductor</translation>
     </message>
@@ -674,79 +608,59 @@ p, li { white-space: pre-wrap; }
         <translation>Ver último estado</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="550"/>
-        <source>Start minimized</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="573"/>
+        <location filename="../src/OptionsDialog.ui" line="566"/>
         <source>Colors</source>
         <translation>Colores</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="583"/>
+        <location filename="../src/OptionsDialog.ui" line="576"/>
         <source>Common messages:</source>
         <translation>Mensajes comunes:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="839"/>
+        <location filename="../src/OptionsDialog.ui" line="832"/>
         <source>Mentions:</source>
         <translation>Menciones:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1109"/>
+        <location filename="../src/OptionsDialog.ui" line="1102"/>
         <source>Language</source>
         <translation>Idioma</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1117"/>
+        <location filename="../src/OptionsDialog.ui" line="1110"/>
         <source>Choose UI language:</source>
         <translation>Elegir idioma del interfaz:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1184"/>
+        <location filename="../src/OptionsDialog.ui" line="1177"/>
         <source>Service:</source>
         <translation>Servicio:</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1202"/>
+        <location filename="../src/OptionsDialog.ui" line="1195"/>
         <source>Add</source>
         <translation>Añadir</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1218"/>
+        <location filename="../src/OptionsDialog.ui" line="1211"/>
         <source>Edit...</source>
         <translation>Editar...</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1225"/>
+        <location filename="../src/OptionsDialog.ui" line="1218"/>
         <source>Delete...</source>
         <translation>Borrar...</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1258"/>
+        <location filename="../src/OptionsDialog.ui" line="1251"/>
         <source>Url shortener</source>
         <translation>Acortador de URL</translation>
     </message>
     <message>
-        <location filename="../src/OptionsDialog.ui" line="1266"/>
+        <location filename="../src/OptionsDialog.ui" line="1259"/>
         <source>Choose service:</source>
         <translation>Elegir servicio:</translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="1276"/>
-        <source>Service Username:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="1286"/>
-        <source>Service API Key:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/OptionsDialog.ui" line="1296"/>
-        <source>Not all URL shorteners need Username or API keys. Only enter the ones appropriate to your service.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/OptionsDialog.ui" line="493"/>
@@ -852,118 +766,118 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Twitter</name>
     <message>
-        <location filename="../src/Twitter.cpp" line="103"/>
+        <location filename="../src/Twitter.cpp" line="91"/>
         <source>Sending message: %1</source>
         <translation>Enviando mensaje: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="137"/>
-        <location filename="../src/Twitter.cpp" line="310"/>
+        <location filename="../src/Twitter.cpp" line="113"/>
+        <location filename="../src/Twitter.cpp" line="237"/>
         <source>Updating friends messages: %1</source>
         <translation>Actualizando mensajes de amigos: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="172"/>
-        <location filename="../src/Twitter.cpp" line="345"/>
+        <location filename="../src/Twitter.cpp" line="134"/>
+        <location filename="../src/Twitter.cpp" line="258"/>
         <source>Updating replies: %1</source>
         <translation>Actualizando respuestas: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="207"/>
-        <location filename="../src/Twitter.cpp" line="380"/>
+        <location filename="../src/Twitter.cpp" line="155"/>
+        <location filename="../src/Twitter.cpp" line="279"/>
         <source>Updating public messages: %1</source>
         <translation>Actualizando mensajes públicos: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="226"/>
+        <location filename="../src/Twitter.cpp" line="174"/>
         <source>Updating search messages: %1</source>
         <translation>Actualizando mesajes de búsqueda: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="245"/>
+        <location filename="../src/Twitter.cpp" line="195"/>
         <source>Updating previous search messages: %1</source>
         <translation>Actualizando mensajes de búsqueda anterior: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="275"/>
+        <location filename="../src/Twitter.cpp" line="216"/>
         <source>Updating last message: %1</source>
         <translation>Actualizando último mensaje: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="410"/>
-        <location filename="../src/Twitter.cpp" line="442"/>
+        <location filename="../src/Twitter.cpp" line="300"/>
+        <location filename="../src/Twitter.cpp" line="321"/>
         <source>Updating favorites: %1</source>
         <translation>Actualizando favoritos: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="477"/>
-        <location filename="../src/Twitter.cpp" line="512"/>
+        <location filename="../src/Twitter.cpp" line="342"/>
+        <location filename="../src/Twitter.cpp" line="363"/>
         <source>Updating inbox messages: %1</source>
         <translation>Actualizando mensajes entantes: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="547"/>
-        <location filename="../src/Twitter.cpp" line="582"/>
+        <location filename="../src/Twitter.cpp" line="384"/>
+        <location filename="../src/Twitter.cpp" line="405"/>
         <source>Updating outbox messages: %1</source>
         <translation>Actualizando mensajes salientes: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="621"/>
+        <location filename="../src/Twitter.cpp" line="434"/>
         <source>Sending direct message: %1</source>
         <translation>Enviando mensaje directo: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="657"/>
+        <location filename="../src/Twitter.cpp" line="463"/>
         <source>Favoring message: %1</source>
         <translation>Marcando como favorito: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="693"/>
+        <location filename="../src/Twitter.cpp" line="492"/>
         <source>Unfavoring message: %1</source>
         <translation>Desmarcando como favorito: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="729"/>
+        <location filename="../src/Twitter.cpp" line="521"/>
         <source>Destroying message: %1</source>
         <translation>Destruyendo mensaje: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="765"/>
+        <location filename="../src/Twitter.cpp" line="550"/>
         <source>Destroying direct message: %1</source>
         <translation>Destruyendo mensaje directo: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="1033"/>
+        <location filename="../src/Twitter.cpp" line="809"/>
         <source>Getting friendships: %1</source>
         <translation>Obteniendo amigos: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="1063"/>
+        <location filename="../src/Twitter.cpp" line="830"/>
         <source>Getting followers: %1</source>
         <translation>Obteniendo seguidores: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="1093"/>
+        <location filename="../src/Twitter.cpp" line="851"/>
         <source>Getting blocked users: %1</source>
         <translation>Obteniendo usuarios bloqueados: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="1131"/>
+        <location filename="../src/Twitter.cpp" line="880"/>
         <source>Sending create friendship request: %1</source>
         <translation>Enviando petición de amistad: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="1169"/>
+        <location filename="../src/Twitter.cpp" line="910"/>
         <source>Sending destroy friendship request: %1</source>
         <translation>Enviando petición de fin de amistad: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="1205"/>
+        <location filename="../src/Twitter.cpp" line="939"/>
         <source>Sending create block request: %1</source>
         <translation>Enviando petición de bloqueo: %1</translation>
     </message>
     <message>
-        <location filename="../src/Twitter.cpp" line="1241"/>
+        <location filename="../src/Twitter.cpp" line="968"/>
         <source>Sending destroy block request: %1</source>
         <translation>Enviando petición de fin de bloqueo: %1</translation>
     </message>
@@ -1021,12 +935,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TwitterWidgetItemMessage</name>
     <message>
-        <location filename="../src/TwitterWidgetItemMessage.cpp" line="70"/>
+        <location filename="../src/TwitterWidgetItemMessage.cpp" line="66"/>
         <source>Translation error</source>
         <translation>Error de traducción</translation>
     </message>
     <message>
-        <location filename="../src/TwitterWidgetItemMessage.cpp" line="70"/>
+        <location filename="../src/TwitterWidgetItemMessage.cpp" line="66"/>
         <source>An error occured during translation - maybe this language isn&apos;t supported by GoogleTranslate yet.</source>
         <translation>Ocurrió un error durante la traducción - puede que este idioma no esté soportado por GoogleTranslate todavía.</translation>
     </message>

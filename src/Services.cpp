@@ -37,7 +37,6 @@
 
 QMap<QString, QMap<QString, QString> > Services::options;
 QMap<QString, QMap<QString, QString> > Services::urlShorteners;
-QMap<QString, QOAuth::Interface*> Services::oauthInterface;
 
 void Services::initialize() {
 	QMap<QString, QString> twitterOptions;
@@ -71,18 +70,7 @@ void Services::initialize() {
 	twitterOptions["createBlock"] = "/blocks/create/";
 	twitterOptions["destroyBlock"] = "/blocks/destroy/";
 
-    twitterOptions["oauthconsumerkey"] = "IPEL3uRY74G8I2ILdREbw";
-    twitterOptions["oauthconsumersecret"] = "O82aodlbID2kEzGkYlIFd0JF48WbbaV0VZaehmtPU";
-    twitterOptions["oauthrequesttokenurl"] = "http://api.twitter.com/oauth/request_token";
-    twitterOptions["oauthauthorizeurl"] = "http://api.twitter.com/oauth/authorize?oauth_token=%token";
-    twitterOptions["oauthaccesstokenurl"] = "http://api.twitter.com/oauth/access_token";
-
-    oauthInterface["twitter"] = new QOAuth::Interface();
-    oauthInterface["twitter"]->setConsumerKey(twitterOptions["oauthconsumerkey"].toAscii());
-    oauthInterface["twitter"]->setConsumerSecret(twitterOptions["oauthconsumersecret"].toAscii());
-    oauthInterface["twitter"]->setRequestTimeout(10000);
-
-    options["twitter"] = twitterOptions;
+	options["twitter"] = twitterOptions;
 
 	QMap<QString, QString> identicaOptions;
 	identicaOptions["title"] = "Identi.ca";
@@ -114,37 +102,6 @@ void Services::initialize() {
 	identicaOptions["destroyBlock"] = "/blocks/destroy/";
 
 	options["identica"] = identicaOptions;
-
-    QMap<QString, QString> aituOptions;
-    aituOptions["title"] = QString::fromUtf8("Айту.kz");
-    aituOptions["apiurl"] = "http://aitu.kz/api";
-    aituOptions["baseurl"] = "http://aitu.kz";
-    aituOptions["singlemessageurl"] = "http://identi.ca/notice/%messageid";
-    aituOptions["searchbaseurl"] = "http://identi.ca/search/notice?q=";
-    aituOptions["friends"] = "/statuses/friends_timeline";
-    aituOptions["public"] = "/statuses/public_timeline";
-    aituOptions["replies"] = "/statuses/mentions";
-    aituOptions["favorites"] = "/favorites";
-    aituOptions["favor"] = "/favorites/create/";
-    aituOptions["unfavor"] = "/favorites/destroy/";
-    aituOptions["user"] = "/statuses/user_timeline/";
-    aituOptions["last"] = "/users/show/";
-    aituOptions["update"] = "/statuses/update";
-    aituOptions["destroy"] = "/statuses/destroy/";
-    aituOptions["inbox"] = "/direct_messages";
-    aituOptions["outbox"] = "/direct_messages/sent";
-    aituOptions["send"] = "/direct_messages/new";
-    aituOptions["destroydirectmessage"] = "/direct_messages/destroy/";
-    // FIXME test whether the following options exist
-    aituOptions["showFriendships"] = "/statuses/friends";
-    aituOptions["showFollowers"] = "/statuses/followers";
-    aituOptions["showBlocks"] = "/blocks/blocking";
-    aituOptions["createFriendship"] = "/friendships/create";
-    aituOptions["destroyFriendship"] = "/friendships/destroy";
-    aituOptions["createBlock"] = "/blocks/create/";
-    aituOptions["destroyBlock"] = "/blocks/destroy/";
-
-    options["aitu"] = aituOptions;
 
 	QMap<QString, QString> customOptions;
 	customOptions["title"] = "Custom";

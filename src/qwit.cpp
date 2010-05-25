@@ -69,7 +69,6 @@ int main(int argc, char *argv[]) {
 		Configuration::TranslationsTitles.push_back(QString("%1, %2").arg(systemLocale.languageToString(locale.language())).arg(systemLocale.countryToString(locale.country())));
 	}
 
-    MainWindow *mainWindow = MainWindow::getInstance();
-    if (!config->startMinimized) mainWindow->show();
+	MainWindow::getInstance()->show();
 	return app.exec();
 }

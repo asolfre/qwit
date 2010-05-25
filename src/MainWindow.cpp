@@ -49,7 +49,6 @@ MainWindow* MainWindow::getInstance() {
 	return instance;
 }
 
-
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 	qDebug() << ("MainWindow::MainWindow()");
 
@@ -63,12 +62,13 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 	messageTextEdit = new MessageTextEdit(this);
 
 	messageTextEdit->setObjectName(QString::fromUtf8("messageTextEdit"));
-	messageHorizontalLayout->insertWidget(0, messageTextEdit);
+	hboxLayout->insertWidget(0, messageTextEdit);
 	connect(messageTextEdit, SIGNAL(leftCharsNumberChanged(int)), this, SLOT(leftCharsNumberChanged(int)));
 	connect(this, SIGNAL(retweet(const Message &)), messageTextEdit, SLOT(retweet(const Message &)));
 	connect(this, SIGNAL(reply(const Message &)), messageTextEdit, SLOT(reply(const Message &)));
 	
 	lastMessageLabel->setTextFormat(Qt::AutoText);
+	lastMessageLabel->setOpenExternalLinks(true);
 	
 	optionsDialog = new OptionsDialog(this);
 	connect(optionsDialog, SIGNAL(accepted()), this, SLOT(saveOptions()));
@@ -126,7 +126,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 	Configuration *config = Configuration::getInstance();
 	if (config->accounts.size() == 0) {
 		showOptionsDialog();
-    }
+	}
 }
 
 void MainWindow::leftCharsNumberChanged(int count) {
@@ -177,8 +177,7 @@ void MainWindow::saveOptions() {
 	config->placeTabsVertically = (optionsDialog->placeTabsVerticallyCheckBox->checkState() == Qt::Checked);
 	config->showMessagesInTray = (optionsDialog->showMessagesInTrayCheckBox->checkState() == Qt::Checked);
 	config->placeUsernameUnderAvatar = (optionsDialog->placeUsernameUnderAvatarCheckBox->checkState() == Qt::Checked);
-    config->startMinimized = (optionsDialog->startMinimizedCheckBox->checkState() == Qt::Checked);
-
+	
 	config->showHomeTab = (optionsDialog->homeTabCheckBox->checkState() == Qt::Checked);
 	config->autoUpdateHomeTab = (optionsDialog->homeTabAutoUpdateCheckBox->checkState() == Qt::Checked);
 	config->showPublicTab = (optionsDialog->publicTabCheckBox->checkState() == Qt::Checked);
@@ -202,7 +201,6 @@ void MainWindow::saveOptions() {
 	config->mentionsEvenColor = optionsDialog->mentionsEvenColorPushButton->palette().color(QPalette::Button);
 	config->mentionsOddColor = optionsDialog->mentionsOddColorPushButton->palette().color(QPalette::Button);
 	config->language = config->TranslationsCodes[optionsDialog->translationsComboBox->currentIndex()];
-    config->notificationSubsystem = (optionsDialog->kdialogRadioButton->isChecked() ? "kdialog" : (optionsDialog->libnotifyRadioButton->isChecked() ? "libnotify" : "qt"));
 
 	config->useProxy = (optionsDialog->useProxyCheckBox->checkState() == Qt::Checked);
 	config->proxyAddress = optionsDialog->proxyAddressLineEdit->text();
@@ -225,19 +223,13 @@ void MainWindow::updateState() {
 
 	Configuration *config = Configuration::getInstance();
 
-    if (config->useProxy) {
-        QNetworkProxy::setApplicationProxy(QNetworkProxy(QNetworkProxy::HttpProxy, config->proxyAddress, config->proxyPort, config->proxyUsername, config->proxyPassword));
-    } else {
-        QNetworkProxy::setApplicationProxy(QNetworkProxy(QNetworkProxy::NoProxy));
-    }
-
 	if ((greetingMessageLabel->isVisible() != config->showGreetingMessage) || (leftCharactersNumberLabel->isVisible() != config->showLeftCharactersNumber)) {
 		if (greetingMessageLabel->isVisible()) {
-			QLayout *layout = (QLayout*)verticalLayout->itemAt(0);
-			verticalLayout->removeItem(verticalLayout->itemAt(0));
+			QLayout *layout = (QLayout*)vboxLayout->itemAt(0);
+			vboxLayout->removeItem(vboxLayout->itemAt(0));
 			delete layout;
 		} else {
-			toolbuttonsVerticalLayout->removeWidget(leftCharactersNumberLabel);
+			vboxLayout1->removeWidget(leftCharactersNumberLabel);
 		}
 		if (config->showGreetingMessage) {
 			QHBoxLayout *layout = new QHBoxLayout(this);
@@ -246,10 +238,10 @@ void MainWindow::updateState() {
 			if (config->showLeftCharactersNumber) {
 				layout->addWidget(leftCharactersNumberLabel);
 			}
-			verticalLayout->insertLayout(0, layout);
+			vboxLayout->insertLayout(0, layout);
 		} else {
 			if (config->showLeftCharactersNumber) {
-				toolbuttonsVerticalLayout->insertWidget(0, leftCharactersNumberLabel);
+				vboxLayout1->insertWidget(0, leftCharactersNumberLabel);
 			}
 		}
 		greetingMessageLabel->setVisible(config->showGreetingMessage);
@@ -339,8 +331,7 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->placeTabsVerticallyCheckBox->setCheckState(config->placeTabsVertically ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->showMessagesInTrayCheckBox->setCheckState(config->showMessagesInTray ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->placeUsernameUnderAvatarCheckBox->setCheckState(config->placeUsernameUnderAvatar ? Qt::Checked : Qt::Unchecked);
-    optionsDialog->startMinimizedCheckBox->setCheckState(config->startMinimized ? Qt::Checked : Qt::Unchecked);
-
+	
 	optionsDialog->homeTabCheckBox->setCheckState(config->showHomeTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->homeTabAutoUpdateCheckBox->setCheckState(config->autoUpdateHomeTab ? Qt::Checked : Qt::Unchecked);
 	optionsDialog->publicTabCheckBox->setCheckState(config->showPublicTab ? Qt::Checked : Qt::Unchecked);
@@ -376,20 +367,6 @@ void MainWindow::resetOptionsDialog() {
 	optionsDialog->mentionsOddColorPushButton->setPalette(palette);
 
 	optionsDialog->translationsComboBox->setCurrentIndex(config->TranslationsCodes.indexOf(config->language));
-
-    if (config->notificationSubsystem == "qt") {
-        optionsDialog->qtRadioButton->setChecked(true);
-        optionsDialog->kdialogRadioButton->setChecked(false);
-        optionsDialog->libnotifyRadioButton->setChecked(false);
-    } else if (config->notificationSubsystem == "kdialog") {
-        optionsDialog->qtRadioButton->setChecked(false);
-        optionsDialog->kdialogRadioButton->setChecked(true);
-        optionsDialog->libnotifyRadioButton->setChecked(false);
-    } else if (config->notificationSubsystem == "libnotify") {
-        optionsDialog->qtRadioButton->setChecked(false);
-        optionsDialog->kdialogRadioButton->setChecked(false);
-        optionsDialog->libnotifyRadioButton->setChecked(true);
-    }
 
 // Accounts
 	optionsDialog->accountsListWidget->clear();
@@ -431,7 +408,7 @@ void MainWindow::addAccountButton(Account *account) {
 		accountsLayout = new QHBoxLayout();
 		accountsLayout->addWidget(accountsButtons[0]);
 		accountsButtons[0]->setVisible(true);
-		verticalLayout->insertLayout(verticalLayout->count() - 1, accountsLayout);
+		vboxLayout->insertLayout(vboxLayout->count() - 1, accountsLayout);
 		accountsLayout->addStretch();
 	}
 	if (accountsButtons.size() >= 2) {
@@ -460,7 +437,7 @@ void MainWindow::deleteAccountButton(Account *account) {
 			accountsLayout->removeWidget(accountsButtons[0]);
 			accountsButtons[0]->setVisible(false);
 		}
-		verticalLayout->removeItem(accountsLayout);
+		vboxLayout->removeItem(accountsLayout);
 		delete accountsLayout;
 		accountsLayout = 0;
 	}
@@ -612,10 +589,6 @@ void MainWindow::hideEvent(QHideEvent *event) {
 void MainWindow::setupTrayIcon() {
 	qDebug() << ("MainWindow::setupTrayIcon()");
 
-        trayIcon = new QSystemTrayIcon(this);
-        trayIcon->setIcon(QIcon(":/images/qwit.png"));
-
-#ifndef Q_OS_MAC //no context menu for trayicon in mac osx
 	trayShowhideAction = new QAction(tr("&Show / Hide"), this);
 	connect(trayShowhideAction, SIGNAL(triggered()), this, SLOT(showhide()));
 	trayQuitAction = new QAction(tr("&Quit"), this);
@@ -623,8 +596,9 @@ void MainWindow::setupTrayIcon() {
 	trayIconMenu = new QMenu(this);
 	trayIconMenu->addAction(trayShowhideAction);
 	trayIconMenu->addAction(trayQuitAction);
+	trayIcon = new QSystemTrayIcon(this);
 	trayIcon->setContextMenu(trayIconMenu);
-#endif
+	trayIcon->setIcon(QIcon(":/images/qwit.png"));
 	trayIcon->show();
 //	connect(trayIcon, SIGNAL(messageClicked()), this, SLOT(makeActive()));
 	connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
@@ -641,12 +615,11 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 void MainWindow::showhide() {
 	qDebug() << ("MainWindow::showhide()");
 
-        if (isVisible() && isActiveWindow()) {
+	if (isVisible()) {
 		hide();
 	} else {
 		show();
-                raise();
-                activateWindow();
+		activateWindow();
 //		for (int i = 0; i < TWITTER_TABS; ++i) {
 //			twitterTabs[i].twitterWidget->updateItems();
 //		}
@@ -729,35 +702,18 @@ void MainWindow::messageNotSent(Account *account) {
 void MainWindow::showNewMessages(const QVector<Message> &messages, Account *account) {
 	qDebug() << ("MainWindow::showNewMessages()");
 	Configuration *config = Configuration::getInstance();
-    if (min(messages.size(), config->messagesInPopup) != 0) {
+	QString trayMessage = "";
+	for (int i = 0; i < min(messages.size(), config->messagesInPopup); ++i) {
+		if (trayMessage.length()) {
+			trayMessage += "----------------------------\n";
+		}
+		trayMessage += messages[i].username + ": " + messages[i].text + " /" + QwitTools::formatDateTime(messages[i].time.toLocalTime()) + "\n";
+	}
+	if (trayMessage != "") {
 		trayIcon->setIcon(QIcon(":/images/qwitnewmessages.png"));
 		if (config->showMessagesInTray) {
-            QString title = tr("Qwit: new messages receieved for %1@%2").arg(account->username).arg(account->type);
-            if (config->notificationSubsystem == "qt") {
-                QString trayMessage = "";
-                for (int i = 0; i < min(messages.size(), config->messagesInPopup); ++i) {
-                    if (trayMessage.length()) {
-                        trayMessage += "----------------------------\n";
-                    }
-                    trayMessage += messages[i].username + ": " + messages[i].text + " /" + QwitTools::formatDateTime(messages[i].time.toLocalTime()) + "\n";
-                }
-                trayIcon->showMessage(title, trayMessage);
-            } else if (config->notificationSubsystem == "libnotify") {
-                for (int i = 0; i < min(messages.size(), config->messagesInPopup); ++i) {
-                    QString trayMessage = messages[i].username + ": " + messages[i].text + " /" + QwitTools::formatDateTime(messages[i].time.toLocalTime());
-                    QStringList args;
-                    args << "-u" << "normal" << "-t" << "30000" << "-i" << "qwit" << "--" << title << trayMessage;
-                    QProcess::execute("notify-send", args);
-                }
-            } else if (config->notificationSubsystem == "kdialog") {
-                for (int i = 0; i < min(messages.size(), config->messagesInPopup); ++i) {
-                    QString trayMessage = messages[i].username + ": " + messages[i].text + " /" + QwitTools::formatDateTime(messages[i].time.toLocalTime());
-                    QStringList args;
-                    args << "--title" << title << "--passivepopup" << trayMessage << "30";
-                    QProcess::execute("kdialog", args);
-                }
-            }
-        }
+			trayIcon->showMessage(tr("Qwit: new messages receieved for %1@%2").arg(account->username).arg(account->type), trayMessage);
+		}
 	}
 }
 
@@ -788,9 +744,9 @@ void MainWindow::updateRemainingRequests(int remainingRequests, Account *account
 	if (remainingRequests == -1) {
 		stateLabel->setText("");
 	} else if (remainingRequests == 0) {
-        stateLabel->setText(tr("Rate limit exceeded"));
+		stateLabel->setText("Rate limit exceeded");
 	} else {
-        stateLabel->setText(tr("%n requests left", "", remainingRequests));
+		stateLabel->setText(QString::number(remainingRequests) + " requests left");
 	}
 }
 

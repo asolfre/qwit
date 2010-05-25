@@ -49,7 +49,7 @@ public:
 	static const QString ApplicationName;
 	static const QString CacheDirectory;
 	static const QString MessagesCacheFileName;
-    static QVector<QString> TranslationsTitles;
+	static QVector<QString> TranslationsTitles;
 	static QVector<QString> TranslationsCodes;
 	static QVector<QString> TranslationsCountries;
 
@@ -74,7 +74,6 @@ public:
 	int messagesPerPage;
 	int messagesInPopup;
 	QString retweetTag;
-    bool startMinimized;
 	bool retweetTagAfterText;
 	bool placeUsernameUnderAvatar;
 	bool showMessagesInTray;
@@ -103,7 +102,6 @@ public:
 	QColor mentionsOddColor;
 	QColor mentionsEvenColor;
 	QString language;
-    QString notificationSubsystem;
 
 // Connection
 	bool useProxy;

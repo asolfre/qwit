@@ -100,40 +100,13 @@ void OptionsDialog::addAccount() {
 		accountConfigurationDialog->useHttpsCheckBox->setEnabled(false);
 		accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(true);
 		accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(true);
-//        accountConfigurationDialog->plainGroupBox->setChecked(Qt::Checked);
-        accountConfigurationDialog->plainGroupBox->setChecked(Qt::Checked);
-        accountConfigurationDialog->oauthGroupBox->setChecked(Qt::Unchecked);
-        accountConfigurationDialog->plainGroupBox->setCheckable(false);
-        accountConfigurationDialog->oauthGroupBox->setCheckable(false);
-        accountConfigurationDialog->oauthGroupBox->setEnabled(false);
-    } else if (serviceId == Configuration::ServicesIds["twitter"]) {
-        accountConfigurationDialog->serviceBaseUrlLineEdit->setText(Services::options[Configuration::Services[serviceId]]["baseurl"]);
-        accountConfigurationDialog->serviceApiUrlLineEdit->setText(Services::options[Configuration::Services[serviceId]]["apiurl"]);
-        accountConfigurationDialog->serviceOAuthRequestTokenUrl = Services::options[Configuration::Services[serviceId]]["oauthrequesttokenurl"];
-        accountConfigurationDialog->serviceOAuthAuthorizeUrl = Services::options[Configuration::Services[serviceId]]["oauthauthorizeurl"];
-        accountConfigurationDialog->serviceOAuthAccessTokenUrl = Services::options[Configuration::Services[serviceId]]["oauthaccesstokenurl"];
-        accountConfigurationDialog->qoauth = Services::oauthInterface[Configuration::Services[serviceId]];
-        accountConfigurationDialog->oauthGroupBox->setChecked(Qt::Checked);
-        accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
-        accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
-        accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
-        accountConfigurationDialog->plainGroupBox->setCheckable(true);
-        accountConfigurationDialog->oauthGroupBox->setCheckable(true);
-        accountConfigurationDialog->plainGroupBox->setChecked(Qt::Unchecked);
-        accountConfigurationDialog->oauthGroupBox->setChecked(Qt::Checked);
-        accountConfigurationDialog->oauthGroupBox->setEnabled(true);
-    } else {
+	} else {
 		accountConfigurationDialog->serviceBaseUrlLineEdit->setText(Services::options[Configuration::Services[serviceId]]["baseurl"]);
 		accountConfigurationDialog->serviceApiUrlLineEdit->setText(Services::options[Configuration::Services[serviceId]]["apiurl"]);
-        accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
+		accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
 		accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
 		accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
-        accountConfigurationDialog->plainGroupBox->setChecked(Qt::Checked);
-        accountConfigurationDialog->oauthGroupBox->setChecked(Qt::Unchecked);
-        accountConfigurationDialog->plainGroupBox->setCheckable(false);
-        accountConfigurationDialog->oauthGroupBox->setCheckable(false);
-        accountConfigurationDialog->oauthGroupBox->setEnabled(false);
-    }
+	}
 	accountConfigurationDialog->showNormal();
 }
 
@@ -163,9 +136,7 @@ void OptionsDialog::editAccount() {
 	accountConfigurationDialog->accountPasswordLineEdit->setText(config->accounts[accountId]->password);
 	accountConfigurationDialog->serviceBaseUrlLineEdit->setText(config->accounts[accountId]->serviceBaseUrl());
 	accountConfigurationDialog->serviceApiUrlLineEdit->setText(config->accounts[accountId]->serviceApiUrl());
-    accountConfigurationDialog->token = config->accounts[accountId]->oauthToken;
-    accountConfigurationDialog->tokenSecret = config->accounts[accountId]->oauthTokenSecret;
-    if (config->accounts[accountId]->serviceBaseUrl().startsWith("https://")) {
+	if (config->accounts[accountId]->serviceBaseUrl().startsWith("https://")) {
 		accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Checked);
 	} else {
 		accountConfigurationDialog->useHttpsCheckBox->setChecked(Qt::Unchecked);
@@ -176,34 +147,11 @@ void OptionsDialog::editAccount() {
 		accountConfigurationDialog->useHttpsCheckBox->setEnabled(false);
 		accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(true);
 		accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(true);
-        accountConfigurationDialog->plainGroupBox->setChecked(Qt::Checked);
-        accountConfigurationDialog->oauthGroupBox->setChecked(Qt::Unchecked);
-        accountConfigurationDialog->plainGroupBox->setCheckable(false);
-        accountConfigurationDialog->oauthGroupBox->setCheckable(false);
-        accountConfigurationDialog->oauthGroupBox->setEnabled(false);
-    } else if (config->accounts[accountId]->type == "twitter") {
-        accountConfigurationDialog->serviceOAuthRequestTokenUrl = Services::options["twitter"]["oauthrequesttokenurl"];
-        accountConfigurationDialog->serviceOAuthAuthorizeUrl = Services::options["twitter"]["oauthauthorizeurl"];
-        accountConfigurationDialog->serviceOAuthAccessTokenUrl = Services::options["twitter"]["oauthaccesstokenurl"];
-        accountConfigurationDialog->qoauth = Services::oauthInterface["twitter"];
-        accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
-        accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
-        accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
-        accountConfigurationDialog->plainGroupBox->setCheckable(true);
-        accountConfigurationDialog->oauthGroupBox->setCheckable(true);
-        accountConfigurationDialog->plainGroupBox->setChecked(!config->accounts[accountId]->useOAuth);
-        accountConfigurationDialog->oauthGroupBox->setChecked(config->accounts[accountId]->useOAuth);
-        accountConfigurationDialog->oauthGroupBox->setEnabled(true);
-    } else {
+	} else {
 		accountConfigurationDialog->useHttpsCheckBox->setEnabled(true);
 		accountConfigurationDialog->serviceBaseUrlLineEdit->setEnabled(false);
 		accountConfigurationDialog->serviceApiUrlLineEdit->setEnabled(false);
-        accountConfigurationDialog->plainGroupBox->setChecked(Qt::Checked);
-        accountConfigurationDialog->oauthGroupBox->setChecked(Qt::Unchecked);
-        accountConfigurationDialog->plainGroupBox->setCheckable(false);
-        accountConfigurationDialog->oauthGroupBox->setCheckable(false);
-        accountConfigurationDialog->oauthGroupBox->setEnabled(false);
-    }
+	}
 	accountConfigurationDialog->showNormal();
 }
 
@@ -212,16 +160,13 @@ void OptionsDialog::commitAccount() {
 	MainWindow *mainWindow = MainWindow::getInstance();
 	switch (accountConfigurationDialog->action) {
 		case AccountConfigurationDialog::ActionAdd: {
-                Account *account = new Account(
-                    Configuration::Services[accountConfigurationDialog->accountType],
-                    accountConfigurationDialog->accountUsernameLineEdit->text(),
-                    accountConfigurationDialog->accountPasswordLineEdit->text(),
-                    accountConfigurationDialog->useHttpsCheckBox->checkState() == Qt::Checked,
-                    accountConfigurationDialog->serviceBaseUrlLineEdit->text(),
-                    accountConfigurationDialog->serviceApiUrlLineEdit->text(),
-                    accountConfigurationDialog->oauthGroupBox->isChecked(),
-                    accountConfigurationDialog->token,
-                    accountConfigurationDialog->tokenSecret);
+                                Account *account = new Account(
+                                        Configuration::Services[accountConfigurationDialog->accountType],
+                                        accountConfigurationDialog->accountUsernameLineEdit->text(),
+                                        accountConfigurationDialog->accountPasswordLineEdit->text(),
+                                        accountConfigurationDialog->useHttpsCheckBox->checkState() == Qt::Checked,
+                                        accountConfigurationDialog->serviceBaseUrlLineEdit->text(),
+                                        accountConfigurationDialog->serviceApiUrlLineEdit->text());
 				config->addAccount(account);
 				accountsListWidget->addItem(new QListWidgetItem(QIcon(":/images/" + account->type + ".png"), account->username));
 				accountsListWidget->setCurrentRow(account->id);
@@ -233,12 +178,9 @@ void OptionsDialog::commitAccount() {
 				account->username = accountConfigurationDialog->accountUsernameLineEdit->text();
 				account->password = accountConfigurationDialog->accountPasswordLineEdit->text();
 				account->useHttps = (accountConfigurationDialog->useHttpsCheckBox->checkState() == Qt::Checked);
-                account->_serviceBaseUrl = accountConfigurationDialog->serviceBaseUrlLineEdit->text();
-                account->_serviceApiUrl = accountConfigurationDialog->serviceApiUrlLineEdit->text();
-                account->useOAuth = accountConfigurationDialog->oauthGroupBox->isChecked();
-                account->oauthToken = accountConfigurationDialog->token;
-                account->oauthTokenSecret = accountConfigurationDialog->tokenSecret;
-                accountsListWidget->takeItem(account->id);
+                                account->_serviceBaseUrl = accountConfigurationDialog->serviceBaseUrlLineEdit->text();
+                                account->_serviceApiUrl = accountConfigurationDialog->serviceApiUrlLineEdit->text();
+                                accountsListWidget->takeItem(account->id);
 				accountsListWidget->insertItem(account->id, new QListWidgetItem(QIcon(":/images/" + account->type + ".png"), account->username));
 				accountsListWidget->setCurrentRow(account->id);
 				mainWindow->updateAccountButton(account);

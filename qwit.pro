@@ -13,8 +13,7 @@ UI_HEADERS_DIR = var
 RCC_DIR = var
 unix:# Prefix: base instalation directory
 isEmpty( PREFIX ):PREFIX = /usr/local
-
-# DEFINES += 'REVISION=\\\"$(shell svnversion -n .)\\\"'
+#DEFINES += 'REVISION=\\\"$(shell svnversion -n .)\\\"'
 DEFINES += 'VERSION=\\\"1.0-beta\\\"'
 
 # Input
@@ -46,22 +45,20 @@ HEADERS += src/Configuration.h \
     src/UrlShortener.h \
     src/TwitterWidgetItem.h \
     src/TwitterWidgetItemMessage.h \
-    src/Translator.h \
+	src/Translator.h \
     src/FriendsMgmtDialog.h \
     src/UserMgmtWidget.h \
     src/UserMgmtWidgetItem.h \
     src/AbstractUserMgmtPage.h \
     src/FriendshipsMgmtPage.h \
     src/FollowersMgmtPage.h \
-    src/BlocksMgmtPage.h \
-    src/OAuthDialog.h
+    src/BlocksMgmtPage.h
 FORMS += src/MainWindow.ui \
     src/OptionsDialog.ui \
     src/AboutDialog.ui \
     src/AccountConfigurationDialog.ui \
     src/DirectMessageDialog.ui \
-    src/FriendsMgmtDialog.ui \
-    src/OAuthDialog.ui
+    src/FriendsMgmtDialog.ui
 SOURCES += src/qwit.cpp \
     src/Configuration.cpp \
     src/MainWindow.cpp \
@@ -92,12 +89,11 @@ SOURCES += src/qwit.cpp \
     src/UserMgmtWidget.cpp \
     src/UserMgmtWidgetItem.cpp \
     src/TwitterWidgetItemMessage.cpp \
-    src/Translator.cpp \
+	src/Translator.cpp \
     src/AbstractUserMgmtPage.cpp \
     src/FriendshipsMgmtPage.cpp \
     src/FollowersMgmtPage.cpp \
-    src/BlocksMgmtPage.cpp \
-    src/OAuthDialog.cpp
+    src/BlocksMgmtPage.cpp
 TRANSLATIONS += translations/qwit_en_US.ts \
     translations/qwit_es_ES.ts \
     translations/qwit_it_IT.ts \
@@ -108,7 +104,6 @@ TRANSLATIONS += translations/qwit_en_US.ts \
     translations/qwit_fi_FI.ts \
     translations/qwit_zh_CN.ts \
     translations/qwit_pl_PL.ts \
-    translations/qwit_ro_RO.ts \
     translations/qwit_tr_TR.ts
 QT += network \
     xml
@@ -127,11 +122,10 @@ icon.files += images/qwit.png
 INSTALLS = target \
     desktop \
     icon
-CONFIG += release \
+CONFIG += debug \
     x86 \
     ppc \
     x86_64 \
     ppc64 \
-    oauth \
     console
 OTHER_FILES += qwit-win.rc

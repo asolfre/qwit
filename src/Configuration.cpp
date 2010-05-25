@@ -108,8 +108,7 @@ void Configuration::load() {
 	placeControlsVertically = settings.value("placeControlsVertically", true).toBool();
 	placeTabsVertically = settings.value("placeTabsVertically", true).toBool();
 	showLastMessage = settings.value("showLastMessage", true).toBool();
-    startMinimized = settings.value("startMinimized", false).toBool();
-    settings.endGroup();
+	settings.endGroup();
 	
 	settings.beginGroup("Tabs");
 	showHomeTab = settings.value("showHomeTab", true).toBool();
@@ -146,11 +145,7 @@ void Configuration::load() {
 	language = settings.value("language", "system").toString();
 	settings.endGroup();
 
-    settings.beginGroup("Integration");
-    notificationSubsystem = settings.value("notificationSubsystem", "qt").toString();
-    settings.endGroup();
-
-    settings.endGroup();
+	settings.endGroup();
 
 // Accounts
 	settings.beginGroup("Accounts");
@@ -165,12 +160,9 @@ void Configuration::load() {
 		}
 		QString type = settings.value("type", "").toString();
 		bool useHttps = settings.value("useHttps", false).toBool();
-        QString serviceBaseUrl = settings.value("serviceBaseUrl", "").toString();
-        QString serviceApiUrl = settings.value("serviceApiUrl", "").toString();
-        bool useOAuth = settings.value("useOAuth", false).toBool();
-        QString oauthToken = settings.value("oauthToken", "").toString();
-        QString oauthTokenSecret = settings.value("oauthTokenSecret", "").toString();
-        Account *account = new Account(type, username, password, useHttps, serviceBaseUrl, serviceApiUrl, useOAuth, oauthToken, oauthTokenSecret);
+                QString serviceBaseUrl = settings.value("serviceBaseUrl", "").toString();
+                QString serviceApiUrl = settings.value("serviceApiUrl", "").toString();
+                Account *account = new Account(type, username, password, useHttps, serviceBaseUrl, serviceApiUrl);
 		addAccount(account);
 	}
 	settings.endArray();
@@ -224,8 +216,7 @@ void Configuration::save() {
 	settings.setValue("placeControlsVertically", placeControlsVertically);
 	settings.setValue("placeTabsVertically", placeTabsVertically);
 	settings.setValue("showLastMessage", showLastMessage);
-    settings.setValue("startMinimized", startMinimized);
-    settings.endGroup();
+	settings.endGroup();
 
 	settings.beginGroup("Tabs");
 	settings.setValue("showHomeTab", showHomeTab);
@@ -258,10 +249,6 @@ void Configuration::save() {
 	settings.setValue("language", language);
 	settings.endGroup();
 
-    settings.beginGroup("Integration");
-    settings.setValue("notificationSubsystem", notificationSubsystem);
-    settings.endGroup();
-
 	settings.endGroup();
 
 // Accounts
@@ -270,21 +257,14 @@ void Configuration::save() {
 	for (int i = 0; i < accounts.size(); ++i) {
 		settings.setArrayIndex(i);
 		settings.setValue("username", accounts[i]->username);
-        if (accounts[i]->useOAuth) {
-            settings.setValue("password", "");
-        } else {
-            settings.setValue("password", encrypt(accounts[i]->password));
-        }
+		settings.setValue("password", encrypt(accounts[i]->password));
 		settings.setValue("type", accounts[i]->type);
 		settings.setValue("useHttps", accounts[i]->useHttps);
-        if (accounts[i]->type == "custom") {
-                settings.setValue("serviceBaseUrl", accounts[i]->serviceBaseUrl());
-                settings.setValue("serviceApiUrl", accounts[i]->serviceApiUrl());
+                if (accounts[i]->type == "custom") {
+                        settings.setValue("serviceBaseUrl", accounts[i]->serviceBaseUrl());
+                        settings.setValue("serviceApiUrl", accounts[i]->serviceBaseUrl());
+                }
         }
-        settings.setValue("useOAuth", accounts[i]->useOAuth);
-        settings.setValue("oauthToken", accounts[i]->oauthToken);
-        settings.setValue("oauthTokenSecret", accounts[i]->oauthTokenSecret);
-    }
 	settings.endArray();
 	settings.endGroup();
 	
@@ -367,6 +347,7 @@ QString Configuration::decrypt(const QString &s) {
 		data[i] = data[i] ^ key[i % key.size()];
 	}
 	QString result = QString::fromUtf8(data);
+	qDebug() << "A " << result;
 	return result;
 }
 

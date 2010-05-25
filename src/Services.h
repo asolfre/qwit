@@ -37,8 +37,7 @@ class Services {
 public:
 	static QMap<QString, QMap<QString, QString> > options;
 	static QMap<QString, QMap<QString, QString> > urlShorteners;
-    static QMap<QString, QOAuth::Interface*> oauthInterface;
-    static void initialize();
+	static void initialize();
 };
 
 #endif

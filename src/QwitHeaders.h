@@ -35,7 +35,6 @@
 #include <QtGui>
 #include <QtNetwork>
 #include <QtXml>
-#include <QtOAuth>
 
 #include <iostream>
 #include <cstdlib>

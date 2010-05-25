@@ -47,7 +47,7 @@ FriendsMgmtDialog::FriendsMgmtDialog(QWidget *parent) : QDialog(parent)
     setupUi(this);
 
     statusBar = new QStatusBar(this);
-    topLevelLayout->addWidget(statusBar);
+    vboxLayout->addWidget(statusBar);
 
     oldAccountId = -1;
     firstRun = true;
